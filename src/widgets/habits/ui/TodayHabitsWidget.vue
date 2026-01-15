@@ -77,8 +77,8 @@
   const isLoading = computed(() => habitStore.isLoading)
 
   const toggleCompletion = async (habitId: string) => {
-    console.log(habitId);
-    
+    console.log(habitId)
+
     await habitStore.toggleCompletion(habitId)
   }
 

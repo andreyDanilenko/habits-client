@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-  import AppHeader from './components/layout/AppHeader.vue'
   import { computed } from 'vue'
   import { useRoute } from 'vue-router'
+  import AppHeader from './components/layout/AppHeader.vue'
 
   const route = useRoute()
   const showHeader = computed(() => route.name !== 'Login' && route.name !== 'Register')

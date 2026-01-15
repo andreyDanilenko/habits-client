@@ -28,16 +28,16 @@
         <!-- Правая часть -->
         <div class="flex items-center space-x-4">
           <!-- Статистика сегодня -->
-          <TodayStatsWidget />
+          <TodayStats />
 
           <!-- Переключение workspace -->
-          <WorkspaceSwitcherWidget v-if="workspaceStore.workspaces.length > 1" />
+          <WorkspaceSwitcher v-if="workspaceStore.workspaces.length > 1" />
 
           <!-- Уведомления -->
-          <NotificationsWidget />
+          <Notifications />
 
           <!-- Профиль -->
-          <ProfileDropdownWidget />
+          <ProfileDropdown />
         </div>
       </div>
     </div>
@@ -46,14 +46,13 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import TodayStatsWidget from './TodayStatsWidget.vue'
-  import WorkspaceSwitcherWidget from './WorkspaceSwitcherWidget.vue'
-  import NotificationsWidget from './NotificationsWidget.vue'
-  import ProfileDropdownWidget from './ProfileDropdownWidget.vue'
+  import TodayStats from './TodayStats.vue'
+  import WorkspaceSwitcher from './WorkspaceSwitcher.vue'
+  import Notifications from './Notifications.vue'
+  import ProfileDropdown from './ProfileDropdown.vue'
   import { useWorkspaceStore } from '@/entities/workspace'
 
-  const workspaceStore = useWorkspaceStore()  
-  
+  const workspaceStore = useWorkspaceStore()
 
   const navItems = computed(() => [
     { path: '/', label: 'Дашборд' },

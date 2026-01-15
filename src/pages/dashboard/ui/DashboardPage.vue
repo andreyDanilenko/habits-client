@@ -30,11 +30,11 @@
   import { computed } from 'vue'
   import { format } from 'date-fns'
   import { ru } from 'date-fns/locale'
-  import TodayHabitsWidget from '@/widgets/habits/ui/TodayHabitsWidget.vue'
-  import CalendarWidget from '@/widgets/calendar/ui/CalendarWidget.vue'
-  import StatsOverviewWidget from '@/widgets/stats-overview/ui/StatsOverviewWidget.vue'
-  import QuickJournalWidget from '@/widgets/journal/ui/QuickJournalWidget.vue'
-  import RecentActivityWidget from '@/widgets/activity/ui/RecentActivityWidget.vue'
+  import { TodayHabitsWidget } from '@/widgets/habits'
+  import { CalendarWidget } from '@/widgets/calendar'
+  import { StatsOverviewWidget } from '@/widgets/stats-overview'
+  import { QuickJournalWidget } from '@/widgets/journal'
+  import { RecentActivityWidget } from '@/widgets/activity'
   import { useUserStore } from '@/entities/user'
 
   const userStore = useUserStore()

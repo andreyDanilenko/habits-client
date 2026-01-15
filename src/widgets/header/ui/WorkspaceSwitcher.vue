@@ -19,7 +19,11 @@
       class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border"
     >
       <div class="p-2">
-        <p v-for="workspace in workspaces" :key="workspace.id" class="text-xs text-gray-500 px-2 py-1">
+        <p
+          v-for="workspace in workspaces"
+          :key="workspace.id"
+          class="text-xs text-gray-500 px-2 py-1"
+        >
           {{ workspace.name }}
         </p>
       </div>
@@ -36,7 +40,7 @@
 
   const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
   const workspaces = computed(() => workspaceStore.workspaces)
-  
+
   const toggleDropdown = () => {
     showDropdown.value = !showDropdown.value
   }
