@@ -33,7 +33,7 @@ npm run build
 
 ## Структура проекта
 
-Проект следует архитектуре **Feature-Sliced Design (FSD)**. Подробнее см. [ARCHITECTURE.md](./ARCHITECTURE.md)
+Проект следует архитектуре **Feature-Sliced Design (FSD)**. Подробнее см. [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ```
 src/
