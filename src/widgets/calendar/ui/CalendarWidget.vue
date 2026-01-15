@@ -53,7 +53,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-  import Card from '@/shared/ui/Card.vue'
+  import { Card } from '@/shared/ui'
   import {
     format,
     startOfMonth,

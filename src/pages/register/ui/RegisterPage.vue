@@ -95,8 +95,7 @@
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import Card from '@/shared/ui/Card.vue'
-  import Button from '@/shared/ui/Button.vue'
+  import { Card, Button } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth/model/auth-store'
   import { useUserStore } from '@/entities/user/model/user-store'
 
