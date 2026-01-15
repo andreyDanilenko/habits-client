@@ -90,7 +90,7 @@
   import { reactive, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { Card, Button } from '@/shared/ui'
-  import { useAuthStore } from '@/features/auth/model/auth-store'
+  import { useAuthStore } from '@/features/auth'
   import { useUserStore } from '@/entities/user'
 
   const router = useRouter()

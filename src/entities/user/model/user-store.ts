@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', () => {
   const fetchCurrentUser = async () => {
     isLoading.value = true
     try {
-      const { userService } = await import('@/entities/user/api/user-service')
+      const { userService } = await import('@/entities/user')
       const user = await userService.getCurrentUser()
       currentUser.value = user
     } catch (error) {

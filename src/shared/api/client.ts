@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
-import { useAuthStore } from '@/features/auth/model/auth-store'
+import { useAuthStore } from '@/features/auth'
 import { mockApi } from './mock-client'
 
 // Переключение между реальным API и моком

@@ -6,7 +6,7 @@
  * 2. Все запросы будут обрабатываться мок-клиентом
  */
 
-import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth/types/auth'
+import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
 import type { User } from '@/entities/user'
 import type { Habit, HabitCompletion } from '@/entities/habit'
 import type { Workspace } from '@/entities/workspace'

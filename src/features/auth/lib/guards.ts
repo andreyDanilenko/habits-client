@@ -1,5 +1,5 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
-import { useAuthStore } from '@/features/auth/model/auth-store'
+import { useAuthStore } from '@/features/auth'
 import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
 

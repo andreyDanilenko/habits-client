@@ -1,6 +1,6 @@
 import { api } from '@/shared/api/client'
 import { API_ENDPOINTS } from '@/shared/api/endpoints'
-import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth/types/auth'
+import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
 
 export const authService = {
   login: async (credentials: LoginDto): Promise<AuthResponse> =>
