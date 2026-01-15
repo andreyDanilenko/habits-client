@@ -89,16 +89,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, computed, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { ref, reactive, onMounted } from 'vue'
   import Card from '@/shared/ui/Card.vue'
   import Button from '@/shared/ui/Button.vue'
   import { useUserStore } from '@/entities/user/model/user-store'
-  import { useAuthStore } from '@/features/auth/model/auth-store'
 
-  const router = useRouter()
   const userStore = useUserStore()
-  const authStore = useAuthStore()
 
   const isSaving = ref(false)
   const showDeleteConfirm = ref(false)
