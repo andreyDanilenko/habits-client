@@ -79,8 +79,7 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
   import { Card, Button } from '@/shared/ui'
-  import { useHabitStore } from '@/entities/habit/model/habit-store'
-  import type { Habit } from '@/entities/habit/types/habit'
+  import { useHabitStore, type Habit } from '@/entities/habit'
 
   const habitStore = useHabitStore()
 

@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { useHabitStore } from '@/entities/habit/model/habit-store'
+  import { useHabitStore } from '@/entities/habit'
   import { ProgressBar, Icon } from '@/shared/ui'
 
   const habitStore = useHabitStore()

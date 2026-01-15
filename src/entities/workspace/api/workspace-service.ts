@@ -1,6 +1,6 @@
 import { api } from '@/shared/api/client'
 import { API_ENDPOINTS } from '@/shared/api/endpoints'
-import type { Workspace, CreateWorkspaceDto } from '@/entities/workspace/types/workspace'
+import type { Workspace, CreateWorkspaceDto } from '@/entities/workspace'
 
 export const workspaceService = {
   getWorkspaces: async (): Promise<Workspace[]> =>

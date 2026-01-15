@@ -50,7 +50,7 @@
   import WorkspaceSwitcherWidget from './WorkspaceSwitcherWidget.vue'
   import NotificationsWidget from './NotificationsWidget.vue'
   import ProfileDropdownWidget from './ProfileDropdownWidget.vue'
-  import { useWorkspaceStore } from '@/entities/workspace/model/workspace-store'
+  import { useWorkspaceStore } from '@/entities/workspace'
 
   const workspaceStore = useWorkspaceStore()  
   

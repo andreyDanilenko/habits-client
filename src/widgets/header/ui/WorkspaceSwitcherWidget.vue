@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { useWorkspaceStore } from '@/entities/workspace/model/workspace-store'
+  import { useWorkspaceStore } from '@/entities/workspace'
 
   const workspaceStore = useWorkspaceStore()
   const showDropdown = ref(false)

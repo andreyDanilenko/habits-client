@@ -97,7 +97,7 @@
   import { useRouter } from 'vue-router'
   import { Card, Button } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth/model/auth-store'
-  import { useUserStore } from '@/entities/user/model/user-store'
+  import { useUserStore } from '@/entities/user'
 
   const router = useRouter()
   const authStore = useAuthStore()

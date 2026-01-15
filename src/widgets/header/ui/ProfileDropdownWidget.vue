@@ -48,7 +48,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
-  import { useUserStore } from '@/entities/user/model/user-store'
+  import { useUserStore } from '@/entities/user'
   import { useAuthStore } from '@/features/auth/model/auth-store'
 
   const router = useRouter()

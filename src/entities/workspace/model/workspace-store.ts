@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { workspaceService } from '@/entities/workspace/api/workspace-service'
-import type { Workspace, CreateWorkspaceDto } from '@/entities/workspace/types/workspace'
+import type { Workspace, CreateWorkspaceDto } from '@/entities/workspace'
 
 export const useWorkspaceStore = defineStore('workspace', () => {
   // State

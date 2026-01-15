@@ -1,8 +1,6 @@
 import { createPinia } from 'pinia'
-import { useUserStore } from '@/entities/user/model/user-store'
-import { useWorkspaceStore } from '@/entities/workspace/model/workspace-store'
+import { useUserStore } from '@/entities/user'
+import { useWorkspaceStore } from '@/entities/workspace'
 
 export const pinia = createPinia()
-
-// Экспорт для удобства
 export { useUserStore, useWorkspaceStore }

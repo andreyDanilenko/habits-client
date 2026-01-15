@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { habitService } from '@/entities/habit/api/habit-service'
-import type { Habit, HabitCompletion, CreateHabitDto } from '@/entities/habit/types/habit'
+import type { Habit, HabitCompletion, CreateHabitDto } from '@/entities/habit'
 
 export const useHabitStore = defineStore('habit', () => {
   // State

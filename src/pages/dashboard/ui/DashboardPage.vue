@@ -35,7 +35,7 @@
   import StatsOverviewWidget from '@/widgets/stats-overview/ui/StatsOverviewWidget.vue'
   import QuickJournalWidget from '@/widgets/journal/ui/QuickJournalWidget.vue'
   import RecentActivityWidget from '@/widgets/activity/ui/RecentActivityWidget.vue'
-  import { useUserStore } from '@/entities/user/model/user-store'
+  import { useUserStore } from '@/entities/user'
 
   const userStore = useUserStore()
 

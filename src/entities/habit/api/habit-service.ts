@@ -7,7 +7,7 @@ import type {
   CalendarResponse,
   ToggleResponse,
   HabitCompletion,
-} from '@/entities/habit/types/habit'
+} from '@/entities/habit'
 import { API_ENDPOINTS } from '@/shared/api/endpoints'
 
 export const habitService = {

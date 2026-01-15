@@ -91,7 +91,7 @@
 <script setup lang="ts">
   import { ref, reactive, onMounted } from 'vue'
   import { Card, Button } from '@/shared/ui'
-  import { useUserStore } from '@/entities/user/model/user-store'
+  import { useUserStore } from '@/entities/user'
 
   const userStore = useUserStore()
 

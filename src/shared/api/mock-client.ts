@@ -7,9 +7,9 @@
  */
 
 import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth/types/auth'
-import type { User } from '@/entities/user/types/user'
-import type { Habit, HabitCompletion } from '@/entities/habit/types/habit'
-import type { Workspace } from '@/entities/workspace/types/workspace'
+import type { User } from '@/entities/user'
+import type { Habit, HabitCompletion } from '@/entities/habit'
+import type { Workspace } from '@/entities/workspace'
 
 // Моковые данные
 const MOCK_USER: User = {

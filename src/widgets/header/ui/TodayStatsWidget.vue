@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { useHabitStore } from '@/entities/habit/model/habit-store'
+  import { useHabitStore } from '@/entities/habit'
 
   const habitStore = useHabitStore()
 
