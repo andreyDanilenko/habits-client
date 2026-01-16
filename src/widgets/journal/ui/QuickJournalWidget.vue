@@ -23,14 +23,13 @@
           </button>
         </div>
 
-
-        <Button @click="saveNote"   :disabled="!note.trim()">Сохранить </Button>
+        <Button @click="saveNote" :disabled="!note.trim()">Сохранить </Button>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"> 
+<script setup lang="ts">
   import { ref } from 'vue'
   import { Button } from '@/shared/ui'
 

@@ -6,9 +6,7 @@
         <span v-if="current !== undefined && total !== undefined">
           {{ current }} / {{ total }}
         </span>
-        <span v-else class="text-sm font-medium text-gray-900">
-          {{ percentage }}%
-        </span>
+        <span v-else class="text-sm font-medium text-gray-900"> {{ percentage }}% </span>
       </div>
       <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
         <div

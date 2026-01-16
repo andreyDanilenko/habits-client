@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Мои привычки</h1>
         <p class="mt-2 text-gray-600">Управляйте своими привычками и отслеживайте прогресс</p>
       </div>
-      <Button @click="handleAddHabit"> + Добавить привычку </Button>
+      <Button @click="handleAddHabit"> Добавить </Button>
     </div>
 
     <!-- Список привычек -->
@@ -103,7 +103,8 @@
 
         <div class="flex items-center justify-between pt-4 border-t">
           <div class="text-sm text-gray-600">
-            <span class="font-medium">{{ habitProgressMap[habit.id] || 0 }}</span> выполнений сегодня
+            <span class="font-medium">{{ habitProgressMap[habit.id] || 0 }}</span> выполнений
+            сегодня
           </div>
           <div class="flex items-center space-x-2">
             <button
@@ -226,13 +227,13 @@
   const habitProgressMap = computed(() => {
     const today = new Date().toISOString().split('T')[0]
     const map: Record<string, number> = {}
-    
+
     habitStore.completions.forEach((c) => {
       if (c.date === today) {
         map[c.habitId] = (map[c.habitId] || 0) + 1
       }
     })
-    
+
     return map
   })
 
