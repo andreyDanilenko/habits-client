@@ -109,13 +109,14 @@ const MOCK_WORKSPACES: Workspace[] = [
 
 // Имитация задержки сети
 const delay = (ms: number = 500) => new Promise((resolve) => setTimeout(resolve, ms))
+const apiV1 = "/api/v1"
 
 class MockApiClient {
   async get<T>(url: string): Promise<T> {
     await delay()
 
     // Мок для получения текущего пользователя
-    if (url === '/auth/me') {
+    if (url === apiV1 + '/auth/me') {
       const token = localStorage.getItem('accessToken')
       if (!token || !token.startsWith('mock-')) {
         throw { response: { status: 401, data: { message: 'Unauthorized' } } }
@@ -124,17 +125,17 @@ class MockApiClient {
     }
 
     // Мок для привычек
-    if (url === '/habits') {
+    if (url === apiV1 + '/habits') {
       return MOCK_HABITS as T
     }
 
     // Мок для завершений привычек
-    if (url === '/habits/completions') {
+    if (url === apiV1 + '/habits/completions') {
       return MOCK_COMPLETIONS as T
     }
 
     // Мок для workspace
-    if (url === '/workspaces') {
+    if (url === apiV1 + '/workspaces') {
       return MOCK_WORKSPACES as T
     }
 
@@ -146,7 +147,7 @@ class MockApiClient {
     await delay(800) // Больше задержка для POST запросов
 
     // Мок для логина
-    if (url === '/auth/login') {
+    if (url === apiV1 + '/auth/login') {
       const { email, password } = data as LoginDto
 
       if (!email || !password) {
@@ -165,7 +166,7 @@ class MockApiClient {
     }
 
     // Мок для регистрации
-    if (url === '/auth/register') {
+    if (url === apiV1 + '/auth/register') {
       const { email, password } = data as RegisterDto
 
       if (!email || !password) {
@@ -185,12 +186,12 @@ class MockApiClient {
     }
 
     // Мок для логаута
-    if (url === '/auth/logout') {
+    if (url === apiV1 + '/auth/logout') {
       return {} as T
     }
 
     // Мок для refresh токена
-    if (url === '/auth/refresh') {
+    if (url === apiV1 + '/auth/refresh') {
       const newAccessToken = 'mock-access-token-' + Date.now()
       const response: AuthResponse = {
         accessToken: newAccessToken,
@@ -200,7 +201,7 @@ class MockApiClient {
     }
 
     // Мок для создания привычки
-    if (url === '/habits') {
+    if (url === apiV1 + '/habits') {
       return {
         id: 'mock-habit-' + Date.now(),
         ...data,
@@ -212,7 +213,7 @@ class MockApiClient {
     }
 
     // Мок для переключения выполнения привычки
-    if (url.includes('/habits/') && url.includes('/toggle')) {
+    if (url.includes(apiV1 + '/habits/') && url.includes(apiV1 + '/toggle')) {
       return {
         id: 'mock-completion-' + Date.now(),
         habitId: url.split('/')[2],

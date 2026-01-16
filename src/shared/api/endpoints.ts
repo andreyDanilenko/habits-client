@@ -1,31 +1,33 @@
+const apiV1 = "/api/v1"
+
 export const API_ENDPOINTS = {
   AUTH: {
-    LOGIN: '/auth/login',
-    REGISTER: '/auth/register',
-    LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh',
-    ME: '/auth/me',
+    LOGIN: apiV1 + '/auth/login',
+    REGISTER: apiV1 + '/auth/register',
+    LOGOUT: apiV1 + '/auth/logout',
+    REFRESH: apiV1 + '/auth/refresh',
+    ME: apiV1 + '/auth/me',
   },
 
   WORKSPACE: {
-    BASE: '/workspaces',
-    MEMBERS: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
-    SWITCH: (workspaceId: string) => `/workspaces/${workspaceId}/switch`,
-    MODULES: (workspaceId: string) => `/workspaces/${workspaceId}/modules`,
+    BASE: apiV1 + '/workspaces',
+    MEMBERS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/members`,
+    SWITCH: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/switch`,
+    MODULES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/modules`,
   },
 
   HABITS: {
-    BASE: '/habits',
-    DETAIL: (id: string) => `/habits/${id}`,
-    COMPLETE: (id: string) => `/habits/${id}/complete`,
-    TOGGLE: (id: string) => `/habits/${id}/toggle`,
-    STATS: (id: string) => `/habits/${id}/stats`,
-    COMPLETIONS: '/habits/completions',
-    CALENDAR: '/habits/calendar',
+    BASE: apiV1 + '/habits',
+    DETAIL: (id: string) => apiV1 + `/habits/${id}`,
+    COMPLETE: (id: string) => apiV1 + `/habits/${id}/complete`,
+    TOGGLE: (id: string) => apiV1 + `/habits/${id}/toggle`,
+    STATS: (id: string) => apiV1 + `/habits/${id}/stats`,
+    COMPLETIONS: apiV1 + '/habits/completions',
+    CALENDAR: apiV1 + '/habits/calendar',
   },
 
   JOURNAL: {
-    BASE: '/journal',
-    BY_DATE: (date: string) => `/journal/${date}`,
+    BASE: apiV1 + '/journal',
+    BY_DATE: (date: string) => apiV1 + `/journal/${date}`,
   },
 } as const
