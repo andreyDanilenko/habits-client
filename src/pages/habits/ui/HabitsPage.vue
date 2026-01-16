@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Мои привычки</h1>
         <p class="mt-2 text-gray-600">Управляйте своими привычками и отслеживайте прогресс</p>
       </div>
-      <Button @click="showAddModal = true"> + Добавить привычку </Button>
+      <Button @click="handleAddHabit"> + Добавить привычку </Button>
     </div>
 
     <!-- Список привычек -->
@@ -32,7 +32,7 @@
         <p class="text-gray-500 mb-6">
           Создайте свою первую привычку, чтобы начать отслеживать прогресс
         </p>
-        <Button @click="showAddModal = true"> Создать привычку </Button>
+        <Button @click="handleAddHabit"> Создать привычку </Button>
       </div>
     </div>
 
@@ -40,7 +40,7 @@
       <Card
         v-for="habit in habits"
         :key="habit.id"
-        class="p-6 hover:shadow-md transition-shadow cursor-pointer"
+        class="p-6 hover:shadow-md transition-shadow cursor-pointer group"
         @click="selectHabit(habit)"
       >
         <div class="flex items-start justify-between mb-4">
@@ -58,18 +58,71 @@
               </p>
             </div>
           </div>
+          <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="flex items-center space-x-1">
+              <button
+                class="p-1 text-gray-400 hover:text-gray-600"
+                @click.stop="markCompletion(habit)"
+                title="Отметить выполнение"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </button>
+              <button
+                class="p-1 text-gray-400 hover:text-red-600"
+                @click.stop="deleteHabit(habit)"
+                title="Удалить привычку"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <!-- Прогресс бар -->
+          <div class="mb-3">
+            <div class="flex justify-between text-xs text-gray-500 mb-1">
+              <span>Прогресс сегодня</span>
+              <span>{{ completedCount(habit.id) }} / {{ habit.dailyGoal || 1 }}</span>
+            </div>
+            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-300"
+                :style="{
+                  width: `${Math.min((completedCount(habit.id) / (habit.dailyGoal || 1)) * 100, 100)}%`,
+                  backgroundColor: habit.color || '#6366f1',
+                }"
+              />
+            </div>
+          </div>
         </div>
 
         <div class="flex items-center justify-between pt-4 border-t">
           <div class="text-sm text-gray-600">
-            <span class="font-medium">{{ completedCount(habit.id) }}</span> выполнений
+            <span class="font-medium">{{ completedCount(habit.id) }}</span> выполнений сегодня
           </div>
-          <button
-            class="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
-            @click.stop="editHabit(habit)"
-          >
-            Редактировать
-          </button>
+          <div class="flex items-center space-x-2">
+            <button
+              class="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+              @click.stop="editHabit(habit)"
+            >
+              Редактировать
+            </button>
+          </div>
         </div>
       </Card>
     </div>
@@ -77,29 +130,112 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
-  import { Card, Button } from '@/shared/ui'
+  import { computed, onMounted } from 'vue'
+  import { Card, Button, ConfirmModal } from '@/shared/ui'
+  import { AddEditHabitModal, HabitDetailsModal, MarkCompletionModal } from '@/features/habit/ui'
   import { useHabitStore, type Habit } from '@/entities/habit'
+  import { useModal } from '@/shared/lib/modal'
 
   const habitStore = useHabitStore()
+  const { openModal } = useModal()
 
   const habits = computed(() => habitStore.habits)
   const isLoading = computed(() => habitStore.isLoading)
-  const showAddModal = ref(false)
+
+  // Создание привычки
+  const handleAddHabit = () => {
+    openModal<Partial<Habit>>({
+      component: AddEditHabitModal,
+      props: {
+        habit: undefined,
+      },
+      onConfirm: async (habitData?: Partial<Habit>) => {
+        if (habitData) {
+          await habitStore.createHabit(habitData)
+        }
+      },
+    })
+  }
+
+  // Редактирование привычки
+  const editHabit = (habit: Habit) => {
+    openModal<Partial<Habit>>({
+      component: AddEditHabitModal,
+      props: {
+        habit,
+      },
+      onConfirm: async (habitData?: Partial<Habit>) => {
+        if (habitData) {
+          await habitStore.updateHabit(habit.id, habitData)
+        }
+      },
+    })
+  }
+
+  // Просмотр деталей привычки
+  const selectHabit = (habit: Habit) => {
+    openModal<'edit' | 'delete'>({
+      component: HabitDetailsModal,
+      props: {
+        habit,
+        completions: habitStore.completions,
+      },
+      onConfirm: (action?: 'edit' | 'delete') => {
+        if (action === 'edit') {
+          editHabit(habit)
+        } else if (action === 'delete') {
+          deleteHabit(habit)
+        }
+      },
+    })
+  }
+
+  // Удаление привычки
+  const deleteHabit = (habit: Habit) => {
+    openModal<boolean>({
+      component: ConfirmModal,
+      props: {
+        title: 'Удалить привычку',
+        message: `Вы уверены, что хотите удалить привычку "${habit.title}"? Все данные о выполнениях также будут удалены.`,
+        confirmText: 'Удалить',
+        confirmVariant: 'danger',
+      },
+      onConfirm: async (confirmed?: boolean) => {
+        await habitStore.deleteHabit(habit.id)
+      },
+    })
+  }
+
+  // Отметка выполнения
+  const markCompletion = (habit: Habit) => {
+    openModal<{
+      habitId: string
+      count: number
+      time?: string
+      note?: string
+      feeling?: string
+    }>({
+      component: MarkCompletionModal,
+      props: {
+        habit,
+      },
+      onConfirm: async (completionData?: {
+        habitId: string
+        count: number
+        time?: string
+        note?: string
+        feeling?: string
+      }) => {
+        if (completionData) {
+          await habitStore.markCompletion(completionData)
+        }
+      },
+    })
+  }
 
   const completedCount = (habitId: string) => {
     const today = new Date().toISOString().split('T')[0]
     return habitStore.completions.filter((c) => c.habitId === habitId && c.date === today).length
-  }
-
-  const selectHabit = (habit: Habit) => {
-    console.log('Select habit:', habit)
-    // TODO: Переход на страницу деталей привычки
-  }
-
-  const editHabit = (habit: Habit) => {
-    console.log('Edit habit:', habit)
-    // TODO: Открыть модальное окно редактирования
   }
 
   onMounted(() => {

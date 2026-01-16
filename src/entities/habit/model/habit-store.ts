@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { habitService } from '@/entities/habit'
-import type { Habit, HabitCompletion, CreateHabitDto } from '@/entities/habit'
+import type { Habit, HabitCompletion, CreateHabitDto, UpdateHabitDto } from '@/entities/habit'
 
 export const useHabitStore = defineStore('habit', () => {
   // State
@@ -37,13 +37,81 @@ export const useHabitStore = defineStore('habit', () => {
     }
   }
 
-  const createHabit = async (data: CreateHabitDto): Promise<Habit> => {
+  const createHabit = async (data: CreateHabitDto | Partial<Habit>): Promise<Habit> => {
     try {
-      const habit = await habitService.createHabit(data)
+      // Convert Partial<Habit> to CreateHabitDto
+      const habitData: CreateHabitDto = {
+        title: data.title || '',
+        description: data.description,
+        color: data.color,
+        icon: data.icon,
+        targetDays: data.targetDays,
+        dailyGoal: data.dailyGoal,
+        preferredTime: data.preferredTime,
+        category: data.category,
+      }
+      const habit = await habitService.createHabit(habitData)
       habits.value.push(habit)
       return habit
     } catch (error) {
       console.error('Failed to create habit:', error)
+      throw error
+    }
+  }
+
+  const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
+    try {
+      // Convert Partial<Habit> to UpdateHabitDto
+      const habitData: UpdateHabitDto = {
+        title: data.title,
+        description: data.description,
+        color: data.color,
+        icon: data.icon,
+        targetDays: data.targetDays,
+        dailyGoal: data.dailyGoal,
+        preferredTime: data.preferredTime,
+        category: data.category,
+      }
+      const habit = await habitService.updateHabit(id, habitData)
+      const index = habits.value.findIndex((h) => h.id === id)
+      if (index !== -1) {
+        habits.value[index] = habit
+      }
+      return habit
+    } catch (error) {
+      console.error('Failed to update habit:', error)
+      throw error
+    }
+  }
+
+  const deleteHabit = async (id: string): Promise<void> => {
+    try {
+      await habitService.deleteHabit(id)
+      habits.value = habits.value.filter((h) => h.id !== id)
+      completions.value = completions.value.filter((c) => c.habitId !== id)
+    } catch (error) {
+      console.error('Failed to delete habit:', error)
+      throw error
+    }
+  }
+
+  const markCompletion = async (data: {
+    habitId: string
+    count: number
+    time?: string
+    note?: string
+    feeling?: string
+  }): Promise<void> => {
+    try {
+      // For now, create multiple completions based on count
+      // This should be handled by the backend, but we'll do it on frontend for now
+      for (let i = 0; i < data.count; i++) {
+        // In a real implementation, this would call an API endpoint
+        // For now, we'll just toggle the completion
+        await toggleCompletion(data.habitId)
+      }
+    } catch (error) {
+      console.error('Failed to mark completion:', error)
       throw error
     }
   }
@@ -86,6 +154,9 @@ export const useHabitStore = defineStore('habit', () => {
     // Actions
     fetchHabits,
     createHabit,
+    updateHabit,
+    deleteHabit,
+    markCompletion,
     toggleCompletion,
     setSelectedDate,
   }

@@ -5,6 +5,9 @@ export interface Habit {
   color: string
   icon?: string
   targetDays?: number
+  dailyGoal?: number
+  preferredTime?: string
+  category?: string
   userId: string
   workspaceId: string
   createdAt: string
@@ -18,6 +21,7 @@ export interface HabitCompletion {
   date: string
   notes?: string
   rating?: number
+  time?: string
   createdAt: string
 }
 
@@ -27,6 +31,9 @@ export interface CreateHabitDto {
   color?: string
   icon?: string
   targetDays?: number
+  dailyGoal?: number
+  preferredTime?: string
+  category?: string
 }
 
 export interface UpdateHabitDto extends Partial<CreateHabitDto> {}
