@@ -1,3 +1,20 @@
+
+<script setup lang="ts">
+  import { HabitsPageHeader, HabitsEmptyState, HabitsList } from '@/features/habit/ui'
+  import { useHabitsPage } from '@/features/habit/model'
+
+  const {
+    habits,
+    isLoading,
+    habitProgressMap,
+    handleAddHabit,
+    editHabit,
+    deleteHabit,
+    markCompletion,
+    selectHabit,
+  } = useHabitsPage()
+</script>
+
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <HabitsPageHeader @add-habit="handleAddHabit" />
@@ -8,7 +25,7 @@
 
     <HabitsEmptyState
       v-else-if="habits.length === 0"
-      @create-habit="handleAddHabit"
+      @add-habit="handleAddHabit"
     />
 
     <HabitsList
@@ -22,19 +39,3 @@
     />
   </div>
 </template>
-
-<script setup lang="ts">
-import { HabitsPageHeader, HabitsEmptyState, HabitsList } from '@/features/habit/ui'
-import { useHabitsPage } from '@/features/habit/model'
-
-const {
-  habits,
-  isLoading,
-  habitProgressMap,
-  handleAddHabit,
-  editHabit,
-  deleteHabit,
-  markCompletion,
-  selectHabit,
-} = useHabitsPage()
-</script>
