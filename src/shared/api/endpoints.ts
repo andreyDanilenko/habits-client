@@ -1,4 +1,4 @@
-const apiV1 = "/api/v1"
+const apiV1 = '/api/v1'
 
 export const API_ENDPOINTS = {
   AUTH: {

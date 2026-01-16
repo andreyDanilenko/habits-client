@@ -109,7 +109,7 @@ const MOCK_WORKSPACES: Workspace[] = [
 
 // Имитация задержки сети
 const delay = (ms: number = 500) => new Promise((resolve) => setTimeout(resolve, ms))
-const apiV1 = "/api/v1"
+const apiV1 = '/api/v1'
 
 class MockApiClient {
   async get<T>(url: string): Promise<T> {

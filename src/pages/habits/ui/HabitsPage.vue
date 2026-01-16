@@ -93,27 +93,17 @@
         </div>
 
         <div class="mt-4">
-          <!-- Прогресс бар -->
-          <div class="mb-3">
-            <div class="flex justify-between text-xs text-gray-500 mb-1">
-              <span>Прогресс сегодня</span>
-              <span>{{ completedCount(habit.id) }} / {{ habit.dailyGoal || 1 }}</span>
-            </div>
-            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                class="h-full rounded-full transition-all duration-300"
-                :style="{
-                  width: `${Math.min((completedCount(habit.id) / (habit.dailyGoal || 1)) * 100, 100)}%`,
-                  backgroundColor: habit.color || '#6366f1',
-                }"
-              />
-            </div>
-          </div>
+          <ProgressBar
+            :current="habitProgressMap[habit.id] || 0"
+            :total="habit.dailyGoal || 1"
+            label="Прогресс сегодня"
+            :color="habit.color"
+          />
         </div>
 
         <div class="flex items-center justify-between pt-4 border-t">
           <div class="text-sm text-gray-600">
-            <span class="font-medium">{{ completedCount(habit.id) }}</span> выполнений сегодня
+            <span class="font-medium">{{ habitProgressMap[habit.id] || 0 }}</span> выполнений сегодня
           </div>
           <div class="flex items-center space-x-2">
             <button
@@ -131,7 +121,7 @@
 
 <script setup lang="ts">
   import { computed, onMounted } from 'vue'
-  import { Card, Button, ConfirmModal } from '@/shared/ui'
+  import { Card, Button, ConfirmModal, ProgressBar } from '@/shared/ui'
   import { AddEditHabitModal, HabitDetailsModal, MarkCompletionModal } from '@/features/habit/ui'
   import { useHabitStore, type Habit } from '@/entities/habit'
   import { useModal } from '@/shared/lib/modal'
@@ -233,10 +223,18 @@
     })
   }
 
-  const completedCount = (habitId: string) => {
+  const habitProgressMap = computed(() => {
     const today = new Date().toISOString().split('T')[0]
-    return habitStore.completions.filter((c) => c.habitId === habitId && c.date === today).length
-  }
+    const map: Record<string, number> = {}
+    
+    habitStore.completions.forEach((c) => {
+      if (c.date === today) {
+        map[c.habitId] = (map[c.habitId] || 0) + 1
+      }
+    })
+    
+    return map
+  })
 
   onMounted(() => {
     habitStore.fetchHabits()
