@@ -3,7 +3,7 @@
     :type="type"
     :disabled="disabled || loading"
     :class="[
-      'inline-flex items-center justify-center rounded-lg font-medium transition-colors',
+      'cursor-pointer inline-flex items-center justify-center rounded-lg  font-medium transition-colors',
       'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
       'disabled:opacity-50 disabled:cursor-not-allowed',
       sizeClasses,
@@ -44,7 +44,7 @@
     () =>
       ({
         sm: 'px-3 py-1.5 text-sm',
-        md: 'px-4 py-2.5 text-sm',
+        md: 'px-4 py-2.5 text-md',
         lg: 'px-6 py-3 text-base',
       })[props.size],
   )

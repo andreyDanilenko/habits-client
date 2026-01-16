@@ -14,7 +14,7 @@
           <button
             v-for="mood in moods"
             :key="mood.emoji"
-            class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            class="cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
             :class="{ 'bg-indigo-100': selectedMood === mood.value }"
             @click="selectedMood = mood.value"
             :title="mood.label"
@@ -23,13 +23,7 @@
           </button>
         </div>
 
-        <button
-          class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-          :disabled="!note.trim()"
-          @click="saveNote"
-        >
-          Сохранить
-        </button>
+        <Button @click="saveNote" :disabled="!note.trim()">Сохранить </Button>
       </div>
     </div>
   </div>
@@ -37,6 +31,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { Button } from '@/shared/ui'
 
   const note = ref('')
   const selectedMood = ref<number | null>(null)

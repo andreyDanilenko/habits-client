@@ -1,4 +1,4 @@
-import { api } from '@/shared/api/client'
+import { api, API_ENDPOINTS } from '@/shared/api'
 import type {
   Habit,
   CreateHabitDto,
@@ -8,7 +8,6 @@ import type {
   ToggleResponse,
   HabitCompletion,
 } from '@/entities/habit'
-import { API_ENDPOINTS } from '@/shared/api/endpoints'
 
 export const habitService = {
   getHabits: (): Promise<Habit[]> => api.get<Habit[]>(API_ENDPOINTS.HABITS.BASE),

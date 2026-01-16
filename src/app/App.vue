@@ -8,6 +8,7 @@
         </transition>
       </router-view>
     </main>
+    <ModalProvider />
   </div>
 </template>
 
@@ -15,6 +16,7 @@
   import { computed } from 'vue'
   import { useRoute } from 'vue-router'
   import AppHeader from './components/layout/AppHeader.vue'
+  import ModalProvider from './providers/ModalProvider.vue'
 
   const route = useRoute()
   const showHeader = computed(() => route.name !== 'Login' && route.name !== 'Register')

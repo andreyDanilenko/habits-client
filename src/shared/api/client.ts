@@ -6,7 +6,7 @@ import { mockApi } from './mock-client'
 // Установите VITE_USE_MOCK_API=true в .env или используйте флаг ниже
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 class ApiClient {
   private client: AxiosInstance

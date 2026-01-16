@@ -1,21 +1,21 @@
 export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN',
-  MODERATOR = 'MODERATOR'
+  MODERATOR = 'MODERATOR',
 }
 
 export enum WorkspaceRole {
   OWNER = 'OWNER',
   ADMIN = 'ADMIN',
   MEMBER = 'MEMBER',
-  GUEST = 'GUEST'
+  GUEST = 'GUEST',
 }
 
 export enum UserStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
   PENDING = 'PENDING',
-  BANNED = 'BANNED'
+  BANNED = 'BANNED',
 }
 
 export interface User {
