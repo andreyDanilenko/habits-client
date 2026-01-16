@@ -7,12 +7,10 @@
         @click.self="handleBackdropClick"
       >
         <div class="flex min-h-full items-center justify-center p-4">
-          <!-- Затемнение фона -->
           <Transition name="fade">
             <div v-if="isOpen" class="fixed inset-0 bg-black/50" @click="handleBackdropClick" />
           </Transition>
 
-          <!-- Контент модального окна -->
           <Transition name="slide-up">
             <div v-if="isOpen" class="relative z-10 w-full max-w-md mx-auto" :class="contentClass">
               <slot />

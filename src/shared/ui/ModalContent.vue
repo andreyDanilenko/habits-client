@@ -8,7 +8,7 @@
         <button
           v-if="showCloseButton"
           @click="handleClose"
-          class="text-gray-400 hover:text-gray-500 transition-colors"
+          class="cursor-pointer text-gray-400 hover:text-gray-500 transition-colors"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
