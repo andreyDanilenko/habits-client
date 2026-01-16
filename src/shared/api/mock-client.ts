@@ -10,16 +10,17 @@ import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
 import type { User } from '@/entities/user'
 import type { Habit, HabitCompletion } from '@/entities/habit'
 import type { Workspace } from '@/entities/workspace'
+import { UserRole } from '@/entities/user'
 
 // Моковые данные
 const MOCK_USER: User = {
   id: '1',
   email: 'user@example.com',
   name: 'Test User',
+  role: UserRole.USER,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 }
-
 const MOCK_HABITS: Habit[] = [
   {
     id: '1',

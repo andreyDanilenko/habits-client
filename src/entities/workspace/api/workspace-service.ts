@@ -1,5 +1,4 @@
-import { api } from '@/shared/api/client'
-import { API_ENDPOINTS } from '@/shared/api/endpoints'
+import { api, API_ENDPOINTS } from '@/shared/api'
 import type { Workspace, CreateWorkspaceDto } from '@/entities/workspace'
 
 export const workspaceService = {
