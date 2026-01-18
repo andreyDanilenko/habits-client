@@ -1,3 +1,3 @@
-import SettingsPage from './ui/SettingsPage.vue'
+import SettingsPage from '@/pages/habits/ui/SettingsPage.vue'
 
 export default SettingsPage

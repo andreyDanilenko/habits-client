@@ -1,22 +1,17 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Приветствие -->
     <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6">
       <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
         {{ greeting }}, {{ userName }}!
       </h1>
       <p class="text-gray-600">Сегодня {{ formattedDate }}</p>
     </div>
-
-    <!-- Основной контент -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Левая колонка -->
       <div class="lg:col-span-2 space-y-6">
         <TodayHabitsWidget />
         <CalendarWidget />
       </div>
 
-      <!-- Правая колонка -->
       <div class="space-y-6">
         <StatsOverviewWidget />
         <QuickJournalWidget />
@@ -45,8 +40,9 @@
 
   const greeting = computed(() => {
     const hour = new Date().getHours()
-    if (hour < 12) return 'Доброе утро'
-    if (hour < 18) return 'Добрый день'
+    if (hour < 12 && hour > 4) return 'Доброе утро'
+    if (hour < 18  && hour > 12) return 'Добрый день'
+    if (hour < 4 && hour > 0 ) return 'Доброй ночи'
     return 'Добрый вечер'
   })
 
