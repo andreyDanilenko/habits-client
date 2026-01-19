@@ -1,15 +1,14 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
-import { useAuthStore } from '@/features/auth'
 import { mockApi } from './mock-client'
 
-// Переключение между реальным API и моком
-// Установите VITE_USE_MOCK_API=true в .env или используйте флаг ниже
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
-
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
+type UnauthorizedHandler = () => void | Promise<void>
 
 class ApiClient {
   private client: AxiosInstance
+  private unauthorizedHandler: UnauthorizedHandler | null = null
 
   constructor() {
     this.client = axios.create({
@@ -18,33 +17,31 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
     })
 
     this.setupInterceptors()
   }
 
+  setUnauthorizedHandler(handler: UnauthorizedHandler) {
+    this.unauthorizedHandler = handler
+  }
+
   private setupInterceptors() {
-    this.client.interceptors.request.use(
-      (config) => {
-        const authStore = useAuthStore()
-        const token = authStore.accessToken
-
-        if (token && config.headers) {
-          config.headers.Authorization = `Bearer ${token}`
-        }
-
-        return config
-      },
-      (error) => Promise.reject(error),
-    )
-
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          const authStore = useAuthStore()
-          await authStore.logout()
-          window.location.href = '/login'
+          const currentPath = window.location.pathname
+          const publicRoutes = ['/login', '/register', '/forgot-password']
+          
+          if (!publicRoutes.includes(currentPath)) {
+            if (this.unauthorizedHandler) {
+              await this.unauthorizedHandler()
+            } else {
+              window.location.href = '/login'
+            }
+          }
         }
         return Promise.reject(error)
       },

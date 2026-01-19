@@ -119,12 +119,16 @@
         password: form.password,
       })
 
-      await userStore.fetchCurrentUser()
-
-      router.push('/')
+      if (authStore.isAuthenticated && userStore.currentUser) {
+        router.push('/')
+      } else {
+        errors.email = 'Ошибка аутентификации'
+      }
     } catch (error: any) {
       if (error.response?.data?.message) {
         errors.email = 'Неверный email или пароль'
+      } else {
+        errors.email = 'Произошла ошибка при входе'
       }
     } finally {
       isLoading.value = false
