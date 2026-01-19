@@ -10,15 +10,34 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
-app.use(router)
 
 api.setUnauthorizedHandler(async () => {
   const authStore = useAuthStore()
-  await authStore.logout()
-  window.location.href = '/login'
+  authStore.clearTokens()
+  const userStore = await import('@/entities/user')
+  userStore.useUserStore().clearUser()
+  
+  const currentPath = window.location.pathname
+  const publicRoutes = ['/login', '/register', '/forgot-password']
+  
+  if (!publicRoutes.includes(currentPath)) {
+    try {
+      if (router.currentRoute) {
+        await router.push('/login')
+      } else {
+        window.location.href = '/login'
+      }
+    } catch (error) {
+      window.location.href = '/login'
+    }
+  }
 })
+const initApp = async () => {
+  const authStore = useAuthStore()
+  await authStore.initAuth()
+  app.use(router)
+  await router.isReady()
+  app.mount('#app')
+}
 
-const authStore = useAuthStore()
-authStore.initAuth()
-
-app.mount('#app')
+initApp()

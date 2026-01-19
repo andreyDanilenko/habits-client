@@ -22,9 +22,11 @@ export const useUserStore = defineStore('user', () => {
       const { userService } = await import('@/entities/user')
       const user = await userService.getCurrentUser()
       currentUser.value = user
+      return user
     } catch (error) {
       console.error('Failed to fetch user:', error)
       currentUser.value = null
+      throw error // Пробрасываем ошибку дальше, чтобы initAuth мог её обработать
     } finally {
       isLoading.value = false
     }

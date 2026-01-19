@@ -16,6 +16,7 @@ export const authGuard = async (
   }
 
   if (!authStore.isAuthenticated) {
+    console.log('authGuard: not authenticated, redirecting to login')
     return next({ name: 'Login' })
   }
 
@@ -23,6 +24,7 @@ export const authGuard = async (
     try {
       await userStore.fetchCurrentUser()
     } catch (error) {
+      console.error('authGuard: failed to fetch currentUser', error)
       await authStore.logout()
       return next({ name: 'Login' })
     }
