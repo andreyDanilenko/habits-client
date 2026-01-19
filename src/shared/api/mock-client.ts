@@ -1,27 +1,87 @@
-/**
- * Мок-клиент API для разработки без бекенда
- *
- * Использование:
- * 1. Установите USE_MOCK_API = true в client.ts
- * 2. Все запросы будут обрабатываться мок-клиентом
- */
+interface MockLoginDto {
+  email: string
+  password: string
+}
 
-import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
-import type { User } from '@/entities/user'
-import type { Habit, HabitCompletion } from '@/entities/habit'
-import type { Workspace } from '@/entities/workspace'
-import { UserRole } from '@/entities/user'
+interface MockRegisterDto {
+  email: string
+  password: string
+  name?: string
+}
+
+interface MockAuthResponse {
+  accessToken: string
+  refreshToken: string
+  user?: {
+    id: string
+    email: string
+    name?: string
+  }
+}
+
+enum MockUserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  MODERATOR = 'MODERATOR',
+}
+
+interface MockUser {
+  id: string
+  email: string
+  name?: string
+  role: MockUserRole
+  avatarUrl?: string
+  createdAt: string
+  updatedAt: string
+}
+
+interface MockHabit {
+  id: string
+  title: string
+  description?: string
+  color: string
+  icon?: string
+  targetDays?: number
+  dailyGoal?: number
+  preferredTime?: string
+  category?: string
+  userId: string
+  workspaceId: string
+  createdAt: string
+  updatedAt: string
+}
+
+interface MockHabitCompletion {
+  id: string
+  habitId: string
+  userId: string
+  date: string
+  notes?: string
+  rating?: number
+  time?: string
+  createdAt: string
+}
+
+interface MockWorkspace {
+  id: string
+  name: string
+  description?: string
+  color?: string
+  ownerId: string
+  createdAt: string
+  updatedAt: string
+}
 
 // Моковые данные
-const MOCK_USER: User = {
+const MOCK_USER: MockUser = {
   id: '1',
   email: 'user@example.com',
   name: 'Test User',
-  role: UserRole.USER,
+  role: MockUserRole.USER,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 }
-const MOCK_HABITS: Habit[] = [
+const MOCK_HABITS: MockHabit[] = [
   {
     id: '1',
     title: 'Утренняя зарядка',
@@ -60,7 +120,7 @@ const MOCK_HABITS: Habit[] = [
   },
 ]
 
-const MOCK_COMPLETIONS: HabitCompletion[] = [
+const MOCK_COMPLETIONS: MockHabitCompletion[] = [
   {
     id: '1',
     habitId: '1',
@@ -86,7 +146,7 @@ const MOCK_COMPLETIONS: HabitCompletion[] = [
   },
 ]
 
-const MOCK_WORKSPACES: Workspace[] = [
+const MOCK_WORKSPACES: MockWorkspace[] = [
   {
     id: '1',
     name: 'Личные привычки',
@@ -148,13 +208,13 @@ class MockApiClient {
 
     // Мок для логина
     if (url === apiV1 + '/auth/login') {
-      const { email, password } = data as LoginDto
+      const { email, password } = data as MockLoginDto
 
       if (!email || !password) {
         throw { response: { status: 400, data: { message: 'Email and password required' } } }
       }
 
-      const response: AuthResponse = {
+      const response: MockAuthResponse = {
         accessToken: 'mock-access-token-' + Date.now(),
         refreshToken: 'mock-refresh-token-' + Date.now(),
         user: {
@@ -167,13 +227,13 @@ class MockApiClient {
 
     // Мок для регистрации
     if (url === apiV1 + '/auth/register') {
-      const { email, password } = data as RegisterDto
+      const { email, password } = data as MockRegisterDto
 
       if (!email || !password) {
         throw { response: { status: 400, data: { message: 'Email and password required' } } }
       }
 
-      const response: AuthResponse = {
+      const response: MockAuthResponse = {
         accessToken: 'mock-access-token-' + Date.now(),
         refreshToken: 'mock-refresh-token-' + Date.now(),
         user: {
@@ -193,7 +253,7 @@ class MockApiClient {
     // Мок для refresh токена
     if (url === apiV1 + '/auth/refresh') {
       const newAccessToken = 'mock-access-token-' + Date.now()
-      const response: AuthResponse = {
+      const response: MockAuthResponse = {
         accessToken: newAccessToken,
         refreshToken: data.refreshToken || 'mock-refresh-token-' + Date.now(),
       }

@@ -1,15 +1,17 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
-import { useAuthStore } from '@/features/auth'
 import { mockApi } from './mock-client'
 
-// Переключение между реальным API и моком
-// Установите VITE_USE_MOCK_API=true в .env или используйте флаг ниже
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
+type TokenProvider = () => string | null
+type UnauthorizedHandler = () => void | Promise<void>
+
 class ApiClient {
   private client: AxiosInstance
+  private tokenProvider: TokenProvider | null = null
+  private unauthorizedHandler: UnauthorizedHandler | null = null
 
   constructor() {
     this.client = axios.create({
@@ -23,11 +25,18 @@ class ApiClient {
     this.setupInterceptors()
   }
 
+  setTokenProvider(provider: TokenProvider) {
+    this.tokenProvider = provider
+  }
+
+  setUnauthorizedHandler(handler: UnauthorizedHandler) {
+    this.unauthorizedHandler = handler
+  }
+
   private setupInterceptors() {
     this.client.interceptors.request.use(
       (config) => {
-        const authStore = useAuthStore()
-        const token = authStore.accessToken
+        const token = this.tokenProvider?.()
 
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`
@@ -42,9 +51,11 @@ class ApiClient {
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          const authStore = useAuthStore()
-          await authStore.logout()
-          window.location.href = '/login'
+          if (this.unauthorizedHandler) {
+            await this.unauthorizedHandler()
+          } else {
+            window.location.href = '/login'
+          }
         }
         return Promise.reject(error)
       },

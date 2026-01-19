@@ -1,3 +1,3 @@
-import LoginPage from '@/pages/habits/ui/LoginPage.vue'
+import LoginPage from '@/pages/login/ui/LoginPage.vue'
 
 export default LoginPage

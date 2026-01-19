@@ -1,3 +1,3 @@
-import RegisterPage from '@/pages/habits/ui/RegisterPage.vue'
+import RegisterPage from '@/pages/register/ui/RegisterPage.vue'
 
 export default RegisterPage
