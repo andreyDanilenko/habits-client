@@ -2,15 +2,12 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import { mockApi } from './mock-client'
 
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
-
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
-type TokenProvider = () => string | null
 type UnauthorizedHandler = () => void | Promise<void>
 
 class ApiClient {
   private client: AxiosInstance
-  private tokenProvider: TokenProvider | null = null
   private unauthorizedHandler: UnauthorizedHandler | null = null
 
   constructor() {
@@ -20,13 +17,10 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
     })
 
     this.setupInterceptors()
-  }
-
-  setTokenProvider(provider: TokenProvider) {
-    this.tokenProvider = provider
   }
 
   setUnauthorizedHandler(handler: UnauthorizedHandler) {
@@ -34,19 +28,6 @@ class ApiClient {
   }
 
   private setupInterceptors() {
-    this.client.interceptors.request.use(
-      (config) => {
-        const token = this.tokenProvider?.()
-
-        if (token && config.headers) {
-          config.headers.Authorization = `Bearer ${token}`
-        }
-
-        return config
-      },
-      (error) => Promise.reject(error),
-    )
-
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {

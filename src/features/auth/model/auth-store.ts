@@ -5,9 +5,8 @@ import { useUserStore } from '@/entities/user'
 import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
 
 export const useAuthStore = defineStore('auth', () => {
-  // State
-  const accessToken = ref<string | null>(localStorage.getItem('accessToken'))
-  const refreshToken = ref<string | null>(localStorage.getItem('refreshToken'))
+  const accessToken = ref<string | null>(null)
+  const refreshToken = ref<string | null>(null)
   const isLoading = ref(false)
 
   // Getters
@@ -72,17 +71,21 @@ export const useAuthStore = defineStore('auth', () => {
   const setTokens = (response: AuthResponse) => {
     accessToken.value = response.accessToken
     refreshToken.value = response.refreshToken
-
-    localStorage.setItem('accessToken', response.accessToken)
-    localStorage.setItem('refreshToken', response.refreshToken)
   }
 
   const clearTokens = () => {
     accessToken.value = null
     refreshToken.value = null
+  }
 
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
+  const initAuth = async () => {
+    try {
+      const userStore = useUserStore()
+      await userStore.fetchCurrentUser()
+    } catch (error) {
+      clearTokens()
+      console.error('Auth initialization failed:', error)
+    }
   }
 
   return {
@@ -101,5 +104,6 @@ export const useAuthStore = defineStore('auth', () => {
     refresh,
     setTokens,
     clearTokens,
+    initAuth,
   }
 })

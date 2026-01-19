@@ -12,15 +12,13 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
-api.setTokenProvider(() => {
-  const authStore = useAuthStore()
-  return authStore.accessToken
-})
-
 api.setUnauthorizedHandler(async () => {
   const authStore = useAuthStore()
   await authStore.logout()
   window.location.href = '/login'
 })
+
+const authStore = useAuthStore()
+authStore.initAuth()
 
 app.mount('#app')
