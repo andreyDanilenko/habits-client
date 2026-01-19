@@ -32,15 +32,10 @@ class ApiClient {
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          const currentPath = window.location.pathname
-          const publicRoutes = ['/login', '/register', '/forgot-password']
-          
-          if (!publicRoutes.includes(currentPath)) {
-            if (this.unauthorizedHandler) {
-              await this.unauthorizedHandler()
-            } else {
-              window.location.href = '/login'
-            }
+          if (this.unauthorizedHandler) {
+            await this.unauthorizedHandler()
+          } else {
+            window.location.href = '/login'
           }
         }
         return Promise.reject(error)

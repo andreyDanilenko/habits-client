@@ -1,7 +1,27 @@
-import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
+import type { NavigationGuardNext, RouteLocationNormalized, Router } from 'vue-router'
 import { useAuthStore } from '@/features/auth'
 import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
+
+export const handleUnauthorized = async (router: Router) => {
+  const authStore = useAuthStore()
+  const userStore = useUserStore()
+  
+  authStore.clearTokens()
+  userStore.clearUser()
+  
+  const currentRoute = router.currentRoute.value
+  const isPublicRoute = currentRoute.meta.public === true
+  
+  if (!isPublicRoute) {
+    try {
+      await router.push({ name: 'Login' })
+    } catch (error) {
+      console.error('Failed to redirect via router:', error)
+      window.location.href = '/login'
+    }
+  }
+}
 
 export const authGuard = async (
   to: RouteLocationNormalized,
@@ -30,7 +50,6 @@ export const authGuard = async (
     }
   }
 
-  // Загружаем workspace после успешной авторизации
   const workspaceStore = useWorkspaceStore()
   if (workspaceStore.workspaces.length === 0) {
     await workspaceStore.fetchWorkspaces()
