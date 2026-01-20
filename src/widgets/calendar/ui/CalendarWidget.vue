@@ -3,13 +3,19 @@
     <div class="flex items-center justify-between mb-4">
       <h3 class="font-semibold text-gray-900">Календарь привычек</h3>
       <div class="flex items-center space-x-2">
-        <button @click="prevMonth" class="p-1 hover:bg-gray-100 rounded">
-          <ArrowLeftIcon size="sm"/>
-        </button>
+        <Button
+          icon-only
+          variant="icon"
+          :left-icon="ArrowLeftIcon"
+          @click="prevMonth"
+        />
         <span class="font-medium">{{ formattedMonth }}</span>
-        <button @click="nextMonth" class="p-1 hover:bg-gray-100 rounded">
-          <ArrowRightIcon size="sm"/>
-        </button>
+        <Button
+          icon-only
+          variant="icon"
+          :left-icon="ArrowRightIcon"
+          @click="nextMonth"
+        />
       </div>
     </div>
 
@@ -52,7 +58,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { Card } from '@/shared/ui'
+  import { Card, Button } from '@/shared/ui'
   import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
 
   import {

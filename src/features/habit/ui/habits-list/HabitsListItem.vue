@@ -17,20 +17,20 @@
       </div>
       <div class="opacity-0 group-hover:opacity-100 transition-opacity">
         <div class="flex items-center space-x-1">
-          <button
-            class="p-1 text-gray-400 hover:text-gray-600"
+          <Button
+            icon-only
+            variant="icon"
+            icon-color="success"
+            :left-icon="CheckIcon"
             @click.stop="$emit('mark-completion', habit)"
-            title="Отметить выполнение"
-          >
-            <CheckIcon size="xs" />
-          </button>
-          <button
-            class="p-1 text-gray-400 hover:text-red-600"
+          />
+          <Button
+            icon-only
+            variant="icon"
+            icon-color="danger"
+            :left-icon="DeleteIcon"
             @click.stop="$emit('delete', habit)"
-            title="Удалить привычку"
-          >
-            <DeleteIcon size="xs" />
-          </button>
+          />
         </div>
       </div>
     </div>
@@ -49,19 +49,20 @@
         <span class="font-medium">{{ progress }}</span> выполнений сегодня
       </div>
       <div class="flex items-center space-x-2">
-        <button
-          class="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+        <Button
+          variant="link"
+          size="sm"
           @click.stop="$emit('edit', habit)"
         >
           Редактировать
-        </button>
+        </Button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ProgressBar } from '@/shared/ui'
+  import { ProgressBar, Button } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
   import { CheckIcon, DeleteIcon } from '@/shared/ui/icon'
 

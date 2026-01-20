@@ -2,12 +2,9 @@
   <div class="bg-white rounded-xl border shadow-sm p-6">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-gray-900">Привычки на сегодня</h2>
-      <button
-        class="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
-        @click="$emit('add-habit')"
-      >
+      <Button variant="link" size="sm" @click="$emit('add-habit')">
         + Добавить
-      </button>
+      </Button>
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
@@ -16,12 +13,9 @@
 
     <div v-else-if="habits.length === 0" class="text-center py-8">
       <p class="text-gray-500 mb-4">Нет привычек на сегодня</p>
-      <button
-        class="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
-        @click="$emit('add-habit')"
-      >
+      <Button variant="link" size="sm" @click="$emit('add-habit')">
         Создать первую привычку
-      </button>
+      </Button>
     </div>
 
     <div v-else class="space-y-3">
@@ -58,6 +52,7 @@
   import { computed, onMounted } from 'vue'
   import { useHabitStore } from '@/entities/habit'
   import { CheckIcon } from '@/shared/ui/icon'
+  import { Button } from '@/shared/ui'
 
   const habitStore = useHabitStore()
 
