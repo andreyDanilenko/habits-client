@@ -4,29 +4,11 @@
       <h3 class="font-semibold text-gray-900">Календарь привычек</h3>
       <div class="flex items-center space-x-2">
         <button @click="prevMonth" class="p-1 hover:bg-gray-100 rounded">
-          <svg
-            class="w-5 h-5 size-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
+          <ArrowLeftIcon size="sm"/>
         </button>
         <span class="font-medium">{{ formattedMonth }}</span>
         <button @click="nextMonth" class="p-1 hover:bg-gray-100 rounded">
-          <svg
-            class="w-5 h-5 size-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-          </svg>
+          <ArrowRightIcon size="sm"/>
         </button>
       </div>
     </div>
@@ -71,6 +53,8 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { Card } from '@/shared/ui'
+  import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
+
   import {
     format,
     startOfMonth,

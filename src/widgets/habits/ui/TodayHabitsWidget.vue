@@ -35,25 +35,12 @@
             class="w-6 h-6 rounded border-2 flex items-center justify-center transition-colors"
             :class="
               habit.completed
-                ? 'bg-indigo-600 border-indigo-600'
-                : 'border-gray-300 hover:border-indigo-400'
+                ? 'bg-indigo-600 border-indigo-600 text-indigo-600'
+                : 'border-gray-300 hover:border-indigo-400 text-indigo-400'
             "
             @click="toggleCompletion(habit.id)"
           >
-            <svg
-              v-if="habit.completed"
-              class="w-4 h-4 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <CheckIcon size="md"/>
           </button>
           <div>
             <p class="font-medium text-gray-900">{{ habit.title }}</p>
@@ -70,6 +57,7 @@
 <script setup lang="ts">
   import { computed, onMounted } from 'vue'
   import { useHabitStore } from '@/entities/habit'
+  import { CheckIcon } from '@/shared/ui/icon'
 
   const habitStore = useHabitStore()
 
