@@ -19,7 +19,7 @@ export const useHabitsPage = () => {
     habits,
     isLoading,
     habitProgressMap,
-    
+
     ...habitActions,
   }
 }

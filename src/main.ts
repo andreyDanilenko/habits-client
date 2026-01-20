@@ -20,7 +20,7 @@ api.setUnauthorizedHandler(async () => {
 const initApp = async () => {
   const { useAuthStore } = await import('@/features/auth')
   const authStore = useAuthStore()
-  
+
   await authStore.initAuth()
   app.use(router)
   await router.isReady()

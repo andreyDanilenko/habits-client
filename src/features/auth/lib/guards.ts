@@ -6,13 +6,13 @@ import { useWorkspaceStore } from '@/entities/workspace'
 export const handleUnauthorized = async (router: Router) => {
   const authStore = useAuthStore()
   const userStore = useUserStore()
-  
+
   authStore.clearTokens()
   userStore.clearUser()
-  
+
   const currentRoute = router.currentRoute.value
   const isPublicRoute = currentRoute.meta.public === true
-  
+
   if (!isPublicRoute) {
     try {
       await router.push({ name: 'Login' })

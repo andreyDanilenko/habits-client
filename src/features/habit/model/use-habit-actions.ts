@@ -1,11 +1,7 @@
 import type { Habit } from '@/entities/habit'
 import { useModal } from '@/shared/lib/modal'
 import { useHabitStore } from '@/entities/habit'
-import { 
-  AddEditHabitModal, 
-  HabitDetailsModal, 
-  MarkCompletionModal 
-} from '@/features/habit/ui'
+import { AddEditHabitModal, HabitDetailsModal, MarkCompletionModal } from '@/features/habit/ui'
 import { ConfirmModal } from '@/shared/ui'
 
 export const useHabitActions = () => {

@@ -41,8 +41,8 @@
   const greeting = computed(() => {
     const hour = new Date().getHours()
     if (hour < 12 && hour > 4) return 'Доброе утро'
-    if (hour < 18  && hour > 12) return 'Добрый день'
-    if (hour < 4 && hour > 0 ) return 'Доброй ночи'
+    if (hour < 18 && hour > 12) return 'Добрый день'
+    if (hour < 4 && hour > 0) return 'Доброй ночи'
     return 'Добрый вечер'
   })
 
