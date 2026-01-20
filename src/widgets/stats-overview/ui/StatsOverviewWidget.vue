@@ -8,16 +8,10 @@
           <p class="text-sm text-gray-600">Выполнено сегодня</p>
           <p class="text-2xl font-bold text-gray-900">{{ completedToday }}/{{ totalToday }}</p>
         </div>
-        <Icon>
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </Icon>
+        <div class="bg-indigo-100 rounded-full flex items-center justify-center p-3">
+          <CheckCircleIcon size="md" color="blue" stroke-width="2" />
+        </div>
       </div>
-
       <ProgressBar :percentage="progressPercentage" />
     </div>
   </div>
@@ -26,7 +20,8 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useHabitStore } from '@/entities/habit'
-  import { ProgressBar, Icon } from '@/shared/ui'
+  import { ProgressBar } from '@/shared/ui'
+  import { CheckCircleIcon } from '@/shared/ui/icon'
 
   const habitStore = useHabitStore()
 
