@@ -2,9 +2,7 @@
   <div class="bg-white rounded-xl border shadow-sm p-6">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-gray-900">Привычки на сегодня</h2>
-      <Button variant="link" size="sm" @click="$emit('add-habit')">
-        + Добавить
-      </Button>
+      <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button>
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
@@ -34,7 +32,7 @@
             "
             @click="toggleCompletion(habit.id)"
           >
-            <CheckIcon size="md"/>
+            <CheckIcon size="md" />
           </button>
           <div>
             <p class="font-medium text-gray-900">{{ habit.title }}</p>

@@ -14,27 +14,17 @@
   >
     <!-- Спиннер при загрузке -->
     <Spinner v-if="loading" class="w-4 h-4 mr-2" />
-    
+
     <!-- Иконка слева -->
-    <component
-      v-if="leftIcon"
-      :is="leftIcon"
-      :size="iconSize"
-      :class="iconOnly ? '' : 'mr-2'"
-    />
-    
+    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
+
     <!-- Основной контент -->
     <span v-if="!iconOnly">
       <slot />
     </span>
-    
+
     <!-- Иконка справа -->
-    <component
-      v-if="rightIcon"
-      :is="rightIcon"
-      :size="iconSize"
-      :class="iconOnly ? '' : 'ml-2'"
-    />
+    <component v-if="rightIcon" :is="rightIcon" :size="iconSize" :class="iconOnly ? '' : 'ml-2'" />
   </button>
 </template>
 
@@ -49,7 +39,7 @@
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
     loading?: boolean
-    
+
     leftIcon?: Component
     rightIcon?: Component
     iconOnly?: boolean
