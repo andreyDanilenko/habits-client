@@ -3,29 +3,48 @@
     :type="type"
     :disabled="disabled || loading"
     :class="[
-      'cursor-pointer inline-flex items-center justify-center rounded-lg  font-medium transition-colors',
+      'cursor-pointer inline-flex items-center justify-center rounded-lg font-medium transition-colors',
       'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
-      'disabled:opacity-50 disabled:cursor-not-allowed',
-      sizeClasses,
+      'disabled:opacity-50 disabled:cursor-not-allowed relative',
+      iconOnly ? 'p-1 rounded' : sizeClasses,
       variantClasses,
+      customClass,
     ]"
     @click="handleClick"
   >
+    <!-- Спиннер при загрузке -->
     <Spinner v-if="loading" class="w-4 h-4 mr-2" />
-    <slot />
+
+    <!-- Иконка слева -->
+    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
+
+    <!-- Основной контент -->
+    <span v-if="!iconOnly">
+      <slot />
+    </span>
+
+    <!-- Иконка справа -->
+    <component v-if="rightIcon" :is="rightIcon" :size="iconSize" :class="iconOnly ? '' : 'ml-2'" />
   </button>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import type { Component } from 'vue'
   import Spinner from './Spinner.vue'
 
   interface Props {
-    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'icon' | 'link'
     size?: 'sm' | 'md' | 'lg'
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
     loading?: boolean
+
+    leftIcon?: Component
+    rightIcon?: Component
+    iconOnly?: boolean
+    iconColor?: 'default' | 'danger' | 'success' | 'warning' | 'info'
+    customClass?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -34,6 +53,9 @@
     type: 'button',
     disabled: false,
     loading: false,
+    iconOnly: false,
+    iconColor: 'default',
+    customClass: '',
   })
 
   const emit = defineEmits<{
@@ -49,16 +71,36 @@
       })[props.size],
   )
 
-  const variantClasses = computed(
-    () =>
-      ({
-        primary: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800',
-        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300',
-        outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
-        ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200',
-        danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
-      })[props.variant],
-  )
+  const variantClasses = computed(() => {
+    if (props.variant === 'icon') {
+      const iconColorClasses = {
+        default: 'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
+        danger: 'text-gray-400 hover:text-red-600 hover:bg-red-50',
+        success: 'text-gray-400 hover:text-green-600 hover:bg-green-50',
+        warning: 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50',
+        info: 'text-gray-400 hover:text-blue-600 hover:bg-blue-50',
+      }
+      return `p-1 rounded ${iconColorClasses[props.iconColor]}`
+    }
+
+    const baseVariants: Record<NonNullable<Props['variant']>, string> = {
+      primary: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800',
+      secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300',
+      outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
+      ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200',
+      danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
+      icon: '',
+      link: 'bg-transparent text-indigo-600 hover:text-indigo-700',
+    }
+
+    return baseVariants[props.variant ?? 'primary']
+  })
+
+  // Маппинг размера кнопки к размеру иконки
+  const iconSize = computed(() => {
+    if (props.iconOnly) return 'sm'
+    return props.size === 'lg' ? 'md' : props.size === 'sm' ? 'xs' : 'sm'
+  })
 
   const handleClick = (e: MouseEvent) => {
     if (!props.disabled && !props.loading) {

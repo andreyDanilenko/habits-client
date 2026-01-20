@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 import App from '@/app/App.vue'
 import router from '@/app/router'
 import { api } from '@/shared/api'
-import { useAuthStore } from '@/features/auth'
+import { handleUnauthorized } from '@/features/auth'
 import '@/styles/main.css'
 
 const app = createApp(App)
@@ -11,29 +11,16 @@ const pinia = createPinia()
 
 app.use(pinia)
 
+// Настраиваем обработчик неавторизованных запросов API
+// Логика обработки вынесена в handleUnauthorized для переиспользования
 api.setUnauthorizedHandler(async () => {
-  const authStore = useAuthStore()
-  authStore.clearTokens()
-  const userStore = await import('@/entities/user')
-  userStore.useUserStore().clearUser()
-  
-  const currentPath = window.location.pathname
-  const publicRoutes = ['/login', '/register', '/forgot-password']
-  
-  if (!publicRoutes.includes(currentPath)) {
-    try {
-      if (router.currentRoute) {
-        await router.push('/login')
-      } else {
-        window.location.href = '/login'
-      }
-    } catch (error) {
-      window.location.href = '/login'
-    }
-  }
+  await handleUnauthorized(router)
 })
+
 const initApp = async () => {
+  const { useAuthStore } = await import('@/features/auth')
   const authStore = useAuthStore()
+
   await authStore.initAuth()
   app.use(router)
   await router.isReady()

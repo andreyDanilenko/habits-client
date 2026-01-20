@@ -25,16 +25,16 @@ export const useAuthStore = defineStore('auth', () => {
       // сохранять их в store. Вместо этого проверяем успешность логина
       // через fetchCurrentUser
       await authService.login(credentials)
-      
+
       // После успешного логина получаем информацию о пользователе
       // чтобы установить состояние аутентификации
       const userStore = useUserStore()
       await userStore.fetchCurrentUser()
-      
+
       // Устанавливаем флаги для совместимости (токены в куках)
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
-      
+
       return { success: true }
     } catch (error) {
       console.error('Login failed:', error)
@@ -52,16 +52,16 @@ export const useAuthStore = defineStore('auth', () => {
       // сохранять их в store. Вместо этого проверяем успешность регистрации
       // через fetchCurrentUser
       await authService.register(data)
-      
+
       // После успешной регистрации получаем информацию о пользователе
       // чтобы установить состояние аутентификации
       const userStore = useUserStore()
       await userStore.fetchCurrentUser()
-      
+
       // Устанавливаем флаги для совместимости (токены в куках)
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
-      
+
       return { success: true }
     } catch (error) {
       console.error('Registration failed:', error)
@@ -94,14 +94,14 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       // Сервер обновляет токены в HttpOnly куках
       await authService.refresh('cookie-based')
-      
+
       // После успешного обновления проверяем пользователя
       await userStore.fetchCurrentUser()
-      
+
       // Устанавливаем флаги для совместимости
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
-      
+
       return { success: true }
     } catch (error) {
       clearTokens()
@@ -125,7 +125,7 @@ export const useAuthStore = defineStore('auth', () => {
       // Проверяем аутентификацию через /auth/me
       // Если запрос успешен, значит куки валидны и пользователь аутентифицирован
       await userStore.fetchCurrentUser()
-      
+
       // Если fetchCurrentUser успешен, устанавливаем флаги для совместимости
       if (userStore.currentUser) {
         accessToken.value = 'cookie-based'

@@ -10,14 +10,7 @@
           @click="handleClose"
           class="cursor-pointer text-gray-400 hover:text-gray-500 transition-colors"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <XMarkIcon size="sm" />
         </button>
       </div>
       <p v-if="description" class="mt-1 text-sm text-gray-600">
@@ -37,6 +30,7 @@
 
 <script setup lang="ts">
   import { useSlots, computed } from 'vue'
+  import { XMarkIcon } from '@/shared/ui/icon'
 
   interface Props {
     title?: string
