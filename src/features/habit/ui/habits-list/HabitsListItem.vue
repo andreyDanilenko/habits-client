@@ -22,14 +22,14 @@
             @click.stop="$emit('mark-completion', habit)"
             title="Отметить выполнение"
           >
-            <CheckIcon size="xs"/>
+            <CheckIcon size="xs" />
           </button>
           <button
             class="p-1 text-gray-400 hover:text-red-600"
             @click.stop="$emit('delete', habit)"
             title="Удалить привычку"
           >
-            <DeleteIcon size="xs"/>
+            <DeleteIcon size="xs" />
           </button>
         </div>
       </div>
@@ -64,7 +64,6 @@
   import { ProgressBar } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
   import { CheckIcon, DeleteIcon } from '@/shared/ui/icon'
-  3
 
   defineProps<{
     habit: Habit
