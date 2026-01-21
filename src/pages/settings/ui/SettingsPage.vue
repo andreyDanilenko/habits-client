@@ -1,37 +1,31 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
-    <!-- Заголовок -->
     <div>
       <h1 class="text-3xl font-bold text-gray-900">Настройки</h1>
       <p class="mt-2 text-gray-600">Управляйте настройками своего аккаунта</p>
     </div>
 
-    <!-- Настройки профиля -->
     <Card class="p-6">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">Профиль</h2>
 
       <div class="space-y-4">
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 mb-1"> Email </label>
-          <input
-            id="email"
-            v-model="profile.email"
-            type="email"
-            disabled
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-          />
-          <p class="mt-1 text-xs text-gray-500">Email нельзя изменить</p>
-        </div>
+        <Input
+          v-model="profile.email"
+          label="Email"
+          type="email"
+          name="email"
+          disabled
+          placeholder="Ваш email"
+          hint="Email нельзя изменить"
+        />
 
-        <div>
-          <label for="name" class="block text-sm font-medium text-gray-700 mb-1"> Имя </label>
-          <input
-            id="name"
-            v-model="profile.name"
-            type="text"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          />
-        </div>
+        <Input
+          v-model="profile.name"
+          label="Имя"
+          type="text"
+          name="name"
+          placeholder="Введите ваше имя"
+        />
 
         <div class="pt-4">
           <Button @click="saveProfile" :loading="isSaving"> Сохранить изменения </Button>
@@ -39,13 +33,12 @@
       </div>
     </Card>
 
-    <!-- Настройки уведомлений -->
     <Card class="p-6">
       <h2 class="text-xl font-semibold text-gray-900 mb-4">Уведомления</h2>
 
       <div class="space-y-4">
         <div class="flex items-center justify-between">
-          <div>
+          <div class="flex-1">
             <p class="text-sm font-medium text-gray-900">Email уведомления</p>
             <p class="text-sm text-gray-500">Получать уведомления на email</p>
           </div>
@@ -58,7 +51,7 @@
         </div>
 
         <div class="flex items-center justify-between">
-          <div>
+          <div class="flex-1">
             <p class="text-sm font-medium text-gray-900">Напоминания о привычках</p>
             <p class="text-sm text-gray-500">Ежедневные напоминания о выполнении привычек</p>
           </div>
@@ -72,7 +65,6 @@
       </div>
     </Card>
 
-    <!-- Опасная зона -->
     <Card class="p-6 border-red-200">
       <h2 class="text-xl font-semibold text-red-900 mb-4">Опасная зона</h2>
 
@@ -90,7 +82,7 @@
 
 <script setup lang="ts">
   import { ref, reactive, onMounted } from 'vue'
-  import { Card, Button } from '@/shared/ui'
+  import { Card, Button, Input } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
 
   const userStore = useUserStore()
@@ -118,7 +110,6 @@
   const saveProfile = async () => {
     isSaving.value = true
     try {
-      // TODO: Сохранение профиля через API
       console.log('Save profile:', profile)
       await new Promise((resolve) => setTimeout(resolve, 1000))
     } catch (error) {
