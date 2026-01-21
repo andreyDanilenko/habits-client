@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
     <div class="max-w-md w-full space-y-8">
-      <!-- Логотип -->
       <div class="text-center">
         <div
           class="mx-auto w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center"
@@ -12,53 +11,36 @@
         <p class="mt-2 text-gray-600">Начните отслеживать свои привычки сегодня</p>
       </div>
 
-      <!-- Форма -->
       <Card class="p-8">
         <form @submit.prevent="handleSubmit" class="space-y-6">
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1"> Email </label>
-            <input
-              id="email"
-              v-model="form.email"
-              type="email"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              :class="{ 'border-red-300': errors.email }"
-            />
-            <p v-if="errors.email" class="mt-1 text-sm text-red-600">
-              {{ errors.email }}
-            </p>
-          </div>
+          <Input
+            v-model="form.email"
+            label="Email"
+            type="email"
+            name="email"
+            required
+            placeholder="example@email.com"
+            :error="errors.email"
+          />
 
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-              Пароль
-            </label>
-            <input
-              id="password"
-              v-model="form.password"
-              type="password"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              :class="{ 'border-red-300': errors.password }"
-            />
-            <p v-if="errors.password" class="mt-1 text-sm text-red-600">
-              {{ errors.password }}
-            </p>
-          </div>
+          <Input
+            v-model="form.password"
+            label="Пароль"
+            type="password"
+            name="password"
+            required
+            placeholder="Введите ваш пароль"
+            :error="errors.password"
+          />
 
           <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <input
-                id="remember"
-                v-model="form.remember"
-                type="checkbox"
-                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label for="remember" class="ml-2 block text-sm text-gray-700">
-                Запомнить меня
-              </label>
-            </div>
+            <Checkbox
+              v-model="form.remember"
+              label="Запомнить меня"
+              name="remember"
+              size="md"
+              container-class="items-center"
+            />
 
             <router-link
               to="/forgot-password"
@@ -89,7 +71,7 @@
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import { Card, Button } from '@/shared/ui'
+  import { Card, Button, Input, Checkbox } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth'
   import { useUserStore } from '@/entities/user'
 
@@ -111,6 +93,9 @@
   })
 
   const handleSubmit = async () => {
+    errors.email = ''
+    errors.password = ''
+
     isLoading.value = true
 
     try {
