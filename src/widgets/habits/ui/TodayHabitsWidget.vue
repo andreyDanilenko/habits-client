@@ -22,25 +22,16 @@
         :key="habit.id"
         class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
       >
-        <div class="flex items-center space-x-3">
-          <button
-            class="w-6 h-6 rounded border-2 flex items-center justify-center transition-colors"
-            :class="
-              habit.completed
-                ? 'bg-indigo-600 border-indigo-600 text-indigo-600'
-                : 'border-gray-300 hover:border-indigo-400 text-indigo-400'
-            "
-            @click="toggleCompletion(habit.id)"
-          >
-            <CheckIcon size="md" />
-          </button>
-          <div>
-            <p class="font-medium text-gray-900">{{ habit.title }}</p>
-            <p v-if="habit.description" class="text-sm text-gray-500">
-              {{ habit.description }}
-            </p>
-          </div>
-        </div>
+        <Checkbox
+          v-model="habit.completed"
+          @change="toggleCompletion(habit.id)"
+          :label="habit.title"
+          :hint="habit.description"
+          size="lg"
+          :container-class="'items-center'"
+        />
+        
+      
       </div>
     </div>
   </div>
@@ -49,8 +40,7 @@
 <script setup lang="ts">
   import { computed, onMounted } from 'vue'
   import { useHabitStore } from '@/entities/habit'
-  import { CheckIcon } from '@/shared/ui/icon'
-  import { Button } from '@/shared/ui'
+  import { Button, Checkbox } from '@/shared/ui'
 
   const habitStore = useHabitStore()
 
@@ -58,8 +48,6 @@
   const isLoading = computed(() => habitStore.isLoading)
 
   const toggleCompletion = async (habitId: string) => {
-    console.log(habitId)
-
     await habitStore.toggleCompletion(habitId)
   }
 

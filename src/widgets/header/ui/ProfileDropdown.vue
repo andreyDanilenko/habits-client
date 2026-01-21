@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <Tooltip trigger="click" placement="bottom">
+    <Tooltip trigger="hover" placement="bottom">
       <template #trigger>
         <button
           class="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
