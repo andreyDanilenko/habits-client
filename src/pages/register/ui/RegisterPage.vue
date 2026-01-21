@@ -12,70 +12,58 @@
         <p class="mt-2 text-gray-600">Создайте аккаунт и начните отслеживать свои привычки</p>
       </div>
 
-      <!-- Форма -->
       <Card class="p-8">
         <form @submit.prevent="handleSubmit" class="space-y-6">
-          <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1"> Имя </label>
-            <input
-              id="name"
-              v-model="form.name"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            />
-          </div>
+          <Input
+            v-model="form.name"
+            label="Имя"
+            name="name"
+            placeholder="Введите ваше имя"
+          />
+
+          <Input
+            v-model="form.email"
+            label="Email"
+            type="email"
+            name="email"
+            required
+            placeholder="example@email.com"
+            :error="errors.email"
+          />
+
+          <Input
+            v-model="form.password"
+            label="Пароль"
+            type="password"
+            name="password"
+            required
+            placeholder="Не менее 6 символов"
+            :error="errors.password"
+          />
+
+          <Input
+            v-model="form.confirmPassword"
+            label="Подтвердите пароль"
+            type="password"
+            name="confirmPassword"
+            required
+            placeholder="Повторите пароль"
+            :error="errors.confirmPassword"
+          />
+
+          <Checkbox
+            v-model="form.acceptTerms"
+            label="Я принимаю условия пользовательского соглашения"
+            name="acceptTerms"
+            required
+            size="md"
+            container-class="items-center"
+          />
 
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1"> Email </label>
-            <input
-              id="email"
-              v-model="form.email"
-              type="email"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              :class="{ 'border-red-300': errors.email }"
-            />
-            <p v-if="errors.email" class="mt-1 text-sm text-red-600">
-              {{ errors.email }}
-            </p>
-          </div>
-
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-              Пароль
-            </label>
-            <input
-              id="password"
-              v-model="form.password"
-              type="password"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              :class="{ 'border-red-300': errors.password }"
-            />
-            <p v-if="errors.password" class="mt-1 text-sm text-red-600">
-              {{ errors.password }}
-            </p>
-          </div>
-
-          <div>
-            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">
-              Подтвердите пароль
-            </label>
-            <input
-              id="confirmPassword"
-              v-model="form.confirmPassword"
-              type="password"
-              required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              :class="{ 'border-red-300': errors.confirmPassword }"
-            />
-            <p v-if="errors.confirmPassword" class="mt-1 text-sm text-red-600">
-              {{ errors.confirmPassword }}
-            </p>
-          </div>
-
-          <div>
-            <Button type="submit" :loading="isLoading" class="w-full"> Зарегистрироваться </Button>
+            <Button type="submit" :loading="isLoading" class="w-full">
+              Зарегистрироваться
+            </Button>
           </div>
 
           <div class="text-center">
@@ -95,7 +83,7 @@
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import { Card, Button } from '@/shared/ui'
+  import { Card, Button, Input, Checkbox } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth'
   import { useUserStore } from '@/entities/user'
 
@@ -110,6 +98,7 @@
     email: '',
     password: '',
     confirmPassword: '',
+    acceptTerms: false,
   })
 
   const errors = reactive({
@@ -119,10 +108,14 @@
   })
 
   const handleSubmit = async () => {
-    // Валидация
     errors.email = ''
     errors.password = ''
     errors.confirmPassword = ''
+
+    if (!form.acceptTerms) {
+      alert('Необходимо принять условия соглашения')
+      return
+    }
 
     if (form.password !== form.confirmPassword) {
       errors.confirmPassword = 'Пароли не совпадают'
