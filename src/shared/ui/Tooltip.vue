@@ -10,7 +10,6 @@
       <slot name="trigger" />
     </div>
 
-    <!-- Рендерим тултип в body, чтобы его не обрезали модалки/контейнеры -->
     <Teleport to="body">
       <div
         v-if="isOpen"
@@ -87,7 +86,6 @@ const positionTooltip = () => {
       break
   }
 
-  // Ограничиваем тултип рамками экрана
   const maxLeft = viewportWidth - tooltipRect.width - padding
   const minLeft = padding
   const maxTop = viewportHeight - tooltipRect.height - padding
