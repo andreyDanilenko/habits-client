@@ -39,7 +39,7 @@
         </div>
 
         <!-- Список workspace -->
-        <div class="max-h-64 overflow-auto py-1">
+        <div class="max-h-64 overflow-auto">
           <button
             v-for="workspace in workspaces"
             :key="workspace.id"

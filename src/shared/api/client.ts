@@ -27,6 +27,14 @@ class ApiClient {
     this.unauthorizedHandler = handler
   }
 
+  setWorkspaceId(id: string | null) {
+    if (id) {
+      this.client.defaults.headers.common['X-Workspace-ID'] = id
+    } else {
+      delete this.client.defaults.headers.common['X-Workspace-ID']
+    }
+  }
+
   private setupInterceptors() {
     this.client.interceptors.response.use(
       (response) => response,

@@ -9,8 +9,17 @@ import type {
   HabitCompletion,
 } from '@/entities/habit'
 
+interface HabitsDataResponse {
+  habits: Habit[]
+}
+
 export const habitService = {
-  getHabits: (): Promise<Habit[]> => api.get<Habit[]>(API_ENDPOINTS.HABITS.BASE),
+  // getHabits: async (): Promise<Habit[]> => (await api.get<HabitsDataResponse>(API_ENDPOINTS.HABITS.BASE)).habits,
+
+  getHabits: async (): Promise<Habit[]> => {
+    const response = await api.get<HabitsDataResponse>(API_ENDPOINTS.HABITS.BASE)
+    return response.habits
+  },
 
   getHabit: (id: string): Promise<Habit> => api.get<Habit>(API_ENDPOINTS.HABITS.DETAIL(id)),
 

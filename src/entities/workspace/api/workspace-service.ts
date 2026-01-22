@@ -5,11 +5,23 @@ interface WorkspacesDataResponse {
   workspaces: Workspace[]
 }
 
+interface CurrentWorkspaceDataResponse {
+  workspace: Workspace
+}
 
 export const workspaceService = {
   getWorkspaces: async (): Promise<Workspace[]> => {
     const response = await api.get<WorkspacesDataResponse>(API_ENDPOINTS.WORKSPACE.BASE)
     return response.workspaces
+  },
+
+  getCurrentWorkspace: async (): Promise<Workspace | null> => {
+    try {
+      const response = await api.get<CurrentWorkspaceDataResponse>(API_ENDPOINTS.WORKSPACE.CURRENT)
+      return response.workspace ?? null
+    } catch {
+      return null
+    }
   },
 
   createWorkspace: async (data: CreateWorkspaceDto): Promise<Workspace> => {
