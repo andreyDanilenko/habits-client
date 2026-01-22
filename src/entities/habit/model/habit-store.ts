@@ -28,7 +28,7 @@ export const useHabitStore = defineStore('habit', () => {
     isLoading.value = true
     try {
       const data = await habitService.getHabits()
-      habits.value = data
+      habits.value = data || []
       completions.value = []
     } catch (error) {
       console.error('Failed to fetch habits:', error)
