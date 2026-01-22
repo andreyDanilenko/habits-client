@@ -138,7 +138,11 @@
 
       await userStore.fetchCurrentUser()
 
-      router.push('/')
+      if (authStore.isAuthenticated && userStore.currentUser) {
+        router.push('/')
+      } else {
+        errors.email = 'Ошибка аутентификации'
+      }
     } catch (error: any) {
       if (error.response?.data?.message) {
         errors.email = error.response.data.message
