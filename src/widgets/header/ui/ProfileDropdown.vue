@@ -63,7 +63,7 @@
   const authStore = useAuthStore()
   const showDropdown = ref(false)
 
-  const userInitials = computed(() => userStore.userInitials || 'U')
+  const userInitials = computed(() => userStore.userInitials || 'U')  
   const userEmail = computed(() => userStore.currentUser?.email || 'Пользователь')
 
   const toggleDropdown = () => {
