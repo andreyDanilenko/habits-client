@@ -35,7 +35,7 @@
   const userStore = useUserStore()
 
   const userName = computed(() => {
-    return userStore.currentUser?.email?.split('@')[0] || 'Друг'
+    return userStore.currentUser?.name || userStore.currentUser?.email?.split('@')[0] || 'Друг'
   })
 
   const greeting = computed(() => {
