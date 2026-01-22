@@ -46,6 +46,25 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     currentWorkspace.value = workspace
   }
 
+  const switchWorkspace = async (workspaceId: string) => {
+    try {
+      await workspaceService.switchWorkspace(workspaceId)
+      const workspace = workspaces.value.find((w) => w.id === workspaceId)
+      if (workspace) {
+        currentWorkspace.value = workspace
+      }
+    } catch (error) {
+      console.error('Failed to switch workspace:', error)
+      throw error
+    }
+  }
+
+  const addWorkspace = (workspace: Workspace) => {
+    if (!workspaces.value.find((w) => w.id === workspace.id)) {
+      workspaces.value.push(workspace)
+    }
+  }
+
   const clearWorkspaces = () => {
     workspaces.value = []
     currentWorkspace.value = null
@@ -64,6 +83,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     fetchWorkspaces,
     createWorkspace,
     setCurrentWorkspace,
+    switchWorkspace,
+    addWorkspace,
     clearWorkspaces,
   }
 })
