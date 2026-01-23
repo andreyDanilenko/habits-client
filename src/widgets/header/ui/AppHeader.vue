@@ -4,30 +4,7 @@
       <div class="flex items-center justify-between h-16">
         <!-- Лого -->
         <router-link to="/" class="flex items-center space-x-3">
-          <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#6366f1" />
-                <!-- indigo-500 -->
-                <stop offset="100%" stop-color="#9333ea" />
-                <!-- purple-600 -->
-              </linearGradient>
-            </defs>
-            <rect width="32" height="32" rx="8" fill="url(#grad)" />
-            <text
-              x="16"
-              y="16"
-              text-anchor="middle"
-              dominant-baseline="central"
-              fill="white"
-              font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-              font-weight="bold"
-              font-size="14"
-              letter-spacing="0.5"
-            >
-              HF
-            </text>
-          </svg>
+          <Logo :size="32" />
           <span class="text-xl font-bold text-gray-900 hidden md:inline"> HabitFlow </span>
         </router-link>
 
@@ -65,6 +42,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { Logo } from '@/shared/ui/icon'
   import TodayStats from './TodayStats.vue'
   import WorkspaceSwitcher from './WorkspaceSwitcher.vue'
   import Notifications from './Notifications.vue'
