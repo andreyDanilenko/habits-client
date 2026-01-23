@@ -47,9 +47,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch, onMounted } from 'vue'
   import { Card, Button } from '@/shared/ui'
   import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
+  import { habitService } from '@/entities/habit'
+  import type { CalendarResponse } from '@/entities/habit'
 
   import {
     format,
@@ -64,8 +66,28 @@
   import { ru } from 'date-fns/locale'
 
   const currentDate = ref(new Date())
+  const calendarData = ref<CalendarResponse | null>(null)
+  const isLoading = ref(false)
 
   const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+
+  const loadCalendar = async () => {
+    isLoading.value = true
+    try {
+      const monthStart = startOfMonth(currentDate.value)
+      const monthEnd = endOfMonth(currentDate.value)
+      
+      const startStr = format(monthStart, 'yyyy-MM-dd')
+      const endStr = format(monthEnd, 'yyyy-MM-dd')
+      
+      const response = await habitService.getCalendar(startStr, endStr)
+      calendarData.value = response
+    } catch (error) {
+      console.error('Failed to load calendar:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
 
   const calendarDays = computed(() => {
     const monthStart = startOfMonth(currentDate.value)
@@ -73,15 +95,34 @@
     const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 })
     const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 })
 
-    return eachDayOfInterval({ start: calendarStart, end: calendarEnd }).map((date) => ({
-      date,
-      dateStr: format(date, 'yyyy-MM-dd'),
-      day: format(date, 'd'),
-      isToday: isToday(date),
-      isCurrentMonth: isSameMonth(date, currentDate.value),
-      habitCount: 3, // TODO: Реальная логика
-      allCompleted: false, // TODO: Реальная логика
-    }))
+    // Создаем мапу данных календаря из API
+    const calendarMap = new Map<string, { habitCount: number; allCompleted: boolean }>()
+    
+    if (calendarData.value) {
+      calendarData.value.days.forEach((day) => {
+        const completedHabits = day.habits.filter((h) => h.completed).length
+        const totalHabits = day.habits.length
+        calendarMap.set(day.date, {
+          habitCount: totalHabits,
+          allCompleted: totalHabits > 0 && completedHabits === totalHabits,
+        })
+      })
+    }
+
+    return eachDayOfInterval({ start: calendarStart, end: calendarEnd }).map((date) => {
+      const dateStr = format(date, 'yyyy-MM-dd')
+      const dayData = calendarMap.get(dateStr) || { habitCount: 0, allCompleted: false }
+      
+      return {
+        date,
+        dateStr,
+        day: format(date, 'd'),
+        isToday: isToday(date),
+        isCurrentMonth: isSameMonth(date, currentDate.value),
+        habitCount: dayData.habitCount,
+        allCompleted: dayData.allCompleted,
+      }
+    })
   })
 
   const formattedMonth = computed(() => {
@@ -106,6 +147,15 @@
 
   const selectDate = (date: Date) => {
     console.log('Selected date:', date)
-    // TODO: Реализовать логику выбора даты
+    // TODO: Можно добавить логику выбора даты (например, показать модальное окно с привычками на эту дату)
   }
+
+  // Загружаем календарь при изменении месяца
+  watch(currentDate, () => {
+    loadCalendar()
+  }, { immediate: false })
+
+  onMounted(() => {
+    loadCalendar()
+  })
 </script>

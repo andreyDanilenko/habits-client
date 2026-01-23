@@ -34,36 +34,70 @@
       <!-- Статистика -->
       <div class="grid grid-cols-2 gap-4">
         <div class="bg-gray-50 rounded-lg p-4">
-          <p class="text-sm text-gray-500">Сегодня выполнено</p>
+          <p class="text-sm text-gray-500 mb-1">Сегодня выполнено</p>
           <p class="text-2xl font-semibold text-gray-900">
             {{ todayCompletions }} из {{ habit.dailyGoal || 1 }}
           </p>
+          <p class="text-xs text-gray-400 mt-1">
+            {{ todayCompletions >= (habit.dailyGoal || 1) ? '✅ Цель достигнута!' : 'Осталось ' + ((habit.dailyGoal || 1) - todayCompletions) + ' раз(а)' }}
+          </p>
         </div>
         <div class="bg-gray-50 rounded-lg p-4">
-          <p class="text-sm text-gray-500">Всего выполнено</p>
+          <p class="text-sm text-gray-500 mb-1">Всего выполнений</p>
           <p class="text-2xl font-semibold text-gray-900">
             {{ totalCompletions }}
+          </p>
+          <p class="text-xs text-gray-400 mt-1">
+            {{ completedDaysCount }} {{ completedDaysCount === 1 ? 'день' : completedDaysCount < 5 ? 'дня' : 'дней' }} с выполнениями
           </p>
         </div>
       </div>
 
-      <!-- Прогресс -->
+      <!-- Стрики -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
+          <p class="text-sm text-indigo-600 mb-1">Текущая серия</p>
+          <p class="text-3xl font-bold text-indigo-900">
+            {{ currentStreak }}
+          </p>
+          <p class="text-xs text-indigo-500 mt-1">
+            {{ currentStreak === 0 ? 'Начните сегодня!' : currentStreak === 1 ? 'день подряд' : currentStreak < 5 ? 'дня подряд' : 'дней подряд' }}
+          </p>
+        </div>
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+          <p class="text-sm text-purple-600 mb-1">Лучшая серия</p>
+          <p class="text-3xl font-bold text-purple-900">
+            {{ longestStreak }}
+          </p>
+          <p class="text-xs text-purple-500 mt-1">
+            {{ longestStreak === 0 ? 'Пока нет серий' : longestStreak === 1 ? 'день' : longestStreak < 5 ? 'дня' : 'дней' }} подряд
+          </p>
+        </div>
+      </div>
+
+      <!-- Прогресс сегодня -->
       <div>
         <div class="flex justify-between items-center mb-2">
           <p class="text-sm font-medium text-gray-700">Прогресс сегодня</p>
-          <p class="text-sm text-gray-500">
+          <p class="text-sm font-semibold" :class="todayCompletions >= (habit.dailyGoal || 1) ? 'text-green-600' : 'text-gray-500'">
             {{ Math.round((todayCompletions / (habit.dailyGoal || 1)) * 100) }}%
           </p>
         </div>
-        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
-            class="h-full rounded-full transition-all duration-500"
+            class="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+            :class="todayCompletions >= (habit.dailyGoal || 1) ? 'bg-green-500' : ''"
             :style="{
               width: `${Math.min((todayCompletions / (habit.dailyGoal || 1)) * 100, 100)}%`,
-              backgroundColor: habit.color || '#6366f1',
+              backgroundColor: todayCompletions >= (habit.dailyGoal || 1) ? undefined : (habit.color || '#6366f1'),
             }"
-          />
+          >
+            <span v-if="todayCompletions >= (habit.dailyGoal || 1)" class="text-xs text-white font-bold">✓</span>
+          </div>
         </div>
+        <p class="text-xs text-gray-400 mt-1">
+          Цель: выполнить {{ habit.dailyGoal || 1 }} {{ habit.dailyGoal === 1 ? 'раз' : 'раза' }} в день
+        </p>
       </div>
 
       <!-- История последних выполнений -->
@@ -71,15 +105,28 @@
         <h4 class="text-lg font-medium text-gray-900 mb-3">Последние выполнения</h4>
         <div v-if="recentCompletions.length === 0" class="text-center py-4">
           <p class="text-gray-500">Пока нет выполнений</p>
+          <p class="text-xs text-gray-400 mt-2">Отмечайте выполнение привычки, чтобы видеть историю</p>
         </div>
         <div v-else class="space-y-2">
           <div
             v-for="completion in recentCompletions"
             :key="completion.id"
-            class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+            class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            <span class="text-gray-700">{{ formatDate(completion.date) }}</span>
-            <span class="text-sm text-gray-500">{{ completion.time || 'Время не указано' }}</span>
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center space-x-2">
+                  <span class="text-sm font-medium text-gray-900">{{ formatDate(completion.date) }}</span>
+                  <span v-if="completion.time" class="text-xs text-gray-500">в {{ completion.time }}</span>
+                </div>
+                <p v-if="completion.notes" class="text-sm text-gray-600 mt-1 italic">
+                  "{{ completion.notes }}"
+                </p>
+              </div>
+              <div v-if="completion.rating" class="flex items-center space-x-1">
+                <span class="text-lg">{{ getRatingEmoji(completion.rating) }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -100,9 +147,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref, onMounted } from 'vue'
   import { ModalContent, Button } from '@/shared/ui'
-  import type { Habit, HabitCompletion } from '@/entities/habit'
+  import type { Habit, HabitCompletion, HabitStats } from '@/entities/habit'
+  import { habitService } from '@/entities/habit'
 
   interface Props {
     habit: Habit
@@ -115,6 +163,25 @@
     confirm: [action: 'edit' | 'delete']
   }>()
 
+  const stats = ref<HabitStats | null>(null)
+  const isLoadingStats = ref(false)
+
+  onMounted(async () => {
+    await loadStats()
+  })
+
+  const loadStats = async () => {
+    isLoadingStats.value = true
+    try {
+      const response = await habitService.getStats(props.habit.id)
+      stats.value = response
+    } catch (error) {
+      console.error('Failed to load stats:', error)
+    } finally {
+      isLoadingStats.value = false
+    }
+  }
+
   const todayCompletions = computed(() => {
     const today = new Date().toISOString().split('T')[0]
     return props.completions.filter((c) => c.habitId === props.habit.id && c.date === today).length
@@ -124,11 +191,81 @@
     return props.completions.filter((c) => c.habitId === props.habit.id).length
   })
 
+  // Уникальные даты выполнения (для расчета стриков)
+  const completedDates = computed(() => {
+    const dates = new Set<string>()
+    props.completions
+      .filter((c) => c.habitId === props.habit.id)
+      .forEach((c) => dates.add(c.date))
+    return Array.from(dates).sort()
+  })
+
+  // Расчет текущего стрика (дни подряд до сегодня)
+  const currentStreak = computed(() => {
+    if (completedDates.value.length === 0) return 0
+    
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    let streak = 0
+    let checkDate = new Date(today)
+    
+    // Проверяем, выполнено ли сегодня
+    const todayStr = today.toISOString().split('T')[0]
+    const hasToday = completedDates.value.includes(todayStr)
+    
+    if (hasToday) {
+      streak = 1
+      checkDate.setDate(checkDate.getDate() - 1)
+    }
+    
+    // Идем назад по дням
+    while (true) {
+      const dateStr = checkDate.toISOString().split('T')[0]
+      if (completedDates.value.includes(dateStr)) {
+        streak++
+        checkDate.setDate(checkDate.getDate() - 1)
+      } else {
+        break
+      }
+    }
+    
+    return streak
+  })
+
+  // Расчет самого длинного стрика
+  const longestStreak = computed(() => {
+    if (completedDates.value.length === 0) return 0
+    
+    let maxStreak = 0
+    let currentStreak = 1
+    
+    for (let i = 1; i < completedDates.value.length; i++) {
+      const prevDate = new Date(completedDates.value[i - 1])
+      const currDate = new Date(completedDates.value[i])
+      const diffDays = Math.floor((currDate.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24))
+      
+      if (diffDays === 1) {
+        currentStreak++
+      } else {
+        maxStreak = Math.max(maxStreak, currentStreak)
+        currentStreak = 1
+      }
+    }
+    
+    return Math.max(maxStreak, currentStreak)
+  })
+
   const recentCompletions = computed(() => {
     return props.completions
       .filter((c) => c.habitId === props.habit.id)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 5)
+  })
+
+  // Уникальные дни выполнения (для статистики)
+  const completedDaysCount = computed(() => {
+    return completedDates.value.length
   })
 
   const categories = {
@@ -157,10 +294,30 @@
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const completionDate = new Date(date)
+    completionDate.setHours(0, 0, 0, 0)
+    
+    const diffTime = today.getTime() - completionDate.getTime()
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 0) return 'Сегодня'
+    if (diffDays === 1) return 'Вчера'
+    if (diffDays < 7) return `${diffDays} дня назад`
+    
     return date.toLocaleDateString('ru-RU', {
       day: 'numeric',
       month: 'long',
-      year: 'numeric',
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
     })
+  }
+
+  const getRatingEmoji = (rating: number) => {
+    if (rating >= 5) return '😊'
+    if (rating >= 4) return '🙂'
+    if (rating >= 3) return '😐'
+    if (rating >= 2) return '😴'
+    return '😓'
   }
 </script>

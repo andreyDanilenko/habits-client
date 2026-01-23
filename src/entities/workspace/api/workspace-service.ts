@@ -1,5 +1,5 @@
 import { api, API_ENDPOINTS } from '@/shared/api'
-import type { Workspace, CreateWorkspaceDto } from '@/entities/workspace'
+import type { Workspace, CreateWorkspaceDto, WorkspaceModule } from '@/entities/workspace'
 
 interface WorkspacesDataResponse {
   workspaces: Workspace[]
@@ -39,8 +39,8 @@ export const workspaceService = {
     return response
   },
 
-  getWorkspaceModules: async (workspaceId: string) => {
-    const response = await api.get(API_ENDPOINTS.WORKSPACE.MODULES(workspaceId))
+  getWorkspaceModules: async (workspaceId: string): Promise<{ modules: WorkspaceModule[] }> => {
+    const response = await api.get<{ modules: WorkspaceModule[] }>(API_ENDPOINTS.WORKSPACE.MODULES(workspaceId))
     return response
   },
 }
