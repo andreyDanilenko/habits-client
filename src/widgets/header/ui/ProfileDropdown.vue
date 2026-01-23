@@ -16,36 +16,34 @@
 
       <div class="w-56">
         <div class="px-3 pt-3 pb-2 border-b">
-          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-            Аккаунт
-          </p>
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Аккаунт</p>
           <p class="mt-1 text-sm font-medium text-gray-900 truncate">
             {{ userEmail }}
           </p>
         </div>
 
-          <div class="py-2">
-            <router-link
-              to="/profile"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              @click="closeDropdown"
-            >
-              Профиль
-            </router-link>
-            <router-link
-              to="/settings"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              @click="closeDropdown"
-            >
-              Настройки
-            </router-link>
-            <button
-              class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-              @click="handleLogout"
-            >
-              Выйти
-            </button>
-          </div>
+        <div class="py-2">
+          <router-link
+            to="/profile"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            @click="closeDropdown"
+          >
+            Профиль
+          </router-link>
+          <router-link
+            to="/settings"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            @click="closeDropdown"
+          >
+            Настройки
+          </router-link>
+          <button
+            class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+            @click="handleLogout"
+          >
+            Выйти
+          </button>
+        </div>
       </div>
     </Tooltip>
   </div>
@@ -63,7 +61,7 @@
   const authStore = useAuthStore()
   const showDropdown = ref(false)
 
-  const userInitials = computed(() => userStore.userInitials || 'U')  
+  const userInitials = computed(() => userStore.userInitials || 'U')
   const userEmail = computed(() => userStore.currentUser?.email || 'Пользователь')
 
   const toggleDropdown = () => {

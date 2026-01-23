@@ -1,10 +1,7 @@
 <template>
   <div :class="variant === 'detailed' ? '' : 'pt-4 border-t'">
     <div :class="variant === 'detailed' ? '' : 'mb-3'">
-      <div 
-        v-if="variant === 'default'"
-        class="flex justify-between text-xs text-gray-500 mb-1"
-      >
+      <div v-if="variant === 'default'" class="flex justify-between text-xs text-gray-500 mb-1">
         <span>{{ label }}</span>
         <span v-if="current !== undefined && total !== undefined">
           {{ current }} / {{ total }}
@@ -13,14 +10,11 @@
       </div>
       <div v-else class="flex justify-between items-center mb-2">
         <p class="text-sm font-medium text-gray-700">{{ label }}</p>
-        <p 
-          class="text-sm font-semibold"
-          :class="isCompleted ? 'text-green-600' : 'text-gray-500'"
-        >
+        <p class="text-sm font-semibold" :class="isCompleted ? 'text-green-600' : 'text-gray-500'">
           {{ Math.round(computedPercentage) }}%
         </p>
       </div>
-      <div 
+      <div
         class="bg-gray-200 rounded-full overflow-hidden"
         :class="variant === 'detailed' ? 'h-3' : 'h-2'"
       >
@@ -29,10 +23,12 @@
           :class="isCompleted && variant === 'detailed' ? 'bg-green-500' : ''"
           :style="{
             width: `${Math.min(computedPercentage, 100)}%`,
-            backgroundColor: isCompleted && variant === 'detailed' ? undefined : (color || '#6366f1'),
+            backgroundColor: isCompleted && variant === 'detailed' ? undefined : color || '#6366f1',
           }"
         >
-          <span v-if="isCompleted && variant === 'detailed'" class="text-xs text-white font-bold">✓</span>
+          <span v-if="isCompleted && variant === 'detailed'" class="text-xs text-white font-bold"
+            >✓</span
+          >
         </div>
       </div>
       <p v-if="variant === 'detailed' && description" class="text-xs text-gray-400 mt-1">

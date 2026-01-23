@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl border shadow-sm p-6">
+  <Card :border="true" :padding="true">
     <h2 class="text-xl font-bold text-gray-900 mb-4">Статистика</h2>
 
     <div class="space-y-4">
@@ -14,13 +14,13 @@
       </div>
       <ProgressBar :percentage="progressPercentage" />
     </div>
-  </div>
+  </Card>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useHabitStore } from '@/entities/habit'
-  import { ProgressBar } from '@/shared/ui'
+  import { ProgressBar, Card } from '@/shared/ui'
   import { CheckCircleIcon } from '@/shared/ui/icon'
 
   const habitStore = useHabitStore()

@@ -42,7 +42,7 @@ export const habitService = {
   toggleCompletion: async (id: string, date?: string): Promise<ToggleResponse> => {
     const response = await api.post<{ completed: boolean; completion?: HabitCompletion }>(
       API_ENDPOINTS.HABITS.TOGGLE(id),
-      { date: date || getLocalDateString() }
+      { date: date || getLocalDateString() },
     )
     return {
       completed: response.completed,
@@ -59,7 +59,9 @@ export const habitService = {
     const params = new URLSearchParams()
     if (startDate) params.append('start', startDate)
     if (endDate) params.append('end', endDate)
-    const url = params.toString() ? `${API_ENDPOINTS.HABITS.CALENDAR}?${params.toString()}` : API_ENDPOINTS.HABITS.CALENDAR
+    const url = params.toString()
+      ? `${API_ENDPOINTS.HABITS.CALENDAR}?${params.toString()}`
+      : API_ENDPOINTS.HABITS.CALENDAR
     const response = await api.get<CalendarResponse>(url)
     return response
   },
@@ -76,21 +78,29 @@ export const habitService = {
     if (habitId) params.append('habit_id', habitId)
     if (startDate) params.append('start', startDate)
     if (endDate) params.append('end', endDate)
-    const response = await api.get<{ completions: HabitCompletion[] }>(`${API_ENDPOINTS.HABITS.COMPLETIONS}?${params.toString()}`)
+    const response = await api.get<{ completions: HabitCompletion[] }>(
+      `${API_ENDPOINTS.HABITS.COMPLETIONS}?${params.toString()}`,
+    )
     return response.completions || []
   },
 
-  createCompletion: async (habitId: string, data: {
-    date?: string
-    notes?: string
-    rating?: number
-    time?: string
-  }): Promise<HabitCompletion> => {
-    const response = await api.post<{ completion: HabitCompletion }>(API_ENDPOINTS.HABITS.COMPLETE(habitId), {
-      date: data.date || getLocalDateString(),
-      notes: data.notes || '',
-      rating: data.rating || 0,
-    })
+  createCompletion: async (
+    habitId: string,
+    data: {
+      date?: string
+      notes?: string
+      rating?: number
+      time?: string
+    },
+  ): Promise<HabitCompletion> => {
+    const response = await api.post<{ completion: HabitCompletion }>(
+      API_ENDPOINTS.HABITS.COMPLETE(habitId),
+      {
+        date: data.date || getLocalDateString(),
+        notes: data.notes || '',
+        rating: data.rating || 0,
+      },
+    )
     return response.completion
   },
 }

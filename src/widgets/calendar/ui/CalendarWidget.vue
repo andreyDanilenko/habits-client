@@ -1,5 +1,5 @@
 <template>
-  <Card class="p-4">
+  <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
       <h3 class="font-semibold text-gray-900">Календарь привычек</h3>
       <div class="flex items-center space-x-2">
@@ -76,10 +76,10 @@
     try {
       const monthStart = startOfMonth(currentDate.value)
       const monthEnd = endOfMonth(currentDate.value)
-      
+
       const startStr = format(monthStart, 'yyyy-MM-dd')
       const endStr = format(monthEnd, 'yyyy-MM-dd')
-      
+
       const response = await habitService.getCalendar(startStr, endStr)
       calendarData.value = response
     } catch (error) {
@@ -97,7 +97,7 @@
 
     // Создаем мапу данных календаря из API
     const calendarMap = new Map<string, { habitCount: number; allCompleted: boolean }>()
-    
+
     if (calendarData.value) {
       calendarData.value.days.forEach((day) => {
         const completedHabits = day.habits.filter((h) => h.completed).length
@@ -112,7 +112,7 @@
     return eachDayOfInterval({ start: calendarStart, end: calendarEnd }).map((date) => {
       const dateStr = format(date, 'yyyy-MM-dd')
       const dayData = calendarMap.get(dateStr) || { habitCount: 0, allCompleted: false }
-      
+
       return {
         date,
         dateStr,
@@ -151,9 +151,13 @@
   }
 
   // Загружаем календарь при изменении месяца
-  watch(currentDate, () => {
-    loadCalendar()
-  }, { immediate: false })
+  watch(
+    currentDate,
+    () => {
+      loadCalendar()
+    },
+    { immediate: false },
+  )
 
   onMounted(() => {
     loadCalendar()

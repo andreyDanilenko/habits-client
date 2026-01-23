@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl border shadow-sm p-6">
+  <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-gray-900">Привычки на сегодня</h2>
       <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button>
@@ -62,7 +62,7 @@
         </Button>
       </div>
     </div>
-  </div>
+  </Card>
 </template>
 
 <script setup lang="ts">
@@ -70,7 +70,7 @@
   import { useHabitStore } from '@/entities/habit'
   import { useHabitActions } from '@/features/habit/model/use-habit-actions'
   import { useHabitProgress } from '@/features/habit/model/use-habit-progress'
-  import { Button } from '@/shared/ui'
+  import { Button, Card } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   const habitStore = useHabitStore()

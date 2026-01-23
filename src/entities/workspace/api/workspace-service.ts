@@ -1,5 +1,10 @@
 import { api, API_ENDPOINTS } from '@/shared/api'
-import type { Workspace, CreateWorkspaceDto, UpdateWorkspaceDto, WorkspaceModule } from '@/entities/workspace'
+import type {
+  Workspace,
+  CreateWorkspaceDto,
+  UpdateWorkspaceDto,
+  WorkspaceModule,
+} from '@/entities/workspace'
 
 interface WorkspacesDataResponse {
   workspaces: Workspace[]
@@ -29,7 +34,9 @@ export const workspaceService = {
   },
 
   getWorkspace: async (workspaceId: string): Promise<Workspace> => {
-    const response = await api.get<WorkspaceDataResponse>(`${API_ENDPOINTS.WORKSPACE.BASE}/${workspaceId}`)
+    const response = await api.get<WorkspaceDataResponse>(
+      `${API_ENDPOINTS.WORKSPACE.BASE}/${workspaceId}`,
+    )
     return response.workspace
   },
 
@@ -39,7 +46,10 @@ export const workspaceService = {
   },
 
   updateWorkspace: async (workspaceId: string, data: UpdateWorkspaceDto): Promise<Workspace> => {
-    const response = await api.put<WorkspaceDataResponse>(`${API_ENDPOINTS.WORKSPACE.BASE}/${workspaceId}`, data)
+    const response = await api.put<WorkspaceDataResponse>(
+      `${API_ENDPOINTS.WORKSPACE.BASE}/${workspaceId}`,
+      data,
+    )
     return response.workspace
   },
 
@@ -58,7 +68,9 @@ export const workspaceService = {
   },
 
   getWorkspaceModules: async (workspaceId: string): Promise<{ modules: WorkspaceModule[] }> => {
-    const response = await api.get<{ modules: WorkspaceModule[] }>(API_ENDPOINTS.WORKSPACE.MODULES(workspaceId))
+    const response = await api.get<{ modules: WorkspaceModule[] }>(
+      API_ENDPOINTS.WORKSPACE.MODULES(workspaceId),
+    )
     return response
   },
 }

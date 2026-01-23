@@ -43,11 +43,11 @@ export const useHabitStore = defineStore('habit', () => {
       const endDate = new Date()
       const startDate = new Date()
       startDate.setDate(startDate.getDate() - 90)
-      
+
       const allCompletions = await habitService.getHabitCompletionsForHabit(
         '',
         getLocalDateString(startDate),
-        getLocalDateString(endDate)
+        getLocalDateString(endDate),
       )
       completions.value = allCompletions
     } catch (error) {
@@ -125,12 +125,23 @@ export const useHabitStore = defineStore('habit', () => {
         const completion = await habitService.createCompletion(data.habitId, {
           date: today,
           notes: data.note || '',
-          rating: data.feeling === 'great' ? 5 : data.feeling === 'good' ? 4 : data.feeling === 'ok' ? 3 : data.feeling === 'tired' ? 2 : data.feeling === 'hard' ? 1 : 0,
+          rating:
+            data.feeling === 'great'
+              ? 5
+              : data.feeling === 'good'
+                ? 4
+                : data.feeling === 'ok'
+                  ? 3
+                  : data.feeling === 'tired'
+                    ? 2
+                    : data.feeling === 'hard'
+                      ? 1
+                      : 0,
           time: data.time,
         })
         completions.value.push(completion)
       }
-      
+
       await fetchCompletions()
     } catch (error) {
       console.error('Failed to mark completion:', error)

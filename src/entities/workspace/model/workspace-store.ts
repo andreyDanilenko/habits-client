@@ -2,7 +2,12 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api } from '@/shared/api'
 import { workspaceService } from '@/entities/workspace'
-import type { Workspace, CreateWorkspaceDto, UpdateWorkspaceDto, WorkspaceModule } from '@/entities/workspace'
+import type {
+  Workspace,
+  CreateWorkspaceDto,
+  UpdateWorkspaceDto,
+  WorkspaceModule,
+} from '@/entities/workspace'
 
 function applyWorkspaceHeader(ws: Workspace | null) {
   api.setWorkspaceId(ws?.id ?? null)
@@ -15,7 +20,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const isLoading = ref(false)
 
   const hasWorkspaces = computed(() => workspaces.value.length > 0)
-  
+
   const enabledModules = computed(() => {
     return modules.value.filter((m) => m.enabled).map((m) => m.moduleName)
   })
@@ -53,7 +58,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     return workspace
   }
 
-  const updateWorkspace = async (workspaceId: string, data: UpdateWorkspaceDto): Promise<Workspace> => {
+  const updateWorkspace = async (
+    workspaceId: string,
+    data: UpdateWorkspaceDto,
+  ): Promise<Workspace> => {
     const workspace = await workspaceService.updateWorkspace(workspaceId, data)
     const index = workspaces.value.findIndex((w) => w.id === workspaceId)
     if (index !== -1) {
@@ -100,10 +108,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     if (workspace) {
       currentWorkspace.value = workspace
       applyWorkspaceHeader(workspace)
-      
+
       // Загружаем модули для нового workspace
       await loadModules(workspaceId)
-      
+
       // Перезагружаем данные модулей (привычки, журнал и т.д.)
       // Импортируем динамически, чтобы избежать циклических зависимостей
       const { useHabitStore } = await import('@/entities/habit')

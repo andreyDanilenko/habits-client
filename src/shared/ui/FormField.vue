@@ -15,12 +15,12 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  label?: string
-  required?: boolean
-  hint?: string
-  showCharCount?: boolean
-  currentLength?: number
-  maxLength?: number
-}>()
+  defineProps<{
+    label?: string
+    required?: boolean
+    hint?: string
+    showCharCount?: boolean
+    currentLength?: number
+    maxLength?: number
+  }>()
 </script>

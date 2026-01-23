@@ -1,11 +1,6 @@
 <template>
   <div class="relative">
-    <Tooltip
-      variant="dropdown"
-      trigger="click"
-      placement="bottom"
-      width="256px"
-    >
+    <Tooltip variant="dropdown" trigger="click" placement="bottom" width="256px">
       <template #trigger>
         <button
           class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -25,9 +20,7 @@
         <!-- Заголовок -->
         <div class="px-4 py-3 border-b">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-semibold text-gray-700">
-              Рабочие пространства
-            </p>
+            <p class="text-sm font-semibold text-gray-700">Рабочие пространства</p>
             <button
               @click.stop="openWorkspaceSettings"
               class="p-1 hover:bg-gray-100 rounded"
@@ -80,12 +73,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
-  import { 
-    ChevronDownIcon, 
-    CogIcon, 
-    PlusIcon,
-    CheckIcon 
-  } from '@/shared/ui/icon'
+  import { ChevronDownIcon, CogIcon, PlusIcon, CheckIcon } from '@/shared/ui/icon'
   import { useWorkspaceStore } from '@/entities/workspace'
   import { Tooltip } from '@/shared/ui'
   import { useModal } from '@/shared/lib/modal'

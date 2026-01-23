@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl border shadow-sm p-6">
+  <Card :border="true" :padding="true">
     <h2 class="text-xl font-bold text-gray-900 mb-4">Быстрая запись</h2>
 
     <div class="space-y-4">
@@ -26,12 +26,12 @@
         <Button @click="saveNote" :disabled="!note.trim()">Сохранить </Button>
       </div>
     </div>
-  </div>
+  </Card>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { Button } from '@/shared/ui'
+  import { Button, Card } from '@/shared/ui'
 
   const note = ref('')
   const selectedMood = ref<number | null>(null)

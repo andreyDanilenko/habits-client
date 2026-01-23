@@ -14,9 +14,12 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{
-  variant?: 'default' | 'blue' | 'green' | 'indigo' | 'purple'
-}>(), {
-  variant: 'default',
-})
+  withDefaults(
+    defineProps<{
+      variant?: 'default' | 'blue' | 'green' | 'indigo' | 'purple'
+    }>(),
+    {
+      variant: 'default',
+    },
+  )
 </script>

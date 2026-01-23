@@ -67,7 +67,8 @@
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
-            <span class="font-semibold">Soon:</span> Управление участниками workspace, назначение ролей и прав доступа.
+            <span class="font-semibold">Soon:</span> Управление участниками workspace, назначение
+            ролей и прав доступа.
           </p>
         </div>
         <!-- TODO: Список участников будет здесь -->
@@ -80,7 +81,8 @@
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
-            <span class="font-semibold">Soon:</span> Настройка доступных модулей для workspace (Привычки, Журнал, Задачи и т.д.).
+            <span class="font-semibold">Soon:</span> Настройка доступных модулей для workspace
+            (Привычки, Журнал, Задачи и т.д.).
           </p>
         </div>
         <!-- TODO: Список модулей будет здесь -->
@@ -93,7 +95,8 @@
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
-            <span class="font-semibold">Soon:</span> Настройка детальных прав доступа для ролей (ADMIN, MEMBER, GUEST).
+            <span class="font-semibold">Soon:</span> Настройка детальных прав доступа для ролей
+            (ADMIN, MEMBER, GUEST).
           </p>
         </div>
         <!-- TODO: Настройки прав доступа будут здесь -->
@@ -107,7 +110,8 @@
       <div class="space-y-4">
         <div>
           <p class="text-sm text-gray-700 mb-2">
-            Удаление workspace приведет к безвозвратному удалению всех данных, включая привычки, журналы и другие данные.
+            Удаление workspace приведет к безвозвратному удалению всех данных, включая привычки,
+            журналы и другие данные.
           </p>
           <Button variant="danger" @click="showDeleteConfirm = true"> Удалить workspace </Button>
         </div>
