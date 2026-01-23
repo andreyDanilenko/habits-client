@@ -107,7 +107,7 @@
   }
 
   const openWorkspaceSettings = () => {
-    router.push('/workspaces')
+    router.push('/workspace-settings')
   }
 
   const openCreateModal = () => {

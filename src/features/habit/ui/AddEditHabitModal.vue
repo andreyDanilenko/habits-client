@@ -5,8 +5,13 @@
   >
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <!-- Название -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1"> Название привычки * </label>
+      <FormField
+        label="Название привычки"
+        required
+        :show-char-count="true"
+        :current-length="form.title.length"
+        :max-length="50"
+      >
         <input
           v-model="form.title"
           type="text"
@@ -15,14 +20,15 @@
           placeholder="Например: Утренняя зарядка"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
-        <p class="mt-1 text-xs text-gray-500">{{ form.title.length }}/50 символов</p>
-      </div>
+      </FormField>
 
       <!-- Описание -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Описание (необязательно)
-        </label>
+      <FormField
+        label="Описание (необязательно)"
+        :show-char-count="true"
+        :current-length="form.description?.length || 0"
+        :max-length="200"
+      >
         <textarea
           v-model="form.description"
           rows="3"
@@ -30,25 +36,19 @@
           placeholder="Краткое описание вашей привычки..."
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
-        <p class="mt-1 text-xs text-gray-500">{{ form.description?.length || 0 }}/200 символов</p>
-      </div>
+      </FormField>
 
       <!-- Цвет -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2"> Цвет </label>
         <div class="flex flex-wrap gap-2">
-          <button
+          <SelectButton
             v-for="color in colors"
             :key="color"
-            type="button"
+            :is-selected="form.color === color"
+            size="circle"
+            :custom-style="{ backgroundColor: color }"
             @click="form.color = color"
-            class="w-8 h-8 rounded-full border-2 transition-all"
-            :class="{
-              'border-gray-300': form.color !== color,
-              'border-gray-700': form.color === color,
-            }"
-            :style="{ backgroundColor: color }"
-            :title="color"
           />
         </div>
       </div>
@@ -57,25 +57,20 @@
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2"> Иконка </label>
         <div class="flex flex-wrap gap-2">
-          <button
+          <SelectButton
             v-for="icon in icons"
             :key="icon"
-            type="button"
+            :is-selected="form.icon === icon"
+            size="md"
             @click="form.icon = icon"
-            class="w-10 h-10 flex items-center justify-center rounded-lg border-2 text-lg transition-all hover:bg-gray-50"
-            :class="{
-              'border-gray-300': form.icon !== icon,
-              'border-indigo-500 bg-indigo-50': form.icon === icon,
-            }"
           >
             {{ icon }}
-          </button>
+          </SelectButton>
         </div>
       </div>
 
       <!-- Цель -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1"> Цель на день </label>
+      <FormField label="Цель на день">
         <div class="flex items-center space-x-2">
           <input
             v-model.number="form.dailyGoal"
@@ -86,31 +81,25 @@
           />
           <span class="text-gray-600">раз(а) в день</span>
         </div>
-      </div>
+      </FormField>
 
       <!-- Время дня -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2"> Предпочтительное время </label>
         <div class="flex flex-wrap gap-2">
-          <button
+          <SelectButton
             v-for="time in timesOfDay"
             :key="time.value"
-            type="button"
+            :is-selected="form.preferredTime === time.value"
+            size="sm"
+            :label="time.label"
             @click="form.preferredTime = time.value"
-            class="px-3 py-1.5 text-sm rounded-lg border transition-all"
-            :class="{
-              'border-gray-300 text-gray-700 bg-white': form.preferredTime !== time.value,
-              'border-indigo-500 text-indigo-700 bg-indigo-50': form.preferredTime === time.value,
-            }"
-          >
-            {{ time.label }}
-          </button>
+          />
         </div>
       </div>
 
       <!-- Категория -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1"> Категория </label>
+      <FormField label="Категория">
         <select
           v-model="form.category"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -122,7 +111,7 @@
           <option value="work">Работа</option>
           <option value="personal">Личное</option>
         </select>
-      </div>
+      </FormField>
     </form>
 
     <template #footer>
@@ -138,7 +127,7 @@
 
 <script setup lang="ts">
   import { reactive, computed, ref } from 'vue'
-  import { ModalContent, Button } from '@/shared/ui'
+  import { ModalContent, Button, FormField, SelectButton } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   interface Props {

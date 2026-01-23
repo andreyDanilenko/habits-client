@@ -15,90 +15,60 @@
             {{ habit.description }}
           </p>
           <div class="mt-3 flex flex-wrap gap-2">
-            <span
-              v-if="habit.category"
-              class="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800"
-            >
+            <Badge v-if="habit.category">
               {{ getCategoryLabel(habit.category) }}
-            </span>
-            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-700">
+            </Badge>
+            <Badge variant="blue">
               Цель: {{ habit.dailyGoal || 1 }} раз/день
-            </span>
-            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-50 text-green-700">
+            </Badge>
+            <Badge variant="green">
               {{ getTimeLabel(habit.preferredTime) }}
-            </span>
+            </Badge>
           </div>
         </div>
       </div>
 
       <!-- Статистика -->
       <div class="grid grid-cols-2 gap-4">
-        <div class="bg-gray-50 rounded-lg p-4">
-          <p class="text-sm text-gray-500 mb-1">Сегодня выполнено</p>
-          <p class="text-2xl font-semibold text-gray-900">
-            {{ todayCompletions }} из {{ habit.dailyGoal || 1 }}
-          </p>
-          <p class="text-xs text-gray-400 mt-1">
-            {{ todayCompletions >= (habit.dailyGoal || 1) ? '✅ Цель достигнута!' : 'Осталось ' + ((habit.dailyGoal || 1) - todayCompletions) + ' раз(а)' }}
-          </p>
-        </div>
-        <div class="bg-gray-50 rounded-lg p-4">
-          <p class="text-sm text-gray-500 mb-1">Всего выполнений</p>
-          <p class="text-2xl font-semibold text-gray-900">
-            {{ totalCompletions }}
-          </p>
-          <p class="text-xs text-gray-400 mt-1">
-            {{ completedDaysCount }} {{ completedDaysCount === 1 ? 'день' : completedDaysCount < 5 ? 'дня' : 'дней' }} с выполнениями
-          </p>
-        </div>
+        <StatCard
+          label="Сегодня выполнено"
+          :value="`${todayCompletions} из ${habit.dailyGoal || 1}`"
+          :description="todayCompletions >= (habit.dailyGoal || 1) ? '✅ Цель достигнута!' : 'Осталось ' + ((habit.dailyGoal || 1) - todayCompletions) + ' раз(а)'"
+        />
+        <StatCard
+          label="Всего выполнений"
+          :value="totalCompletions"
+          :description="`${completedDaysCount} ${completedDaysCount === 1 ? 'день' : completedDaysCount < 5 ? 'дня' : 'дней'} с выполнениями`"
+        />
       </div>
 
       <!-- Стрики -->
       <div class="grid grid-cols-2 gap-4">
-        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-4 border border-indigo-200">
-          <p class="text-sm text-indigo-600 mb-1">Текущая серия</p>
-          <p class="text-3xl font-bold text-indigo-900">
-            {{ currentStreak }}
-          </p>
-          <p class="text-xs text-indigo-500 mt-1">
-            {{ currentStreak === 0 ? 'Начните сегодня!' : currentStreak === 1 ? 'день подряд' : currentStreak < 5 ? 'дня подряд' : 'дней подряд' }}
-          </p>
-        </div>
-        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-          <p class="text-sm text-purple-600 mb-1">Лучшая серия</p>
-          <p class="text-3xl font-bold text-purple-900">
-            {{ longestStreak }}
-          </p>
-          <p class="text-xs text-purple-500 mt-1">
-            {{ longestStreak === 0 ? 'Пока нет серий' : longestStreak === 1 ? 'день' : longestStreak < 5 ? 'дня' : 'дней' }} подряд
-          </p>
-        </div>
+        <StatCard
+          label="Текущая серия"
+          :value="currentStreak"
+          :description="currentStreak === 0 ? 'Начните сегодня!' : currentStreak === 1 ? 'день подряд' : currentStreak < 5 ? 'дня подряд' : 'дней подряд'"
+          variant="gradient"
+          color="indigo"
+        />
+        <StatCard
+          label="Лучшая серия"
+          :value="longestStreak"
+          :description="`${longestStreak === 0 ? 'Пока нет серий' : longestStreak === 1 ? 'день' : longestStreak < 5 ? 'дня' : 'дней'} подряд`"
+          variant="gradient"
+          color="purple"
+        />
       </div>
 
       <!-- Прогресс сегодня -->
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <p class="text-sm font-medium text-gray-700">Прогресс сегодня</p>
-          <p class="text-sm font-semibold" :class="todayCompletions >= (habit.dailyGoal || 1) ? 'text-green-600' : 'text-gray-500'">
-            {{ Math.round((todayCompletions / (habit.dailyGoal || 1)) * 100) }}%
-          </p>
-        </div>
-        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            class="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2"
-            :class="todayCompletions >= (habit.dailyGoal || 1) ? 'bg-green-500' : ''"
-            :style="{
-              width: `${Math.min((todayCompletions / (habit.dailyGoal || 1)) * 100, 100)}%`,
-              backgroundColor: todayCompletions >= (habit.dailyGoal || 1) ? undefined : (habit.color || '#6366f1'),
-            }"
-          >
-            <span v-if="todayCompletions >= (habit.dailyGoal || 1)" class="text-xs text-white font-bold">✓</span>
-          </div>
-        </div>
-        <p class="text-xs text-gray-400 mt-1">
-          Цель: выполнить {{ habit.dailyGoal || 1 }} {{ habit.dailyGoal === 1 ? 'раз' : 'раза' }} в день
-        </p>
-      </div>
+      <ProgressBar
+        variant="detailed"
+        label="Прогресс сегодня"
+        :current="todayCompletions"
+        :total="habit.dailyGoal || 1"
+        :color="habit.color || '#6366f1'"
+        :description="`Цель: выполнить ${habit.dailyGoal || 1} ${habit.dailyGoal === 1 ? 'раз' : 'раза'} в день`"
+      />
 
       <!-- История последних выполнений -->
       <div>
@@ -148,7 +118,7 @@
 
 <script setup lang="ts">
   import { computed, ref, onMounted } from 'vue'
-  import { ModalContent, Button } from '@/shared/ui'
+  import { ModalContent, Button, StatCard, Badge, ProgressBar } from '@/shared/ui'
   import type { Habit, HabitCompletion, HabitStats } from '@/entities/habit'
   import { habitService } from '@/entities/habit'
 

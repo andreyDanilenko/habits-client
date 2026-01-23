@@ -11,44 +11,36 @@
           Сколько раз выполнили сегодня?
         </label>
         <div class="flex items-center space-x-4">
-          <button
+          <SelectButton
             v-for="count in [1, 2, 3, 4, 5]"
             :key="count"
-            type="button"
+            :is-selected="form.count === count"
+            size="lg"
             @click="form.count = count"
-            class="w-12 h-12 flex items-center justify-center rounded-lg border-2 text-lg font-medium transition-all"
-            :class="{
-              'border-gray-300 text-gray-700 bg-white': form.count !== count,
-              'border-indigo-500 text-indigo-700 bg-indigo-50': form.count === count,
-            }"
           >
             {{ count }}
-          </button>
+          </SelectButton>
         </div>
       </div>
 
       <!-- Время выполнения -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2"> Во сколько выполнили? </label>
+      <FormField label="Во сколько выполнили?">
         <input
           v-model="form.time"
           type="time"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
-      </div>
+      </FormField>
 
       <!-- Заметка -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          Заметка (необязательно)
-        </label>
+      <FormField label="Заметка (необязательно)">
         <textarea
           v-model="form.note"
           rows="3"
           placeholder="Как прошло выполнение? Какие были сложности или успехи?"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
-      </div>
+      </FormField>
 
       <!-- Чувства после выполнения -->
       <div>
@@ -56,19 +48,14 @@
           Как вы себя чувствуете после выполнения?
         </label>
         <div class="flex flex-wrap gap-2">
-          <button
+          <SelectButton
             v-for="feeling in feelings"
             :key="feeling.value"
-            type="button"
+            :is-selected="form.feeling === feeling.value"
+            size="sm"
+            :label="`${feeling.emoji} ${feeling.label}`"
             @click="form.feeling = feeling.value"
-            class="px-3 py-1.5 text-sm rounded-lg border transition-all"
-            :class="{
-              'border-gray-300 text-gray-700 bg-white': form.feeling !== feeling.value,
-              'border-indigo-500 text-indigo-700 bg-indigo-50': form.feeling === feeling.value,
-            }"
-          >
-            {{ feeling.emoji }} {{ feeling.label }}
-          </button>
+          />
         </div>
       </div>
     </div>
@@ -86,7 +73,7 @@
 
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
-  import { ModalContent, Button } from '@/shared/ui'
+  import { ModalContent, Button, FormField, SelectButton } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   interface Props {

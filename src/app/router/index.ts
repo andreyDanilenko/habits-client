@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { authGuard } from '@/features/auth'
+import { requireOwner } from '@/entities/workspace'
 
 const routes = [
   {
@@ -31,6 +32,13 @@ const routes = [
     name: 'Settings',
     component: () => import('@/pages/settings'),
     meta: { requiresAuth: true },
+  },
+  {
+    path: '/workspace-settings',
+    name: 'WorkspaceSettings',
+    component: () => import('@/pages/workspace-settings'),
+    meta: { requiresAuth: true },
+    beforeEnter: requireOwner(),
   },
 ]
 

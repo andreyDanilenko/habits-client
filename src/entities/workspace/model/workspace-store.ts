@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api } from '@/shared/api'
 import { workspaceService } from '@/entities/workspace'
-import type { Workspace, CreateWorkspaceDto, WorkspaceModule } from '@/entities/workspace'
+import type { Workspace, CreateWorkspaceDto, UpdateWorkspaceDto, WorkspaceModule } from '@/entities/workspace'
 
 function applyWorkspaceHeader(ws: Workspace | null) {
   api.setWorkspaceId(ws?.id ?? null)
@@ -53,6 +53,31 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     return workspace
   }
 
+  const updateWorkspace = async (workspaceId: string, data: UpdateWorkspaceDto): Promise<Workspace> => {
+    const workspace = await workspaceService.updateWorkspace(workspaceId, data)
+    const index = workspaces.value.findIndex((w) => w.id === workspaceId)
+    if (index !== -1) {
+      workspaces.value[index] = workspace
+    }
+    if (currentWorkspace.value?.id === workspaceId) {
+      currentWorkspace.value = workspace
+    }
+    return workspace
+  }
+
+  const deleteWorkspace = async (workspaceId: string): Promise<void> => {
+    await workspaceService.deleteWorkspace(workspaceId)
+    workspaces.value = workspaces.value.filter((w) => w.id !== workspaceId)
+    if (currentWorkspace.value?.id === workspaceId) {
+      if (workspaces.value.length > 0) {
+        await switchWorkspace(workspaces.value[0].id)
+      } else {
+        currentWorkspace.value = null
+        applyWorkspaceHeader(null)
+      }
+    }
+  }
+
   const setCurrentWorkspace = (workspace: Workspace) => {
     currentWorkspace.value = workspace
     applyWorkspaceHeader(workspace)
@@ -62,7 +87,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     try {
       const response = await workspaceService.getWorkspaceModules(workspaceId)
       // API возвращает { modules: WorkspaceModule[] }
-      modules.value = response.modules || []
+      modules.value = response?.modules || []
     } catch (error) {
       console.error('Failed to load modules:', error)
       modules.value = []
@@ -113,6 +138,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     // Actions
     fetchWorkspaces,
     createWorkspace,
+    updateWorkspace,
+    deleteWorkspace,
     setCurrentWorkspace,
     switchWorkspace,
     loadModules,
