@@ -1,11 +1,12 @@
 import { computed } from 'vue'
 import { useHabitStore } from '@/entities/habit'
+import { getLocalDateString } from '@/shared/lib'
 
 export const useHabitProgress = () => {
   const habitStore = useHabitStore()
 
   const habitProgressMap = computed(() => {
-    const today = new Date().toISOString().split('T')[0]
+    const today = getLocalDateString()
     const map: Record<string, number> = {}
 
     habitStore.completions.forEach((c) => {

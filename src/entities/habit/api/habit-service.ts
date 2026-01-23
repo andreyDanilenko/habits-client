@@ -1,4 +1,5 @@
 import { api, API_ENDPOINTS } from '@/shared/api'
+import { getLocalDateString } from '@/shared/lib'
 import type {
   Habit,
   CreateHabitDto,
@@ -41,7 +42,7 @@ export const habitService = {
   toggleCompletion: async (id: string, date?: string): Promise<ToggleResponse> => {
     const response = await api.post<{ completed: boolean; completion?: HabitCompletion }>(
       API_ENDPOINTS.HABITS.TOGGLE(id),
-      { date: date || new Date().toISOString().split('T')[0] }
+      { date: date || getLocalDateString() }
     )
     return {
       completed: response.completed,
@@ -72,7 +73,7 @@ export const habitService = {
     endDate?: string,
   ): Promise<HabitCompletion[]> => {
     const params = new URLSearchParams()
-    if (habitId) params.append('habit_id', habitId) // Если habitId пустой, не добавляем параметр (получаем все)
+    if (habitId) params.append('habit_id', habitId)
     if (startDate) params.append('start', startDate)
     if (endDate) params.append('end', endDate)
     const response = await api.get<{ completions: HabitCompletion[] }>(`${API_ENDPOINTS.HABITS.COMPLETIONS}?${params.toString()}`)
@@ -86,7 +87,7 @@ export const habitService = {
     time?: string
   }): Promise<HabitCompletion> => {
     const response = await api.post<{ completion: HabitCompletion }>(API_ENDPOINTS.HABITS.COMPLETE(habitId), {
-      date: data.date || new Date().toISOString().split('T')[0],
+      date: data.date || getLocalDateString(),
       notes: data.notes || '',
       rating: data.rating || 0,
     })

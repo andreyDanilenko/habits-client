@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { habitService } from '@/entities/habit'
 import type { Habit, HabitCompletion, CreateHabitDto, UpdateHabitDto } from '@/entities/habit'
+import { getLocalDateString } from '@/shared/lib'
 
 export const useHabitStore = defineStore('habit', () => {
   // State
@@ -12,7 +13,7 @@ export const useHabitStore = defineStore('habit', () => {
 
   // Getters
   const todayHabits = computed((): Array<Habit & { completed: boolean }> => {
-    const today = selectedDate.value.toISOString().split('T')[0]
+    const today = getLocalDateString(selectedDate.value)
     return habits.value.map((habit) => ({
       ...habit,
       completed: completions.value.some((c) => c.habitId === habit.id && c.date === today),
@@ -45,8 +46,8 @@ export const useHabitStore = defineStore('habit', () => {
       
       const allCompletions = await habitService.getHabitCompletionsForHabit(
         '',
-        startDate.toISOString().split('T')[0],
-        endDate.toISOString().split('T')[0]
+        getLocalDateString(startDate),
+        getLocalDateString(endDate)
       )
       completions.value = allCompletions
     } catch (error) {
@@ -119,7 +120,7 @@ export const useHabitStore = defineStore('habit', () => {
     feeling?: string
   }): Promise<void> => {
     try {
-      const today = selectedDate.value.toISOString().split('T')[0]
+      const today = getLocalDateString(selectedDate.value)
       for (let i = 0; i < data.count; i++) {
         const completion = await habitService.createCompletion(data.habitId, {
           date: today,
@@ -139,7 +140,7 @@ export const useHabitStore = defineStore('habit', () => {
 
   const toggleCompletion = async (habitId: string) => {
     try {
-      const today = selectedDate.value.toISOString().split('T')[0]
+      const today = getLocalDateString(selectedDate.value)
       const response = await habitService.toggleCompletion(habitId, today)
 
       if (response.completed && response.completion) {

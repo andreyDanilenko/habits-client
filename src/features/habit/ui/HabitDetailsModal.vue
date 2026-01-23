@@ -119,6 +119,7 @@
 <script setup lang="ts">
   import { computed, ref, onMounted } from 'vue'
   import { ModalContent, Button, StatCard, Badge, ProgressBar } from '@/shared/ui'
+  import { getLocalDateString } from '@/shared/lib'
   import type { Habit, HabitCompletion, HabitStats } from '@/entities/habit'
   import { habitService } from '@/entities/habit'
 
@@ -153,7 +154,7 @@
   }
 
   const todayCompletions = computed(() => {
-    const today = new Date().toISOString().split('T')[0]
+    const today = getLocalDateString()
     return props.completions.filter((c) => c.habitId === props.habit.id && c.date === today).length
   })
 
@@ -181,7 +182,7 @@
     let checkDate = new Date(today)
     
     // Проверяем, выполнено ли сегодня
-    const todayStr = today.toISOString().split('T')[0]
+    const todayStr = getLocalDateString(today)
     const hasToday = completedDates.value.includes(todayStr)
     
     if (hasToday) {
@@ -191,7 +192,7 @@
     
     // Идем назад по дням
     while (true) {
-      const dateStr = checkDate.toISOString().split('T')[0]
+      const dateStr = getLocalDateString(checkDate)
       if (completedDates.value.includes(dateStr)) {
         streak++
         checkDate.setDate(checkDate.getDate() - 1)
