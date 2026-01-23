@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { authService } from '@/features/auth'
 import { useUserStore } from '@/entities/user'
+import { useWorkspaceStore } from '@/entities/workspace'
 import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -79,8 +80,8 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('Logout failed:', error)
     } finally {
       clearTokens()
-      const userStore = useUserStore()
-      userStore.clearUser()
+      useUserStore().clearUser()
+      useWorkspaceStore().clearWorkspaces()
     }
   }
 
@@ -137,8 +138,6 @@ export const useAuthStore = defineStore('auth', () => {
       if (error?.response?.status === 401) {
         clearTokens()
       }
-      // Тихая обработка ошибки при инициализации - не логируем в консоль
-      // так как это нормально для неавторизованных пользователей
     }
   }
 

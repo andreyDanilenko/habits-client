@@ -50,7 +50,7 @@
           <TodayStats />
 
           <!-- Переключение workspace -->
-          <WorkspaceSwitcher v-if="workspaceStore.workspaces.length > 1" />
+          <WorkspaceSwitcher />
 
           <!-- Уведомления -->
           <Notifications />
@@ -69,9 +69,6 @@
   import WorkspaceSwitcher from './WorkspaceSwitcher.vue'
   import Notifications from './Notifications.vue'
   import ProfileDropdown from './ProfileDropdown.vue'
-  import { useWorkspaceStore } from '@/entities/workspace'
-
-  const workspaceStore = useWorkspaceStore()
 
   const navItems = computed(() => [
     { path: '/', label: 'Дашборд' },

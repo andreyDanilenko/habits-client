@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
 
   WORKSPACE: {
     BASE: apiV1 + '/workspaces',
+    CURRENT: apiV1 + '/workspaces/current',
     MEMBERS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/members`,
     SWITCH: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/switch`,
     MODULES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/modules`,

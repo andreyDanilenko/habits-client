@@ -14,13 +14,19 @@
       <div
         v-if="isOpen"
         ref="tooltipRef"
-        class="fixed z-50 bg-white border rounded shadow-lg pointer-events-auto min-w-[150px]"
+        :class="[
+          'fixed z-50 pointer-events-auto',
+          variant === 'dropdown' ? 'min-w-0' : 'bg-white border rounded-lg shadow-lg min-w-[150px]'
+        ]"
         :style="tooltipStyle"
         @mouseenter="keepOpen = true"
         @mouseleave="onTooltipMouseLeave"
         @click.stop
       >
-        <div class="p-3">
+        <template v-if="variant === 'dropdown'">
+          <slot>{{ text }}</slot>
+        </template>
+        <div v-else class="p-3">
           <slot>{{ text }}</slot>
         </div>
       </div>
@@ -31,12 +37,16 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
 
-const props = defineProps<{
-  text?: string
-  trigger?: 'hover' | 'click'
-  placement?: 'bottom' | 'top' | 'left' | 'right'
-  width?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    text?: string
+    trigger?: 'hover' | 'click'
+    placement?: 'bottom' | 'top' | 'left' | 'right'
+    width?: string
+    variant?: 'tooltip' | 'dropdown'
+  }>(),
+  { variant: 'tooltip' }
+)
 
 const isOpen = ref(false)
 const keepOpen = ref(false)

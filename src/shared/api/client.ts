@@ -27,6 +27,14 @@ class ApiClient {
     this.unauthorizedHandler = handler
   }
 
+  setWorkspaceId(id: string | null) {
+    if (id) {
+      this.client.defaults.headers.common['X-Workspace-ID'] = id
+    } else {
+      delete this.client.defaults.headers.common['X-Workspace-ID']
+    }
+  }
+
   private setupInterceptors() {
     this.client.interceptors.response.use(
       (response) => response,
@@ -47,32 +55,32 @@ class ApiClient {
     if (USE_MOCK_API) {
       return mockApi.get<T>(url)
     }
-    const response = await this.client.get<T>(url, config)
-    return response.data
+    const response = await this.client.get<{ status: string; data?: T }>(url, config)
+    return response.data.data as T
   }
 
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     if (USE_MOCK_API) {
       return mockApi.post<T>(url, data)
     }
-    const response = await this.client.post<T>(url, data, config)
-    return response.data
+    const response = await this.client.post<{ status: string; data?: T }>(url, data, config)
+    return response.data.data as T
   }
 
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     if (USE_MOCK_API) {
       return mockApi.put<T>(url, data)
     }
-    const response = await this.client.put<T>(url, data, config)
-    return response.data
+    const response = await this.client.put<{ status: string; data?: T }>(url, data, config)
+    return response.data.data as T
   }
 
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     if (USE_MOCK_API) {
       return mockApi.delete<T>(url)
     }
-    const response = await this.client.delete<T>(url, config)
-    return response.data
+    const response = await this.client.delete<{ status: string; data?: T }>(url, config)
+    return response.data.data as T
   }
 }
 
