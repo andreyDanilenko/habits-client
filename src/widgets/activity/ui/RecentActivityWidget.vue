@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl border shadow-sm p-6">
+  <Card :border="true" :padding="true">
     <h2 class="text-xl font-bold text-gray-900 mb-4">Недавняя активность</h2>
 
     <div v-if="activities.length === 0" class="text-center py-8">
@@ -19,11 +19,12 @@
         </div>
       </div>
     </div>
-  </div>
+  </Card>
 </template>
 
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
+  import { Card } from '@/shared/ui'
 
   interface Activity {
     id: string

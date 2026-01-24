@@ -1,14 +1,10 @@
 <template>
   <div>
-    <label
-      v-if="label"
-      :for="id || name"
-      class="block text-sm font-medium text-gray-700 mb-1"
-    >
+    <label v-if="label" :for="id || name" class="block text-sm font-medium text-gray-700 mb-1">
       {{ label }}
       <span v-if="required" class="text-red-500">*</span>
     </label>
-    
+
     <input
       :id="id || name"
       v-model="modelValue"
@@ -22,19 +18,13 @@
         {
           'border-gray-300 focus:ring-indigo-500 focus:border-transparent': !error && !disabled,
           'border-red-300 focus:ring-red-500 focus:border-transparent': error && !disabled,
-          'bg-gray-100 cursor-not-allowed': disabled
-        }
+          'bg-gray-100 cursor-not-allowed': disabled,
+        },
       ]"
       v-bind="$attrs"
     />
-    
-    <p
-      v-if="error || hint"
-      :class="[
-        'mt-1 text-sm',
-        error ? 'text-red-600' : 'text-gray-500'
-      ]"
-    >
+
+    <p v-if="error || hint" :class="['mt-1 text-sm', error ? 'text-red-600' : 'text-gray-500']">
       {{ error || hint }}
     </p>
   </div>
@@ -61,7 +51,7 @@
     type: 'text',
     required: false,
     disabled: false,
-    inputClasses: ''
+    inputClasses: '',
   })
 
   const emit = defineEmits<{
@@ -70,6 +60,6 @@
 
   const modelValue = computed({
     get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
+    set: (value) => emit('update:modelValue', value),
   })
 </script>

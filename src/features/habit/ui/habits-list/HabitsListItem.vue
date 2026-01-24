@@ -46,7 +46,8 @@
 
     <div class="flex items-center justify-between pt-4 border-t">
       <div class="text-sm text-gray-600">
-        <span class="font-medium">{{ progress }}</span> выполнений сегодня
+        <span class="font-medium">{{ progress }}</span>
+        {{ progress === 1 ? 'выполнение' : progress < 5 ? 'выполнения' : 'выполнений' }} сегодня
       </div>
       <div class="flex items-center space-x-2">
         <Button variant="link" size="sm" @click.stop="$emit('edit', habit)"> Редактировать </Button>

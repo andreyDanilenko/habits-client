@@ -1,5 +1,12 @@
 <template>
-  <div :class="['bg-white rounded-xl border', shadow ? 'shadow-sm' : '', padding ? 'p-6' : '']">
+  <div
+    :class="[
+      'bg-white rounded-xl',
+      shadow ? 'shadow-sm' : '',
+      padding ? 'p-6' : '',
+      border ? 'border border-gray-300' : '',
+    ]"
+  >
     <slot />
   </div>
 </template>
@@ -8,10 +15,12 @@
   interface Props {
     shadow?: boolean
     padding?: boolean
+    border?: boolean
   }
 
   withDefaults(defineProps<Props>(), {
     shadow: true,
     padding: false,
+    border: false,
   })
 </script>

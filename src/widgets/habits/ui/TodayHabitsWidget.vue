@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl border shadow-sm p-6">
+  <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-gray-900">Привычки на сегодня</h2>
       <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button>
@@ -22,33 +22,70 @@
         :key="habit.id"
         class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
       >
-        <Checkbox
-          v-model="habit.completed"
-          @change="toggleCompletion(habit.id)"
-          :label="habit.title"
-          :hint="habit.description"
-          size="lg"
-          :container-class="'items-center'"
-        />
-        
-      
+        <div class="flex-1">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+              :style="{ backgroundColor: habit.color || '#6366f1' }"
+            >
+              {{ habit.icon || '📝' }}
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-gray-900">{{ habit.title }}</h3>
+              <p v-if="habit.description" class="text-sm text-gray-500 mt-1">
+                {{ habit.description }}
+              </p>
+              <div class="mt-2 flex items-center space-x-2">
+                <span class="text-xs text-gray-500">
+                  Прогресс: {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
+                </span>
+                <div class="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden max-w-24">
+                  <div
+                    class="h-full rounded-full transition-all"
+                    :style="{
+                      width: `${Math.min((getProgress(habit.id) / (habit.dailyGoal || 1)) * 100, 100)}%`,
+                      backgroundColor: habit.color || '#6366f1',
+                    }"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          @click="markCompletion(habit)"
+          :disabled="getProgress(habit.id) >= (habit.dailyGoal || 1)"
+        >
+          {{ getProgress(habit.id) >= (habit.dailyGoal || 1) ? '✓ Выполнено' : 'Отметить' }}
+        </Button>
       </div>
     </div>
-  </div>
+  </Card>
 </template>
 
 <script setup lang="ts">
   import { computed, onMounted } from 'vue'
   import { useHabitStore } from '@/entities/habit'
-  import { Button, Checkbox } from '@/shared/ui'
+  import { useHabitActions } from '@/features/habit/model/use-habit-actions'
+  import { useHabitProgress } from '@/features/habit/model/use-habit-progress'
+  import { Button, Card } from '@/shared/ui'
+  import type { Habit } from '@/entities/habit'
 
   const habitStore = useHabitStore()
+  const habitActions = useHabitActions()
+  const { habitProgressMap } = useHabitProgress()
 
   const habits = computed(() => habitStore.todayHabits)
   const isLoading = computed(() => habitStore.isLoading)
 
-  const toggleCompletion = async (habitId: string) => {
-    await habitStore.toggleCompletion(habitId)
+  const getProgress = (habitId: string) => {
+    return habitProgressMap.value[habitId] || 0
+  }
+
+  const markCompletion = (habit: Habit) => {
+    habitActions.markCompletion(habit)
   }
 
   onMounted(() => {

@@ -3,10 +3,8 @@
     <div class="max-w-md w-full space-y-8">
       <!-- Логотип -->
       <div class="text-center">
-        <div
-          class="mx-auto w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center"
-        >
-          <span class="text-white font-bold text-lg">HF</span>
+        <div class="mx-auto flex justify-center">
+          <Logo :size="48" />
         </div>
         <h2 class="mt-6 text-3xl font-bold text-gray-900">Регистрация в HabitFlow</h2>
         <p class="mt-2 text-gray-600">Создайте аккаунт и начните отслеживать свои привычки</p>
@@ -14,12 +12,7 @@
 
       <Card class="p-8">
         <form @submit.prevent="handleSubmit" class="space-y-6">
-          <Input
-            v-model="form.name"
-            label="Имя"
-            name="name"
-            placeholder="Введите ваше имя"
-          />
+          <Input v-model="form.name" label="Имя" name="name" placeholder="Введите ваше имя" />
 
           <Input
             v-model="form.email"
@@ -61,9 +54,7 @@
           />
 
           <div>
-            <Button type="submit" :loading="isLoading" class="w-full">
-              Зарегистрироваться
-            </Button>
+            <Button type="submit" :loading="isLoading" class="w-full"> Зарегистрироваться </Button>
           </div>
 
           <div class="text-center">
@@ -84,6 +75,7 @@
   import { reactive, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { Card, Button, Input, Checkbox } from '@/shared/ui'
+  import { Logo } from '@/shared/ui/icon'
   import { useAuthStore } from '@/features/auth'
   import { useUserStore } from '@/entities/user'
 

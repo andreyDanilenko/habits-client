@@ -10,9 +10,7 @@
       />
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          Цвет
-        </label>
+        <label class="block text-sm font-medium text-gray-700 mb-2"> Цвет </label>
         <div class="flex gap-2 flex-wrap">
           <button
             v-for="color in colors"
@@ -45,12 +43,8 @@
 
     <template #footer>
       <div class="flex justify-end gap-3">
-        <Button variant="outline" @click="$emit('close')" type="button">
-          Отмена
-        </Button>
-        <Button variant="primary" :loading="loading" @click="handleSubmit">
-          Создать
-        </Button>
+        <Button variant="outline" @click="$emit('close')" type="button"> Отмена </Button>
+        <Button variant="primary" :loading="loading" @click="handleSubmit"> Создать </Button>
       </div>
     </template>
   </ModalContent>

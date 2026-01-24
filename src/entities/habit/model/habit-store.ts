@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { habitService } from '@/entities/habit'
 import type { Habit, HabitCompletion, CreateHabitDto, UpdateHabitDto } from '@/entities/habit'
+import { getLocalDateString } from '@/shared/lib'
 
 export const useHabitStore = defineStore('habit', () => {
   // State
@@ -12,7 +13,7 @@ export const useHabitStore = defineStore('habit', () => {
 
   // Getters
   const todayHabits = computed((): Array<Habit & { completed: boolean }> => {
-    const today = selectedDate.value.toISOString().split('T')[0]
+    const today = getLocalDateString(selectedDate.value)
     return habits.value.map((habit) => ({
       ...habit,
       completed: completions.value.some((c) => c.habitId === habit.id && c.date === today),
@@ -29,11 +30,28 @@ export const useHabitStore = defineStore('habit', () => {
     try {
       const data = await habitService.getHabits()
       habits.value = data || []
-      completions.value = []
+      await fetchCompletions()
     } catch (error) {
       console.error('Failed to fetch habits:', error)
     } finally {
       isLoading.value = false
+    }
+  }
+
+  const fetchCompletions = async () => {
+    try {
+      const endDate = new Date()
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - 90)
+
+      const allCompletions = await habitService.getHabitCompletionsForHabit(
+        '',
+        getLocalDateString(startDate),
+        getLocalDateString(endDate),
+      )
+      completions.value = allCompletions
+    } catch (error) {
+      console.error('Failed to fetch completions:', error)
     }
   }
 
@@ -61,7 +79,6 @@ export const useHabitStore = defineStore('habit', () => {
 
   const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
     try {
-      // Convert Partial<Habit> to UpdateHabitDto
       const habitData: UpdateHabitDto = {
         title: data.title,
         description: data.description,
@@ -103,13 +120,29 @@ export const useHabitStore = defineStore('habit', () => {
     feeling?: string
   }): Promise<void> => {
     try {
-      // For now, create multiple completions based on count
-      // This should be handled by the backend, but we'll do it on frontend for now
+      const today = getLocalDateString(selectedDate.value)
       for (let i = 0; i < data.count; i++) {
-        // In a real implementation, this would call an API endpoint
-        // For now, we'll just toggle the completion
-        await toggleCompletion(data.habitId)
+        const completion = await habitService.createCompletion(data.habitId, {
+          date: today,
+          notes: data.note || '',
+          rating:
+            data.feeling === 'great'
+              ? 5
+              : data.feeling === 'good'
+                ? 4
+                : data.feeling === 'ok'
+                  ? 3
+                  : data.feeling === 'tired'
+                    ? 2
+                    : data.feeling === 'hard'
+                      ? 1
+                      : 0,
+          time: data.time,
+        })
+        completions.value.push(completion)
       }
+
+      await fetchCompletions()
     } catch (error) {
       console.error('Failed to mark completion:', error)
       throw error
@@ -118,9 +151,8 @@ export const useHabitStore = defineStore('habit', () => {
 
   const toggleCompletion = async (habitId: string) => {
     try {
-      const response = await habitService.toggleCompletion(habitId)
-
-      const today = selectedDate.value.toISOString().split('T')[0]
+      const today = getLocalDateString(selectedDate.value)
+      const response = await habitService.toggleCompletion(habitId, today)
 
       if (response.completed && response.completion) {
         completions.value.push(response.completion)
@@ -153,6 +185,7 @@ export const useHabitStore = defineStore('habit', () => {
 
     // Actions
     fetchHabits,
+    fetchCompletions,
     createHabit,
     updateHabit,
     deleteHabit,
