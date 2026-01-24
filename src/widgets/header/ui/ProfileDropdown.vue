@@ -2,8 +2,10 @@
   <div class="relative">
     <Tooltip trigger="hover" placement="bottom">
       <template #trigger>
-        <button
-          class="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+        <Button
+          variant="ghost"
+          size="sm"
+          class="!p-1 rounded-full"
           @click="toggleDropdown"
         >
           <div
@@ -11,7 +13,7 @@
           >
             {{ userInitials }}
           </div>
-        </button>
+        </Button>
       </template>
 
       <div class="w-56">
@@ -23,26 +25,30 @@
         </div>
 
         <div class="py-2">
-          <router-link
-            to="/profile"
-            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            @click="closeDropdown"
+          <Button
+            variant="ghost"
+            size="sm"
+            custom-class="w-full justify-start !px-4 !py-2"
+            @click="() => { router.push('/profile'); closeDropdown(); }"
           >
             Профиль
-          </router-link>
-          <router-link
-            to="/settings"
-            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            @click="closeDropdown"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            custom-class="w-full justify-start !px-4 !py-2"
+            @click="() => { router.push('/settings'); closeDropdown(); }"
           >
             Настройки
-          </router-link>
-          <button
-            class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            custom-class="w-full justify-start !px-4 !py-2 text-red-600"
             @click="handleLogout"
           >
             Выйти
-          </button>
+          </Button>
         </div>
       </div>
     </Tooltip>
@@ -54,7 +60,7 @@
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/entities/user'
   import { useAuthStore } from '@/features/auth'
-  import { Tooltip } from '@/shared/ui'
+  import { Tooltip, Button } from '@/shared/ui'
 
   const router = useRouter()
   const userStore = useUserStore()

@@ -13,7 +13,7 @@
     <!-- Заголовок и настроение -->
     <div class="flex items-start justify-between mb-3">
       <div class="flex-1 min-w-0">
-        <h3 class="text-lg font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors line-clamp-2">
+        <h3 class="mb-1 group-hover:text-indigo-600 transition-colors line-clamp-2">
           {{ entry.title }}
         </h3>
         <div class="flex items-center gap-2 text-sm text-gray-500">
@@ -65,20 +65,22 @@
         <span>{{ formatTime(entry.updatedAt) }}</span>
       </div>
       <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button
+        <Button
           @click.stop="$emit('edit')"
-          class="p-2 hover:bg-indigo-50 rounded-lg transition-colors"
+          icon-only
+          variant="icon"
+          icon-color="info"
+          :left-icon="CogIcon"
           title="Редактировать"
-        >
-          <CogIcon class="w-4 h-4 text-indigo-600" />
-        </button>
-        <button
+        />
+        <Button
           @click.stop="$emit('delete')"
-          class="p-2 hover:bg-red-50 rounded-lg transition-colors"
+          icon-only
+          variant="icon"
+          icon-color="danger"
+          :left-icon="DeleteIcon"
           title="Удалить"
-        >
-          <DeleteIcon class="w-4 h-4 text-red-500" />
-        </button>
+        />
       </div>
     </div>
   </Card>
@@ -87,7 +89,7 @@
 <script setup lang="ts">
   import { format } from 'date-fns'
   import { ru } from 'date-fns/locale'
-  import { Card, Badge } from '@/shared/ui'
+  import { Card, Badge, Button } from '@/shared/ui'
   import { CogIcon, DeleteIcon } from '@/shared/ui/icon'
   import type { JournalEntry } from '@/entities/journal'
 

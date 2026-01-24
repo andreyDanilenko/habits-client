@@ -2,16 +2,17 @@
   <div class="bg-white rounded-xl shadow-lg overflow-hidden">
     <div v-if="title" class="px-6 py-4 border-b border-gray-100">
       <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-gray-900">
+        <h3>
           {{ title }}
         </h3>
-        <button
+        <Button
           v-if="showCloseButton"
           @click="handleClose"
-          class="cursor-pointer text-gray-400 hover:text-gray-500 transition-colors"
-        >
-          <XMarkIcon size="sm" />
-        </button>
+          icon-only
+          variant="icon"
+          size="sm"
+          :left-icon="XMarkIcon"
+        />
       </div>
       <p v-if="description" class="mt-1 text-sm text-gray-600">
         {{ description }}
@@ -31,6 +32,7 @@
 <script setup lang="ts">
   import { useSlots, computed } from 'vue'
   import { XMarkIcon } from '@/shared/ui/icon'
+  import { Button } from '@/shared/ui'
 
   interface Props {
     title?: string

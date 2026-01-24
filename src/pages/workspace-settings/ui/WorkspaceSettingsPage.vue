@@ -7,12 +7,12 @@
     </div>
 
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Настройки Workspace</h1>
+      <h1>Настройки Workspace</h1>
       <p class="mt-2 text-gray-600">Управляйте настройками вашего workspace</p>
     </div>
 
     <Card class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Основная информация</h2>
+      <h2 class="mb-4">Основная информация</h2>
 
       <div class="space-y-4">
         <Input
@@ -63,7 +63,7 @@
 
     <!-- Участники (Soon) -->
     <Card v-if="isOwner" class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Участники</h2>
+      <h2 class="mb-4">Участники</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
@@ -77,7 +77,7 @@
 
     <!-- Модули (Soon) -->
     <Card v-if="isOwner" class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Модули</h2>
+      <h2 class="mb-4">Модули</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
@@ -91,7 +91,7 @@
 
     <!-- Права доступа (Soon) -->
     <Card v-if="isOwner" class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Права доступа</h2>
+      <h2 class="mb-4">Права доступа</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
@@ -105,7 +105,7 @@
 
     <!-- Опасная зона -->
     <Card v-if="isOwner" class="p-6 border-red-200">
-      <h2 class="text-xl font-semibold text-red-900 mb-4">Опасная зона</h2>
+      <h2 class="text-red-900 mb-4">Опасная зона</h2>
 
       <div class="space-y-4">
         <div>

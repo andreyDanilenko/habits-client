@@ -5,7 +5,7 @@
         <div class="mx-auto flex justify-center">
           <Logo :size="48" />
         </div>
-        <h2 class="mt-6 text-3xl font-bold text-gray-900">Вход в HabitFlow</h2>
+        <h1 class="mt-6">Вход в HabitFlow</h1>
         <p class="mt-2 text-gray-600">Начните отслеживать свои привычки сегодня</p>
       </div>
 

@@ -1,6 +1,6 @@
 <template>
   <Card :border="true" :padding="true">
-    <h2 class="text-xl font-bold text-gray-900 mb-4">Статистика</h2>
+    <h2 class="mb-4">Статистика</h2>
 
     <div class="space-y-4">
       <div class="flex items-center justify-between">

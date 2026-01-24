@@ -3,8 +3,10 @@
     :type="type"
     :disabled="disabled || loading"
     :class="[
-      'cursor-pointer inline-flex items-center justify-center rounded-lg font-medium transition-colors',
-      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+      'cursor-pointer inline-flex flex-row items-center rounded-lg font-medium transition-colors',
+      customClass && customClass.includes('justify-') ? '' : 'justify-center',
+      'focus:outline-none',
+      props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon' ? 'focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300' : '',
       'disabled:opacity-50 disabled:cursor-not-allowed relative',
       iconOnly ? 'p-1 rounded' : sizeClasses,
       variantClasses,
@@ -19,9 +21,9 @@
     <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
 
     <!-- Основной контент -->
-    <span v-if="!iconOnly">
+    <template v-if="!iconOnly">
       <slot />
-    </span>
+    </template>
 
     <!-- Иконка справа -->
     <component v-if="rightIcon" :is="rightIcon" :size="iconSize" :class="iconOnly ? '' : 'ml-2'" />
@@ -87,10 +89,10 @@
       primary: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800',
       secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300',
       outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
-      ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200',
+      ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-0',
       danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
       icon: '',
-      link: 'bg-transparent text-indigo-600 hover:text-indigo-700',
+      link: 'bg-transparent text-indigo-600 hover:text-indigo-700 focus:ring-0',
     }
 
     return baseVariants[props.variant ?? 'primary']

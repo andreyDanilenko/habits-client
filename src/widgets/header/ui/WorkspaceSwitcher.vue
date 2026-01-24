@@ -2,18 +2,20 @@
   <div class="relative">
     <Tooltip variant="dropdown" trigger="click" placement="bottom" width="256px">
       <template #trigger>
-        <button
-          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+        <Button
+          variant="ghost"
+          size="md"
+          custom-class="justify-start gap-2"
         >
           <div
-            class="w-6 h-6 rounded"
+            class="w-6 h-6 rounded flex-shrink-0"
             :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"
           />
-          <span class="text-sm font-medium text-gray-700 hidden md:inline">
+          <span class="text-sm font-medium text-gray-700 hidden md:inline whitespace-nowrap">
             {{ currentWorkspace?.name || 'Workspace' }}
           </span>
-          <ChevronDownIcon class="w-4 h-4 text-gray-400" />
-        </button>
+          <ChevronDownIcon class="w-4 h-4 text-gray-400 flex-shrink-0" />
+        </Button>
       </template>
 
       <div class="w-64 bg-white rounded-lg shadow-lg border">
@@ -21,49 +23,50 @@
         <div class="px-4 py-3 border-b">
           <div class="flex items-center justify-between">
             <p class="text-sm font-semibold text-gray-700">Рабочие пространства</p>
-            <button
+            <Button
               @click.stop="openWorkspaceSettings"
-              class="p-1 hover:bg-gray-100 rounded"
-              type="button"
-            >
-              <CogIcon class="w-4 h-4 text-gray-500" />
-            </button>
+              icon-only
+              variant="icon"
+              :left-icon="CogIcon"
+            />
           </div>
         </div>
 
         <!-- Список workspace -->
         <div class="max-h-64 overflow-auto">
-          <button
+          <Button
             v-for="workspace in workspaces"
             :key="workspace.id"
-            type="button"
+            variant="ghost"
+            size="sm"
             @click.stop="switchWorkspace(workspace.id)"
-            class="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-50 transition-colors"
+            custom-class="w-full justify-start gap-3 !px-4 !py-2"
             :class="{ 'bg-indigo-50': workspace.id === currentWorkspace?.id }"
           >
             <span
-              class="mr-3 w-4 h-4 rounded"
+              class="w-4 h-4 rounded flex-shrink-0"
               :style="{ backgroundColor: workspace.color || '#6366f1' }"
             />
-            <span class="flex-1 text-left truncate">
+            <span class="flex-1 text-left truncate min-w-0">
               {{ workspace.name }}
             </span>
-            <span v-if="workspace.id === currentWorkspace?.id" class="ml-2">
+            <span v-if="workspace.id === currentWorkspace?.id" class="flex-shrink-0">
               <CheckIcon class="w-4 h-4 text-indigo-600" />
             </span>
-          </button>
+          </Button>
         </div>
 
         <!-- Действия -->
         <div class="border-t p-2">
-          <button
+          <Button
             @click.stop="openCreateModal"
-            class="w-full flex items-center justify-center px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
-            type="button"
+            variant="ghost"
+            size="sm"
+            class="w-full"
+            :left-icon="PlusIcon"
           >
-            <PlusIcon class="w-4 h-4 mr-2" />
             Создать workspace
-          </button>
+          </Button>
         </div>
       </div>
     </Tooltip>
@@ -75,7 +78,7 @@
   import { useRouter } from 'vue-router'
   import { ChevronDownIcon, CogIcon, PlusIcon, CheckIcon } from '@/shared/ui/icon'
   import { useWorkspaceStore } from '@/entities/workspace'
-  import { Tooltip } from '@/shared/ui'
+  import { Tooltip, Button } from '@/shared/ui'
   import { useModal } from '@/shared/lib/modal'
   import { WorkspaceCreateModal } from '@/features/workspace'
 

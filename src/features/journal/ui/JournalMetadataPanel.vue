@@ -1,9 +1,11 @@
 <template>
   <div class="border-b border-gray-200 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <button
+      <Button
         @click="isOpen = !isOpen"
-        class="w-full flex items-center justify-between py-3 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+        variant="ghost"
+        size="sm"
+        class="w-full flex items-center justify-between !justify-between"
       >
         <span>Метаданные</span>
         <svg
@@ -14,7 +16,7 @@
         >
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
-      </button>
+      </Button>
 
       <div v-show="isOpen" class="pb-4 space-y-4 border-t border-gray-100 pt-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -40,29 +42,24 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField label="Настроение">
             <div class="flex gap-2 flex-wrap">
-              <button
+              <SelectButton
                 v-for="mood in moodOptions"
                 :key="mood.value"
-                type="button"
+                :is-selected="form.mood === mood.value"
+                size="md"
                 @click="updateField('mood', mood.value)"
-                :class="[
-                  'p-2 rounded-lg transition-all',
-                  form.mood === mood.value
-                    ? 'bg-indigo-100 ring-2 ring-indigo-500'
-                    : 'bg-gray-50 hover:bg-gray-100'
-                ]"
                 :title="mood.label"
               >
                 <span class="text-xl">{{ mood.emoji }}</span>
-              </button>
-              <button
+              </SelectButton>
+              <Button
                 v-if="form.mood"
-                type="button"
+                variant="ghost"
+                size="sm"
                 @click="updateField('mood', undefined)"
-                class="px-2 py-1 text-xs text-gray-500 hover:text-gray-700"
               >
                 Убрать
-              </button>
+              </Button>
             </div>
           </FormField>
 
@@ -120,7 +117,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { Input, FormField, Badge } from '@/shared/ui'
+  import { Input, FormField, Badge, Button, SelectButton } from '@/shared/ui'
   import type { CreateJournalEntryDto } from '@/entities/journal'
 
   interface Props {

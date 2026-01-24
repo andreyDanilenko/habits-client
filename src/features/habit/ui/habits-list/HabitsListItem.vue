@@ -9,7 +9,7 @@
           {{ habit.icon || '📝' }}
         </div>
         <div>
-          <h3 class="font-semibold text-gray-900">{{ habit.title }}</h3>
+          <h3>{{ habit.title }}</h3>
           <p v-if="habit.description" class="text-sm text-gray-500 mt-1">
             {{ habit.description }}
           </p>

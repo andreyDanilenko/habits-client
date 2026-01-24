@@ -64,41 +64,39 @@
         <!-- Настроение -->
         <FormField label="Настроение">
           <div class="flex gap-2">
-            <button
+            <SelectButton
               v-for="mood in moods"
               :key="mood.value"
-              type="button"
-              class="p-3 rounded-lg hover:bg-gray-100 transition-colors"
-              :class="{ 'bg-indigo-100 ring-2 ring-indigo-500': form.mood === mood.value }"
+              :is-selected="form.mood === mood.value"
+              size="md"
               @click="form.mood = mood.value"
               :title="mood.label"
             >
               <span class="text-2xl">{{ mood.emoji }}</span>
-            </button>
-            <button
+            </SelectButton>
+            <Button
               v-if="form.mood"
-              type="button"
-              class="px-3 py-2 text-sm text-gray-500 hover:text-gray-700"
+              variant="ghost"
+              size="sm"
               @click="form.mood = undefined"
             >
               Убрать
-            </button>
+            </Button>
           </div>
         </FormField>
 
         <!-- Тип контента -->
         <FormField label="Тип контента">
           <div class="flex gap-2">
-            <button
+            <SelectButton
               v-for="option in contentTypeOptions"
               :key="option.value"
-              type="button"
-              class="px-4 py-2 rounded-lg border transition-colors"
-              :class="form.contentType === option.value ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-300 hover:bg-gray-50'"
+              :is-selected="form.contentType === option.value"
+              size="sm"
               @click="form.contentType = option.value"
             >
               {{ option.label }}
-            </button>
+            </SelectButton>
           </div>
         </FormField>
 
@@ -173,7 +171,7 @@
   import { ru } from 'date-fns/locale'
   import { marked } from 'marked'
   import DOMPurify from 'dompurify' // Для безопасного рендеринга HTML
-  import { ModalContent, FormField, Input, Button, Badge } from '@/shared/ui'
+  import { ModalContent, FormField, Input, Button, Badge, SelectButton } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
 
   interface Props {

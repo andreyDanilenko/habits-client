@@ -5,11 +5,11 @@
         <!-- Лого -->
         <router-link to="/" class="flex items-center space-x-3">
           <Logo :size="32" />
-          <span class="text-xl font-bold text-gray-900 hidden md:inline"> HabitFlow </span>
+          <span class="text-xl font-bold text-gray-900 hidden lg:inline"> HabitFlow </span>
         </router-link>
 
         <!-- Центр: навигация -->
-        <nav class="hidden md:flex items-center space-x-6">
+        <nav class="hidden lg:flex items-center space-x-6">
           <router-link
             v-for="item in navItems"
             :key="item.path"

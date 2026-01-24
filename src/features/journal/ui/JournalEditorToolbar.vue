@@ -1,58 +1,69 @@
 <template>
   <div class="mb-4 p-2 bg-gray-50 rounded-lg border border-gray-200 flex items-center gap-2 flex-wrap">
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       @click="insert('**', '**')"
-      class="px-3 py-1 text-sm font-semibold hover:bg-gray-200 rounded transition-colors"
       title="Жирный (Ctrl+B)"
+      class="font-semibold"
     >
       B
-    </button>
-    <button
+    </Button>
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       @click="insert('*', '*')"
-      class="px-3 py-1 text-sm italic hover:bg-gray-200 rounded transition-colors"
       title="Курсив (Ctrl+I)"
+      class="italic"
     >
       I
-    </button>
-    <button
+    </Button>
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       @click="insert('`', '`')"
-      class="px-3 py-1 text-sm font-mono hover:bg-gray-200 rounded transition-colors"
       title="Код"
+      class="font-mono"
     >
       &lt;/&gt;
-    </button>
+    </Button>
     <div class="w-px h-6 bg-gray-300"></div>
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       @click="insert('# ', '')"
-      class="px-3 py-1 text-sm hover:bg-gray-200 rounded transition-colors"
       title="H1"
     >
       H1
-    </button>
-    <button
+    </Button>
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       @click="insert('## ', '')"
-      class="px-3 py-1 text-sm hover:bg-gray-200 rounded transition-colors"
       title="H2"
     >
       H2
-    </button>
-    <button
+    </Button>
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       @click="insert('- ', '')"
-      class="px-3 py-1 text-sm hover:bg-gray-200 rounded transition-colors"
       title="Список"
     >
       •
-    </button>
+    </Button>
   </div>
 </template>
 
 <script setup lang="ts">
+  import { Button } from '@/shared/ui'
+
   interface Emits {
     (e: 'insert', before: string, after: string): void
   }

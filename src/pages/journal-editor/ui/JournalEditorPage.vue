@@ -4,13 +4,14 @@
     <div class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <button
+          <Button
             @click="handleCancel"
-            class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            variant="ghost"
+            size="md"
+            :left-icon="ArrowLeftIcon"
           >
-            <ArrowLeftIcon class="w-5 h-5" />
             <span class="hidden sm:inline">Назад</span>
-          </button>
+          </Button>
 
           <div class="flex items-center gap-3">
             <div v-if="isSaving" class="flex items-center gap-2 text-sm text-gray-500">

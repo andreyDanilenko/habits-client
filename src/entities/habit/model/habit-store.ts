@@ -114,33 +114,19 @@ export const useHabitStore = defineStore('habit', () => {
 
   const markCompletion = async (data: {
     habitId: string
-    count: number
     time?: string
     note?: string
-    feeling?: string
   }): Promise<void> => {
     try {
       const today = getLocalDateString(selectedDate.value)
-      for (let i = 0; i < data.count; i++) {
-        const completion = await habitService.createCompletion(data.habitId, {
-          date: today,
-          notes: data.note || '',
-          rating:
-            data.feeling === 'great'
-              ? 5
-              : data.feeling === 'good'
-                ? 4
-                : data.feeling === 'ok'
-                  ? 3
-                  : data.feeling === 'tired'
-                    ? 2
-                    : data.feeling === 'hard'
-                      ? 1
-                      : 0,
-          time: data.time,
-        })
-        completions.value.push(completion)
-      }
+      // Создаем одно completion при каждом нажатии "Отметить"
+      const completion = await habitService.createCompletion(data.habitId, {
+        date: today,
+        notes: data.note || '',
+        rating: 0, // Рейтинг не используется, передаем 0
+        time: data.time,
+      })
+      completions.value.push(completion)
 
       await fetchCompletions()
     } catch (error) {

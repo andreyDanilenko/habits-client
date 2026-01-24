@@ -3,7 +3,7 @@
     <!-- Заголовок страницы -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Дневник</h1>
+        <h1>Дневник</h1>
         <p class="text-gray-600 mt-1">Записывайте свои мысли, достижения и планы</p>
       </div>
       <Button @click="handleCreateEntry" class="w-full sm:w-auto" :to="{ name: 'JournalNew' }">
@@ -63,15 +63,15 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <button
+          <Button
             v-if="searchQuery"
             @click="searchQuery = ''"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            icon-only
+            variant="icon"
+            size="sm"
+            class="absolute right-3 top-1/2 -translate-y-1/2"
+            :left-icon="XMarkIcon"
+          />
         </div>
 
         <!-- Фильтры -->
@@ -122,26 +122,50 @@
           <Badge
             v-if="selectedMood"
             variant="outline"
-            class="bg-indigo-50 text-indigo-700 border-indigo-200"
+            class="bg-indigo-50 text-indigo-700 border-indigo-200 flex items-center gap-1"
           >
             Настроение: {{ moodOptions.find(m => m.value === selectedMood)?.label }}
-            <button @click="selectedMood = null" class="ml-2 hover:text-indigo-900">×</button>
+            <Button
+              @click.stop="selectedMood = null"
+              icon-only
+              variant="icon"
+              size="sm"
+              icon-color="default"
+              class="!p-0 !h-auto !w-auto ml-1"
+              :left-icon="XMarkIcon"
+            />
           </Badge>
           <Badge
             v-if="selectedDate"
             variant="outline"
-            class="bg-emerald-50 text-emerald-700 border-emerald-200"
+            class="bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1"
           >
             Период: {{ dateOptions.find(d => d.value === selectedDate)?.label }}
-            <button @click="selectedDate = null" class="ml-2 hover:text-emerald-900">×</button>
+            <Button
+              @click.stop="selectedDate = null"
+              icon-only
+              variant="icon"
+              size="sm"
+              icon-color="default"
+              class="!p-0 !h-auto !w-auto ml-1"
+              :left-icon="XMarkIcon"
+            />
           </Badge>
           <Badge
             v-if="searchQuery"
             variant="outline"
-            class="bg-amber-50 text-amber-700 border-amber-200"
+            class="bg-amber-50 text-amber-700 border-amber-200 flex items-center gap-1"
           >
             Поиск: "{{ searchQuery }}"
-            <button @click="searchQuery = ''" class="ml-2 hover:text-amber-900">×</button>
+            <Button
+              @click.stop="searchQuery = ''"
+              icon-only
+              variant="icon"
+              size="sm"
+              icon-color="default"
+              class="!p-0 !h-auto !w-auto ml-1"
+              :left-icon="XMarkIcon"
+            />
           </Badge>
         </div>
       </div>
@@ -156,7 +180,7 @@
     <!-- Пустое состояние -->
     <div v-else-if="filteredEntries.length === 0" class="text-center py-16">
       <Card :border="true" :padding="true" class="max-w-md mx-auto">
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        <h3 class="mb-2">
           {{ hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей' }}
         </h3>
         <p class="text-gray-600 mb-6">
@@ -214,7 +238,7 @@
   import { JournalEntryCard } from '@/features/journal/ui'
   import { useJournalPage } from '@/features/journal/model'
   import { Card, Button, Input, Spinner, Badge } from '@/shared/ui'
-  import { PlusIcon } from '@/shared/ui/icon'
+  import { PlusIcon, XMarkIcon } from '@/shared/ui/icon'
   import { useRouter } from 'vue-router'
 
   import type { JournalEntry } from '@/entities/journal'

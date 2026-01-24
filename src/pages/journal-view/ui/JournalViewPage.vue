@@ -2,17 +2,19 @@
   <div class="min-h-screen bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Навигация -->
-      <button
+      <Button
         @click="router.push('/journal')"
-        class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-6"
+        variant="ghost"
+        size="md"
+        class="mb-6"
+        :left-icon="ArrowLeftIcon"
       >
-        <ArrowLeftIcon class="w-5 h-5" />
-        <span>Назад к дневнику</span>
-      </button>
+        Назад к дневнику
+      </Button>
 
       <!-- Заголовок -->
       <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ entry?.title || 'Загрузка...' }}</h1>
+        <h1 class="mb-2">{{ entry?.title || 'Загрузка...' }}</h1>
         <div class="flex items-center gap-4 text-sm text-gray-500">
           <span>{{ formatDate(entry?.date || '') }}</span>
           <span v-if="entry?.mood" class="text-xl">{{ getMoodEmoji(entry.mood) }}</span>

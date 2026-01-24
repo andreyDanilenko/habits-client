@@ -1,6 +1,6 @@
 <template>
   <Card :border="true" :padding="true">
-    <h2 class="text-xl font-bold text-gray-900 mb-4">Быстрая запись</h2>
+    <h2 class="mb-4">Быстрая запись</h2>
 
     <div class="space-y-4">
       <textarea
@@ -11,16 +11,16 @@
 
       <div class="flex items-center justify-between flex-wrap">
         <div class="flex items-center space-x-2">
-          <button
+          <SelectButton
             v-for="mood in moods"
             :key="mood.emoji"
-            class="cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            :class="{ 'bg-indigo-100': selectedMood === mood.value }"
+            :is-selected="selectedMood === mood.value"
+            size="md"
             @click="selectedMood = mood.value"
             :title="mood.label"
           >
             <span class="text-2xl">{{ mood.emoji }}</span>
-          </button>
+          </SelectButton>
         </div>
 
         <Button @click="saveNote" :disabled="!note.trim()">Сохранить </Button>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { Button, Card } from '@/shared/ui'
+  import { Button, Card, SelectButton } from '@/shared/ui'
 
   const note = ref('')
   const selectedMood = ref<number | null>(null)
