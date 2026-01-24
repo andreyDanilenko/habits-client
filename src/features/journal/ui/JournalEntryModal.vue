@@ -1,5 +1,5 @@
 <template>
-  <Modal :is-open="isOpen" @update:is-open="handleClose" content-class="max-w-4xl">
+  <div class="max-w-4xl">
     <ModalContent
       :title="mode === 'view' && entry ? entry.title : entry ? 'Редактировать запись' : 'Новая запись'"
       @close="handleClose"
@@ -24,7 +24,7 @@
           <div
             v-if="entry.contentType === 'markdown'"
             class="markdown-content"
-            v-html="renderMarkdown(entry.content)"
+            v-html="renderedMarkdown"
           />
           <div v-else class="whitespace-pre-wrap text-gray-700">{{ entry.content }}</div>
         </div>
@@ -115,7 +115,7 @@
               />
             </div>
             <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto max-h-[400px]">
-              <div class="prose prose-sm max-w-none markdown-content" v-html="renderMarkdown(form.content || '')" />
+              <div class="prose prose-sm max-w-none markdown-content" v-html="renderedFormMarkdown" />
             </div>
           </div>
         </FormField>
@@ -164,36 +164,31 @@
         </div>
       </form>
     </ModalContent>
-  </Modal>
+  </div>
 </template>
 
 <script setup lang="ts">
   import { ref, watch, onMounted, computed } from 'vue'
   import { format } from 'date-fns'
   import { ru } from 'date-fns/locale'
-  import { Modal, ModalContent, FormField, Input, Button, Badge } from '@/shared/ui'
+  import { marked } from 'marked'
+  import DOMPurify from 'dompurify' // Для безопасного рендеринга HTML
+  import { ModalContent, FormField, Input, Button, Badge } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
 
   interface Props {
     entry?: JournalEntry | null
-    isOpen?: boolean
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    isOpen: false,
-  })
+  const props = defineProps<Props>()
 
   const emit = defineEmits<{
-    'update:isOpen': [value: boolean]
     close: []
+    confirm: [entry: CreateJournalEntryDto & { id?: string }]
     save: [entry: CreateJournalEntryDto & { id?: string }]
   }>()
 
   const mode = ref<'view' | 'edit' | 'create'>('view')
-  const isOpen = computed({
-    get: () => props.isOpen,
-    set: (value) => emit('update:isOpen', value),
-  })
 
   const moods = [
     { emoji: '😊', value: 5, label: 'Отлично' },
@@ -209,6 +204,19 @@
     { value: 'rich-text', label: 'Rich Text' },
     { value: 'document', label: 'Документ' },
   ] as const
+
+  // Настройка marked
+  marked.setOptions({
+    gfm: true, // GitHub Flavored Markdown
+    breaks: true, // Переносы строк становятся <br>
+  })
+
+  // Безопасный рендеринг Markdown
+  const renderMarkdown = (text: string): string => {
+    if (!text) return ''
+    const rawHtml = marked(text)
+    return DOMPurify.sanitize(rawHtml)
+  }
 
   const getMoodEmoji = (mood: number) => {
     const emojis: Record<number, string> = {
@@ -235,35 +243,22 @@
     return labels[type] || type
   }
 
-  // Простой markdown рендерер (базовый)
-  const renderMarkdown = (text: string): string => {
-    if (!text) return ''
-    let html = text
-      // Заголовки
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      // Жирный текст
-      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-      // Курсив
-      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-      // Ссылки
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" class="text-indigo-600 hover:underline">$1</a>')
-      // Списки
-      .replace(/^\* (.*$)/gim, '<li>$1</li>')
-      .replace(/^- (.*$)/gim, '<li>$1</li>')
-      // Параграфы
-      .replace(/\n\n/gim, '</p><p>')
-      // Переносы строк
-      .replace(/\n/gim, '<br>')
+  // Computed свойства для рендеринга markdown
+  const renderedMarkdown = computed(() => {
+    if (props.entry?.contentType === 'markdown' && props.entry?.content) {
+      return renderMarkdown(props.entry.content)
+    }
+    return ''
+  })
 
-    // Обернуть списки
-    html = html.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>')
-    html = '<p>' + html + '</p>'
-    return html
-  }
+  const renderedFormMarkdown = computed(() => {
+    if (form.value.contentType === 'markdown') {
+      return renderMarkdown(form.value.content || '')
+    }
+    return ''
+  })
 
-  const form = ref<CreateJournalEntryDto & { id?: string }>({
+  const form = ref<CreateJournalEntryDto & { id?: string; date: string }>({
     title: '',
     content: '',
     mood: undefined,
@@ -294,7 +289,7 @@
           title: entry.title,
           content: entry.content,
           mood: entry.mood,
-          date: entry.date,
+          date: entry.date || new Date().toISOString().split('T')[0],
           tags: entry.tags || [],
           contentType: entry.contentType,
         }
@@ -307,16 +302,6 @@
     { immediate: true },
   )
 
-  watch(
-    () => props.isOpen,
-    (open) => {
-      if (open && props.entry) {
-        mode.value = 'view'
-      } else if (open && !props.entry) {
-        mode.value = 'create'
-      }
-    },
-  )
 
   onMounted(() => {
     if (!props.entry) {
@@ -340,11 +325,11 @@
   }
 
   const handleClose = () => {
-    isOpen.value = false
     emit('close')
   }
 
   const handleSubmit = () => {
+    emit('confirm', form.value)
     emit('save', form.value)
     handleClose()
   }
