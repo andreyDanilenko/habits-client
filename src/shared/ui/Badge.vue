@@ -7,6 +7,7 @@
       variant === 'green' && 'bg-green-50 text-green-700',
       variant === 'indigo' && 'bg-indigo-50 text-indigo-700',
       variant === 'purple' && 'bg-purple-50 text-purple-700',
+      variant === 'outline' && 'border border-gray-300 bg-white text-gray-700',
     ]"
   >
     <slot />
@@ -16,7 +17,7 @@
 <script setup lang="ts">
   withDefaults(
     defineProps<{
-      variant?: 'default' | 'blue' | 'green' | 'indigo' | 'purple'
+      variant?: 'default' | 'blue' | 'green' | 'indigo' | 'purple' | 'outline'
     }>(),
     {
       variant: 'default',

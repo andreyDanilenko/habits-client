@@ -21,25 +21,58 @@
     </div>
 
     <!-- Календарь -->
-    <div class="grid grid-cols-7 gap-1">
+    <div class="grid grid-cols-7 gap-1 relative">
       <div
-        v-for="day in calendarDays"
+        v-for="(day, index) in calendarDays"
         :key="day.dateStr"
         :class="[
-          'h-10 rounded-lg flex items-center justify-center text-sm font-medium relative',
-          'cursor-pointer transition-colors',
-          day.isToday ? 'bg-indigo-50 text-indigo-700' : 'hover:bg-gray-50',
+          'h-10 rounded-lg flex items-center justify-center text-sm font-medium relative z-10',
+          'cursor-pointer transition-all duration-200',
+          day.isToday ? 'bg-indigo-50 text-indigo-700 font-semibold' : 'hover:bg-gray-50',
           day.isCurrentMonth ? 'text-gray-900' : 'text-gray-400',
+          day.isInStreak ? 'bg-gradient-to-br from-green-50 to-emerald-50' : '',
         ]"
         @click="selectDate(day.date)"
       >
         {{ day.day }}
 
-        <!-- Индикатор привычек -->
+        <!-- Streak индикатор - полоска снизу -->
         <div
-          v-if="day.habitCount > 0"
-          class="absolute bottom-1 w-1 h-1 rounded-full"
+          v-if="day.isInStreak"
+          class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 rounded-b-lg"
+        />
+
+        <!-- Индикатор привычек (если не в streak) -->
+        <div
+          v-if="day.habitCount > 0 && !day.isInStreak"
+          class="absolute bottom-1 w-1.5 h-1.5 rounded-full"
           :class="day.allCompleted ? 'bg-green-500' : 'bg-gray-300'"
+        />
+
+        <!-- Соединительные линии для streak -->
+        <!-- Горизонтальная линия вправо -->
+        <div
+          v-if="day.streakConnections?.right"
+          class="absolute top-1/2 -right-0.5 w-1 h-1 bg-gradient-to-r from-green-400 to-emerald-400 rounded-r-full z-0"
+          style="transform: translateY(-50%)"
+        />
+        <!-- Горизонтальная линия влево -->
+        <div
+          v-if="day.streakConnections?.left"
+          class="absolute top-1/2 -left-0.5 w-1 h-1 bg-gradient-to-r from-emerald-400 to-green-400 rounded-l-full z-0"
+          style="transform: translateY(-50%)"
+        />
+        <!-- Вертикальная линия вниз -->
+        <div
+          v-if="day.streakConnections?.down"
+          class="absolute -bottom-0.5 left-1/2 h-1 w-1 bg-gradient-to-b from-green-400 to-emerald-400 rounded-b-full z-0"
+          style="transform: translateX(-50%)"
+        />
+        <!-- Вертикальная линия вверх -->
+        <div
+          v-if="day.streakConnections?.up"
+          class="absolute -top-0.5 left-1/2 h-1 w-1 bg-gradient-to-b from-emerald-400 to-green-400 rounded-t-full z-0"
+          style="transform: translateX(-50%)"
         />
       </div>
     </div>
@@ -62,6 +95,9 @@
     isToday,
     startOfWeek,
     endOfWeek,
+    addDays,
+    subDays,
+    isSameDay,
   } from 'date-fns'
   import { ru } from 'date-fns/locale'
 
@@ -109,9 +145,72 @@
       })
     }
 
-    return eachDayOfInterval({ start: calendarStart, end: calendarEnd }).map((date) => {
+    const allDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
+
+    // Определяем streak'и (последовательные дни с выполненными привычками)
+    const streakDays = new Set<string>()
+    const dayIndexMap = new Map<string, number>()
+
+    allDays.forEach((date, index) => {
+      const dateStr = format(date, 'yyyy-MM-dd')
+      dayIndexMap.set(dateStr, index)
+      const dayData = calendarMap.get(dateStr)
+      if (dayData?.allCompleted) {
+        streakDays.add(dateStr)
+      }
+    })
+
+    // Вычисляем соединения для streak'ов
+    return allDays.map((date, index) => {
       const dateStr = format(date, 'yyyy-MM-dd')
       const dayData = calendarMap.get(dateStr) || { habitCount: 0, allCompleted: false }
+      const isInStreak = streakDays.has(dateStr)
+
+      // Проверяем соседние дни для соединений
+      const prevDay = format(subDays(date, 1), 'yyyy-MM-dd')
+      const nextDay = format(addDays(date, 1), 'yyyy-MM-dd')
+      const prevDayIndex = dayIndexMap.get(prevDay)
+      const nextDayIndex = dayIndexMap.get(nextDay)
+
+      // Определяем направление соединений
+      const connections: {
+        left?: boolean
+        right?: boolean
+        up?: boolean
+        down?: boolean
+      } = {}
+
+      if (isInStreak) {
+        // Горизонтальные соединения (в пределах одной недели)
+        const currentWeekDay = date.getDay() === 0 ? 7 : date.getDay()
+        const isFirstInWeek = currentWeekDay === 1
+        const isLastInWeek = currentWeekDay === 7
+
+        if (!isFirstInWeek && streakDays.has(prevDay) && prevDayIndex !== undefined) {
+          connections.left = true
+        }
+        if (!isLastInWeek && streakDays.has(nextDay) && nextDayIndex !== undefined) {
+          connections.right = true
+        }
+
+        // Вертикальные соединения (между неделями)
+        if (prevDayIndex !== undefined && prevDayIndex >= 0 && streakDays.has(prevDay)) {
+          const prevDate = subDays(date, 1)
+          const prevWeekDay = prevDate.getDay() === 0 ? 7 : prevDate.getDay()
+          // Соединяем только если предыдущий день в той же колонке (день недели)
+          if (prevWeekDay === currentWeekDay) {
+            connections.up = true
+          }
+        }
+        if (nextDayIndex !== undefined && nextDayIndex < allDays.length && streakDays.has(nextDay)) {
+          const nextDate = addDays(date, 1)
+          const nextWeekDay = nextDate.getDay() === 0 ? 7 : nextDate.getDay()
+          // Соединяем только если следующий день в той же колонке
+          if (nextWeekDay === currentWeekDay) {
+            connections.down = true
+          }
+        }
+      }
 
       return {
         date,
@@ -121,6 +220,8 @@
         isCurrentMonth: isSameMonth(date, currentDate.value),
         habitCount: dayData.habitCount,
         allCompleted: dayData.allCompleted,
+        isInStreak,
+        streakConnections: Object.keys(connections).length > 0 ? connections : undefined,
       }
     })
   })
