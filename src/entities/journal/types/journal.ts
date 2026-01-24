@@ -1,4 +1,4 @@
-export type JournalContentType = 'text' | 'markdown' | 'rich-text' | 'document'
+export type JournalContentType = 'text' | 'markdown'
 
 export interface JournalEntry {
   id: string

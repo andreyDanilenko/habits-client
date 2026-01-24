@@ -6,8 +6,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Дневник</h1>
         <p class="text-gray-600 mt-1">Записывайте свои мысли, достижения и планы</p>
       </div>
-      <Button @click="handleCreateEntry" class="w-full sm:w-auto">
-        <PlusIcon class="w-5 h-5 mr-2" />
+      <Button @click="handleCreateEntry" class="w-full sm:w-auto" :to="{ name: 'JournalNew' }">
         Новая запись
       </Button>
     </div>
@@ -157,7 +156,6 @@
     <!-- Пустое состояние -->
     <div v-else-if="filteredEntries.length === 0" class="text-center py-16">
       <Card :border="true" :padding="true" class="max-w-md mx-auto">
-        <div class="text-6xl mb-4">📔</div>
         <h3 class="text-xl font-semibold text-gray-900 mb-2">
           {{ hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей' }}
         </h3>
@@ -172,8 +170,7 @@
             Сбросить фильтры
           </Button>
           <Button @click="handleCreateEntry">
-            <PlusIcon class="w-5 h-5 mr-2" />
-            Создать первую запись
+            Создать запись
           </Button>
         </div>
       </Card>
@@ -218,7 +215,11 @@
   import { useJournalPage } from '@/features/journal/model'
   import { Card, Button, Input, Spinner, Badge } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
+  import { useRouter } from 'vue-router'
+
   import type { JournalEntry } from '@/entities/journal'
+
+  const router = useRouter()
 
   const {
     searchQuery,
@@ -228,11 +229,20 @@
     filteredEntries,
     moodOptions,
     dateOptions,
-    handleCreateEntry,
-    handleSelectEntry,
-    handleEditEntry,
     handleDeleteEntry,
   } = useJournalPage()
+
+  const handleCreateEntry = () => {
+    router.push({ name: 'JournalNew' })
+  }
+
+  const handleSelectEntry = (entry: JournalEntry) => {
+    router.push({ name: 'JournalView', params: { id: entry.id } })
+  }
+
+  const handleEditEntry = (entry: JournalEntry) => {
+    router.push({ name: 'JournalEdit', params: { id: entry.id } })
+  }
 
   // Статистика
   const monthlyCount = computed(() => {

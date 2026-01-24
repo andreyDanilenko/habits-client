@@ -34,6 +34,24 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/journal/new',
+    name: 'JournalNew',
+    component: () => import('@/pages/journal-editor'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/journal/:id',
+    name: 'JournalView',
+    component: () => import('@/pages/journal-view'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/journal/:id/edit',
+    name: 'JournalEdit',
+    component: () => import('@/pages/journal-editor'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('@/pages/settings'),

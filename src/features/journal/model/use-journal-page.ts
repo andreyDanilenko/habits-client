@@ -18,7 +18,6 @@ const dateOptions = [
 ]
 
 export const useJournalPage = () => {
-  const { openModal } = useModal()
   const searchQuery = ref('')
   const selectedMood = ref<number | null>(null)
   const selectedDate = ref<string | null>(null)
@@ -117,47 +116,6 @@ export const useJournalPage = () => {
     }
   }
 
-  const handleCreateEntry = () => {
-    return openModal<CreateJournalEntryDto & { id?: string }>({
-      component: JournalEntryModal,
-      props: {
-        entry: null,
-      },
-      onConfirm: async (entryData?: CreateJournalEntryDto & { id?: string }) => {
-        if (entryData) {
-          handleSaveEntry(entryData)
-        }
-      },
-    })
-  }
-
-  const handleSelectEntry = (entry: JournalEntry) => {
-    return openModal<CreateJournalEntryDto & { id?: string }>({
-      component: JournalEntryModal,
-      props: {
-        entry,
-      },
-      onConfirm: async (entryData?: CreateJournalEntryDto & { id?: string }) => {
-        if (entryData) {
-          handleSaveEntry(entryData)
-        }
-      },
-    })
-  }
-
-  const handleEditEntry = (entry: JournalEntry) => {
-    return openModal<CreateJournalEntryDto & { id?: string }>({
-      component: JournalEntryModal,
-      props: {
-        entry,
-      },
-      onConfirm: async (entryData?: CreateJournalEntryDto & { id?: string }) => {
-        if (entryData) {
-          handleSaveEntry(entryData)
-        }
-      },
-    })
-  }
 
   const handleDeleteEntry = (entry: JournalEntry) => {
     console.log('Delete entry:', entry.id)
@@ -176,9 +134,6 @@ export const useJournalPage = () => {
     dateOptions,
 
     // Methods
-    handleCreateEntry,
-    handleSelectEntry,
-    handleEditEntry,
     handleDeleteEntry,
   }
 }

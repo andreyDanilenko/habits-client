@@ -3,7 +3,7 @@
     :border="true"
     :padding="true"
     class="cursor-pointer hover:shadow-lg transition-all duration-200 group border-gray-200 hover:border-indigo-300 relative overflow-hidden"
-    @click="$emit('click')"
+    @click.stop="$emit('click')"
   >
     <!-- Акцентная полоска слева -->
     <div
