@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+  <header class="sticky top-0 z-50 bg-white border-b border-gray-300 shadow-sm">
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between h-16">
         <!-- Лого -->

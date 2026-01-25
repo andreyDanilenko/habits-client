@@ -12,7 +12,7 @@
       </template>
 
       <div class="w-56">
-        <div class="px-3 pt-3 pb-2 border-b">
+        <div class="px-3 pt-3 pb-2 border-b border-gray-300">
           <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Аккаунт</p>
           <p class="mt-1 text-sm font-medium text-gray-900 truncate">
             {{ userEmail }}

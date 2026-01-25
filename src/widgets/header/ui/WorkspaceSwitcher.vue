@@ -14,9 +14,9 @@
         </Button>
       </template>
 
-      <div class="w-64 bg-white rounded-lg shadow-lg border">
+      <div class="w-64 bg-white rounded-lg shadow-lg border border-gray-300">
         <!-- Заголовок -->
-        <div class="px-4 py-3 border-b">
+        <div class="px-4 py-3 border-b border-gray-300">
           <div class="flex items-center justify-between">
             <p class="text-sm font-semibold text-gray-700">Рабочие пространства</p>
             <Button
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Действия -->
-        <div class="border-t p-2">
+        <div class="border-t border-gray-300 p-2">
           <Button
             @click.stop="openCreateModal"
             variant="ghost"
