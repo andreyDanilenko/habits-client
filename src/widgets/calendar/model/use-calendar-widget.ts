@@ -140,7 +140,11 @@ export const useCalendarWidget = () => {
             connections.up = true
           }
         }
-        if (nextDayIndex !== undefined && nextDayIndex < allDays.length && streakDays.has(nextDay)) {
+        if (
+          nextDayIndex !== undefined &&
+          nextDayIndex < allDays.length &&
+          streakDays.has(nextDay)
+        ) {
           const nextDate = addDays(date, 1)
           const nextWeekDay = nextDate.getDay() === 0 ? 7 : nextDate.getDay()
           // Соединяем только если следующий день в той же колонке

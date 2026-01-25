@@ -87,7 +87,9 @@ export const useJournalPage = () => {
           return entryDate >= weekAgo
         }
         if (selectedDate.value === 'month') {
-          return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+          return (
+            entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+          )
         }
         return true
       })
@@ -111,7 +113,7 @@ export const useJournalPage = () => {
       const newEntry: JournalEntry = {
         ...entryData,
         id: Date.now().toString(),
-        userId: 'current-user-id', 
+        userId: 'current-user-id',
         workspaceId: 'current-workspace-id',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -121,7 +123,6 @@ export const useJournalPage = () => {
       entries.value.push(newEntry)
     }
   }
-
 
   const handleDeleteEntry = (entry: JournalEntry) => {
     console.log('Delete entry:', entry.id)
@@ -133,7 +134,9 @@ export const useJournalPage = () => {
     const now = new Date()
     return filteredEntries.value.filter((entry) => {
       const entryDate = parseISO(entry.date)
-      return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+      return (
+        entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+      )
     }).length
   })
 
@@ -157,7 +160,7 @@ export const useJournalPage = () => {
   // Группировка по датам
   const groupedEntries = computed<GroupedEntry[]>(() => {
     const groups = new Map<string, JournalEntry[]>()
-    
+
     filteredEntries.value.forEach((entry) => {
       const dateKey = entry.date
       if (!groups.has(dateKey)) {
@@ -170,7 +173,7 @@ export const useJournalPage = () => {
       .map(([date, entries]) => {
         const entryDate = parseISO(date)
         let dateLabel = ''
-        
+
         if (isToday(entryDate)) {
           dateLabel = 'Сегодня'
         } else if (isYesterday(entryDate)) {
@@ -187,8 +190,8 @@ export const useJournalPage = () => {
         return {
           date,
           dateLabel,
-          entries: entries.sort((a, b) => 
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          entries: entries.sort(
+            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
           ),
         }
       })

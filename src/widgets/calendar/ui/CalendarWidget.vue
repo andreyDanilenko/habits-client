@@ -20,12 +20,6 @@
   import CalendarWidgetGrid from './CalendarWidgetGrid.vue'
   import { useCalendarWidget } from '../model'
 
-  const {
-    calendarDays,
-    formattedMonth,
-    weekDays,
-    prevMonth,
-    nextMonth,
-    selectDate,
-  } = useCalendarWidget()
+  const { calendarDays, formattedMonth, weekDays, prevMonth, nextMonth, selectDate } =
+    useCalendarWidget()
 </script>

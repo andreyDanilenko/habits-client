@@ -61,11 +61,7 @@ export const useHabitActions = () => {
       props: {
         habit,
       },
-      onConfirm: async (completionData?: {
-        habitId: string
-        time?: string
-        note?: string
-      }) => {
+      onConfirm: async (completionData?: { habitId: string; time?: string; note?: string }) => {
         if (completionData) {
           await habitStore.markCompletion(completionData)
         }

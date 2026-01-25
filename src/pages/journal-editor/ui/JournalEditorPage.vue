@@ -4,12 +4,7 @@
     <div class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <Button
-            @click="handleCancel"
-            variant="ghost"
-            size="md"
-            :left-icon="ArrowLeftIcon"
-          >
+          <Button @click="handleCancel" variant="ghost" size="md" :left-icon="ArrowLeftIcon">
             <span class="hidden sm:inline">Назад</span>
           </Button>
 
@@ -45,7 +40,11 @@
       :word-count="wordCount"
       :reading-time="readingTime"
       @update:form="(field, value) => updateForm(field, value)"
-      @update:new-tag="(value) => { newTag = value }"
+      @update:new-tag="
+        (value) => {
+          newTag = value
+        }
+      "
       @add-tag="addTag"
       @remove-tag="removeTag"
       @auto-save="handleAutoSave"
@@ -54,10 +53,7 @@
     <!-- Редактор -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <Card :border="true" :padding="true">
-        <JournalEditorToolbar
-          v-if="form.contentType === 'markdown'"
-          @insert="insertMarkdown"
-        />
+        <JournalEditorToolbar v-if="form.contentType === 'markdown'" @insert="insertMarkdown" />
 
         <JournalContentEditor
           ref="contentEditorRef"

@@ -2,11 +2,7 @@
   <div class="relative">
     <Tooltip variant="dropdown" trigger="click" placement="bottom" width="256px">
       <template #trigger>
-        <Button
-          variant="ghost"
-          size="md"
-          custom-class="justify-start gap-2"
-        >
+        <Button variant="ghost" size="md" custom-class="justify-start gap-2">
           <div
             class="w-6 h-6 rounded flex-shrink-0"
             :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"

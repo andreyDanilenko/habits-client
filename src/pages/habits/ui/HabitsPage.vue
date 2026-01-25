@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
-    <HabitsPageHeader 
+    <HabitsPageHeader
       :selected-date="selectedDate"
       :show-all="showAll"
       @add-habit="handleAddHabit"

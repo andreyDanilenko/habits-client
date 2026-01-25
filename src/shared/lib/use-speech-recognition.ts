@@ -68,7 +68,8 @@ export function useSpeechRecognition(options?: {
       if (e.error === 'aborted' || e.error === 'no-speech') {
         return
       }
-      error.value = e.error === 'not-allowed' ? 'Доступ к микрофону запрещён.' : `Ошибка: ${e.error}`
+      error.value =
+        e.error === 'not-allowed' ? 'Доступ к микрофону запрещён.' : `Ошибка: ${e.error}`
     }
 
     recognition.onend = () => {

@@ -1,6 +1,10 @@
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <Card :border="true" :padding="true" class="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+    <Card
+      :border="true"
+      :padding="true"
+      class="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200"
+    >
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Всего записей</p>
@@ -11,7 +15,11 @@
         </div>
       </div>
     </Card>
-    <Card :border="true" :padding="true" class="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
+    <Card
+      :border="true"
+      :padding="true"
+      class="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200"
+    >
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">За этот месяц</p>
@@ -22,7 +30,11 @@
         </div>
       </div>
     </Card>
-    <Card :border="true" :padding="true" class="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+    <Card
+      :border="true"
+      :padding="true"
+      class="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200"
+    >
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-600 mb-1">Среднее настроение</p>

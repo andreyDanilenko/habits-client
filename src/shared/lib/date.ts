@@ -50,20 +50,20 @@ export function formatTimeRu(date: Date | string): string {
 export function formatDateDisplay(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
   if (!dateObj || isNaN(dateObj.getTime())) return ''
-  
+
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const yesterday = new Date(today)
   yesterday.setDate(yesterday.getDate() - 1)
   const dateOnly = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate())
-  
+
   if (dateOnly.getTime() === today.getTime()) {
     return 'Сегодня'
   }
   if (dateOnly.getTime() === yesterday.getTime()) {
     return 'Вчера'
   }
-  
+
   return formatDateRu(dateObj, 'd MMMM yyyy')
 }
 
@@ -73,19 +73,19 @@ export function formatDateDisplay(date: Date | string): string {
 export function formatRelativeTime(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
   if (!dateObj || isNaN(dateObj.getTime())) return ''
-  
+
   const now = new Date()
   const diff = now.getTime() - dateObj.getTime()
   const seconds = Math.floor(diff / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
   const days = Math.floor(hours / 24)
-  
+
   if (minutes < 1) return 'только что'
   if (minutes < 60) return `${minutes} мин назад`
   if (hours < 24) return `${hours} ч назад`
   if (days < 7) return `${days} дн назад`
-  
+
   return formatDateRu(dateObj, 'd MMMM yyyy, HH:mm')
 }
 

@@ -11,7 +11,12 @@
         />
         <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
         <Button
@@ -32,7 +37,12 @@
           <label class="block text-xs font-medium text-gray-700 mb-1">Настроение</label>
           <select
             :value="selectedMood"
-            @change="$emit('update:selected-mood', $event.target.value ? Number($event.target.value) : null)"
+            @change="
+              $emit(
+                'update:selected-mood',
+                $event.target.value ? Number($event.target.value) : null,
+              )
+            "
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
           >
             <option :value="null">Все настроения</option>
@@ -77,7 +87,7 @@
           variant="outline"
           class="bg-indigo-50 text-indigo-700 border-indigo-200 flex items-center gap-1"
         >
-          Настроение: {{ moodOptions.find(m => m.value === selectedMood)?.label }}
+          Настроение: {{ moodOptions.find((m) => m.value === selectedMood)?.label }}
           <Button
             @click.stop="$emit('update:selected-mood', null)"
             icon-only
@@ -93,7 +103,7 @@
           variant="outline"
           class="bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1"
         >
-          Период: {{ dateOptions.find(d => d.value === selectedDate)?.label }}
+          Период: {{ dateOptions.find((d) => d.value === selectedDate)?.label }}
           <Button
             @click.stop="$emit('update:selected-date', null)"
             icon-only

@@ -55,9 +55,7 @@
                 <span
                   class="text-xs"
                   :class="
-                    getProgress(habit.id) >= 1
-                      ? 'text-green-600 font-medium'
-                      : 'text-gray-500'
+                    getProgress(habit.id) >= 1 ? 'text-green-600 font-medium' : 'text-gray-500'
                   "
                 >
                   {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}
@@ -101,4 +99,4 @@
   const markCompletion = (habit: Habit) => {
     habitActions.markCompletion(habit)
   }
-  </script>
+</script>

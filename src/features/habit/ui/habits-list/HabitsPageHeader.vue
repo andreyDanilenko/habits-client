@@ -7,7 +7,7 @@
       </div>
       <Button @click.stop="$emit('add-habit')">Добавить</Button>
     </div>
-    
+
     <div class="flex items-center gap-4 flex-wrap">
       <div class="flex items-center gap-2">
         <label for="date-filter" class="text-sm font-medium text-gray-700">Фильтр по дате:</label>
@@ -20,11 +20,7 @@
           class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
         />
       </div>
-      <Button
-        :variant="showAll ? 'default' : 'outline'"
-        size="sm"
-        @click="$emit('show-all')"
-      >
+      <Button :variant="showAll ? 'default' : 'outline'" size="sm" @click="$emit('show-all')">
         Загрузить все
       </Button>
       <Button

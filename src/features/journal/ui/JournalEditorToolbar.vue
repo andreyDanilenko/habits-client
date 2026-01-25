@@ -1,5 +1,7 @@
 <template>
-  <div class="mb-4 p-2 bg-gray-50 rounded-lg border border-gray-200 flex items-center gap-2 flex-wrap">
+  <div
+    class="mb-4 p-2 bg-gray-50 rounded-lg border border-gray-200 flex items-center gap-2 flex-wrap"
+  >
     <Button
       type="button"
       variant="ghost"
@@ -31,31 +33,13 @@
       &lt;/&gt;
     </Button>
     <div class="w-px h-6 bg-gray-300"></div>
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      @click="insert('# ', '')"
-      title="H1"
-    >
+    <Button type="button" variant="ghost" size="sm" @click="insert('# ', '')" title="H1">
       H1
     </Button>
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      @click="insert('## ', '')"
-      title="H2"
-    >
+    <Button type="button" variant="ghost" size="sm" @click="insert('## ', '')" title="H2">
       H2
     </Button>
-    <Button
-      type="button"
-      variant="ghost"
-      size="sm"
-      @click="insert('- ', '')"
-      title="Список"
-    >
+    <Button type="button" variant="ghost" size="sm" @click="insert('- ', '')" title="Список">
       •
     </Button>
   </div>

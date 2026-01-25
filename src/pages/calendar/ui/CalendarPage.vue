@@ -8,11 +8,7 @@
 
     <CalendarLegend />
 
-    <CalendarGrid
-      :calendar-days="calendarDays"
-      :week-days="weekDays"
-      :is-loading="isLoading"
-    />
+    <CalendarGrid :calendar-days="calendarDays" :week-days="weekDays" :is-loading="isLoading" />
   </div>
 </template>
 
@@ -20,12 +16,6 @@
   import { CalendarPageHeader, CalendarLegend, CalendarGrid } from '@/features/calendar'
   import { useCalendarPage } from '@/features/calendar/model'
 
-  const {
-    calendarDays,
-    formattedMonth,
-    weekDays,
-    isLoading,
-    prevMonth,
-    nextMonth,
-  } = useCalendarPage()
+  const { calendarDays, formattedMonth, weekDays, isLoading, prevMonth, nextMonth } =
+    useCalendarPage()
 </script>

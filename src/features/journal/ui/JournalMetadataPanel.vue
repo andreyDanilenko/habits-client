@@ -14,7 +14,12 @@
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </Button>
 
@@ -87,13 +92,13 @@
               {{ tag }} ×
             </Badge>
           </div>
-            <Input
-              :model-value="newTag"
-              @update:model-value="emit('update:newTag', $event)"
-              placeholder="Добавить тег..."
-              class="w-full"
-              @keydown.enter.prevent="addTag"
-            />
+          <Input
+            :model-value="newTag"
+            @update:model-value="emit('update:newTag', $event)"
+            placeholder="Добавить тег..."
+            class="w-full"
+            @keydown.enter.prevent="addTag"
+          />
         </FormField>
 
         <div class="flex gap-6 text-sm pt-2 border-t border-gray-100">
@@ -133,9 +138,9 @@
   const emit = defineEmits<{
     'update:form': [field: keyof Props['form'], value: any]
     'update:newTag': [value: string]
-    'addTag': []
-    'removeTag': [tag: string]
-    'autoSave': []
+    addTag: []
+    removeTag: [tag: string]
+    autoSave: []
   }>()
 
   const isOpen = ref(false)

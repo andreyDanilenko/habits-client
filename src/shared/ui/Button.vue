@@ -6,7 +6,9 @@
       'cursor-pointer inline-flex flex-row items-center rounded-lg font-medium transition-colors',
       customClass && customClass.includes('justify-') ? '' : 'justify-center',
       'focus:outline-none',
-      props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon' ? 'focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300' : '',
+      props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon'
+        ? 'focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300'
+        : '',
       'disabled:opacity-50 disabled:cursor-not-allowed relative',
       iconOnly ? 'p-1 rounded' : sizeClasses,
       variantClasses,

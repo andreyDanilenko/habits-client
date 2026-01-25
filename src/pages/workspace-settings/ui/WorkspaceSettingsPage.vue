@@ -117,7 +117,6 @@
         </div>
       </div>
     </Card>
-
   </div>
 </template>
 
@@ -125,11 +124,6 @@
   import { useWorkspaceSettingsPage } from '@/features/workspace/model'
   import { Card, Button, Input } from '@/shared/ui'
 
-  const {
-    isSaving,
-    workspaceData,
-    isOwner,
-    saveWorkspace,
-    handleDeleteWorkspace,
-  } = useWorkspaceSettingsPage()
+  const { isSaving, workspaceData, isOwner, saveWorkspace, handleDeleteWorkspace } =
+    useWorkspaceSettingsPage()
 </script>

@@ -20,7 +20,9 @@ export const habitService = {
   getHabits: async (date?: string): Promise<Habit[]> => {
     const params = new URLSearchParams()
     if (date) params.append('date', date)
-    const url = params.toString() ? `${API_ENDPOINTS.HABITS.BASE}?${params.toString()}` : API_ENDPOINTS.HABITS.BASE
+    const url = params.toString()
+      ? `${API_ENDPOINTS.HABITS.BASE}?${params.toString()}`
+      : API_ENDPOINTS.HABITS.BASE
     const response = await api.get<HabitsDataResponse>(url)
     return response.habits
   },

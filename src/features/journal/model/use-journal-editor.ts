@@ -1,6 +1,6 @@
 import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
+import type { CreateJournalEntryDto } from '@/entities/journal'
 
 const moodOptions = [
   { value: 5, emoji: '😊', label: 'Отлично' },
@@ -81,8 +81,7 @@ export const useJournalEditor = (entryId?: string) => {
     const selectedText = form.content.substring(start, end)
     const newText = before + selectedText + after
 
-    form.content =
-      form.content.substring(0, start) + newText + form.content.substring(end)
+    form.content = form.content.substring(0, start) + newText + form.content.substring(end)
 
     // Восстанавливаем фокус и позицию курсора
     nextTick(() => {
@@ -122,7 +121,7 @@ export const useJournalEditor = (entryId?: string) => {
       //   const newEntry = await journalStore.createEntry(form)
       //   form.id = newEntry.id
       // }
-      
+
       lastSaved.value = new Date()
     } catch (error) {
       console.error('Failed to save draft:', error)

@@ -7,7 +7,7 @@ export const useHabitsPage = () => {
   const habitStore = useHabitStore()
   const habitActions = useHabitActions()
   const { habitProgressMap } = useHabitProgress()
-  
+
   const selectedDate = ref<string>('')
   const showAll = ref<boolean>(false)
 

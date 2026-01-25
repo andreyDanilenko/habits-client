@@ -39,7 +39,7 @@ export const useHabitStore = defineStore('habit', () => {
       isLoading.value = false
     }
   }
-  
+
   const fetchAllHabits = async () => {
     isLoading.value = true
     try {
@@ -98,7 +98,7 @@ export const useHabitStore = defineStore('habit', () => {
   const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
     try {
       const habitData: any = {}
-      
+
       if (data.title !== undefined) habitData.title = data.title
       if (data.description !== undefined) habitData.description = data.description
       if (data.color !== undefined) habitData.color = data.color
@@ -107,8 +107,10 @@ export const useHabitStore = defineStore('habit', () => {
       if (data.dailyGoal !== undefined) habitData.dailyGoal = data.dailyGoal
       if (data.preferredTime !== undefined) habitData.preferredTime = data.preferredTime
       if (data.category !== undefined) habitData.category = data.category
-      if ((data as any).scheduleType !== undefined) habitData.scheduleType = (data as any).scheduleType
-      if ((data as any).recurringDays !== undefined) habitData.recurringDays = (data as any).recurringDays
+      if ((data as any).scheduleType !== undefined)
+        habitData.scheduleType = (data as any).scheduleType
+      if ((data as any).recurringDays !== undefined)
+        habitData.recurringDays = (data as any).recurringDays
       if ((data as any).oneTimeDate !== undefined) habitData.oneTimeDate = (data as any).oneTimeDate
       if ((data as any).isActive !== undefined) habitData.isActive = (data as any).isActive
 
