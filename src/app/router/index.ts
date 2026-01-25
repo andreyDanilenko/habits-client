@@ -64,6 +64,12 @@ const routes = [
     meta: { requiresAuth: true },
     beforeEnter: requireOwner(),
   },
+  {
+    path: '/calendar',
+    name: 'Calendar',
+    component: () => import('@/pages/calendar'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({
