@@ -10,7 +10,7 @@
           {{ habit.icon || '📝' }}
         </div>
         <div class="flex-1">
-          <h3 class="text-xl font-semibold text-gray-900">{{ habit.title }}</h3>
+          <h3>{{ habit.title }}</h3>
           <p v-if="habit.description" class="mt-2 text-gray-600">
             {{ habit.description }}
           </p>
@@ -82,7 +82,7 @@
 
       <!-- История последних выполнений -->
       <div>
-        <h4 class="text-lg font-medium text-gray-900 mb-3">Последние выполнения</h4>
+        <h4 class="mb-3">Последние выполнения</h4>
         <div v-if="recentCompletions.length === 0" class="text-center py-4">
           <p class="text-gray-500">Пока нет выполнений</p>
           <p class="text-xs text-gray-400 mt-2">

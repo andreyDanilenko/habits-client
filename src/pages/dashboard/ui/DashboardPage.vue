@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6">
-      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+      <h1 class="mb-2">
         {{ greeting }}, {{ userName }}!
       </h1>
       <p class="text-gray-600">Сегодня {{ formattedDate }}</p>

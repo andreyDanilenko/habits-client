@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Настройки</h1>
+      <h1>Настройки</h1>
       <p class="mt-2 text-gray-600">Управляйте настройками своего аккаунта</p>
     </div>
 
     <Card class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Профиль</h2>
+      <h2 class="mb-4">Профиль</h2>
 
       <div class="space-y-4">
         <Input
@@ -34,7 +34,7 @@
     </Card>
 
     <Card class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Уведомления</h2>
+      <h2 class="mb-4">Уведомления</h2>
 
       <div class="space-y-4">
         <div class="flex items-center justify-between">
@@ -66,7 +66,7 @@
     </Card>
 
     <Card class="p-6 border-red-200">
-      <h2 class="text-xl font-semibold text-red-900 mb-4">Опасная зона</h2>
+      <h2 class="text-red-900 mb-4">Опасная зона</h2>
 
       <div class="space-y-4">
         <div>

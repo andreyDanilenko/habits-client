@@ -1,19 +1,3 @@
-<script setup lang="ts">
-  import { HabitsPageHeader, HabitsEmptyState, HabitsList } from '@/features/habit/ui'
-  import { useHabitsPage } from '@/features/habit/model'
-
-  const {
-    habits,
-    isLoading,
-    habitProgressMap,
-    handleAddHabit,
-    editHabit,
-    deleteHabit,
-    markCompletion,
-    selectHabit,
-  } = useHabitsPage()
-</script>
-
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <HabitsPageHeader @add-habit="handleAddHabit" />
@@ -35,3 +19,19 @@
     />
   </div>
 </template>
+
+<script setup lang="ts">
+  import { HabitsPageHeader, HabitsEmptyState, HabitsList } from '@/features/habit/ui'
+  import { useHabitsPage } from '@/features/habit/model'
+
+  const {
+    habits,
+    isLoading,
+    habitProgressMap,
+    handleAddHabit,
+    editHabit,
+    deleteHabit,
+    markCompletion,
+    selectHabit,
+  } = useHabitsPage()
+</script>

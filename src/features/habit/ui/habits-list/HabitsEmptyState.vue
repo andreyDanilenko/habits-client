@@ -4,7 +4,7 @@
       <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <PlusIcon size="lg" />
       </div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">Нет привычек</h3>
+      <h3 class="mb-2">Нет привычек</h3>
       <p class="text-gray-500 mb-6">
         Создайте свою первую привычку, чтобы начать отслеживать прогресс
       </p>

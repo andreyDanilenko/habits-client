@@ -1,7 +1,7 @@
 <template>
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="font-semibold text-gray-900">Календарь привычек</h3>
+      <h3>Календарь привычек</h3>
       <div class="flex items-center space-x-2">
         <Button icon-only variant="icon" :left-icon="ArrowLeftIcon" @click="prevMonth" />
         <span class="font-medium">{{ formattedMonth }}</span>

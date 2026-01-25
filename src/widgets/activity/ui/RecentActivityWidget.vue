@@ -1,6 +1,6 @@
 <template>
   <Card :border="true" :padding="true">
-    <h2 class="text-xl font-bold text-gray-900 mb-4">Недавняя активность</h2>
+    <h2 class="mb-4">Недавняя активность</h2>
 
     <div v-if="activities.length === 0" class="text-center py-8">
       <p class="text-gray-500">Нет недавней активности</p>

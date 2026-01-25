@@ -1,7 +1,7 @@
 <template>
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold text-gray-900">Привычки на сегодня</h2>
+      <h2>Привычки на сегодня</h2>
       <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button>
     </div>
 
@@ -31,11 +31,12 @@
               {{ habit.icon || '📝' }}
             </div>
             <div class="flex-1">
-              <h3 class="font-semibold text-gray-900">{{ habit.title }}</h3>
-              <p v-if="habit.description" class="text-sm text-gray-500 mt-1">
+              <h3>{{ habit.title }}</h3>
+              <!-- <p v-if="habit.description" class="text-sm text-gray-500 mt-1">
                 {{ habit.description }}
-              </p>
-              <div class="mt-2 flex items-center space-x-2">
+              </p> -->
+              <!-- Прогресс показываем только если dailyGoal > 1 -->
+              <div v-if="(habit.dailyGoal || 1) > 1" class="mt-2 flex items-center space-x-2">
                 <span class="text-xs text-gray-500">
                   Прогресс: {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
                 </span>
@@ -48,6 +49,19 @@
                     }"
                   />
                 </div>
+              </div>
+              <!-- Для dailyGoal = 1 просто показываем статус -->
+              <div v-else class="mt-2">
+                <span
+                  class="text-xs"
+                  :class="
+                    getProgress(habit.id) >= 1
+                      ? 'text-green-600 font-medium'
+                      : 'text-gray-500'
+                  "
+                >
+                  {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}
+                </span>
               </div>
             </div>
           </div>

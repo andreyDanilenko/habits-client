@@ -54,10 +54,8 @@ export const useHabitActions = () => {
   const markCompletion = (habit: Habit) => {
     return openModal<{
       habitId: string
-      count: number
       time?: string
       note?: string
-      feeling?: string
     }>({
       component: MarkCompletionModal,
       props: {
@@ -65,10 +63,8 @@ export const useHabitActions = () => {
       },
       onConfirm: async (completionData?: {
         habitId: string
-        count: number
         time?: string
         note?: string
-        feeling?: string
       }) => {
         if (completionData) {
           await habitStore.markCompletion(completionData)

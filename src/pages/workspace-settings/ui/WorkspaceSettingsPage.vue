@@ -7,12 +7,12 @@
     </div>
 
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Настройки Workspace</h1>
+      <h1>Настройки Workspace</h1>
       <p class="mt-2 text-gray-600">Управляйте настройками вашего workspace</p>
     </div>
 
     <Card class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Основная информация</h2>
+      <h2 class="mb-4">Основная информация</h2>
 
       <div class="space-y-4">
         <Input
@@ -63,7 +63,7 @@
 
     <!-- Участники (Soon) -->
     <Card v-if="isOwner" class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Участники</h2>
+      <h2 class="mb-4">Участники</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
@@ -77,7 +77,7 @@
 
     <!-- Модули (Soon) -->
     <Card v-if="isOwner" class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Модули</h2>
+      <h2 class="mb-4">Модули</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
@@ -91,7 +91,7 @@
 
     <!-- Права доступа (Soon) -->
     <Card v-if="isOwner" class="p-6">
-      <h2 class="text-xl font-semibold text-gray-900 mb-4">Права доступа</h2>
+      <h2 class="mb-4">Права доступа</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p class="text-sm text-blue-800">
@@ -105,7 +105,7 @@
 
     <!-- Опасная зона -->
     <Card v-if="isOwner" class="p-6 border-red-200">
-      <h2 class="text-xl font-semibold text-red-900 mb-4">Опасная зона</h2>
+      <h2 class="text-red-900 mb-4">Опасная зона</h2>
 
       <div class="space-y-4">
         <div>
@@ -113,100 +113,23 @@
             Удаление workspace приведет к безвозвратному удалению всех данных, включая привычки,
             журналы и другие данные.
           </p>
-          <Button variant="danger" @click="showDeleteConfirm = true"> Удалить workspace </Button>
+          <Button variant="danger" @click="handleDeleteWorkspace"> Удалить workspace </Button>
         </div>
       </div>
     </Card>
 
-    <!-- Модальное окно подтверждения удаления -->
-    <Modal :is-open="showDeleteConfirm" @close="showDeleteConfirm = false">
-      <ConfirmModal
-        title="Удалить workspace?"
-        message="Это действие нельзя отменить. Все данные workspace будут безвозвратно удалены."
-        confirm-text="Удалить"
-        confirm-variant="danger"
-        @confirm="handleDelete"
-        @close="showDeleteConfirm = false"
-      />
-    </Modal>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, computed, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { Card, Button, Input, ConfirmModal, Modal } from '@/shared/ui'
-  import { useUserStore } from '@/entities/user'
-  import { useWorkspaceStore, usePermissions } from '@/entities/workspace'
+  import { useWorkspaceSettingsPage } from '@/features/workspace/model'
+  import { Card, Button, Input } from '@/shared/ui'
 
-  const router = useRouter()
-  const userStore = useUserStore()
-  const workspaceStore = useWorkspaceStore()
-  const { isOwner } = usePermissions()
-
-  const isSaving = ref(false)
-  const showDeleteConfirm = ref(false)
-  const isDeleting = ref(false)
-
-  const workspaceData = reactive({
-    name: '',
-    description: '',
-    color: '#6366f1',
-  })
-
-  onMounted(async () => {
-    if (!workspaceStore.currentWorkspace) {
-      router.push('/')
-      return
-    }
-
-    if (!isOwner.value) {
-      // Если не владелец, можно только просматривать
-      workspaceData.name = workspaceStore.currentWorkspace.name
-      workspaceData.description = workspaceStore.currentWorkspace.description || ''
-      workspaceData.color = workspaceStore.currentWorkspace.color || '#6366f1'
-      return
-    }
-
-    // Загружаем данные workspace
-    workspaceData.name = workspaceStore.currentWorkspace.name
-    workspaceData.description = workspaceStore.currentWorkspace.description || ''
-    workspaceData.color = workspaceStore.currentWorkspace.color || '#6366f1'
-  })
-
-  const saveWorkspace = async () => {
-    if (!isOwner.value || !workspaceStore.currentWorkspace) {
-      return
-    }
-
-    isSaving.value = true
-    try {
-      await workspaceStore.updateWorkspace(workspaceStore.currentWorkspace.id, {
-        name: workspaceData.name,
-        description: workspaceData.description || undefined,
-        color: workspaceData.color || undefined,
-      })
-    } catch (error) {
-      console.error('Failed to save workspace:', error)
-    } finally {
-      isSaving.value = false
-    }
-  }
-
-  const handleDelete = async () => {
-    if (!isOwner.value || !workspaceStore.currentWorkspace) {
-      return
-    }
-
-    isDeleting.value = true
-    try {
-      await workspaceStore.deleteWorkspace(workspaceStore.currentWorkspace.id)
-      router.push('/')
-    } catch (error) {
-      console.error('Failed to delete workspace:', error)
-    } finally {
-      isDeleting.value = false
-      showDeleteConfirm.value = false
-    }
-  }
+  const {
+    isSaving,
+    workspaceData,
+    isOwner,
+    saveWorkspace,
+    handleDeleteWorkspace,
+  } = useWorkspaceSettingsPage()
 </script>
