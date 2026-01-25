@@ -25,14 +25,29 @@ export const useHabitStore = defineStore('habit', () => {
   const totalToday = computed(() => todayHabits.value.length)
 
   // Actions
-  const fetchHabits = async () => {
+  const fetchHabits = async (targetDate?: Date) => {
+    isLoading.value = true
+    try {
+      const dateToFetch = targetDate || selectedDate.value
+      const dateString = getLocalDateString(dateToFetch)
+      const data = await habitService.getHabits(dateString)
+      habits.value = data || []
+      await fetchCompletions()
+    } catch (error) {
+      console.error('Failed to fetch habits:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+  
+  const fetchAllHabits = async () => {
     isLoading.value = true
     try {
       const data = await habitService.getHabits()
       habits.value = data || []
       await fetchCompletions()
     } catch (error) {
-      console.error('Failed to fetch habits:', error)
+      console.error('Failed to fetch all habits:', error)
     } finally {
       isLoading.value = false
     }
@@ -57,7 +72,6 @@ export const useHabitStore = defineStore('habit', () => {
 
   const createHabit = async (data: CreateHabitDto | Partial<Habit>): Promise<Habit> => {
     try {
-      // Convert Partial<Habit> to CreateHabitDto
       const habitData: CreateHabitDto = {
         title: data.title || '',
         description: data.description,
@@ -67,6 +81,10 @@ export const useHabitStore = defineStore('habit', () => {
         dailyGoal: data.dailyGoal,
         preferredTime: data.preferredTime,
         category: data.category,
+        scheduleType: (data as any).scheduleType || 'recurring',
+        recurringDays: (data as any).recurringDays,
+        oneTimeDate: (data as any).oneTimeDate,
+        isActive: (data as any).isActive ?? true,
       }
       const habit = await habitService.createHabit(habitData)
       habits.value.push(habit)
@@ -79,16 +97,21 @@ export const useHabitStore = defineStore('habit', () => {
 
   const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
     try {
-      const habitData: UpdateHabitDto = {
-        title: data.title,
-        description: data.description,
-        color: data.color,
-        icon: data.icon,
-        targetDays: data.targetDays,
-        dailyGoal: data.dailyGoal,
-        preferredTime: data.preferredTime,
-        category: data.category,
-      }
+      const habitData: any = {}
+      
+      if (data.title !== undefined) habitData.title = data.title
+      if (data.description !== undefined) habitData.description = data.description
+      if (data.color !== undefined) habitData.color = data.color
+      if (data.icon !== undefined) habitData.icon = data.icon
+      if (data.targetDays !== undefined) habitData.targetDays = data.targetDays
+      if (data.dailyGoal !== undefined) habitData.dailyGoal = data.dailyGoal
+      if (data.preferredTime !== undefined) habitData.preferredTime = data.preferredTime
+      if (data.category !== undefined) habitData.category = data.category
+      if ((data as any).scheduleType !== undefined) habitData.scheduleType = (data as any).scheduleType
+      if ((data as any).recurringDays !== undefined) habitData.recurringDays = (data as any).recurringDays
+      if ((data as any).oneTimeDate !== undefined) habitData.oneTimeDate = (data as any).oneTimeDate
+      if ((data as any).isActive !== undefined) habitData.isActive = (data as any).isActive
+
       const habit = await habitService.updateHabit(id, habitData)
       const index = habits.value.findIndex((h) => h.id === id)
       if (index !== -1) {
@@ -171,6 +194,7 @@ export const useHabitStore = defineStore('habit', () => {
 
     // Actions
     fetchHabits,
+    fetchAllHabits,
     fetchCompletions,
     createHabit,
     updateHabit,

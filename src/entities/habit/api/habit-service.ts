@@ -17,8 +17,11 @@ interface HabitsDataResponse {
 export const habitService = {
   // getHabits: async (): Promise<Habit[]> => (await api.get<HabitsDataResponse>(API_ENDPOINTS.HABITS.BASE)).habits,
 
-  getHabits: async (): Promise<Habit[]> => {
-    const response = await api.get<HabitsDataResponse>(API_ENDPOINTS.HABITS.BASE)
+  getHabits: async (date?: string): Promise<Habit[]> => {
+    const params = new URLSearchParams()
+    if (date) params.append('date', date)
+    const url = params.toString() ? `${API_ENDPOINTS.HABITS.BASE}?${params.toString()}` : API_ENDPOINTS.HABITS.BASE
+    const response = await api.get<HabitsDataResponse>(url)
     return response.habits
   },
 
