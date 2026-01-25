@@ -1,9 +1,9 @@
 import { ref, computed } from 'vue'
-import { useModal } from '@/shared/lib/modal'
-import { JournalEntryModal } from '@/features/journal/ui'
+import { format, isToday, isYesterday, isThisWeek, isThisMonth, parseISO } from 'date-fns'
+import { ru } from 'date-fns/locale'
 import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
 
-const moodOptions = [
+export const moodOptions = [
   { value: 5, label: '😊 Отлично' },
   { value: 4, label: '🙂 Хорошо' },
   { value: 3, label: '😐 Нормально' },
@@ -11,11 +11,17 @@ const moodOptions = [
   { value: 1, label: '😢 Очень плохо' },
 ]
 
-const dateOptions = [
+export const dateOptions = [
   { value: 'today', label: 'Сегодня' },
   { value: 'week', label: 'Эта неделя' },
   { value: 'month', label: 'Этот месяц' },
 ]
+
+export interface GroupedEntry {
+  date: string
+  dateLabel: string
+  entries: JournalEntry[]
+}
 
 export const useJournalPage = () => {
   const searchQuery = ref('')
@@ -122,6 +128,84 @@ export const useJournalPage = () => {
     entries.value = entries.value.filter((e) => e.id !== entry.id)
   }
 
+  // Статистика
+  const monthlyCount = computed(() => {
+    const now = new Date()
+    return filteredEntries.value.filter((entry) => {
+      const entryDate = parseISO(entry.date)
+      return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+    }).length
+  })
+
+  const averageMood = computed(() => {
+    const entriesWithMood = filteredEntries.value.filter((e) => e.mood)
+    if (entriesWithMood.length === 0) return '—'
+    const sum = entriesWithMood.reduce((acc, e) => acc + (e.mood || 0), 0)
+    return (sum / entriesWithMood.length).toFixed(1)
+  })
+
+  const averageMoodEmoji = computed(() => {
+    const avg = parseFloat(averageMood.value)
+    if (isNaN(avg)) return '😐'
+    if (avg >= 4.5) return '😊'
+    if (avg >= 3.5) return '🙂'
+    if (avg >= 2.5) return '😐'
+    if (avg >= 1.5) return '😔'
+    return '😢'
+  })
+
+  // Группировка по датам
+  const groupedEntries = computed<GroupedEntry[]>(() => {
+    const groups = new Map<string, JournalEntry[]>()
+    
+    filteredEntries.value.forEach((entry) => {
+      const dateKey = entry.date
+      if (!groups.has(dateKey)) {
+        groups.set(dateKey, [])
+      }
+      groups.get(dateKey)!.push(entry)
+    })
+
+    return Array.from(groups.entries())
+      .map(([date, entries]) => {
+        const entryDate = parseISO(date)
+        let dateLabel = ''
+        
+        if (isToday(entryDate)) {
+          dateLabel = 'Сегодня'
+        } else if (isYesterday(entryDate)) {
+          dateLabel = 'Вчера'
+        } else if (isThisWeek(entryDate)) {
+          dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: ru })
+          dateLabel = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1)
+        } else if (isThisMonth(entryDate)) {
+          dateLabel = format(entryDate, 'd MMMM', { locale: ru })
+        } else {
+          dateLabel = format(entryDate, 'd MMMM yyyy', { locale: ru })
+        }
+
+        return {
+          date,
+          dateLabel,
+          entries: entries.sort((a, b) => 
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          ),
+        }
+      })
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  })
+
+  // Активные фильтры
+  const hasActiveFilters = computed(() => {
+    return !!selectedMood.value || !!selectedDate.value || !!searchQuery.value
+  })
+
+  const clearFilters = () => {
+    selectedMood.value = null
+    selectedDate.value = null
+    searchQuery.value = ''
+  }
+
   return {
     // State
     searchQuery,
@@ -132,6 +216,18 @@ export const useJournalPage = () => {
     filteredEntries,
     moodOptions,
     dateOptions,
+
+    // Statistics
+    monthlyCount,
+    averageMood,
+    averageMoodEmoji,
+
+    // Grouping
+    groupedEntries,
+
+    // Filters
+    hasActiveFilters,
+    clearFilters,
 
     // Methods
     handleDeleteEntry,

@@ -20,7 +20,7 @@
             </div>
             <div v-else-if="lastSaved" class="flex items-center gap-2 text-sm text-gray-500">
               <CheckCircleIcon class="w-4 h-4 text-green-500" />
-              <span>Сохранено {{ formatTime(lastSaved) }}</span>
+              <span>Сохранено {{ formatRelativeTime(lastSaved) }}</span>
             </div>
 
             <div class="flex items-center gap-2">
@@ -75,6 +75,7 @@
   import { useRouter, useRoute } from 'vue-router'
   import { Card, Button, Spinner } from '@/shared/ui'
   import { ArrowLeftIcon, CheckCircleIcon } from '@/shared/ui/icon'
+  import { formatRelativeTime } from '@/shared/lib'
   import { JournalMetadataPanel } from '@/features/journal/ui'
   import { JournalEditorToolbar } from '@/features/journal/ui'
   import { JournalContentEditor } from '@/features/journal/ui'
@@ -110,18 +111,7 @@
     handleAutoSave()
   }
 
-  const formatTime = (date: Date) => {
-    const now = new Date()
-    const diff = now.getTime() - date.getTime()
-    const seconds = Math.floor(diff / 1000)
-    const minutes = Math.floor(seconds / 60)
-
-    if (minutes < 1) return 'только что'
-    if (minutes < 60) return `${minutes} мин назад`
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours} ч назад`
-    return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
-  }
+  import { formatRelativeTime } from '@/shared/lib'
 
   const handleCancel = () => {
     if (confirm('Вы уверены? Несохраненные изменения будут потеряны.')) {

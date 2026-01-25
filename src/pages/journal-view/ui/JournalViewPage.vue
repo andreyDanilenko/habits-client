@@ -56,8 +56,7 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
-  import { format } from 'date-fns'
-  import { ru } from 'date-fns/locale'
+  import { formatDateRu, formatDateTimeRu } from '@/shared/lib'
   import { Card, Button, Badge } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { marked } from 'marked'
@@ -96,12 +95,12 @@
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return ''
-    return format(new Date(dateStr), 'd MMMM yyyy', { locale: ru })
+    return formatDateRu(dateStr)
   }
 
   const formatTime = (dateStr: string) => {
     if (!dateStr) return ''
-    return format(new Date(dateStr), 'd MMMM yyyy, HH:mm', { locale: ru })
+    return formatDateTimeRu(dateStr)
   }
 
   const getMoodEmoji = (mood: number) => {

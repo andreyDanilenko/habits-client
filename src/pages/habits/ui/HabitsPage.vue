@@ -1,6 +1,13 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
-    <HabitsPageHeader @add-habit="handleAddHabit" />
+    <HabitsPageHeader 
+      :selected-date="selectedDate"
+      :show-all="showAll"
+      @add-habit="handleAddHabit"
+      @date-change="handleDateChange"
+      @show-all="handleShowAll"
+      @reset-filter="handleResetFilter"
+    />
 
     <div v-if="isLoading" class="text-center py-12">
       <p class="text-gray-500">Загрузка...</p>
@@ -28,6 +35,11 @@
     habits,
     isLoading,
     habitProgressMap,
+    selectedDate,
+    showAll,
+    handleDateChange,
+    handleShowAll,
+    handleResetFilter,
     handleAddHabit,
     editHabit,
     deleteHabit,
