@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue'
+  import { computed } from 'vue'
   import { useHabitStore } from '@/entities/habit'
   import { useHabitActions } from '@/features/habit/model/use-habit-actions'
   import { useHabitProgress } from '@/features/habit/model/use-habit-progress'
@@ -101,8 +101,4 @@
   const markCompletion = (habit: Habit) => {
     habitActions.markCompletion(habit)
   }
-
-  onMounted(() => {
-    habitStore.fetchHabits()
-  })
-</script>
+  </script>
