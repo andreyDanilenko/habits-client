@@ -1,7 +1,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { habitService } from '@/entities/habit'
 import { useWorkspaceStore } from '@/entities/workspace'
-import type { CalendarResponse, Habit } from '@/entities/habit'
+import type { CalendarResponse, Habit, CalendarDay as ApiCalendarDay } from '@/entities/habit'
 import {
   format,
   startOfMonth,
@@ -71,7 +71,7 @@ export const useCalendarPage = () => {
     const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 })
     const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 })
 
-    const habitsByDate = new Map<string, CalendarDay['habits']>()
+    const habitsByDate = new Map<string, ApiCalendarDay['habits']>()
 
     if (calendarData.value) {
       calendarData.value.days.forEach((day) => {
