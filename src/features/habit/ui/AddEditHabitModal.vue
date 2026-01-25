@@ -138,19 +138,14 @@
           Дни недели <span class="text-red-500">*</span>
         </label>
         <div class="flex flex-wrap gap-2">
-          <label
+          <SelectButton
             v-for="day in weekDays"
             :key="day.value"
-            class="flex items-center space-x-2 cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              :value="day.value"
-              v-model="form.recurringDays"
-              class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-            />
-            <span class="text-sm text-gray-700">{{ day.label }}</span>
-          </label>
+            :is-selected="isDaySelected(day.value)"
+            size="sm"
+            :label="day.label"
+            @click="toggleDay(day.value)"
+          />
         </div>
         <p v-if="form.recurringDays.length === 0" class="mt-1 text-sm text-red-500">
           Выберите хотя бы один день недели
@@ -252,6 +247,17 @@
     return today.toISOString().split('T')[0]
   })
 
+  const selectedDaysSet = computed(() => new Set(form.recurringDays))
+  const isDaySelected = (dayValue: number) => selectedDaysSet.value.has(dayValue)
+
+  const toggleDay = (dayValue: number) => {
+    if (selectedDaysSet.value.has(dayValue)) {
+      form.recurringDays = form.recurringDays.filter((day) => day !== dayValue)
+    } else {
+      form.recurringDays.push(dayValue)
+    }
+  }
+
   const handleSubmit = async () => {
     if (!form.title.trim()) {
       alert('Пожалуйста, введите название привычки')
@@ -272,7 +278,6 @@
 
     isSubmitting.value = true
     try {
-      // Подготавливаем данные для отправки
       const habitData: any = {
         title: form.title,
         description: form.description || undefined,
@@ -285,28 +290,22 @@
         isActive: form.isActive,
       }
 
-      // Добавляем/очищаем поля в зависимости от типа расписания
       if (form.scheduleType === 'recurring') {
         habitData.recurringDays = form.recurringDays
-        // Явно очищаем oneTimeDate при смене на recurring (если редактируем и тип меняется)
         if (isEditing.value && props.habit?.scheduleType === 'one_time') {
           habitData.oneTimeDate = null
         } else if (!isEditing.value) {
-          // При создании не отправляем oneTimeDate для recurring
           delete habitData.oneTimeDate
         }
       } else if (form.scheduleType === 'one_time') {
         habitData.oneTimeDate = form.oneTimeDate
-        // Явно очищаем recurringDays при смене на one_time (если редактируем и тип меняется)
         if (isEditing.value && props.habit?.scheduleType === 'recurring') {
           habitData.recurringDays = null
         } else if (!isEditing.value) {
-          // При создании не отправляем recurringDays для one_time
           delete habitData.recurringDays
         }
       }
 
-      // Если редактируем, добавляем id
       if (props.habit?.id) {
         habitData.id = props.habit.id
       }
