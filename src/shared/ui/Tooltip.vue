@@ -16,7 +16,9 @@
         ref="tooltipRef"
         :class="[
           'fixed z-50 pointer-events-auto',
-          variant === 'dropdown' ? 'min-w-0' : 'bg-white border rounded-lg shadow-lg min-w-[150px]',
+          variant === 'dropdown'
+            ? 'min-w-0'
+            : 'bg-white border border-gray-300 rounded-lg shadow-lg min-w-[150px]',
         ]"
         :style="tooltipStyle"
         @mouseenter="keepOpen = true"

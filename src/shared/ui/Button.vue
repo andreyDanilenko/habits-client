@@ -6,7 +6,9 @@
       'cursor-pointer inline-flex flex-row items-center rounded-lg font-medium transition-colors',
       customClass && customClass.includes('justify-') ? '' : 'justify-center',
       'focus:outline-none',
-      props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon' ? 'focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300' : '',
+      props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon'
+        ? 'focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300'
+        : '',
       'disabled:opacity-50 disabled:cursor-not-allowed relative',
       iconOnly ? 'p-1 rounded' : sizeClasses,
       variantClasses,
@@ -18,7 +20,12 @@
     <Spinner v-if="loading" class="w-4 h-4 mr-2" />
 
     <!-- Иконка слева -->
-    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
+    <component
+      v-if="leftIcon"
+      :is="leftIcon"
+      :size="iconSize"
+      :class="iconOnly ? '' : customClass && customClass.includes('justify-center') ? '' : 'mr-2'"
+    />
 
     <!-- Основной контент -->
     <template v-if="!iconOnly">
@@ -76,23 +83,32 @@
   const variantClasses = computed(() => {
     if (props.variant === 'icon') {
       const iconColorClasses = {
-        default: 'text-gray-400 hover:text-gray-600 hover:bg-gray-100',
-        danger: 'text-gray-400 hover:text-red-600 hover:bg-red-50',
-        success: 'text-gray-400 hover:text-green-600 hover:bg-green-50',
-        warning: 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50',
-        info: 'text-gray-400 hover:text-blue-600 hover:bg-blue-50',
+        default:
+          'text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+        danger:
+          'text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+        success:
+          'text-gray-400 hover:text-green-600 hover:bg-green-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+        warning:
+          'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+        info: 'text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
       }
       return `p-1 rounded ${iconColorClasses[props.iconColor]}`
     }
 
     const baseVariants: Record<NonNullable<Props['variant']>, string> = {
-      primary: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800',
-      secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300',
-      outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100',
-      ghost: 'text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-0',
-      danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
+      primary:
+        'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 disabled:hover:bg-indigo-600 disabled:active:bg-indigo-600',
+      secondary:
+        'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300 disabled:hover:bg-gray-100 disabled:active:bg-gray-100',
+      outline:
+        'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100 disabled:hover:bg-transparent disabled:active:bg-transparent',
+      ghost:
+        'text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-0 disabled:hover:bg-transparent disabled:active:bg-transparent',
+      danger:
+        'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:hover:bg-red-600 disabled:active:bg-red-600',
       icon: '',
-      link: 'bg-transparent text-indigo-600 hover:text-indigo-700 focus:ring-0',
+      link: 'bg-transparent text-indigo-600 hover:text-indigo-700 focus:ring-0 disabled:hover:text-indigo-600',
     }
 
     return baseVariants[props.variant ?? 'primary']

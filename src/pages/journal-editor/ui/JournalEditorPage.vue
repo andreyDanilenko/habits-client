@@ -1,33 +1,52 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Хедер редактора -->
-    <div class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
+    <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex items-center justify-between">
           <Button
             @click="handleCancel"
             variant="ghost"
             size="md"
             :left-icon="ArrowLeftIcon"
+            class="rounded-xl"
           >
             <span class="hidden sm:inline">Назад</span>
           </Button>
 
-          <div class="flex items-center gap-3">
-            <div v-if="isSaving" class="flex items-center gap-2 text-sm text-gray-500">
+          <div class="flex items-center gap-4">
+            <div
+              v-if="isSaving"
+              class="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium"
+            >
               <Spinner class="w-4 h-4" />
               <span>Сохранение...</span>
             </div>
-            <div v-else-if="lastSaved" class="flex items-center gap-2 text-sm text-gray-500">
+            <div
+              v-else-if="lastSaved"
+              class="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-xl text-sm font-medium"
+            >
               <CheckCircleIcon class="w-4 h-4 text-green-500" />
-              <span>Сохранено {{ formatTime(lastSaved) }}</span>
+              <span>Сохранено {{ formatRelativeTime(lastSaved) }}</span>
             </div>
 
             <div class="flex items-center gap-2">
-              <Button variant="outline" @click="handleSaveDraft" :loading="isSaving">
+              <Button
+                variant="outline"
+                size="sm"
+                @click="handleSaveDraft"
+                :loading="isSaving"
+                class="rounded-xl"
+              >
                 Сохранить
               </Button>
-              <Button @click="handlePublish" :loading="isPublishing" :disabled="!canPublish">
+              <Button
+                size="sm"
+                @click="handlePublish"
+                :loading="isPublishing"
+                :disabled="!canPublish"
+                class="rounded-xl"
+              >
                 {{ isEditMode ? 'Обновить' : 'Опубликовать' }}
               </Button>
             </div>
@@ -45,7 +64,11 @@
       :word-count="wordCount"
       :reading-time="readingTime"
       @update:form="(field, value) => updateForm(field, value)"
-      @update:new-tag="(value) => { newTag = value }"
+      @update:new-tag="
+        (value) => {
+          newTag = value
+        }
+      "
       @add-tag="addTag"
       @remove-tag="removeTag"
       @auto-save="handleAutoSave"
@@ -54,10 +77,7 @@
     <!-- Редактор -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <Card :border="true" :padding="true">
-        <JournalEditorToolbar
-          v-if="form.contentType === 'markdown'"
-          @insert="insertMarkdown"
-        />
+        <JournalEditorToolbar v-if="form.contentType === 'markdown'" @insert="insertMarkdown" />
 
         <JournalContentEditor
           ref="contentEditorRef"
@@ -75,6 +95,7 @@
   import { useRouter, useRoute } from 'vue-router'
   import { Card, Button, Spinner } from '@/shared/ui'
   import { ArrowLeftIcon, CheckCircleIcon } from '@/shared/ui/icon'
+  import { formatRelativeTime } from '@/shared/lib'
   import { JournalMetadataPanel } from '@/features/journal/ui'
   import { JournalEditorToolbar } from '@/features/journal/ui'
   import { JournalContentEditor } from '@/features/journal/ui'
@@ -108,19 +129,6 @@
   const updateForm = (field: keyof typeof form, value: any) => {
     ;(form as any)[field] = value
     handleAutoSave()
-  }
-
-  const formatTime = (date: Date) => {
-    const now = new Date()
-    const diff = now.getTime() - date.getTime()
-    const seconds = Math.floor(diff / 1000)
-    const minutes = Math.floor(seconds / 60)
-
-    if (minutes < 1) return 'только что'
-    if (minutes < 60) return `${minutes} мин назад`
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours} ч назад`
-    return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
   }
 
   const handleCancel = () => {

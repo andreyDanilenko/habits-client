@@ -1,7 +1,9 @@
 <template>
   <div class="max-w-4xl">
     <ModalContent
-      :title="mode === 'view' && entry ? entry.title : entry ? 'Редактировать запись' : 'Новая запись'"
+      :title="
+        mode === 'view' && entry ? entry.title : entry ? 'Редактировать запись' : 'Новая запись'
+      "
       @close="handleClose"
     >
       <div v-if="mode === 'view' && entry" class="space-y-6">
@@ -31,12 +33,8 @@
 
         <!-- Действия -->
         <div class="flex justify-end gap-3 pt-4 border-t">
-          <Button variant="outline" @click="handleClose">
-            Закрыть
-          </Button>
-          <Button @click="mode = 'edit'">
-            Редактировать
-          </Button>
+          <Button variant="outline" @click="handleClose"> Закрыть </Button>
+          <Button @click="mode = 'edit'"> Редактировать </Button>
         </div>
       </div>
 
@@ -44,21 +42,12 @@
       <form v-else @submit.prevent="handleSubmit" class="space-y-4">
         <!-- Заголовок -->
         <FormField label="Заголовок" required>
-          <Input
-            v-model="form.title"
-            type="text"
-            required
-            placeholder="Название записи..."
-          />
+          <Input v-model="form.title" type="text" required placeholder="Название записи..." />
         </FormField>
 
         <!-- Дата -->
         <FormField label="Дата">
-          <Input
-            v-model="form.date"
-            type="date"
-            required
-          />
+          <Input v-model="form.date" type="date" required />
         </FormField>
 
         <!-- Настроение -->
@@ -74,12 +63,7 @@
             >
               <span class="text-2xl">{{ mood.emoji }}</span>
             </SelectButton>
-            <Button
-              v-if="form.mood"
-              variant="ghost"
-              size="sm"
-              @click="form.mood = undefined"
-            >
+            <Button v-if="form.mood" variant="ghost" size="sm" @click="form.mood = undefined">
               Убрать
             </Button>
           </div>
@@ -112,8 +96,13 @@
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none font-mono text-sm"
               />
             </div>
-            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto max-h-[400px]">
-              <div class="prose prose-sm max-w-none markdown-content" v-html="renderedFormMarkdown" />
+            <div
+              class="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto max-h-[400px]"
+            >
+              <div
+                class="prose prose-sm max-w-none markdown-content"
+                v-html="renderedFormMarkdown"
+              />
             </div>
           </div>
         </FormField>
@@ -153,9 +142,7 @@
 
         <!-- Действия -->
         <div class="flex justify-end gap-3 pt-4 border-t">
-          <Button variant="outline" type="button" @click="handleClose">
-            Отмена
-          </Button>
+          <Button variant="outline" type="button" @click="handleClose"> Отмена </Button>
           <Button type="submit">
             {{ entry ? 'Сохранить' : 'Создать' }}
           </Button>
@@ -299,7 +286,6 @@
     },
     { immediate: true },
   )
-
 
   onMounted(() => {
     if (!props.entry) {

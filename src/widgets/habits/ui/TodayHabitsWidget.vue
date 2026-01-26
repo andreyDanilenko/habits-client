@@ -2,7 +2,7 @@
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
       <h2>Привычки на сегодня</h2>
-      <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button>
+      <!-- <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button> -->
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
@@ -20,7 +20,7 @@
       <div
         v-for="habit in habits"
         :key="habit.id"
-        class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+        class="flex items-center justify-between p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
       >
         <div class="flex-1">
           <div class="flex items-center space-x-3">
@@ -55,9 +55,7 @@
                 <span
                   class="text-xs"
                   :class="
-                    getProgress(habit.id) >= 1
-                      ? 'text-green-600 font-medium'
-                      : 'text-gray-500'
+                    getProgress(habit.id) >= 1 ? 'text-green-600 font-medium' : 'text-gray-500'
                   "
                 >
                   {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}
@@ -80,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue'
+  import { computed } from 'vue'
   import { useHabitStore } from '@/entities/habit'
   import { useHabitActions } from '@/features/habit/model/use-habit-actions'
   import { useHabitProgress } from '@/features/habit/model/use-habit-progress'
@@ -101,8 +99,4 @@
   const markCompletion = (habit: Habit) => {
     habitActions.markCompletion(habit)
   }
-
-  onMounted(() => {
-    habitStore.fetchHabits()
-  })
 </script>

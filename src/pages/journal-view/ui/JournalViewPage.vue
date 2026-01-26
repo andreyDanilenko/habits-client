@@ -36,7 +36,11 @@
 
       <!-- Контент -->
       <Card :border="true" :padding="true" class="mb-6">
-        <div v-if="entry?.contentType === 'markdown'" class="prose max-w-none markdown-content" v-html="renderedContent" />
+        <div
+          v-if="entry?.contentType === 'markdown'"
+          class="prose max-w-none markdown-content"
+          v-html="renderedContent"
+        />
         <div v-else class="whitespace-pre-wrap text-gray-700">{{ entry?.content }}</div>
       </Card>
 
@@ -45,9 +49,7 @@
         <div class="text-sm text-gray-500">
           <span>Обновлено: {{ formatTime(entry?.updatedAt || '') }}</span>
         </div>
-        <Button @click="handleEdit">
-          Редактировать
-        </Button>
+        <Button @click="handleEdit"> Редактировать </Button>
       </div>
     </div>
   </div>
@@ -56,8 +58,7 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
-  import { format } from 'date-fns'
-  import { ru } from 'date-fns/locale'
+  import { formatDateRu, formatDateTimeRu } from '@/shared/lib'
   import { Card, Button, Badge } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { marked } from 'marked'
@@ -79,7 +80,7 @@
     // TODO: Загрузить запись из API
     // entry.value = await journalStore.getEntry(entryId)
 
-    entry.value =  {
+    entry.value = {
       id: '1',
       title: 'Отличный день!',
       content: '### Сегодня выполнил все привычки и чувствую себя прекрасно.',
@@ -96,12 +97,12 @@
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return ''
-    return format(new Date(dateStr), 'd MMMM yyyy', { locale: ru })
+    return formatDateRu(dateStr)
   }
 
   const formatTime = (dateStr: string) => {
     if (!dateStr) return ''
-    return format(new Date(dateStr), 'd MMMM yyyy, HH:mm', { locale: ru })
+    return formatDateTimeRu(dateStr)
   }
 
   const getMoodEmoji = (mood: number) => {

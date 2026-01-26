@@ -94,7 +94,6 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const loadModules = async (workspaceId: string) => {
     try {
       const response = await workspaceService.getWorkspaceModules(workspaceId)
-      // API возвращает { modules: WorkspaceModule[] }
       modules.value = response?.modules || []
     } catch (error) {
       console.error('Failed to load modules:', error)
@@ -109,14 +108,10 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       currentWorkspace.value = workspace
       applyWorkspaceHeader(workspace)
 
-      // Загружаем модули для нового workspace
       await loadModules(workspaceId)
-
-      // Перезагружаем данные модулей (привычки, журнал и т.д.)
-      // Импортируем динамически, чтобы избежать циклических зависимостей
       const { useHabitStore } = await import('@/entities/habit')
       const habitStore = useHabitStore()
-      await habitStore.fetchHabits()
+      await habitStore.fetchHabits(new Date())
     }
   }
 

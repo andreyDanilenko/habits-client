@@ -112,6 +112,58 @@
           <option value="personal">Личное</option>
         </select>
       </FormField>
+
+      <!-- Тип расписания -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2"> Тип расписания </label>
+        <div class="flex gap-2">
+          <SelectButton
+            :is-selected="form.scheduleType === 'recurring'"
+            size="sm"
+            label="Регулярная"
+            @click="form.scheduleType = 'recurring'"
+          />
+          <SelectButton
+            :is-selected="form.scheduleType === 'one_time'"
+            size="sm"
+            label="Разовая"
+            @click="form.scheduleType = 'one_time'"
+          />
+        </div>
+      </div>
+
+      <!-- Для регулярных привычек: выбор дней недели -->
+      <div v-if="form.scheduleType === 'recurring'">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Дни недели <span class="text-red-500">*</span>
+        </label>
+        <div class="flex flex-wrap gap-2">
+          <SelectButton
+            v-for="day in weekDays"
+            :key="day.value"
+            :is-selected="isDaySelected(day.value)"
+            size="sm"
+            :label="day.label"
+            @click="toggleDay(day.value)"
+          />
+        </div>
+        <p v-if="form.recurringDays.length === 0" class="mt-1 text-sm text-red-500">
+          Выберите хотя бы один день недели
+        </p>
+      </div>
+
+      <!-- Для разовых привычек: выбор даты -->
+      <div v-if="form.scheduleType === 'one_time'">
+        <FormField label="Дата выполнения" required>
+          <input
+            v-model="form.oneTimeDate"
+            type="date"
+            required
+            :min="minDate"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </FormField>
+      </div>
     </form>
 
     <template #footer>
@@ -151,6 +203,12 @@
     dailyGoal: props.habit?.dailyGoal || 1,
     preferredTime: props.habit?.preferredTime || 'any',
     category: props.habit?.category || '',
+    scheduleType: (props.habit?.scheduleType as 'recurring' | 'one_time') || 'recurring',
+    recurringDays: props.habit?.recurringDays
+      ? [...props.habit.recurringDays]
+      : [0, 1, 2, 3, 4, 5, 6], // По умолчанию все дни: 0=Вс, 1=Пн, ..., 6=Сб
+    oneTimeDate: props.habit?.oneTimeDate || '',
+    isActive: props.habit?.isActive ?? true,
   })
 
   const colors = [
@@ -173,18 +231,85 @@
     { value: 'any', label: 'Любое время' },
   ]
 
+  const weekDays = [
+    { value: 0, label: 'Вс' },
+    { value: 1, label: 'Пн' },
+    { value: 2, label: 'Вт' },
+    { value: 3, label: 'Ср' },
+    { value: 4, label: 'Чт' },
+    { value: 5, label: 'Пт' },
+    { value: 6, label: 'Сб' },
+  ]
+
+  // Минимальная дата для разовых привычек (сегодня)
+  const minDate = computed(() => {
+    const today = new Date()
+    return today.toISOString().split('T')[0]
+  })
+
+  const selectedDaysSet = computed(() => new Set(form.recurringDays))
+  const isDaySelected = (dayValue: number) => selectedDaysSet.value.has(dayValue)
+
+  const toggleDay = (dayValue: number) => {
+    if (selectedDaysSet.value.has(dayValue)) {
+      form.recurringDays = form.recurringDays.filter((day) => day !== dayValue)
+    } else {
+      form.recurringDays.push(dayValue)
+    }
+  }
+
   const handleSubmit = async () => {
     if (!form.title.trim()) {
       alert('Пожалуйста, введите название привычки')
       return
     }
 
+    // Валидация для регулярных привычек
+    if (form.scheduleType === 'recurring' && form.recurringDays.length === 0) {
+      alert('Пожалуйста, выберите хотя бы один день недели')
+      return
+    }
+
+    // Валидация для разовых привычек
+    if (form.scheduleType === 'one_time' && !form.oneTimeDate) {
+      alert('Пожалуйста, выберите дату выполнения')
+      return
+    }
+
     isSubmitting.value = true
     try {
-      const habitData = {
-        ...form,
-        ...(props.habit?.id && { id: props.habit.id }),
+      const habitData: any = {
+        title: form.title,
+        description: form.description || undefined,
+        color: form.color,
+        icon: form.icon || undefined,
+        dailyGoal: form.dailyGoal,
+        preferredTime: form.preferredTime || undefined,
+        category: form.category || undefined,
+        scheduleType: form.scheduleType,
+        isActive: form.isActive,
       }
+
+      if (form.scheduleType === 'recurring') {
+        habitData.recurringDays = form.recurringDays
+        if (isEditing.value && props.habit?.scheduleType === 'one_time') {
+          habitData.oneTimeDate = null
+        } else if (!isEditing.value) {
+          delete habitData.oneTimeDate
+        }
+      } else if (form.scheduleType === 'one_time') {
+        habitData.oneTimeDate = form.oneTimeDate
+        if (isEditing.value && props.habit?.scheduleType === 'recurring') {
+          habitData.recurringDays = null
+        } else if (!isEditing.value) {
+          delete habitData.recurringDays
+        }
+      }
+
+      if (props.habit?.id) {
+        habitData.id = props.habit.id
+      }
+
       emit('confirm', habitData)
     } finally {
       isSubmitting.value = false

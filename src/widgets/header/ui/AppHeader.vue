@@ -1,33 +1,18 @@
 <template>
-  <header class="sticky top-0 z-50 bg-white border-b shadow-sm">
+  <header class="sticky top-0 bg-white border-b border-gray-300 shadow-sm flex-shrink-0 z-50">
     <div class="container mx-auto px-4">
-      <div class="flex items-center justify-between h-16">
+      <!-- Desktop версия -->
+      <div class="hidden lg:flex items-center justify-between h-16">
         <!-- Лого -->
         <router-link to="/" class="flex items-center space-x-3">
           <Logo :size="32" />
-          <span class="text-xl font-bold text-gray-900 hidden lg:inline"> HabitFlow </span>
+          <span class="text-xl font-bold text-gray-900"> HabitFlow </span>
         </router-link>
-
-        <!-- Центр: навигация -->
-        <nav class="hidden lg:flex items-center space-x-6">
-          <router-link
-            v-for="item in navItems"
-            :key="item.path"
-            :to="item.path"
-            class="text-gray-600 hover:text-indigo-600 transition-colors font-medium"
-            active-class="text-indigo-600"
-          >
-            {{ item.label }}
-          </router-link>
-        </nav>
 
         <!-- Правая часть -->
         <div class="flex items-center space-x-4">
           <!-- Статистика сегодня -->
           <TodayStats />
-
-          <!-- Переключение workspace -->
-          <WorkspaceSwitcher />
 
           <!-- Уведомления -->
           <Notifications />
@@ -36,22 +21,50 @@
           <ProfileDropdown />
         </div>
       </div>
+
+      <!-- Mobile версия -->
+      <div class="flex lg:hidden items-center justify-between h-16">
+        <!-- Левая часть: кнопка меню -->
+        <Button
+          v-if="sidebarRef"
+          @click="openSidebar"
+          variant="icon"
+          icon-only
+          :left-icon="MenuIcon"
+          aria-label="Открыть меню"
+        />
+        <div v-else class="w-10"></div>
+
+        <!-- Центр: Лого -->
+        <router-link to="/" class="flex items-center space-x-2">
+          <Logo :size="28" />
+          <span class="text-lg font-bold text-gray-900"> HabitFlow </span>
+        </router-link>
+
+        <!-- Правая часть: Профиль -->
+        <ProfileDropdown />
+      </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { Logo } from '@/shared/ui/icon'
+  import { Logo, MenuIcon } from '@/shared/ui/icon'
+  import { Button } from '@/shared/ui'
   import TodayStats from './TodayStats.vue'
-  import WorkspaceSwitcher from './WorkspaceSwitcher.vue'
   import Notifications from './Notifications.vue'
   import ProfileDropdown from './ProfileDropdown.vue'
+  import type { ComponentPublicInstance } from 'vue'
 
-  const navItems = computed(() => [
-    { path: '/', label: 'Дашборд' },
-    { path: '/habits', label: 'Привычки' },
-    { path: '/calendar', label: 'Календарь' },
-    { path: '/journal', label: 'Дневник' },
-  ])
+  interface Props {
+    sidebarRef?: ComponentPublicInstance | null
+  }
+
+  const props = defineProps<Props>()
+
+  const openSidebar = () => {
+    if (props.sidebarRef && typeof (props.sidebarRef as any).open === 'function') {
+      ;(props.sidebarRef as any).open()
+    }
+  }
 </script>

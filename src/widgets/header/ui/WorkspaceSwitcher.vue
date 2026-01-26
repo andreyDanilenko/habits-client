@@ -1,12 +1,8 @@
 <template>
   <div class="relative">
-    <Tooltip variant="dropdown" trigger="click" placement="bottom" width="256px">
+    <Tooltip variant="dropdown" trigger="click" placement="bottom" class="w-full justify-between">
       <template #trigger>
-        <Button
-          variant="ghost"
-          size="md"
-          custom-class="justify-start gap-2"
-        >
+        <Button variant="ghost" size="md" custom-class="w-full justify-between gap-2">
           <div
             class="w-6 h-6 rounded flex-shrink-0"
             :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"
@@ -18,9 +14,9 @@
         </Button>
       </template>
 
-      <div class="w-64 bg-white rounded-lg shadow-lg border">
+      <div class="w-64 bg-white rounded-lg shadow-lg border border-gray-300">
         <!-- Заголовок -->
-        <div class="px-4 py-3 border-b">
+        <div class="px-4 py-3 border-b border-gray-300">
           <div class="flex items-center justify-between">
             <p class="text-sm font-semibold text-gray-700">Рабочие пространства</p>
             <Button
@@ -57,7 +53,7 @@
         </div>
 
         <!-- Действия -->
-        <div class="border-t p-2">
+        <div class="border-t border-gray-300 p-2">
           <Button
             @click.stop="openCreateModal"
             variant="ghost"

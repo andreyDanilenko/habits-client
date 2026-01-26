@@ -8,6 +8,10 @@ export interface Habit {
   dailyGoal?: number
   preferredTime?: string
   category?: string
+  scheduleType: 'recurring' | 'one_time'
+  recurringDays?: number[]
+  oneTimeDate?: string
+  isActive: boolean
   userId: string
   workspaceId: string
   createdAt: string
@@ -34,6 +38,10 @@ export interface CreateHabitDto {
   dailyGoal?: number
   preferredTime?: string
   category?: string
+  scheduleType: 'recurring' | 'one_time'
+  recurringDays?: number[]
+  oneTimeDate?: string
+  isActive?: boolean
 }
 
 export interface UpdateHabitDto extends Partial<CreateHabitDto> {}
