@@ -20,7 +20,12 @@
     <Spinner v-if="loading" class="w-4 h-4 mr-2" />
 
     <!-- Иконка слева -->
-    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
+    <component 
+      v-if="leftIcon" 
+      :is="leftIcon" 
+      :size="iconSize" 
+      :class="iconOnly ? '' : (customClass && customClass.includes('justify-center') ? '' : 'mr-2')" 
+    />
 
     <!-- Основной контент -->
     <template v-if="!iconOnly">
