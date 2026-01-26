@@ -9,6 +9,7 @@
         size="md"
         :left-icon="item.icon"
         :icon-only="collapsed"
+        :is-active="item.isActive"
         :custom-class="`w-full ${collapsed ? 'justify-center' : 'justify-start'}`"
         @click="handleItemClick(item)"
       >

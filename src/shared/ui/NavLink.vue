@@ -45,6 +45,7 @@
     iconOnly?: boolean
     customClass?: string
     exact?: boolean
+    isActive?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -53,6 +54,7 @@
     iconOnly: false,
     customClass: '',
     exact: false,
+    isActive: undefined,
   })
 
   const route = useRoute()
@@ -83,6 +85,11 @@
   })
 
   const isActive = computed(() => {
+    // Если явно передан isActive, используем его
+    if (props.isActive !== undefined) {
+      return props.isActive
+    }
+
     const currentPath = route.path
 
     if (typeof props.to === 'string') {
