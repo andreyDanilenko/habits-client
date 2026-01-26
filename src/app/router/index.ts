@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { authGuard } from '@/features/auth'
-import { requireOwner } from '@/entities/workspace'
+import { requireOwner, requirePermission } from '@/entities/workspace'
+import { modules } from '@/app/modules/config'
 
 const routes = [
   {
@@ -15,42 +16,33 @@ const routes = [
     component: () => import('@/pages/register'),
     meta: { public: true },
   },
+  // Редирект с корня на первый доступный модуль или dashboard
   {
     path: '/',
-    name: 'Dashboard',
-    component: () => import('@/pages/dashboard'),
-    meta: { requiresAuth: true },
+    redirect: '/habits',
   },
+  // Редиректы для старых роутов (обратная совместимость)
   {
-    path: '/habits',
-    name: 'Habits',
-    component: () => import('@/pages/habits'),
-    meta: { requiresAuth: true },
+    path: '/calendar',
+    redirect: '/habits/calendar',
   },
   {
     path: '/journal',
-    name: 'Journal',
-    component: () => import('@/pages/journal'),
-    meta: { requiresAuth: true },
+    redirect: '/habits/journal',
   },
   {
     path: '/journal/new',
-    name: 'JournalNew',
-    component: () => import('@/pages/journal-editor'),
-    meta: { requiresAuth: true },
+    redirect: '/habits/journal/new',
   },
   {
     path: '/journal/:id',
-    name: 'JournalView',
-    component: () => import('@/pages/journal-view'),
-    meta: { requiresAuth: true },
+    redirect: (to) => `/habits/journal/${to.params.id}`,
   },
   {
     path: '/journal/:id/edit',
-    name: 'JournalEdit',
-    component: () => import('@/pages/journal-editor'),
-    meta: { requiresAuth: true },
+    redirect: (to) => `/habits/journal/${to.params.id}/edit`,
   },
+  // Настройки (общие, не модульные)
   {
     path: '/settings',
     name: 'Settings',
@@ -64,13 +56,26 @@ const routes = [
     meta: { requiresAuth: true },
     beforeEnter: requireOwner(),
   },
-  {
-    path: '/calendar',
-    name: 'Calendar',
-    component: () => import('@/pages/calendar'),
-    meta: { requiresAuth: true },
-  },
 ]
+
+// Добавляем роуты из модулей
+modules.forEach((module) => {
+  module.routes.forEach((route) => {
+    routes.push({
+      path: route.path,
+      name: route.name,
+      component: route.component,
+      meta: {
+        requiresAuth: true,
+        module: module.id,
+        ...route.meta,
+      },
+      beforeEnter: route.permissions && route.permissions.length > 0
+        ? requirePermission(route.permissions[0])
+        : undefined,
+    })
+  })
+})
 
 const router = createRouter({
   history: createWebHistory(),
