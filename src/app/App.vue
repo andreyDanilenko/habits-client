@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
+  <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
     <AppHeader v-if="showHeader" :sidebar-ref="sidebarRef" />
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1 overflow-hidden items-stretch">
       <AppSidebar v-if="showHeader" ref="sidebarRef" />
       <main class="flex-1 overflow-y-auto">
         <div class="container mx-auto px-4 py-6 md:py-8">

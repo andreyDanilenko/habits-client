@@ -314,4 +314,11 @@
   .fade-leave-to {
     opacity: 0;
   }
+
+  /* Убеждаемся, что aside растягивается на всю высоту родителя на десктопе */
+  @media (min-width: 1024px) {
+    aside {
+      height: 100%;
+    }
+  }
 </style>
