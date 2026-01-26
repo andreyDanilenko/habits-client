@@ -3,28 +3,19 @@
     <div class="container mx-auto px-4">
       <!-- Desktop версия -->
       <div class="hidden lg:flex items-center justify-between h-16">
-        <!-- Лого -->
         <router-link to="/" class="flex items-center space-x-3">
           <Logo :size="32" />
           <span class="text-xl font-bold text-gray-900"> HabitFlow </span>
         </router-link>
-
-        <!-- Правая часть -->
         <div class="flex items-center space-x-4">
-          <!-- Статистика сегодня -->
           <TodayStats />
-
-          <!-- Уведомления -->
           <Notifications />
-
-          <!-- Профиль -->
           <ProfileDropdown />
         </div>
       </div>
 
       <!-- Mobile версия -->
       <div class="flex lg:hidden items-center justify-between h-16">
-        <!-- Левая часть: кнопка меню -->
         <Button
           v-if="sidebarRef"
           @click="openSidebar"
@@ -35,13 +26,11 @@
         />
         <div v-else class="w-10"></div>
 
-        <!-- Центр: Лого -->
         <router-link to="/" class="flex items-center space-x-2">
           <Logo :size="28" />
           <span class="text-lg font-bold text-gray-900"> HabitFlow </span>
         </router-link>
 
-        <!-- Правая часть: Профиль -->
         <ProfileDropdown />
       </div>
     </div>

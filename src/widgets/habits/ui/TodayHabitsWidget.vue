@@ -2,7 +2,6 @@
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
       <h2>Привычки на сегодня</h2>
-      <!-- <Button variant="link" size="sm" @click="$emit('add-habit')"> + Добавить </Button> -->
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
@@ -32,10 +31,6 @@
             </div>
             <div class="flex-1">
               <h3>{{ habit.title }}</h3>
-              <!-- <p v-if="habit.description" class="text-sm text-gray-500 mt-1">
-                {{ habit.description }}
-              </p> -->
-              <!-- Прогресс показываем только если dailyGoal > 1 -->
               <div v-if="(habit.dailyGoal || 1) > 1" class="mt-2 flex items-center space-x-2">
                 <span class="text-xs text-gray-500">
                   Прогресс: {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
@@ -50,7 +45,6 @@
                   />
                 </div>
               </div>
-              <!-- Для dailyGoal = 1 просто показываем статус -->
               <div v-else class="mt-2">
                 <span
                   class="text-xs"
