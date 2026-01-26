@@ -60,14 +60,14 @@
     click: [e: MouseEvent]
   }>()
 
-  const sizeClasses = computed(
-    () =>
-      ({
-        sm: 'px-3 py-1.5 text-sm',
-        md: 'px-3 py-2.5 text-sm',
-        lg: 'px-4 py-3 text-base',
-      })[props.size],
-  )
+  const sizeClasses = computed(() => {
+    if (props.iconOnly) return 'p-1 rounded'
+    return {
+      sm: 'px-3 py-1.5 text-sm',
+      md: 'px-3 py-2.5 text-sm',
+      lg: 'px-4 py-3 text-base',
+    }[props.size]
+  })
 
   const variantClasses = computed(() => {
     const baseVariants: Record<NonNullable<Props['variant']>, string> = {
@@ -119,7 +119,7 @@
 
   // Маппинг размера к размеру иконки
   const iconSize = computed(() => {
-    if (props.iconOnly) return 'sm'
+    if (props.iconOnly) return 'md'
     return props.size === 'lg' ? 'md' : props.size === 'sm' ? 'xs' : 'sm'
   })
 

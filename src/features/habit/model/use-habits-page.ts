@@ -14,6 +14,18 @@ export const useHabitsPage = () => {
   const habits = computed(() => habitStore.habits)
   const isLoading = computed(() => habitStore.isLoading)
 
+  // Статистика
+  const totalCount = computed(() => habits.value.length)
+
+  const completedToday = computed(() => {
+    return Object.values(habitProgressMap.value).filter((count) => count > 0).length
+  })
+
+  const completionRate = computed(() => {
+    if (totalCount.value === 0) return 0
+    return Math.round((completedToday.value / totalCount.value) * 100)
+  })
+
   const loadHabits = () => {
     if (showAll.value) {
       habitStore.fetchAllHabits()
@@ -55,6 +67,9 @@ export const useHabitsPage = () => {
     habitProgressMap,
     selectedDate,
     showAll,
+    totalCount,
+    completedToday,
+    completionRate,
     handleDateChange,
     handleShowAll,
     handleResetFilter,

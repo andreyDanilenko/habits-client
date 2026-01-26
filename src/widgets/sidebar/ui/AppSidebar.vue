@@ -63,8 +63,9 @@
             :key="module.id"
             @click="selectModule(module.id)"
             variant="ghost"
-            size="md"
+            size="lg"
             :left-icon="module.icon"
+            :icon-only="isCollapsed"
             :custom-class="`w-full ${isCollapsed ? 'justify-center' : 'justify-start'} ${selectedModuleId === module.id ? 'bg-indigo-50 text-indigo-600 font-medium' : ''}`"
           >
             <span v-if="!isCollapsed">{{ module.label }}</span>
@@ -87,6 +88,7 @@
             variant="default"
             size="md"
             :left-icon="route.icon"
+            :icon-only="isCollapsed"
             :custom-class="`w-full ${isCollapsed ? 'justify-center' : 'justify-start'}`"
             @click="handleMobileClick"
           >
@@ -103,6 +105,7 @@
             variant="default"
             size="md"
             :left-icon="CogIcon"
+            :icon-only="isCollapsed"
             :custom-class="`w-full mb-2 ${isCollapsed ? 'justify-center' : 'justify-start'}`"
             @click="handleMobileClick"
           >
@@ -115,6 +118,7 @@
             variant="ghost"
             size="md"
             :left-icon="LogoutIcon"
+            :icon-only="isCollapsed"
             :custom-class="`w-full text-red-600 hover:bg-red-50 ${isCollapsed ? 'justify-center' : 'justify-start'}`"
           >
             <span v-if="!isCollapsed" class="font-medium">Выйти</span>

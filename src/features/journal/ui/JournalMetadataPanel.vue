@@ -1,15 +1,15 @@
 <template>
   <div class="border-b border-gray-200 bg-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
       <Button
         @click="isOpen = !isOpen"
         variant="ghost"
         size="sm"
-        class="w-full flex items-center justify-between !justify-between"
+        class="w-full flex items-center justify-between !justify-between rounded-xl hover:bg-gray-50 transition-colors"
       >
-        <span>Метаданные</span>
+        <span class="font-medium">Метаданные</span>
         <svg
-          :class="['w-5 h-5 transition-transform', isOpen ? 'rotate-180' : '']"
+          :class="['w-5 h-5 transition-transform duration-200', isOpen ? 'rotate-180' : '']"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -23,7 +23,10 @@
         </svg>
       </Button>
 
-      <div v-show="isOpen" class="pb-4 space-y-4 border-t border-gray-100 pt-4">
+      <div
+        v-show="isOpen"
+        class="pb-4 space-y-5 border-t border-gray-200 pt-5 mt-3 transition-all duration-200"
+      >
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField label="Заголовок" required>
             <Input
@@ -69,24 +72,29 @@
           </FormField>
 
           <FormField label="Тип контента">
-            <select
-              :value="form.contentType"
-              @change="handleContentTypeChange"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="text">Текст</option>
-              <option value="markdown">Markdown</option>
-            </select>
+            <div class="relative">
+              <select
+                :value="form.contentType"
+                @change="handleContentTypeChange"
+                class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-all duration-200 shadow-sm hover:shadow-md appearance-none cursor-pointer"
+              >
+                <option value="text">Текст</option>
+                <option value="markdown">Markdown</option>
+              </select>
+              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <ChevronDownIcon class="w-5 h-5" />
+              </div>
+            </div>
           </FormField>
         </div>
 
         <FormField label="Теги">
-          <div class="flex flex-wrap gap-2 mb-2">
+          <div class="flex flex-wrap gap-2 mb-3">
             <Badge
               v-for="tag in form.tags"
               :key="tag"
               variant="outline"
-              class="bg-indigo-50 text-indigo-700 border-indigo-200 cursor-pointer hover:bg-indigo-100"
+              class="bg-indigo-50 text-indigo-700 border-indigo-200 cursor-pointer hover:bg-indigo-100 rounded-lg px-3 py-1.5 transition-colors"
               @click="removeTag(tag)"
             >
               {{ tag }} ×
@@ -96,12 +104,12 @@
             :model-value="newTag"
             @update:model-value="emit('update:newTag', $event)"
             placeholder="Добавить тег..."
-            class="w-full"
+            class="w-full rounded-xl"
             @keydown.enter.prevent="addTag"
           />
         </FormField>
 
-        <div class="flex gap-6 text-sm pt-2 border-t border-gray-100">
+        <div class="flex gap-6 text-sm pt-3 border-t border-gray-200">
           <div>
             <span class="text-gray-600">Символов: </span>
             <span class="font-medium">{{ characterCount }}</span>
@@ -123,6 +131,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { Input, FormField, Badge, Button, SelectButton } from '@/shared/ui'
+  import { ChevronDownIcon } from '@/shared/ui/icon'
   import type { CreateJournalEntryDto } from '@/entities/journal'
 
   interface Props {

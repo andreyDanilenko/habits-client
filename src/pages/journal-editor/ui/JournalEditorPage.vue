@@ -1,28 +1,52 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Хедер редактора -->
-    <div class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <Button @click="handleCancel" variant="ghost" size="md" :left-icon="ArrowLeftIcon">
+    <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex items-center justify-between">
+          <Button
+            @click="handleCancel"
+            variant="ghost"
+            size="md"
+            :left-icon="ArrowLeftIcon"
+            class="rounded-xl"
+          >
             <span class="hidden sm:inline">Назад</span>
           </Button>
 
-          <div class="flex items-center gap-3">
-            <div v-if="isSaving" class="flex items-center gap-2 text-sm text-gray-500">
+          <div class="flex items-center gap-4">
+            <div
+              v-if="isSaving"
+              class="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium"
+            >
               <Spinner class="w-4 h-4" />
               <span>Сохранение...</span>
             </div>
-            <div v-else-if="lastSaved" class="flex items-center gap-2 text-sm text-gray-500">
+            <div
+              v-else-if="lastSaved"
+              class="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-xl text-sm font-medium"
+            >
               <CheckCircleIcon class="w-4 h-4 text-green-500" />
               <span>Сохранено {{ formatRelativeTime(lastSaved) }}</span>
             </div>
 
             <div class="flex items-center gap-2">
-              <Button variant="outline" @click="handleSaveDraft" :loading="isSaving">
+              <Button
+                variant="outline"
+                size="sm"
+                @click="handleSaveDraft"
+                :loading="isSaving"
+                class="rounded-xl"
+              >
                 Сохранить
               </Button>
-              <Button @click="handlePublish" :loading="isPublishing" :disabled="!canPublish">
+              <Button
+                size="sm"
+                @click="handlePublish"
+                :loading="isPublishing"
+                :disabled="!canPublish"
+                class="rounded-xl"
+              >
                 {{ isEditMode ? 'Обновить' : 'Опубликовать' }}
               </Button>
             </div>
@@ -106,8 +130,6 @@
     ;(form as any)[field] = value
     handleAutoSave()
   }
-
-  import { formatRelativeTime } from '@/shared/lib'
 
   const handleCancel = () => {
     if (confirm('Вы уверены? Несохраненные изменения будут потеряны.')) {
