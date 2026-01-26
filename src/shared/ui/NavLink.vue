@@ -97,7 +97,6 @@
       return false
     }
 
-    // Для объекта роута проверяем name или path
     if (typeof props.to === 'object' && 'name' in props.to) {
       return route.name === props.to.name
     }
@@ -117,7 +116,6 @@
     return false
   })
 
-  // Маппинг размера к размеру иконки
   const iconSize = computed(() => {
     if (props.iconOnly) return 'md'
     return props.size === 'lg' ? 'md' : props.size === 'sm' ? 'xs' : 'sm'

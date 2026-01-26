@@ -17,7 +17,6 @@
       <nav class="p-4 space-y-4 flex flex-col h-full overflow-y-auto">
         <!-- Кнопки управления -->
         <div class="flex justify-end mb-2 flex-shrink-0">
-          <!-- Кнопка закрытия (только для мобильных) -->
           <Button
             v-if="isMobile"
             @click="closeSidebar"
@@ -26,7 +25,6 @@
             :left-icon="XMarkIcon"
             aria-label="Закрыть меню"
           />
-          <!-- Кнопка сворачивания (только для desktop) -->
           <Button
             v-else
             @click="toggleCollapsed"
@@ -37,7 +35,13 @@
           />
         </div>
 
-        <!-- Переключение workspace (вверху) -->
+              <div class="mb-4 flex-shrink-0">
+          <h3
+            v-if="!isCollapsed"
+            class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3"
+          >
+            Workspaces
+          </h3>
         <div v-if="!isCollapsed" class="w-full mb-4 pb-4 border-b border-gray-200 flex-shrink-0">
           <WorkspaceSwitcher />
         </div>
@@ -48,8 +52,8 @@
             :title="currentWorkspace?.name || 'Workspace'"
           />
         </div>
+        </div>
 
-        <!-- Список модулей -->
         <div class="mb-4 flex-shrink-0">
           <h3
             v-if="!isCollapsed"
@@ -72,7 +76,6 @@
           </Button>
         </div>
 
-        <!-- Роуты выбранного модуля -->
         <div
           v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
           class="mb-4 flex-1 min-h-0 overflow-y-auto"
@@ -83,7 +86,7 @@
           >
             {{ selectedModule.label }}
           </h3>
-
+        <div class="grid gap-1">
           <NavLink
             v-for="route in getModuleRoutes(selectedModule)"
             :key="route.path"
@@ -97,11 +100,10 @@
           >
             <span v-if="!isCollapsed">{{ route.label }}</span>
           </NavLink>
+          </div>
         </div>
 
-        <!-- Настройки воркспейса и выход -->
         <div class="border-t border-gray-200 pt-4 mt-auto flex-shrink-0">
-          <!-- Настройки воркспейса -->
           <NavLink
             v-if="isOwner"
             to="/workspace-settings"
@@ -115,7 +117,6 @@
             <span v-if="!isCollapsed">Настройки воркспейса</span>
           </NavLink>
 
-          <!-- Кнопка выхода -->
           <Button
             @click="handleLogout"
             variant="ghost"
@@ -309,7 +310,6 @@
     opacity: 0;
   }
 
-  /* Убеждаемся, что aside растягивается на всю высоту родителя на десктопе */
   @media (min-width: 1024px) {
     aside {
       height: 100%;
