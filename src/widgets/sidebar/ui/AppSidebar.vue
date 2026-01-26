@@ -73,7 +73,10 @@
         </div>
 
         <!-- Роуты выбранного модуля -->
-        <div v-if="selectedModule && getModuleRoutes(selectedModule).length > 0" class="mb-4 flex-1 min-h-0 overflow-y-auto">
+        <div
+          v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
+          class="mb-4 flex-1 min-h-0 overflow-y-auto"
+        >
           <h3
             v-if="!isCollapsed"
             class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3"
@@ -132,13 +135,7 @@
 <script setup lang="ts">
   import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import {
-    ArrowLeftIcon,
-    ArrowRightIcon,
-    XMarkIcon,
-    CogIcon,
-    LogoutIcon,
-  } from '@/shared/ui/icon'
+  import { ArrowLeftIcon, ArrowRightIcon, XMarkIcon, CogIcon, LogoutIcon } from '@/shared/ui/icon'
   import { Button, NavLink } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth'
   import { usePermissions, useWorkspaceStore } from '@/entities/workspace'
@@ -193,7 +190,7 @@
     () => {
       detectModuleFromRoute()
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   watch(
@@ -201,7 +198,7 @@
     () => {
       detectModuleFromRoute()
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   const getModuleRoutes = (module: Module) => {
@@ -272,14 +269,11 @@
       return [
         'fixed top-0 left-0 h-screen transition-transform duration-300 ease-in-out',
         isOpen.value ? 'translate-x-0' : '-translate-x-full',
-        'w-64'
+        'w-64',
       ].join(' ')
     }
 
-    return [
-      'h-full transition-all duration-300',
-      isCollapsed.value ? 'w-16' : 'w-64'
-    ].join(' ')
+    return ['h-full transition-all duration-300', isCollapsed.value ? 'w-16' : 'w-64'].join(' ')
   })
 
   // Закрываем sidebar при изменении маршрута на мобильных
@@ -289,7 +283,7 @@
       if (isMobile.value) {
         closeSidebar()
       }
-    }
+    },
   )
 
   // Экспортируем методы для управления sidebar извне

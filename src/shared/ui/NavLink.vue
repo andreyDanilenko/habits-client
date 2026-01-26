@@ -13,11 +13,11 @@
     @click="handleClick"
   >
     <!-- Иконка слева -->
-    <component 
-      v-if="leftIcon" 
-      :is="leftIcon" 
-      :size="iconSize" 
-      :class="iconOnly ? '' : (customClass && customClass.includes('justify-center') ? '' : 'mr-2')" 
+    <component
+      v-if="leftIcon"
+      :is="leftIcon"
+      :size="iconSize"
+      :class="iconOnly ? '' : customClass && customClass.includes('justify-center') ? '' : 'mr-2'"
     />
 
     <!-- Основной контент -->
@@ -84,7 +84,7 @@
 
   const isActive = computed(() => {
     const currentPath = route.path
-    
+
     if (typeof props.to === 'string') {
       if (props.exact) {
         return currentPath === props.to
@@ -96,12 +96,12 @@
       }
       return false
     }
-    
+
     // Для объекта роута проверяем name или path
     if (typeof props.to === 'object' && 'name' in props.to) {
       return route.name === props.to.name
     }
-    
+
     if (typeof props.to === 'object' && 'path' in props.to) {
       const path = props.to.path as string
       if (props.exact) {
@@ -113,7 +113,7 @@
       }
       return false
     }
-    
+
     return false
   })
 

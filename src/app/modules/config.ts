@@ -113,7 +113,9 @@ export const modules: Module[] = [
 /**
  * Получить все доступные модули для текущего пользователя
  */
-export function getAvailableModules(hasPermission: (permission: WorkspacePermission) => boolean): Module[] {
+export function getAvailableModules(
+  hasPermission: (permission: WorkspacePermission) => boolean,
+): Module[] {
   return modules.filter((module) => {
     if (!module.permissions || module.permissions.length === 0) {
       return true
@@ -127,7 +129,7 @@ export function getAvailableModules(hasPermission: (permission: WorkspacePermiss
  */
 export function getAvailableModuleRoutes(
   module: Module,
-  hasPermission: (permission: WorkspacePermission) => boolean
+  hasPermission: (permission: WorkspacePermission) => boolean,
 ): ModuleRoute[] {
   return module.routes.filter((route) => {
     if (route.meta?.hideFromMenu) {

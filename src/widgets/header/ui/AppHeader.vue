@@ -9,7 +9,6 @@
           <span class="text-xl font-bold text-gray-900"> HabitFlow </span>
         </router-link>
 
-
         <!-- Правая часть -->
         <div class="flex items-center space-x-4">
           <!-- Статистика сегодня -->

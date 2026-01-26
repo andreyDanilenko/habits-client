@@ -70,9 +70,10 @@ modules.forEach((module) => {
         module: module.id,
         ...route.meta,
       },
-      beforeEnter: route.permissions && route.permissions.length > 0
-        ? requirePermission(route.permissions[0])
-        : undefined,
+      beforeEnter:
+        route.permissions && route.permissions.length > 0
+          ? requirePermission(route.permissions[0])
+          : undefined,
     })
   })
 })

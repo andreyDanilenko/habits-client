@@ -81,7 +81,9 @@
                 <option value="text">Текст</option>
                 <option value="markdown">Markdown</option>
               </select>
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <div
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+              >
                 <ChevronDownIcon class="w-5 h-5" />
               </div>
             </div>

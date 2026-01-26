@@ -52,7 +52,9 @@
                 {{ mood.label }}
               </option>
             </select>
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            <div
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            >
               <ChevronDownIcon class="w-5 h-5" />
             </div>
           </div>
@@ -72,7 +74,9 @@
                 {{ date.label }}
               </option>
             </select>
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            <div
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+            >
               <ChevronDownIcon class="w-5 h-5" />
             </div>
           </div>
@@ -93,16 +97,15 @@
       </div>
 
       <!-- Индикаторы активных фильтров -->
-      <div
-        v-if="hasActiveFilters"
-        class="flex flex-wrap gap-2 pt-4 border-t border-gray-200"
-      >
+      <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
         <Badge
           v-if="selectedMood"
           variant="outline"
           class="bg-indigo-50 text-indigo-700 border-indigo-200 flex items-center gap-1.5 px-3 py-1.5 rounded-lg"
         >
-          <span class="text-sm">Настроение: {{ moodOptions.find((m) => m.value === selectedMood)?.label }}</span>
+          <span class="text-sm"
+            >Настроение: {{ moodOptions.find((m) => m.value === selectedMood)?.label }}</span
+          >
           <Button
             @click.stop="$emit('update:selected-mood', null)"
             icon-only
@@ -118,7 +121,9 @@
           variant="outline"
           class="bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1.5 px-3 py-1.5 rounded-lg"
         >
-          <span class="text-sm">Период: {{ dateOptions.find((d) => d.value === selectedDate)?.label }}</span>
+          <span class="text-sm"
+            >Период: {{ dateOptions.find((d) => d.value === selectedDate)?.label }}</span
+          >
           <Button
             @click.stop="$emit('update:selected-date', null)"
             icon-only

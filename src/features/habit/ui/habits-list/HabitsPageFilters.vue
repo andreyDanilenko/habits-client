@@ -31,8 +31,8 @@
         <div class="flex items-end">
           <Button
             v-if="hasActiveFilters"
-              :variant="showAll ? 'primary' : 'outline'"
-             size="sm"
+            :variant="showAll ? 'primary' : 'outline'"
+            size="sm"
             @click="$emit('reset-filter')"
             class="whitespace-nowrap"
           >

@@ -17,5 +17,5 @@ h4 {
 }
 
 button {
-   @apply cursor-pointer;
+  @apply cursor-pointer;
 }
