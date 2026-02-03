@@ -19,7 +19,12 @@ const routes = [
   // Редирект с корня на первый доступный модуль или dashboard
   {
     path: '/',
-    redirect: '/habits',
+    redirect: '/habits/dashboard',
+  },
+  // Редирект с /habits на дашборд
+  {
+    path: '/habits',
+    redirect: '/habits/dashboard',
   },
   // Редиректы для старых роутов (обратная совместимость)
   {

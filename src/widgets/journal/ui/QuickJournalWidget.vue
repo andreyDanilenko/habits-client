@@ -45,7 +45,6 @@
   ]
 
   const saveNote = () => {
-    // Заглушка: сохранение записи
     console.log('Save note:', { note: note.value, mood: selectedMood.value })
     note.value = ''
     selectedMood.value = null

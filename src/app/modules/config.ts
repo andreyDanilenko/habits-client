@@ -41,7 +41,7 @@ export const modules: Module[] = [
     permissions: [WorkspacePermission.HABITS_VIEW],
     routes: [
       {
-        path: '/habits',
+        path: '/habits/dashboard',
         name: 'HabitsDashboard',
         label: 'Дашборд',
         icon: DashboardIcon,

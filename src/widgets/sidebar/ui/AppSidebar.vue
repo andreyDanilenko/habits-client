@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Mobile Overlay (как в модальном окне) -->
+    <!-- Mobile Overlay -->
     <Transition name="fade">
       <div
         v-if="isMobile && isOpen"
@@ -14,10 +14,9 @@
       class="bg-white border-r border-gray-300 transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
       :class="sidebarClasses"
     >
-      <nav class="p-4 space-y-4 flex flex-col h-full overflow-y-auto">
+      <nav class="p-4 flex flex-col h-full overflow-y-auto">
         <!-- Кнопки управления -->
-        <div class="flex justify-end mb-2 flex-shrink-0">
-          <!-- Кнопка закрытия (только для мобильных) -->
+        <div class="flex justify-end mb-4 flex-shrink-0">
           <Button
             v-if="isMobile"
             @click="closeSidebar"
@@ -26,7 +25,6 @@
             :left-icon="XMarkIcon"
             aria-label="Закрыть меню"
           />
-          <!-- Кнопка сворачивания (только для desktop) -->
           <Button
             v-else
             @click="toggleCollapsed"
@@ -37,95 +35,52 @@
           />
         </div>
 
-        <!-- Переключение workspace (вверху) -->
-        <div v-if="!isCollapsed" class="w-full mb-4 pb-4 border-b border-gray-200 flex-shrink-0">
-          <WorkspaceSwitcher />
+        <!-- Workspace Switcher -->
+        <div class="mb-4 pb-4 border-b border-gray-200 flex-shrink-0">
+          <div v-if="!isCollapsed" class="w-full">
+            <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsed" />
+            <WorkspaceSwitcher />
+          </div>
+          <div v-else class="flex justify-center">
+            <div
+              class="w-8 h-8 rounded flex-shrink-0 cursor-pointer"
+              :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"
+              :title="currentWorkspace?.name || 'Workspace'"
+            />
+          </div>
         </div>
-        <div v-else class="mb-4 pb-4 border-b border-gray-200 flex justify-center flex-shrink-0">
-          <div
-            class="w-8 h-8 rounded flex-shrink-0 cursor-pointer"
-            :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"
-            :title="currentWorkspace?.name || 'Workspace'"
+
+        <!-- Модули -->
+        <div class="mb-4 flex-shrink-0">
+          <SidebarSectionHeader title="Модули" :collapsed="isCollapsed" />
+          <SidebarNavigation
+            :items="modulesNavItems"
+            :collapsed="isCollapsed"
+            @click="handleMobileClick"
+            @item-click="handleModuleClick"
           />
         </div>
 
-        <!-- Список модулей -->
-        <div class="mb-4 flex-shrink-0">
-          <h3
-            v-if="!isCollapsed"
-            class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3"
-          >
-            Модули
-          </h3>
-
-          <Button
-            v-for="module in availableModules"
-            :key="module.id"
-            @click="selectModule(module.id)"
-            variant="ghost"
-            size="lg"
-            :left-icon="module.icon"
-            :icon-only="isCollapsed"
-            :custom-class="`w-full ${isCollapsed ? 'justify-center' : 'justify-start'} ${selectedModuleId === module.id ? 'bg-indigo-50 text-indigo-600 font-medium' : ''}`"
-          >
-            <span v-if="!isCollapsed">{{ module.label }}</span>
-          </Button>
-        </div>
-
-        <!-- Роуты выбранного модуля -->
+        <!-- Роуты модуля -->
         <div
           v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
           class="mb-4 flex-1 min-h-0 overflow-y-auto"
         >
-          <h3
-            v-if="!isCollapsed"
-            class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3"
-          >
-            {{ selectedModule.label }}
-          </h3>
-
-          <NavLink
-            v-for="route in getModuleRoutes(selectedModule)"
-            :key="route.path"
-            :to="route.path"
-            variant="default"
-            size="md"
-            :left-icon="route.icon"
-            :icon-only="isCollapsed"
-            :custom-class="`w-full ${isCollapsed ? 'justify-center' : 'justify-start'}`"
+          <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsed" />
+          <SidebarNavigation
+            :items="moduleRoutesNavItems"
+            :collapsed="isCollapsed"
             @click="handleMobileClick"
-          >
-            <span v-if="!isCollapsed">{{ route.label }}</span>
-          </NavLink>
+          />
         </div>
 
-        <!-- Настройки воркспейса и выход -->
+        <!-- Нижняя секция -->
         <div class="border-t border-gray-200 pt-4 mt-auto flex-shrink-0">
-          <!-- Настройки воркспейса -->
-          <NavLink
-            v-if="isOwner"
-            to="/workspace-settings"
-            variant="default"
-            size="md"
-            :left-icon="CogIcon"
-            :icon-only="isCollapsed"
-            :custom-class="`w-full mb-2 ${isCollapsed ? 'justify-center' : 'justify-start'}`"
+          <SidebarNavigation
+            :items="footerNavItems"
+            :collapsed="isCollapsed"
             @click="handleMobileClick"
-          >
-            <span v-if="!isCollapsed">Настройки воркспейса</span>
-          </NavLink>
-
-          <!-- Кнопка выхода -->
-          <Button
-            @click="handleLogout"
-            variant="ghost"
-            size="md"
-            :left-icon="LogoutIcon"
-            :icon-only="isCollapsed"
-            :custom-class="`w-full text-red-600 hover:bg-red-50 ${isCollapsed ? 'justify-center' : 'justify-start'}`"
-          >
-            <span v-if="!isCollapsed" class="font-medium">Выйти</span>
-          </Button>
+          />
         </div>
       </nav>
     </aside>
@@ -136,11 +91,14 @@
   import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { ArrowLeftIcon, ArrowRightIcon, XMarkIcon, CogIcon, LogoutIcon } from '@/shared/ui/icon'
-  import { Button, NavLink } from '@/shared/ui'
+  import { Button } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth'
   import { usePermissions, useWorkspaceStore } from '@/entities/workspace'
   import { getAvailableModules, getAvailableModuleRoutes, type Module } from '@/app/modules/config'
   import WorkspaceSwitcher from '@/widgets/header/ui/WorkspaceSwitcher.vue'
+  import SidebarSectionHeader from './SidebarSectionHeader.vue'
+  import SidebarNavigation from './SidebarNavigation.vue'
+  import type { SidebarNavItem } from '../types'
 
   const route = useRoute()
   const router = useRouter()
@@ -216,6 +174,54 @@
     }
   }
 
+  // Структура данных для навигации модулей
+  const modulesNavItems = computed<SidebarNavItem[]>(() => {
+    return availableModules.value.map((module) => {
+      const routes = getModuleRoutes(module)
+      const firstRoute = routes.length > 0 ? routes[0].path : undefined
+      return {
+        id: module.id,
+        label: module.label,
+        icon: module.icon,
+        to: firstRoute,
+        onClick: firstRoute ? undefined : () => selectModule(module.id),
+        isActive: selectedModuleId.value === module.id,
+      }
+    })
+  })
+
+  // Структура данных для роутов модуля
+  const moduleRoutesNavItems = computed<SidebarNavItem[]>(() => {
+    if (!selectedModule.value) return []
+    return getModuleRoutes(selectedModule.value).map((route) => ({
+      id: route.path,
+      label: route.label,
+      icon: route.icon,
+      to: route.path,
+    }))
+  })
+
+  // Структура данных для нижней секции
+  const footerNavItems = computed<SidebarNavItem[]>(() => {
+    const items: SidebarNavItem[] = []
+    if (isOwner.value) {
+      items.push({
+        id: 'workspace-settings',
+        label: 'Настройки воркспейса',
+        icon: CogIcon,
+        to: '/workspace-settings',
+      })
+    }
+    items.push({
+      id: 'logout',
+      label: 'Выйти',
+      icon: LogoutIcon,
+      onClick: handleLogout,
+      variant: 'danger',
+    })
+    return items
+  })
+
   // Проверка размера экрана
   const checkMobile = () => {
     const wasMobile = isMobile.value
@@ -250,15 +256,23 @@
     isOpen.value = false
   }
 
+  const handleLogout = async () => {
+    await authStore.logout()
+    router.push('/login')
+  }
+
   const handleMobileClick = () => {
     if (isMobile.value) {
       closeSidebar()
     }
   }
 
-  const handleLogout = async () => {
-    await authStore.logout()
-    router.push('/login')
+  const handleModuleClick = (item: SidebarNavItem) => {
+    // Обновляем selectedModuleId при клике на модуль
+    const module = availableModules.value.find((m) => m.id === item.id)
+    if (module) {
+      selectedModuleId.value = module.id
+    }
   }
 
   const sidebarClasses = computed(() => {
@@ -309,7 +323,6 @@
     opacity: 0;
   }
 
-  /* Убеждаемся, что aside растягивается на всю высоту родителя на десктопе */
   @media (min-width: 1024px) {
     aside {
       height: 100%;

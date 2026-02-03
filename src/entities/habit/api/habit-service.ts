@@ -15,8 +15,6 @@ interface HabitsDataResponse {
 }
 
 export const habitService = {
-  // getHabits: async (): Promise<Habit[]> => (await api.get<HabitsDataResponse>(API_ENDPOINTS.HABITS.BASE)).habits,
-
   getHabits: async (date?: string): Promise<Habit[]> => {
     const params = new URLSearchParams()
     if (date) params.append('date', date)

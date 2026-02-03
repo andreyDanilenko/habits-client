@@ -1,7 +1,6 @@
 <template>
   <div class="space-y-8">
     <div v-for="group in groupedEntries" :key="group.date" class="space-y-4">
-      <!-- Заголовок группы -->
       <div class="flex items-center gap-3 sticky top-0 bg-gray-50 py-2 z-10 -mx-2 px-2 rounded-lg">
         <div class="h-px flex-1 bg-gray-300"></div>
         <h2 class="text-sm font-semibold text-gray-700 whitespace-nowrap">
@@ -13,7 +12,6 @@
         </Badge>
       </div>
 
-      <!-- Записи группы -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <JournalEntryCard
           v-for="entry in group.entries"
