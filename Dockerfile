@@ -1,5 +1,5 @@
 # Этап 1: Сборка Vue-приложения
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build 
 
 WORKDIR /app
 
@@ -7,10 +7,10 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build
+RUN npx vite build 
 
 # Этап 2: Nginx
-FROM nginx:stable-alpine
+FROM nginx:alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
 
