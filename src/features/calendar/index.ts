@@ -1,2 +1,5 @@
 export * from './model'
-export * from './ui'
+export { default as CalendarPageHeader } from './ui/CalendarPageHeader.vue'
+export { default as CalendarLegend } from './ui/CalendarLegend.vue'
+export { default as CalendarGrid } from './ui/CalendarGrid.vue'
+export { default as CalendarDayCard } from './ui/CalendarDay.vue'

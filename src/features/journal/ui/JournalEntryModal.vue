@@ -77,7 +77,7 @@
               :key="option.value"
               :is-selected="form.contentType === option.value"
               size="sm"
-              @click="form.contentType = option.value"
+              @click="form.contentType = option.value as JournalContentType"
             >
               {{ option.label }}
             </SelectButton>
@@ -159,7 +159,7 @@
   import { marked } from 'marked'
   import DOMPurify from 'dompurify' // Для безопасного рендеринга HTML
   import { ModalContent, FormField, Input, Button, Badge, SelectButton } from '@/shared/ui'
-  import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
+  import type { JournalEntry, CreateJournalEntryDto, JournalContentType } from '@/entities/journal'
 
   interface Props {
     entry?: JournalEntry | null
@@ -196,10 +196,10 @@
     breaks: true, // Переносы строк становятся <br>
   })
 
-  // Безопасный рендеринг Markdown
+  // Безопасный рендеринг Markdown (sync для использования в computed)
   const renderMarkdown = (text: string): string => {
     if (!text) return ''
-    const rawHtml = marked(text)
+    const rawHtml = marked(text, { async: false })
     return DOMPurify.sanitize(rawHtml)
   }
 

@@ -233,6 +233,7 @@ export const useJournalPage = () => {
     clearFilters,
 
     // Methods
+    handleSaveEntry,
     handleDeleteEntry,
   }
 }

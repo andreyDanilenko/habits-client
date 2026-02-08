@@ -1,4 +1,4 @@
-import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import type { CreateJournalEntryDto } from '@/entities/journal'
 

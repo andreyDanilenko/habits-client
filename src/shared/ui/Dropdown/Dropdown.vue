@@ -1,7 +1,7 @@
 <template>
-  <div class="relative inline-block" ref="containerRef">
+  <div class="relative inline-block" :ref="(el) => { dropdown.containerRef.value = (el as HTMLElement) ?? null }">
     <div
-      ref="triggerRef"
+      :ref="(el) => { dropdown.triggerRef.value = (el as HTMLElement) ?? null }"
       @click="toggle"
       class="cursor-pointer"
       :class="triggerClass"
@@ -21,7 +21,7 @@
       >
         <div
           v-if="isOpen"
-          ref="dropdownRef"
+          :ref="(el) => { dropdown.dropdownRef.value = (el as HTMLElement) ?? null }"
           :class="[
             'absolute z-50 pointer-events-auto',
             'bg-white rounded-lg shadow-lg border border-gray-200',
@@ -49,7 +49,7 @@
       >
         <div
           v-if="isOpen"
-          ref="dropdownRef"
+          :ref="(el) => { dropdown.dropdownRef.value = (el as HTMLElement) ?? null }"
           :class="[
             'fixed z-50 pointer-events-auto',
             'bg-white rounded-lg shadow-lg border border-gray-200',
@@ -105,16 +105,7 @@
     close: []
   }>()
 
-  const {
-    isOpen,
-    triggerRef,
-    dropdownRef,
-    containerRef,
-    dropdownStyle,
-    open,
-    close,
-    toggle,
-  } = useDropdown({
+  const dropdown = useDropdown({
     placement: props.placement,
     trigger: props.trigger,
     width: props.width,
@@ -130,6 +121,8 @@
       emit('close')
     },
   })
+
+  const { isOpen, dropdownStyle, open, close, toggle } = dropdown
 
   // Экспортируем методы для внешнего использования
   defineExpose({

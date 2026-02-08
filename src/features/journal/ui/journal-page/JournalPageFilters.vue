@@ -39,12 +39,7 @@
           <div class="relative">
             <select
               :value="selectedMood ?? ''"
-              @change="
-                $emit(
-                  'update:selected-mood',
-                  $event.target.value ? Number($event.target.value) : null,
-                )
-              "
+              @change="handleMoodChange"
               class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-all duration-200 shadow-sm hover:shadow-md appearance-none cursor-pointer"
             >
               <option value="">Все настроения</option>
@@ -66,7 +61,7 @@
           <div class="relative">
             <select
               :value="selectedDate ?? ''"
-              @change="$emit('update:selected-date', $event.target.value || null)"
+              @change="handleDateChange"
               class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-all duration-200 shadow-sm hover:shadow-md appearance-none cursor-pointer"
             >
               <option value="">Все даты</option>
@@ -156,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Card, Button, Input, Badge } from '@/shared/ui'
+  import { Card, Button, Badge } from '@/shared/ui'
   import { XMarkIcon, ChevronDownIcon } from '@/shared/ui/icon'
   import type { moodOptions, dateOptions } from '@/features/journal/model'
 
@@ -179,5 +174,16 @@
   const handleSearchInput = (event: Event) => {
     const target = event.target as HTMLInputElement
     emit('update:search-query', target.value)
+  }
+
+  const handleMoodChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement
+    const value = target?.value
+    emit('update:selected-mood', value ? Number(value) : null)
+  }
+
+  const handleDateChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement
+    emit('update:selected-date', target?.value || null)
   }
 </script>

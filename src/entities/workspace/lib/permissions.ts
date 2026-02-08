@@ -102,13 +102,7 @@ function getUserWorkspaceRole(): WorkspaceRole | null {
   return WorkspaceRole.MEMBER
 }
 
-/**
- * Composable для работы с пермишенами
- */
 export function usePermissions() {
-  const userStore = useUserStore()
-  const workspaceStore = useWorkspaceStore()
-
   const userRole = computed(() => getUserWorkspaceRole())
   const isOwner = computed(() => userRole.value === WorkspaceRole.OWNER)
   const isAdmin = computed(() => userRole.value === WorkspaceRole.ADMIN)

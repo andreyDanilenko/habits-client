@@ -1,3 +1,5 @@
 export { default as CalendarWidget } from './ui/CalendarWidget.vue'
 export * from './model'
-export * from './ui'
+export { default as CalendarWidgetHeader } from './ui/CalendarWidgetHeader.vue'
+export { default as CalendarWidgetGrid } from './ui/CalendarWidgetGrid.vue'
+export { default as CalendarWidgetDayCard } from './ui/CalendarWidgetDay.vue'

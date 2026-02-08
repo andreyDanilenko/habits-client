@@ -287,12 +287,12 @@ class MockApiClient {
     return {} as T
   }
 
-  async put<T>(url: string, data?: any): Promise<T> {
+  async put<T>(_url: string, data?: any): Promise<T> {
     await delay()
     return (data as T) || ({} as T)
   }
 
-  async delete<T>(url: string): Promise<T> {
+  async delete<T>(_url: string): Promise<T> {
     await delay()
     return {} as T
   }

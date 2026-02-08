@@ -76,9 +76,8 @@
   })
 
   onMounted(async () => {
-    const entryId = route.params.id as string
-    // TODO: Загрузить запись из API
-    // entry.value = await journalStore.getEntry(entryId)
+    // TODO: Загрузить запись из API по route.params.id
+    // entry.value = await journalStore.getEntry(route.params.id as string)
 
     entry.value = {
       id: '1',

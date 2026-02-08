@@ -41,11 +41,11 @@ const routes = [
   },
   {
     path: '/journal/:id',
-    redirect: (to) => `/habits/journal/${to.params.id}`,
+    redirect: (to: any) => `/habits/journal/${to.params.id}`,
   },
   {
     path: '/journal/:id/edit',
-    redirect: (to) => `/habits/journal/${to.params.id}/edit`,
+    redirect: (to: any) => `/habits/journal/${to.params.id}/edit`,
   },
   // Настройки (общие, не модульные)
   {
@@ -72,6 +72,7 @@ modules.forEach((module) => {
       component: route.component,
       meta: {
         requiresAuth: true,
+        //@ts-ignore
         module: module.id,
         ...route.meta,
       },
