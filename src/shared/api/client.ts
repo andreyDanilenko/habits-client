@@ -2,7 +2,8 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import { mockApi } from './mock-client'
 
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+// Пустая строка = относительные запросы к текущему хосту (работает за nginx). Для локальной разработки задайте VITE_API_URL=http://localhost:3000
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'habits.lifedream.tech'
 
 type UnauthorizedHandler = () => void | Promise<void>
 
