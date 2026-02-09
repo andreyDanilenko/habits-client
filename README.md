@@ -1,56 +1,28 @@
-# Frontend Application
+# Habits (ERP) — habits.lifedream.tech
 
-Vue 3 + TypeScript проект с архитектурой Feature-Sliced Design (FSD).
+ERP with first module: Habits (habit tracker). **Live:** [https://habits.lifedream.tech](https://habits.lifedream.tech)
 
-## Технологии
+**Deploy (all projects):** [deployment](../deployment/README.md) · **Main site:** [lifedream.tech](https://lifedream.tech)  
+**Русский:** [README.ru.md](README.ru.md)
 
-- **Vue 3** - прогрессивный JavaScript фреймворк
-- **TypeScript** - типизированный JavaScript
-- **Vite** - быстрый сборщик
-- **Vue Router** - маршрутизация
-- **Pinia** - управление состоянием
-- **ESLint** - линтинг кода
+## Stack
 
-## Установка
+| Layer | Tech |
+|------|------|
+| Frontend | Vue 3, TypeScript, Vite, Vue Router, Pinia, FSD |
+| Backend (API) | Go, Gin, PostgreSQL ([habits-api](https://github.com/andreyDanilenko/habits-api)) |
+
+This repo is only the Habits SPA. The API is a separate repo (REST, JWT, workspaces).
+
+## Run locally
 
 ```bash
 npm install
-```
-
-## Разработка
-
-```bash
 npm run dev
 ```
 
-Приложение будет доступно по адресу `http://localhost:3000`
+App at `http://localhost:3000`. Set `VITE_API_URL` if API is elsewhere.
 
-## Сборка
+## Deploy
 
-```bash
-npm run build
-```
-
-## Структура проекта
-
-Проект следует архитектуре **Feature-Sliced Design (FSD)**. Подробнее см. [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
-
-```
-src/
-├── app/          # Инициализация приложения, роутинг, провайдеры
-├── pages/        # Страницы приложения
-├── widgets/      # Крупные самостоятельные блоки интерфейса
-├── features/     # Бизнес-функциональность
-├── entities/     # Бизнес-сущности
-└── shared/       # Переиспользуемые модули (UI, утилиты, конфиги)
-```
-
-## Алиасы путей
-
-- `@/` - корень src
-- `@app/` - инициализация приложения
-- `@pages/` - страницы
-- `@widgets/` - виджеты
-- `@features/` - фичи
-- `@entities/` - сущности
-- `@shared/` - общие модули
+Full deploy (this app + main site + Nginx) is from the **deployment** repo. Put this repo (as `habits/`) and `habits-api` next to `deployment/`, then `docker-compose up -d` from `deployment/`. See [deployment/README.md](../deployment/README.md).
