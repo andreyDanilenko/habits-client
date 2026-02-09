@@ -1,5 +1,5 @@
-# Этап 1: Сборка Vue-приложения
-FROM node:24-alpine AS build 
+# ТОЛЬКО сборка, без nginx
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
@@ -7,13 +7,10 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npx vite build 
+RUN npx vite build
 
-# Этап 2: Nginx
-FROM nginx:alpine
+# Создаем минимальный образ только с собранными файлами
+FROM alpine:latest
 
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /usr/share/nginx/html
+COPY --from=build /app/dist ./
