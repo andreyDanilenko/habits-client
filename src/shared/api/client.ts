@@ -2,7 +2,6 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import { mockApi } from './mock-client'
 
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
-// Пустая строка = запросы на тот же хост (тот же домен), nginx отдаёт /api/ бэкенду. Для локальной разработки: VITE_API_URL=http://localhost:3000
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 type UnauthorizedHandler = () => void | Promise<void>
