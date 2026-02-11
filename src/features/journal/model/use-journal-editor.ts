@@ -1,14 +1,13 @@
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import type { CreateJournalEntryDto } from '@/entities/journal'
+import {
+  DEFAULT_JOURNAL_CONTENT_TYPE,
+  MOOD_DEFINITIONS,
+  getTodayDateString,
+} from '@/features/journal/model/journal-constants'
 
-const moodOptions = [
-  { value: 5, emoji: '😊', label: 'Отлично' },
-  { value: 4, emoji: '🙂', label: 'Хорошо' },
-  { value: 3, emoji: '😐', label: 'Нормально' },
-  { value: 2, emoji: '😔', label: 'Плохо' },
-  { value: 1, emoji: '😢', label: 'Очень плохо' },
-]
+const moodOptions = MOOD_DEFINITIONS
 
 export const useJournalEditor = (entryId?: string) => {
   const router = useRouter()
@@ -24,9 +23,9 @@ export const useJournalEditor = (entryId?: string) => {
     title: '',
     content: '',
     mood: undefined,
-    date: new Date().toISOString().split('T')[0],
+    date: getTodayDateString(),
     tags: [],
-    contentType: 'text',
+    contentType: DEFAULT_JOURNAL_CONTENT_TYPE,
   })
 
   // Загрузка существующей записи

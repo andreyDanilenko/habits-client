@@ -2,14 +2,16 @@ import { ref, computed } from 'vue'
 import { format, isToday, isYesterday, isThisWeek, isThisMonth, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
+import {
+  DEFAULT_JOURNAL_CONTENT_TYPE,
+  MOOD_DEFINITIONS,
+  getTodayDateString,
+} from '@/features/journal/model/journal-constants'
 
-export const moodOptions = [
-  { value: 5, label: '😊 Отлично' },
-  { value: 4, label: '🙂 Хорошо' },
-  { value: 3, label: '😐 Нормально' },
-  { value: 2, label: '😔 Плохо' },
-  { value: 1, label: '😢 Очень плохо' },
-]
+export const moodOptions = MOOD_DEFINITIONS.map(({ value, emoji, label }) => ({
+  value,
+  label: `${emoji} ${label}`,
+}))
 
 export const dateOptions = [
   { value: 'today', label: 'Сегодня' },
@@ -63,12 +65,17 @@ export const useJournalPage = () => {
 
     if (searchQuery.value) {
       const query = searchQuery.value.toLowerCase()
-      result = result.filter(
-        (entry) =>
-          entry.title.toLowerCase().includes(query) ||
-          entry.content.toLowerCase().includes(query) ||
-          entry.tags?.some((tag) => tag.toLowerCase().includes(query)),
-      )
+      result = result.filter((entry) => {
+        const matchesTitle = entry.title
+          ? entry.title.toLowerCase().includes(query)
+          : false
+        const matchesContent = entry.content.toLowerCase().includes(query)
+        const matchesTags = entry.tags
+          ? entry.tags.some((tag) => tag.toLowerCase().includes(query))
+          : false
+
+        return matchesTitle || matchesContent || matchesTags
+      })
     }
 
     if (selectedMood.value) {
@@ -117,8 +124,8 @@ export const useJournalPage = () => {
         workspaceId: 'current-workspace-id',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        date: entryData.date || new Date().toISOString().split('T')[0],
-        contentType: entryData.contentType || 'text',
+        date: entryData.date || getTodayDateString(),
+        contentType: entryData.contentType || DEFAULT_JOURNAL_CONTENT_TYPE,
       }
       entries.value.push(newEntry)
     }

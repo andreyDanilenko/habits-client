@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-7xl mx-auto space-y-6 pb-8">
-    <JournalPageHeader @create-entry="handleCreateEntry" />
+    <JournalPageHeader @create-entry="openCreateModal" />
 
     <JournalPageStats
       v-if="!isLoading && filteredEntries.length > 0"
@@ -32,21 +32,19 @@
       v-else-if="filteredEntries.length === 0"
       :has-active-filters="hasActiveFilters"
       @clear-filters="clearFilters"
-      @create-entry="handleCreateEntry"
+      @create-entry="openCreateModal"
     />
 
     <JournalPageEntriesList
       v-else
       :grouped-entries="groupedEntries"
-      @select-entry="handleSelectEntry"
-      @edit-entry="handleEditEntry"
-      @delete-entry="handleDeleteEntry"
+      @edit-entry="editEntry"
+      @delete-entry="deleteEntry"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { useRouter } from 'vue-router'
   import { Spinner } from '@/shared/ui'
   import {
     JournalPageHeader,
@@ -55,10 +53,7 @@
     JournalPageEmptyState,
     JournalPageEntriesList,
   } from '@/features/journal/ui'
-  import { useJournalPage } from '@/features/journal/model'
-  import type { JournalEntry } from '@/entities/journal'
-
-  const router = useRouter()
+  import { useJournalPage, useJournalActions } from '@/features/journal/model'
 
   const {
     searchQuery,
@@ -75,17 +70,11 @@
     hasActiveFilters,
     clearFilters,
     handleDeleteEntry,
+    handleSaveEntry,
   } = useJournalPage()
 
-  const handleCreateEntry = () => {
-    router.push({ name: 'JournalNew' })
-  }
-
-  const handleSelectEntry = (entry: JournalEntry) => {
-    router.push({ name: 'JournalView', params: { id: entry.id } })
-  }
-
-  const handleEditEntry = (entry: JournalEntry) => {
-    router.push({ name: 'JournalEdit', params: { id: entry.id } })
-  }
+  const { handleCreateEntry: openCreateModal, editEntry, deleteEntry } = useJournalActions({
+    handleSaveEntry,
+    handleDeleteEntry,
+  })
 </script>

@@ -10,12 +10,9 @@
       class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
     ></div>
 
-    <!-- Заголовок и настроение -->
+    <!-- Дата и настроение -->
     <div class="flex items-start justify-between mb-3">
       <div class="flex-1 min-w-0">
-        <h3 class="mb-1 group-hover:text-indigo-600 transition-colors line-clamp-2">
-          {{ entry.title }}
-        </h3>
         <div class="flex items-center gap-2 text-sm text-gray-500">
           <span>{{ formatDate(entry.date) }}</span>
           <span v-if="entry.mood" class="flex items-center gap-1">
@@ -32,7 +29,7 @@
       </div>
     </div>
 
-    <!-- Превью контента -->
+    <!-- Состояние и впечатления -->
     <div class="mb-4">
       <p class="text-gray-700 line-clamp-3 leading-relaxed">
         {{ getPreview(entry.content) }}
@@ -54,19 +51,7 @@
 
     <!-- Футер с метаданными и действиями -->
     <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-      <div class="flex items-center gap-3 text-xs text-gray-500">
-        <span class="flex items-center gap-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          {{ getContentTypeLabel(entry.contentType) }}
-        </span>
-        <span class="text-gray-300">•</span>
+      <div class="flex items-center gap-2 text-xs text-gray-500">
         <span>{{ formatTime(entry.updatedAt) }}</span>
       </div>
       <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -97,6 +82,7 @@
   import { Card, Badge, Button } from '@/shared/ui'
   import { CogIcon, DeleteIcon } from '@/shared/ui/icon'
   import type { JournalEntry } from '@/entities/journal'
+  import { getMoodEmoji } from '@/features/journal/model/journal-constants'
 
   interface Props {
     entry: JournalEntry
@@ -117,29 +103,8 @@
     return format(new Date(dateStr), 'HH:mm', { locale: ru })
   }
 
-  const getMoodEmoji = (mood: number) => {
-    const emojis: Record<number, string> = {
-      5: '😊',
-      4: '🙂',
-      3: '😐',
-      2: '😔',
-      1: '😢',
-    }
-    return emojis[mood] || '😐'
-  }
-
   const getPreview = (content: string) => {
     // Убираем markdown разметку для preview
     return content.replace(/[#*_`[\]]/g, '').substring(0, 150)
-  }
-
-  const getContentTypeLabel = (type: string) => {
-    const labels: Record<string, string> = {
-      text: 'Текст',
-      markdown: 'Markdown',
-      'rich-text': 'Rich Text',
-      document: 'Документ',
-    }
-    return labels[type] || type
   }
 </script>
