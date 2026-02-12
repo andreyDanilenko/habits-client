@@ -7,8 +7,7 @@ import {
   CalendarIcon,
   BookIcon,
   HabitsIcon,
-  PlusIcon,
-  CheckIcon,
+  CrmIcon,
 } from '@/shared/ui/icon'
 
 export interface ModuleRoute {
@@ -74,23 +73,38 @@ export const modules: Module[] = [
       },
     ],
   },
-  // Здесь будут добавлены другие модули в будущем
-  // {
-  //   id: 'tasks',
-  //   label: 'Задачи',
-  //   icon: TaskIcon,
-  //   basePath: '/tasks',
-  //   routes: [...]
-  // },
+  {
+    id: 'crm',
+    label: 'CRM',
+    icon: CrmIcon,
+    basePath: '/crm',
+    permissions: [WorkspacePermission.CRM_VIEW],
+    routes: [
+      {
+        path: '/crm/contacts',
+        name: 'CrmContacts',
+        label: 'Контакты',
+        icon: ListIcon,
+        component: () => import('@/pages/crm'),
+        permissions: [WorkspacePermission.CRM_VIEW],
+      },
+    ],
+  },
 ]
 
 /**
- * Получить все доступные модули для текущего пользователя
+ * Получить модули, доступные в текущем workspace и по правам пользователя.
+ * @param enabledModuleCodes — коды модулей, включённых в workspace (из API workspace_modules).
+ * @param hasPermission — проверка права (роль в workspace).
  */
 export function getAvailableModules(
+  enabledModuleCodes: string[],
   hasPermission: (permission: WorkspacePermission) => boolean,
 ): Module[] {
   return modules.filter((module) => {
+    if (!enabledModuleCodes.includes(module.id)) {
+      return false
+    }
     if (!module.permissions || module.permissions.length === 0) {
       return true
     }

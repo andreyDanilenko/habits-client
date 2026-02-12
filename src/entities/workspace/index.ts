@@ -11,5 +11,6 @@ export {
   usePermissions,
   requirePermission,
   requireOwner,
+  requireModuleEnabled,
   WorkspacePermission,
 } from './lib/permissions'

@@ -54,6 +54,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     if (!currentWorkspace.value) {
       currentWorkspace.value = workspace
       applyWorkspaceHeader(workspace)
+      await loadModules(workspace.id)
     }
     return workspace
   }

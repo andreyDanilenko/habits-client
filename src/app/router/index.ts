@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { authGuard } from '@/features/auth'
-import { requireOwner, requirePermission } from '@/entities/workspace'
-import { modules } from '@/app/modules/config'
+import type { RouteRecordRaw } from 'vue-router'
+import { authGuard, requireAdmin } from '@/features/auth'
+import { requireOwner, requirePermission, requireModuleEnabled } from '@/entities/workspace'
+import { modules, getAvailableModules } from '@/app/modules/config'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',
@@ -25,6 +26,11 @@ const routes = [
   {
     path: '/habits',
     redirect: '/habits/dashboard',
+  },
+  // Редирект с /crm на контакты
+  {
+    path: '/crm',
+    redirect: '/crm/contacts',
   },
   // Редиректы для старых роутов (обратная совместимость)
   {
@@ -61,26 +67,45 @@ const routes = [
     meta: { requiresAuth: true },
     beforeEnter: requireOwner(),
   },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/pages/admin'),
+    meta: { requiresAuth: true },
+    beforeEnter: requireAdmin(),
+  },
 ]
 
-// Добавляем роуты из модулей
+// Добавляем роуты из модулей (доступ к роуту = модуль включён в workspace + право)
 modules.forEach((module) => {
   module.routes.forEach((route) => {
-    routes.push({
+    const record: RouteRecordRaw = {
       path: route.path,
       name: route.name,
       component: route.component,
       meta: {
         requiresAuth: true,
-        //@ts-ignore
         module: module.id,
         ...route.meta,
       },
-      beforeEnter:
-        route.permissions && route.permissions.length > 0
-          ? requirePermission(route.permissions[0])
-          : undefined,
-    })
+      beforeEnter: (to, _from, next) => {
+        const moduleGuard = requireModuleEnabled(getAvailableModules)
+        const moduleResult = moduleGuard(to)
+        if (moduleResult !== true) {
+          next(moduleResult)
+          return
+        }
+        if (route.permissions && route.permissions.length > 0) {
+          const permResult = requirePermission(route.permissions[0])()
+          if (permResult !== true) {
+            next(permResult)
+            return
+          }
+        }
+        next()
+      },
+    }
+    routes.push(record)
   })
 })
 
