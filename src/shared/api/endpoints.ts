@@ -17,6 +17,13 @@ export const API_ENDPOINTS = {
     MODULES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/modules`,
   },
 
+  /** Только для пользователей с глобальной ролью ADMIN. Иначе 403. */
+  ADMIN: {
+    WORKSPACES: apiV1 + '/admin/workspaces',
+    USERS: apiV1 + '/admin/users',
+    USER: (id: string) => apiV1 + `/admin/users/${id}`,
+  },
+
   HABITS: {
     BASE: apiV1 + '/habits',
     DETAIL: (id: string) => apiV1 + `/habits/${id}`,
