@@ -29,6 +29,7 @@ export interface Module {
   routes: ModuleRoute[]
   permissions?: WorkspacePermission[]
   roles?: WorkspaceRole[]
+  headerComponent?: () => Promise<{ default: Component } | Component>
 }
 
 export const modules: Module[] = [
@@ -38,6 +39,7 @@ export const modules: Module[] = [
     icon: HabitsIcon,
     basePath: '/habits',
     permissions: [WorkspacePermission.HABITS_VIEW],
+    headerComponent: () => import('@/widgets/header/ui/TodayStats.vue'),
     routes: [
       {
         path: '/habits/dashboard',
@@ -90,7 +92,88 @@ export const modules: Module[] = [
       },
     ],
   },
+  {
+    id: 'notes',
+    label: 'Заметки',
+    icon: BookIcon,
+    basePath: '/notes',
+    permissions: [WorkspacePermission.NOTES_VIEW],
+    routes: [
+      {
+        path: '/notes/list',
+        name: 'NotesList',
+        label: 'Список',
+        icon: ListIcon,
+        component: () => import('@/pages/notes'),
+        permissions: [WorkspacePermission.NOTES_VIEW],
+      },
+    ],
+  },
+  {
+    id: 'inventory',
+    label: 'Склад',
+    icon: ListIcon,
+    basePath: '/inventory',
+    routes: [
+      {
+        path: '/inventory',
+        name: 'InventoryStub',
+        label: 'Склад',
+        icon: ListIcon,
+        component: () => import('@/pages/module-stub'),
+        meta: { stubLabel: 'Склад' },
+      },
+    ],
+  },
+  {
+    id: 'finance',
+    label: 'Финансы',
+    icon: ListIcon,
+    basePath: '/finance',
+    routes: [
+      {
+        path: '/finance',
+        name: 'FinanceStub',
+        label: 'Финансы',
+        icon: ListIcon,
+        component: () => import('@/pages/module-stub'),
+        meta: { stubLabel: 'Финансы' },
+      },
+    ],
+  },
+  {
+    id: 'hr',
+    label: 'HR',
+    icon: ListIcon,
+    basePath: '/hr',
+    routes: [
+      {
+        path: '/hr',
+        name: 'HrStub',
+        label: 'HR',
+        icon: ListIcon,
+        component: () => import('@/pages/module-stub'),
+        meta: { stubLabel: 'HR' },
+      },
+    ],
+  },
 ]
+
+/**
+ * Определить модуль по текущему пути (для шапки, сайдбара и т.д.).
+ * Выбирается модуль с самым длинным basePath, подходящим под path.
+ */
+export function getModuleByPath(path: string): Module | undefined {
+  let best: Module | undefined
+  for (const m of modules) {
+    if (path === m.basePath || path.startsWith(m.basePath + '/')) {
+      if (!best || m.basePath.length > best.basePath.length) {
+        best = m
+      }
+    }
+  }
+  return best
+}
 
 /**
  * Получить модули, доступные в текущем workspace и по правам пользователя.
