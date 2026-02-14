@@ -8,6 +8,7 @@ import type {
   UpdateWorkspaceDto,
   WorkspaceModule,
 } from '@/entities/workspace'
+import type { UserModuleLicense } from '@/entities/workspace/api/workspace-service'
 
 function applyWorkspaceHeader(ws: Workspace | null) {
   api.setWorkspaceId(ws?.id ?? null)
@@ -17,12 +18,24 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const workspaces = ref<Workspace[]>([])
   const currentWorkspace = ref<Workspace | null>(null)
   const modules = ref<WorkspaceModule[]>([])
+  const licenses = ref<UserModuleLicense[]>([])
   const isLoading = ref(false)
 
   const hasWorkspaces = computed(() => workspaces.value.length > 0)
 
   const enabledModules = computed(() => {
     return modules.value.filter((m) => m.enabled).map((m) => m.moduleName)
+  })
+
+  const licensedModuleCodesForCurrentWorkspace = computed(() => {
+    const wsId = currentWorkspace.value?.id
+    if (!wsId) return new Set<string>()
+    const set = new Set<string>()
+    for (const lic of licenses.value) {
+      if (lic.scope === 'all_workspaces') set.add(lic.moduleCode)
+      else if (lic.scope === 'single_workspace' && lic.workspaceId === wsId) set.add(lic.moduleCode)
+    }
+    return set
   })
 
   const fetchWorkspaces = async () => {
@@ -102,6 +115,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  const loadLicenses = async () => {
+    try {
+      const response = await workspaceService.getMyLicenses()
+      licenses.value = response?.licenses || []
+    } catch (error) {
+      console.error('Failed to load licenses:', error)
+      licenses.value = []
+    }
+  }
+
   const switchWorkspace = async (workspaceId: string) => {
     await workspaceService.switchWorkspace(workspaceId)
     const workspace = workspaces.value.find((w) => w.id === workspaceId)
@@ -133,11 +156,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     workspaces,
     currentWorkspace,
     modules,
+    licenses,
     isLoading,
 
     // Getters
     hasWorkspaces,
     enabledModules,
+    licensedModuleCodesForCurrentWorkspace,
 
     // Actions
     fetchWorkspaces,
@@ -147,6 +172,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     setCurrentWorkspace,
     switchWorkspace,
     loadModules,
+    loadLicenses,
     addWorkspace,
     clearWorkspaces,
   }

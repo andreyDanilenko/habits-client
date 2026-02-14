@@ -33,6 +33,11 @@ export enum WorkspacePermission {
   CRM_CREATE = 'crm:create',
   CRM_EDIT = 'crm:edit',
   CRM_DELETE = 'crm:delete',
+
+  NOTES_VIEW = 'notes:view',
+  NOTES_CREATE = 'notes:create',
+  NOTES_EDIT = 'notes:edit',
+  NOTES_DELETE = 'notes:delete',
 }
 
 const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
@@ -60,6 +65,10 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.CRM_CREATE,
     WorkspacePermission.CRM_EDIT,
     WorkspacePermission.CRM_DELETE,
+    WorkspacePermission.NOTES_VIEW,
+    WorkspacePermission.NOTES_CREATE,
+    WorkspacePermission.NOTES_EDIT,
+    WorkspacePermission.NOTES_DELETE,
   ],
   [WorkspaceRole.ADMIN]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -82,6 +91,10 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.CRM_CREATE,
     WorkspacePermission.CRM_EDIT,
     WorkspacePermission.CRM_DELETE,
+    WorkspacePermission.NOTES_VIEW,
+    WorkspacePermission.NOTES_CREATE,
+    WorkspacePermission.NOTES_EDIT,
+    WorkspacePermission.NOTES_DELETE,
   ],
   [WorkspaceRole.MEMBER]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -94,12 +107,16 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.CRM_VIEW,
     WorkspacePermission.CRM_CREATE,
     WorkspacePermission.CRM_EDIT,
+    WorkspacePermission.NOTES_VIEW,
+    WorkspacePermission.NOTES_CREATE,
+    WorkspacePermission.NOTES_EDIT,
   ],
   [WorkspaceRole.GUEST]: [
     WorkspacePermission.WORKSPACE_VIEW,
     WorkspacePermission.HABITS_VIEW,
     WorkspacePermission.JOURNAL_VIEW,
     WorkspacePermission.CRM_VIEW,
+    WorkspacePermission.NOTES_VIEW,
   ],
 }
 
@@ -172,6 +189,19 @@ export function requireOwner() {
       return { name: 'HabitsDashboard' }
     }
     return true
+  }
+}
+
+/** Разрешает доступ владельцу воркспейса или глобальному админу (настройки воркспейса). */
+export function requireOwnerOrAdmin() {
+  return () => {
+    const { isOwner } = usePermissions()
+    const userStore = useUserStore()
+    const isAdmin = userStore.currentUser?.role === 'ADMIN' || (typeof userStore.currentUser?.role === 'string' && userStore.currentUser.role.toUpperCase() === 'ADMIN')
+    if (isOwner.value || isAdmin) {
+      return true
+    }
+    return { name: 'HabitsDashboard' }
   }
 }
 

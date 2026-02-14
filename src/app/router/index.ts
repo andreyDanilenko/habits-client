@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { authGuard, requireAdmin } from '@/features/auth'
-import { requireOwner, requirePermission, requireModuleEnabled } from '@/entities/workspace'
+import { requireOwnerOrAdmin, requirePermission, requireModuleEnabled } from '@/entities/workspace'
 import { modules, getAvailableModules } from '@/app/modules/config'
 
 const routes: RouteRecordRaw[] = [
@@ -31,6 +31,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/crm',
     redirect: '/crm/contacts',
+  },
+  // Редирект с /notes на список
+  {
+    path: '/notes',
+    redirect: '/notes/list',
   },
   // Редиректы для старых роутов (обратная совместимость)
   {
@@ -65,7 +70,25 @@ const routes: RouteRecordRaw[] = [
     name: 'WorkspaceSettings',
     component: () => import('@/pages/workspace-settings'),
     meta: { requiresAuth: true },
-    beforeEnter: requireOwner(),
+    beforeEnter: requireOwnerOrAdmin(),
+  },
+  {
+    path: '/workspace-modules',
+    name: 'WorkspaceModules',
+    component: () => import('@/pages/workspace-modules'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/module-activation/:moduleCode',
+    name: 'ModuleActivation',
+    redirect: (to) => ({ path: '/billing', query: { module: to.params.moduleCode } }),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/billing',
+    name: 'Billing',
+    component: () => import('@/pages/billing'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/admin',

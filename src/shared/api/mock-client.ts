@@ -185,13 +185,13 @@ class MockApiClient {
     }
 
     // Мок для привычек
-    if (url === apiV1 + '/habits') {
-      return MOCK_HABITS as T
+    if (url === apiV1 + '/habits' || url.startsWith(apiV1 + '/habits?')) {
+      return { habits: MOCK_HABITS } as T
     }
 
     // Мок для завершений привычек
-    if (url === apiV1 + '/habits/completions') {
-      return MOCK_COMPLETIONS as T
+    if (url.startsWith(apiV1 + '/habits/completions')) {
+      return { completions: MOCK_COMPLETIONS } as T
     }
 
     // Мок для workspace
@@ -273,7 +273,7 @@ class MockApiClient {
     }
 
     // Мок для переключения выполнения привычки
-    if (url.includes(apiV1 + '/habits/') && url.includes(apiV1 + '/toggle')) {
+    if (url.includes(apiV1 + '/habits/') && url.includes('/toggle')) {
       return {
         id: 'mock-completion-' + Date.now(),
         habitId: url.split('/')[2],

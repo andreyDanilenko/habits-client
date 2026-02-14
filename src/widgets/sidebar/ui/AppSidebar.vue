@@ -225,7 +225,7 @@
         to: '/admin',
       })
     }
-    if (isOwner.value) {
+    if (isOwner.value || isAdmin) {
       items.push({
         id: 'workspace-settings',
         label: 'Настройки воркспейса',
