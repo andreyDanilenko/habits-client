@@ -65,6 +65,20 @@
       </div>
     </Card>
 
+    <Card class="p-6">
+      <h2 class="mb-4">Биллинг и лицензии</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        Покупка модулей на уровне аккаунта: подписка или вечная лицензия, для одного воркспейса
+        или для всех. Оплата картой, СБП, QR и др.
+      </p>
+      <router-link
+        to="/billing"
+        class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
+      >
+        Перейти к биллингу →
+      </router-link>
+    </Card>
+
     <Card class="p-6 border-red-200">
       <h2 class="text-red-900 mb-4">Опасная зона</h2>
 

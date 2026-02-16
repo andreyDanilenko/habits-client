@@ -1,14 +1,14 @@
 <template>
   <div class="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
-    <div class="text-center">
-      <div class="text-xs text-gray-500">Сегодня</div>
-      <div class="text-sm font-bold text-gray-900">{{ completed }}/{{ total }}</div>
-    </div>
-    <div class="h-6 w-px bg-gray-300"></div>
-    <div class="text-center">
-      <div class="text-xs text-gray-500">Серия</div>
-      <div class="text-sm font-bold text-indigo-600">{{ streak }} дн.</div>
-    </div>
+    <template v-for="(stat, index) in statItems" :key="stat.id">
+      <div v-if="index > 0" class="h-6 w-px bg-gray-300" aria-hidden="true" />
+      <div class="text-center">
+        <div class="text-xs text-gray-500">{{ stat.label }}</div>
+        <div class="text-sm font-bold" :class="stat.valueClass">
+          {{ stat.value }}{{ stat.suffix }}
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -18,7 +18,20 @@
 
   const habitStore = useHabitStore()
 
-  const completed = computed(() => habitStore.completedToday)
-  const total = computed(() => habitStore.totalToday)
-  const streak = computed(() => 7)
+  const statItems = computed(() => [
+    {
+      id: 'today',
+      label: 'Сегодня',
+      value: `${habitStore.completedToday}/${habitStore.totalToday}`,
+      suffix: '',
+      valueClass: 'text-gray-900',
+    },
+    {
+      id: 'streak',
+      label: 'Серия',
+      value: habitStore.currentStreak,
+      suffix: ' дн.',
+      valueClass: 'text-indigo-600',
+    },
+  ])
 </script>

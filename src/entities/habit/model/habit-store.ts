@@ -24,6 +24,32 @@ export const useHabitStore = defineStore('habit', () => {
 
   const totalToday = computed(() => todayHabits.value.length)
 
+  /** Текущая серия дней подряд (включая сегодня) с хотя бы одним выполненным действием по привычкам */
+  const currentStreak = computed(() => {
+    const dates = new Set<string>()
+    completions.value.forEach((c) => dates.add(c.date))
+    const sorted = Array.from(dates).sort()
+    if (sorted.length === 0) return 0
+
+    const todayStr = getLocalDateString(new Date())
+    if (!dates.has(todayStr)) return 0
+
+    let streak = 1
+    const checkDate = new Date()
+    checkDate.setDate(checkDate.getDate() - 1)
+
+    while (true) {
+      const dateStr = getLocalDateString(checkDate)
+      if (dates.has(dateStr)) {
+        streak++
+        checkDate.setDate(checkDate.getDate() - 1)
+      } else {
+        break
+      }
+    }
+    return streak
+  })
+
   // Actions
   const fetchHabits = async (targetDate?: Date) => {
     isLoading.value = true
@@ -144,11 +170,10 @@ export const useHabitStore = defineStore('habit', () => {
   }): Promise<void> => {
     try {
       const today = getLocalDateString(selectedDate.value)
-      // Создаем одно completion при каждом нажатии "Отметить"
       const completion = await habitService.createCompletion(data.habitId, {
         date: today,
         notes: data.note || '',
-        rating: 0, // Рейтинг не используется, передаем 0
+        rating: 0,
         time: data.time,
       })
       completions.value.push(completion)
@@ -193,6 +218,7 @@ export const useHabitStore = defineStore('habit', () => {
     todayHabits,
     completedToday,
     totalToday,
+    currentStreak,
 
     // Actions
     fetchHabits,

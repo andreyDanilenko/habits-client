@@ -92,10 +92,13 @@ export const useCalendarPage = () => {
 
       const enrichedHabits = dayHabits.map((habit) => {
         const fullHabit = habitsMap.get(habit.id)
+        const scheduleType = fullHabit?.scheduleType ?? 'recurring'
+        const icon = fullHabit?.icon
+
         return {
           ...habit,
-          scheduleType: fullHabit?.scheduleType || 'recurring',
-          icon: fullHabit?.icon,
+          scheduleType,
+          icon,
         }
       })
 

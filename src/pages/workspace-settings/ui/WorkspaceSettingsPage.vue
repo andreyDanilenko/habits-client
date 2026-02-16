@@ -75,17 +75,19 @@
       </div>
     </Card>
 
-    <!-- Модули (Soon) -->
-    <Card v-if="isOwner" class="p-6">
+    <!-- Модули -->
+    <Card class="p-6">
       <h2 class="mb-4">Модули</h2>
       <div class="space-y-4">
-        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p class="text-sm text-blue-800">
-            <span class="font-semibold">Soon:</span> Настройка доступных модулей для workspace
-            (Привычки, Журнал, Задачи и т.д.).
-          </p>
-        </div>
-        <!-- TODO: Список модулей будет здесь -->
+        <p class="text-sm text-gray-600">
+          Просмотр и включение модулей для этого workspace.
+        </p>
+        <router-link
+          to="/workspace-modules"
+          class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
+        >
+          Перейти к списку модулей →
+        </router-link>
       </div>
     </Card>
 

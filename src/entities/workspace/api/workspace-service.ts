@@ -73,4 +73,33 @@ export const workspaceService = {
     )
     return response
   },
+
+  enableModule: async (workspaceId: string, moduleCode: string): Promise<void> => {
+    await api.post(API_ENDPOINTS.WORKSPACE.MODULES(workspaceId), { moduleCode })
+  },
+
+  disableModule: async (workspaceId: string, moduleCode: string): Promise<void> => {
+    await api.delete(API_ENDPOINTS.WORKSPACE.MODULE(workspaceId, moduleCode))
+  },
+
+  getMyLicenses: async (): Promise<{ licenses: UserModuleLicense[] }> => {
+    const response = await api.get<{ licenses: UserModuleLicense[] }>(
+      API_ENDPOINTS.WORKSPACE.MY_LICENSES,
+    )
+    return response
+  },
+}
+
+export interface UserModuleLicense {
+  id: string
+  userId: string
+  moduleId: string
+  moduleCode: string
+  scope: 'all_workspaces' | 'single_workspace'
+  workspaceId?: string
+  status: string
+  source: string
+  expiresAt?: string
+  createdAt: string
+  updatedAt: string
 }

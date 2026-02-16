@@ -22,7 +22,7 @@ export const habitService = {
       ? `${API_ENDPOINTS.HABITS.BASE}?${params.toString()}`
       : API_ENDPOINTS.HABITS.BASE
     const response = await api.get<HabitsDataResponse>(url)
-    return response.habits
+    return response.habits ?? []
   },
 
   getHabit: async (id: string): Promise<Habit> => {
@@ -66,7 +66,9 @@ export const habitService = {
       ? `${API_ENDPOINTS.HABITS.CALENDAR}?${params.toString()}`
       : API_ENDPOINTS.HABITS.CALENDAR
     const response = await api.get<CalendarResponse>(url)
-    return response
+    return {
+      days: response.days ?? [],
+    }
   },
 
   getHabitCompletions: (): Promise<HabitCompletion[]> =>

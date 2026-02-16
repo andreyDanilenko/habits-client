@@ -7,8 +7,7 @@ import {
   CalendarIcon,
   BookIcon,
   HabitsIcon,
-  PlusIcon,
-  CheckIcon,
+  CrmIcon,
 } from '@/shared/ui/icon'
 
 export interface ModuleRoute {
@@ -30,6 +29,7 @@ export interface Module {
   routes: ModuleRoute[]
   permissions?: WorkspacePermission[]
   roles?: WorkspaceRole[]
+  headerComponent?: () => Promise<{ default: Component } | Component>
 }
 
 export const modules: Module[] = [
@@ -39,6 +39,7 @@ export const modules: Module[] = [
     icon: HabitsIcon,
     basePath: '/habits',
     permissions: [WorkspacePermission.HABITS_VIEW],
+    headerComponent: () => import('@/widgets/header/ui/TodayStats.vue'),
     routes: [
       {
         path: '/habits/dashboard',
@@ -74,23 +75,119 @@ export const modules: Module[] = [
       },
     ],
   },
-  // Здесь будут добавлены другие модули в будущем
-  // {
-  //   id: 'tasks',
-  //   label: 'Задачи',
-  //   icon: TaskIcon,
-  //   basePath: '/tasks',
-  //   routes: [...]
-  // },
+  {
+    id: 'crm',
+    label: 'CRM',
+    icon: CrmIcon,
+    basePath: '/crm',
+    permissions: [WorkspacePermission.CRM_VIEW],
+    routes: [
+      {
+        path: '/crm/contacts',
+        name: 'CrmContacts',
+        label: 'Контакты',
+        icon: ListIcon,
+        component: () => import('@/pages/crm'),
+        permissions: [WorkspacePermission.CRM_VIEW],
+      },
+    ],
+  },
+  {
+    id: 'notes',
+    label: 'Заметки',
+    icon: BookIcon,
+    basePath: '/notes',
+    permissions: [WorkspacePermission.NOTES_VIEW],
+    routes: [
+      {
+        path: '/notes/list',
+        name: 'NotesList',
+        label: 'Список',
+        icon: ListIcon,
+        component: () => import('@/pages/notes'),
+        permissions: [WorkspacePermission.NOTES_VIEW],
+      },
+    ],
+  },
+  {
+    id: 'inventory',
+    label: 'Склад',
+    icon: ListIcon,
+    basePath: '/inventory',
+    routes: [
+      {
+        path: '/inventory',
+        name: 'InventoryStub',
+        label: 'Склад',
+        icon: ListIcon,
+        component: () => import('@/pages/module-stub'),
+        meta: { stubLabel: 'Склад' },
+      },
+    ],
+  },
+  {
+    id: 'finance',
+    label: 'Финансы',
+    icon: ListIcon,
+    basePath: '/finance',
+    routes: [
+      {
+        path: '/finance',
+        name: 'FinanceStub',
+        label: 'Финансы',
+        icon: ListIcon,
+        component: () => import('@/pages/module-stub'),
+        meta: { stubLabel: 'Финансы' },
+      },
+    ],
+  },
+  {
+    id: 'hr',
+    label: 'HR',
+    icon: ListIcon,
+    basePath: '/hr',
+    routes: [
+      {
+        path: '/hr',
+        name: 'HrStub',
+        label: 'HR',
+        icon: ListIcon,
+        component: () => import('@/pages/module-stub'),
+        meta: { stubLabel: 'HR' },
+      },
+    ],
+  },
 ]
 
 /**
- * Получить все доступные модули для текущего пользователя
+ * Определить модуль по текущему пути (для шапки, сайдбара и т.д.).
+ * Выбирается модуль с самым длинным basePath, подходящим под path.
+ */
+export function getModuleByPath(path: string): Module | undefined {
+  let best: Module | undefined
+  for (const m of modules) {
+    if (path === m.basePath || path.startsWith(m.basePath + '/')) {
+      if (!best || m.basePath.length > best.basePath.length) {
+        best = m
+      }
+    }
+  }
+  return best
+}
+
+/**
+ * Получить модули, доступные в текущем workspace и по правам пользователя.
+ * @param enabledModuleCodes — коды модулей, включённых в workspace (из API workspace_modules).
+ * @param hasPermission — проверка права (роль в workspace).
  */
 export function getAvailableModules(
+  enabledModuleCodes: string[],
   hasPermission: (permission: WorkspacePermission) => boolean,
 ): Module[] {
   return modules.filter((module) => {
+    if (!enabledModuleCodes.includes(module.id)) {
+      return false
+    }
     if (!module.permissions || module.permissions.length === 0) {
       return true
     }

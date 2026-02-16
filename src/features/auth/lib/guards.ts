@@ -57,3 +57,15 @@ export const authGuard = async (
 
   next()
 }
+
+export const requireAdmin = () => {
+  return () => {
+    const userStore = useUserStore()
+    const role = userStore.currentUser?.role
+    const isAdmin = role === 'ADMIN' || (typeof role === 'string' && role.toUpperCase() === 'ADMIN')
+    if (!isAdmin) {
+      return { path: '/habits/dashboard' }
+    }
+    return true
+  }
+}

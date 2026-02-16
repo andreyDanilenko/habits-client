@@ -28,6 +28,16 @@ export enum WorkspacePermission {
   JOURNAL_CREATE = 'journal:create',
   JOURNAL_EDIT = 'journal:edit',
   JOURNAL_DELETE = 'journal:delete',
+
+  CRM_VIEW = 'crm:view',
+  CRM_CREATE = 'crm:create',
+  CRM_EDIT = 'crm:edit',
+  CRM_DELETE = 'crm:delete',
+
+  NOTES_VIEW = 'notes:view',
+  NOTES_CREATE = 'notes:create',
+  NOTES_EDIT = 'notes:edit',
+  NOTES_DELETE = 'notes:delete',
 }
 
 const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
@@ -51,6 +61,14 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.JOURNAL_CREATE,
     WorkspacePermission.JOURNAL_EDIT,
     WorkspacePermission.JOURNAL_DELETE,
+    WorkspacePermission.CRM_VIEW,
+    WorkspacePermission.CRM_CREATE,
+    WorkspacePermission.CRM_EDIT,
+    WorkspacePermission.CRM_DELETE,
+    WorkspacePermission.NOTES_VIEW,
+    WorkspacePermission.NOTES_CREATE,
+    WorkspacePermission.NOTES_EDIT,
+    WorkspacePermission.NOTES_DELETE,
   ],
   [WorkspaceRole.ADMIN]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -69,6 +87,14 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.JOURNAL_CREATE,
     WorkspacePermission.JOURNAL_EDIT,
     WorkspacePermission.JOURNAL_DELETE,
+    WorkspacePermission.CRM_VIEW,
+    WorkspacePermission.CRM_CREATE,
+    WorkspacePermission.CRM_EDIT,
+    WorkspacePermission.CRM_DELETE,
+    WorkspacePermission.NOTES_VIEW,
+    WorkspacePermission.NOTES_CREATE,
+    WorkspacePermission.NOTES_EDIT,
+    WorkspacePermission.NOTES_DELETE,
   ],
   [WorkspaceRole.MEMBER]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -78,11 +104,19 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.JOURNAL_VIEW,
     WorkspacePermission.JOURNAL_CREATE,
     WorkspacePermission.JOURNAL_EDIT,
+    WorkspacePermission.CRM_VIEW,
+    WorkspacePermission.CRM_CREATE,
+    WorkspacePermission.CRM_EDIT,
+    WorkspacePermission.NOTES_VIEW,
+    WorkspacePermission.NOTES_CREATE,
+    WorkspacePermission.NOTES_EDIT,
   ],
   [WorkspaceRole.GUEST]: [
     WorkspacePermission.WORKSPACE_VIEW,
     WorkspacePermission.HABITS_VIEW,
     WorkspacePermission.JOURNAL_VIEW,
+    WorkspacePermission.CRM_VIEW,
+    WorkspacePermission.NOTES_VIEW,
   ],
 }
 
@@ -142,7 +176,7 @@ export function requirePermission(permission: WorkspacePermission) {
   return () => {
     const { hasPermission } = usePermissions()
     if (!hasPermission(permission)) {
-      return { name: 'Dashboard' }
+      return { path: '/habits/dashboard' }
     }
     return true
   }
@@ -152,7 +186,48 @@ export function requireOwner() {
   return () => {
     const { isOwner } = usePermissions()
     if (!isOwner.value) {
-      return { name: 'Dashboard' }
+      return { name: 'HabitsDashboard' }
+    }
+    return true
+  }
+}
+
+/** Разрешает доступ владельцу воркспейса или глобальному админу (настройки воркспейса). */
+export function requireOwnerOrAdmin() {
+  return () => {
+    const { isOwner } = usePermissions()
+    const userStore = useUserStore()
+    const isAdmin = userStore.currentUser?.role === 'ADMIN' || (typeof userStore.currentUser?.role === 'string' && userStore.currentUser.role.toUpperCase() === 'ADMIN')
+    if (isOwner.value || isAdmin) {
+      return true
+    }
+    return { name: 'HabitsDashboard' }
+  }
+}
+
+/**
+ * Фабрика guard: редирект, если модуль роута не включён в текущем workspace.
+ * Принимает getAvailableModules из конфига (чтобы избежать циклического импорта).
+ * Используется в router с meta.module.
+ */
+export function requireModuleEnabled(getAvailableModules: (
+  enabled: string[],
+  hasPermission: (p: WorkspacePermission) => boolean,
+) => { id: string; routes: { path: string }[] }[]) {
+  return (to: { meta: { module?: string } }): true | { path: string } => {
+    const workspaceStore = useWorkspaceStore()
+    const { hasPermission } = usePermissions()
+    const moduleId = to.meta.module
+    if (!moduleId) return true
+
+    const enabled = workspaceStore.enabledModules
+    if (!enabled.includes(moduleId)) {
+      const available = getAvailableModules(enabled, hasPermission)
+      const first = available[0]
+      if (first?.routes?.length) {
+        return { path: first.routes[0].path }
+      }
+      return { path: '/habits/dashboard' }
     }
     return true
   }

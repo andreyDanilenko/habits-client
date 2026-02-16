@@ -19,7 +19,9 @@ export interface UpdateWorkspaceDto extends Partial<CreateWorkspaceDto> {}
 export interface WorkspaceModule {
   id: string
   workspaceId: string
+  moduleId?: string
   moduleName: string
+  status?: string
   enabled: boolean
   config?: Record<string, any>
   createdAt: string

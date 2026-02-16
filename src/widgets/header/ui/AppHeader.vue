@@ -8,7 +8,7 @@
           <span class="text-xl font-bold text-gray-900"> HabitFlow </span>
         </router-link>
         <div class="flex items-center space-x-4">
-          <TodayStats />
+          <component v-if="headerWidget" :is="headerWidget" />
           <Notifications />
           <ProfileDropdown />
         </div>
@@ -38,18 +38,40 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, watch, computed } from 'vue'
+  import { useRoute } from 'vue-router'
   import { Logo, MenuIcon } from '@/shared/ui/icon'
   import { Button } from '@/shared/ui'
-  import TodayStats from './TodayStats.vue'
   import Notifications from './Notifications.vue'
   import ProfileDropdown from './ProfileDropdown.vue'
+  import { getModuleByPath } from '@/app/modules/config'
   import type { ComponentPublicInstance } from 'vue'
+  import type { Component } from 'vue'
 
   interface Props {
     sidebarRef?: ComponentPublicInstance | null
   }
 
   const props = defineProps<Props>()
+  const route = useRoute()
+
+  const headerWidget = ref<Component | null>(null)
+
+  const currentModule = computed(() => getModuleByPath(route.path))
+
+  watch(
+    () => currentModule.value?.headerComponent,
+    (loader) => {
+      if (!loader) {
+        headerWidget.value = null
+        return
+      }
+      loader().then((m) => {
+        headerWidget.value = m?.default ?? null
+      })
+    },
+    { immediate: true },
+  )
 
   const openSidebar = () => {
     if (props.sidebarRef && typeof (props.sidebarRef as any).open === 'function') {

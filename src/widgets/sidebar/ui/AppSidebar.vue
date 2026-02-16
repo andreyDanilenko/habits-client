@@ -90,9 +90,17 @@
 <script setup lang="ts">
   import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
-  import { ArrowLeftIcon, ArrowRightIcon, XMarkIcon, CogIcon, LogoutIcon } from '@/shared/ui/icon'
+  import {
+    ArrowLeftIcon,
+    ArrowRightIcon,
+    XMarkIcon,
+    CogIcon,
+    LogoutIcon,
+    ListIcon,
+  } from '@/shared/ui/icon'
   import { Button } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth'
+  import { useUserStore } from '@/entities/user'
   import { usePermissions, useWorkspaceStore } from '@/entities/workspace'
   import { getAvailableModules, getAvailableModuleRoutes, type Module } from '@/app/modules/config'
   import WorkspaceSwitcher from '@/widgets/header/ui/WorkspaceSwitcher.vue'
@@ -112,7 +120,10 @@
   const selectedModuleId = ref<string | null>(null)
 
   const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
-  const availableModules = computed(() => getAvailableModules(hasPermission))
+  const enabledModuleCodes = computed(() => workspaceStore.enabledModules)
+  const availableModules = computed(() =>
+    getAvailableModules(enabledModuleCodes.value, hasPermission),
+  )
   const selectedModule = computed(() => {
     if (selectedModuleId.value) {
       return availableModules.value.find((m) => m.id === selectedModuleId.value) || null
@@ -204,7 +215,17 @@
   // Структура данных для нижней секции
   const footerNavItems = computed<SidebarNavItem[]>(() => {
     const items: SidebarNavItem[] = []
-    if (isOwner.value) {
+    const userStore = useUserStore()
+    const isAdmin = userStore.currentUser?.role === 'ADMIN' || (typeof userStore.currentUser?.role === 'string' && userStore.currentUser.role.toUpperCase() === 'ADMIN')
+    if (isAdmin) {
+      items.push({
+        id: 'admin',
+        label: 'Админ-панель',
+        icon: ListIcon,
+        to: '/admin',
+      })
+    }
+    if (isOwner.value || isAdmin) {
       items.push({
         id: 'workspace-settings',
         label: 'Настройки воркспейса',
