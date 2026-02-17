@@ -2,8 +2,7 @@ export type JournalContentType = 'text' | 'markdown'
 
 export interface JournalEntry {
   id: string
-  title: string
-  content: string
+  description: string
   mood?: number
   date: string
   tags?: string[]
@@ -16,8 +15,7 @@ export interface JournalEntry {
 }
 
 export interface CreateJournalEntryDto {
-  title: string
-  content: string
+  description?: string
   mood?: number
   date?: string
   tags?: string[]

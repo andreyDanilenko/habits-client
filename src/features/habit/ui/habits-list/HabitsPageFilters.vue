@@ -81,8 +81,7 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
-  import { ru } from 'date-fns/locale'
+  import { formatDateRu } from '@/shared/lib'
   import { Card, Button, Badge } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
 
@@ -107,7 +106,5 @@
     emit('date-change', '')
   }
 
-  const formatDate = (dateStr: string) => {
-    return format(new Date(dateStr), 'd MMMM yyyy', { locale: ru })
-  }
+  const formatDate = (dateStr: string) => formatDateRu(dateStr, 'd MMMM yyyy')
 </script>

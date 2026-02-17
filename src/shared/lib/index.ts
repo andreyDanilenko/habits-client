@@ -8,5 +8,6 @@ export {
   formatTimeRu,
   formatDateDisplay,
   formatRelativeTime,
+  getTextPreview,
   getGreeting,
 } from './date'

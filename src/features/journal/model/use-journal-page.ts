@@ -1,7 +1,9 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { format, isToday, isYesterday, isThisWeek, isThisMonth, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
+import { journalService } from '@/entities/journal'
+import { useWorkspaceStore } from '@/entities/workspace'
 import {
   DEFAULT_JOURNAL_CONTENT_TYPE,
   MOOD_DEFINITIONS,
@@ -26,39 +28,32 @@ export interface GroupedEntry {
 }
 
 export const useJournalPage = () => {
+  const workspaceStore = useWorkspaceStore()
   const searchQuery = ref('')
   const selectedMood = ref<number | null>(null)
   const selectedDate = ref<string | null>(null)
   const isLoading = ref(false)
+  const entries = ref<JournalEntry[]>([])
 
-  const entries = ref<JournalEntry[]>([
-    {
-      id: '1',
-      title: 'Отличный день!',
-      content: 'Сегодня выполнил все привычки и чувствую себя прекрасно.',
-      mood: 5,
-      date: '2026-01-24',
-      tags: ['привычки', 'успех'],
-      contentType: 'markdown',
-      createdAt: '2026-01-24T10:00:00Z',
-      updatedAt: '2026-01-24T10:00:00Z',
-      userId: 'current-user-id',
-      workspaceId: 'current-workspace-id',
-    },
-    {
-      id: '2',
-      title: 'Планы на неделю',
-      content: 'Нужно сосредоточиться на работе и не забывать про спорт.',
-      mood: 4,
-      date: '2026-01-23',
-      tags: ['планы'],
-      contentType: 'text',
-      createdAt: '2026-01-23T09:00:00Z',
-      updatedAt: '2026-01-23T09:00:00Z',
-      userId: 'current-user-id',
-      workspaceId: 'current-workspace-id',
-    },
-  ])
+  async function fetchEntries() {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) {
+      entries.value = []
+      return
+    }
+    isLoading.value = true
+    try {
+      entries.value = await journalService.getList(workspaceId)
+    } catch (e) {
+      console.error('Failed to fetch journal entries:', e)
+      entries.value = []
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  onMounted(fetchEntries)
+  watch(() => workspaceStore.currentWorkspace?.id, fetchEntries)
 
   const filteredEntries = computed(() => {
     let result = entries.value
@@ -66,15 +61,9 @@ export const useJournalPage = () => {
     if (searchQuery.value) {
       const query = searchQuery.value.toLowerCase()
       result = result.filter((entry) => {
-        const matchesTitle = entry.title
-          ? entry.title.toLowerCase().includes(query)
-          : false
-        const matchesContent = entry.content.toLowerCase().includes(query)
-        const matchesTags = entry.tags
-          ? entry.tags.some((tag) => tag.toLowerCase().includes(query))
-          : false
-
-        return matchesTitle || matchesContent || matchesTags
+        const matchesDesc = entry.description?.toLowerCase().includes(query)
+        const matchesTags = entry.tags?.some((tag) => tag.toLowerCase().includes(query))
+        return matchesDesc || matchesTags
       })
     }
 
@@ -86,17 +75,13 @@ export const useJournalPage = () => {
       const now = new Date()
       result = result.filter((entry) => {
         const entryDate = new Date(entry.date)
-        if (selectedDate.value === 'today') {
-          return entryDate.toDateString() === now.toDateString()
-        }
+        if (selectedDate.value === 'today') return entryDate.toDateString() === now.toDateString()
         if (selectedDate.value === 'week') {
           const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
           return entryDate >= weekAgo
         }
         if (selectedDate.value === 'month') {
-          return (
-            entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
-          )
+          return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
         }
         return true
       })
@@ -105,53 +90,65 @@ export const useJournalPage = () => {
     return result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   })
 
-  const handleSaveEntry = (entryData: CreateJournalEntryDto & { id?: string }) => {
-    if (entryData.id) {
-      const index = entries.value.findIndex((e) => e.id === entryData.id)
-      if (index !== -1) {
-        entries.value[index] = {
-          ...entries.value[index],
-          ...entryData,
-          id: entryData.id,
-          updatedAt: new Date().toISOString(),
-        } as JournalEntry
+  const handleSaveEntry = async (entryData: CreateJournalEntryDto & { id?: string }) => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) return
+
+    try {
+      if (entryData.id) {
+        const updated = await journalService.update(workspaceId, entryData.id, {
+          description: entryData.description,
+          mood: entryData.mood,
+          date: entryData.date,
+          tags: entryData.tags,
+          contentType: entryData.contentType,
+          metadata: entryData.metadata,
+        })
+        const index = entries.value.findIndex((e) => e.id === entryData.id)
+        if (index !== -1) entries.value[index] = updated
+      } else {
+        const created = await journalService.create(workspaceId, {
+          description: entryData.description,
+          mood: entryData.mood,
+          date: entryData.date || getTodayDateString(),
+          tags: entryData.tags,
+          contentType: entryData.contentType || DEFAULT_JOURNAL_CONTENT_TYPE,
+          metadata: entryData.metadata,
+        })
+        entries.value = [created, ...entries.value]
       }
-    } else {
-      const newEntry: JournalEntry = {
-        ...entryData,
-        id: Date.now().toString(),
-        userId: 'current-user-id',
-        workspaceId: 'current-workspace-id',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        date: entryData.date || getTodayDateString(),
-        contentType: entryData.contentType || DEFAULT_JOURNAL_CONTENT_TYPE,
-      }
-      entries.value.push(newEntry)
+    } catch (e) {
+      console.error('Failed to save entry:', e)
+      throw e
     }
   }
 
-  const handleDeleteEntry = (entry: JournalEntry) => {
-    console.log('Delete entry:', entry.id)
-    entries.value = entries.value.filter((e) => e.id !== entry.id)
+  const handleDeleteEntry = async (entry: JournalEntry) => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) return
+
+    try {
+      await journalService.delete(workspaceId, entry.id)
+      entries.value = entries.value.filter((e) => e.id !== entry.id)
+    } catch (e) {
+      console.error('Failed to delete entry:', e)
+      throw e
+    }
   }
 
-  // Статистика
   const monthlyCount = computed(() => {
     const now = new Date()
     return filteredEntries.value.filter((entry) => {
       const entryDate = parseISO(entry.date)
-      return (
-        entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
-      )
+      return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
     }).length
   })
 
   const averageMood = computed(() => {
-    const entriesWithMood = filteredEntries.value.filter((e) => e.mood)
-    if (entriesWithMood.length === 0) return '—'
-    const sum = entriesWithMood.reduce((acc, e) => acc + (e.mood || 0), 0)
-    return (sum / entriesWithMood.length).toFixed(1)
+    const withMood = filteredEntries.value.filter((e) => e.mood != null)
+    if (withMood.length === 0) return '—'
+    const sum = withMood.reduce((acc, e) => acc + (e.mood ?? 0), 0)
+    return (sum / withMood.length).toFixed(1)
   })
 
   const averageMoodEmoji = computed(() => {
@@ -164,51 +161,35 @@ export const useJournalPage = () => {
     return '😢'
   })
 
-  // Группировка по датам
   const groupedEntries = computed<GroupedEntry[]>(() => {
     const groups = new Map<string, JournalEntry[]>()
-
     filteredEntries.value.forEach((entry) => {
       const dateKey = entry.date
-      if (!groups.has(dateKey)) {
-        groups.set(dateKey, [])
-      }
+      if (!groups.has(dateKey)) groups.set(dateKey, [])
       groups.get(dateKey)!.push(entry)
     })
-
     return Array.from(groups.entries())
-      .map(([date, entries]) => {
+      .map(([date, list]) => {
         const entryDate = parseISO(date)
         let dateLabel = ''
-
-        if (isToday(entryDate)) {
-          dateLabel = 'Сегодня'
-        } else if (isYesterday(entryDate)) {
-          dateLabel = 'Вчера'
-        } else if (isThisWeek(entryDate)) {
-          dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: ru })
-          dateLabel = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1)
-        } else if (isThisMonth(entryDate)) {
-          dateLabel = format(entryDate, 'd MMMM', { locale: ru })
-        } else {
-          dateLabel = format(entryDate, 'd MMMM yyyy', { locale: ru })
-        }
-
+        if (isToday(entryDate)) dateLabel = 'Сегодня'
+        else if (isYesterday(entryDate)) dateLabel = 'Вчера'
+        else if (isThisWeek(entryDate)) dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: ru })
+        else if (isThisMonth(entryDate)) dateLabel = format(entryDate, 'd MMMM', { locale: ru })
+        else dateLabel = format(entryDate, 'd MMMM yyyy', { locale: ru })
+        if (dateLabel) dateLabel = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1)
         return {
           date,
           dateLabel,
-          entries: entries.sort(
-            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-          ),
+          entries: list.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
         }
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   })
 
-  // Активные фильтры
-  const hasActiveFilters = computed(() => {
-    return !!selectedMood.value || !!selectedDate.value || !!searchQuery.value
-  })
+  const hasActiveFilters = computed(
+    () => !!selectedMood.value || !!selectedDate.value || !!searchQuery.value,
+  )
 
   const clearFilters = () => {
     selectedMood.value = null
@@ -217,7 +198,6 @@ export const useJournalPage = () => {
   }
 
   return {
-    // State
     searchQuery,
     selectedMood,
     selectedDate,
@@ -226,21 +206,14 @@ export const useJournalPage = () => {
     filteredEntries,
     moodOptions,
     dateOptions,
-
-    // Statistics
     monthlyCount,
     averageMood,
     averageMoodEmoji,
-
-    // Grouping
     groupedEntries,
-
-    // Filters
     hasActiveFilters,
     clearFilters,
-
-    // Methods
     handleSaveEntry,
     handleDeleteEntry,
+    fetchEntries,
   }
 }

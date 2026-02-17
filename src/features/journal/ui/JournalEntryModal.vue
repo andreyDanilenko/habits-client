@@ -25,22 +25,21 @@
         </div>
       </FormField>
 
-      <!-- Состояние и впечатления -->
-      <FormField label="Состояние и впечатления за день" required>
+      <!-- Описание -->
+      <FormField label="Описание за день">
         <textarea
-          v-model="form.content"
+          v-model="form.description"
           rows="8"
-          required
           placeholder="Как прошел ваш день? Что вы чувствуете?"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
         />
       </FormField>
 
-      <!-- Теги -->
-      <FormField label="Теги">
-        <div class="flex flex-wrap gap-2">
+      <!-- Теги (необязательно) -->
+      <FormField label="Теги (необязательно)">
+        <div class="flex flex-wrap gap-2 items-center">
           <Badge
-            v-for="tag in form.tags"
+            v-for="tag in (form.tags || [])"
             :key="tag"
             variant="outline"
             class="cursor-pointer"
@@ -55,6 +54,9 @@
             class="inline-block w-auto min-w-[140px]"
             @keydown.enter.prevent="addTag"
           />
+          <Button type="button" variant="outline" size="sm" @click="addTag">
+            Добавить
+          </Button>
         </div>
       </FormField>
     </form>
@@ -93,8 +95,7 @@
   const moods = MOOD_DEFINITIONS
 
   const form = ref<Partial<CreateJournalEntryDto> & { id?: string; date: string }>({
-    title: '',
-    content: '',
+    description: '',
     mood: undefined,
     date: getTodayDateString(),
     tags: [],
@@ -106,16 +107,14 @@
     if (value) {
       form.value = {
         id: value.id,
-        title: value.title ?? '',
-        content: value.content,
+        description: value.description ?? '',
         mood: value.mood,
         date: value.date || getTodayDateString(),
         tags: value.tags || [],
       }
     } else {
       form.value = {
-        title: '',
-        content: '',
+        description: '',
         mood: undefined,
         date: getTodayDateString(),
         tags: [],
@@ -134,11 +133,9 @@
   const addTag = () => {
     const tag = newTag.value.trim()
     if (!tag) return
-    if (!form.value.tags) {
-      form.value.tags = []
-    }
-    if (!form.value.tags.includes(tag)) {
-      form.value.tags = [...form.value.tags, tag]
+    const tags = form.value.tags ?? []
+    if (!tags.includes(tag)) {
+      form.value.tags = [...tags, tag]
     }
     newTag.value = ''
   }

@@ -5,12 +5,10 @@
     class="cursor-pointer hover:shadow-lg transition-all duration-200 group border-gray-200 hover:border-indigo-300 relative overflow-hidden"
     @click.stop="$emit('click')"
   >
-    <!-- Акцентная полоска слева -->
     <div
       class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
     ></div>
 
-    <!-- Дата и настроение -->
     <div class="flex items-start justify-between mb-3">
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 text-sm text-gray-500">
@@ -29,10 +27,9 @@
       </div>
     </div>
 
-    <!-- Состояние и впечатления -->
     <div class="mb-4">
       <p class="text-gray-700 line-clamp-3 leading-relaxed">
-        {{ getPreview(entry.content) }}
+        {{ getPreview(entry.description) }}
       </p>
     </div>
 
@@ -49,7 +46,6 @@
       </Badge>
     </div>
 
-    <!-- Футер с метаданными и действиями -->
     <div class="flex items-center justify-between pt-3 border-t border-gray-100">
       <div class="flex items-center gap-2 text-xs text-gray-500">
         <span>{{ formatTime(entry.updatedAt) }}</span>
@@ -77,10 +73,9 @@
 </template>
 
 <script setup lang="ts">
-  import { format } from 'date-fns'
-  import { ru } from 'date-fns/locale'
   import { Card, Badge, Button } from '@/shared/ui'
   import { CogIcon, DeleteIcon } from '@/shared/ui/icon'
+  import { formatDateRu, formatTimeRu, getTextPreview } from '@/shared/lib'
   import type { JournalEntry } from '@/entities/journal'
   import { getMoodEmoji } from '@/features/journal/model/journal-constants'
 
@@ -95,16 +90,7 @@
     delete: []
   }>()
 
-  const formatDate = (dateStr: string) => {
-    return format(new Date(dateStr), 'd MMMM yyyy', { locale: ru })
-  }
-
-  const formatTime = (dateStr: string) => {
-    return format(new Date(dateStr), 'HH:mm', { locale: ru })
-  }
-
-  const getPreview = (content: string) => {
-    // Убираем markdown разметку для preview
-    return content.replace(/[#*_`[\]]/g, '').substring(0, 150)
-  }
+  const formatDate = (dateStr: string) => formatDateRu(dateStr, 'd MMMM yyyy')
+  const formatTime = (dateStr: string) => formatTimeRu(dateStr)
+  const getPreview = (description: string) => getTextPreview(description ?? '', 150)
 </script>

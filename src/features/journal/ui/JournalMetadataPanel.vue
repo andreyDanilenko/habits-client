@@ -28,15 +28,6 @@
         class="pb-4 space-y-5 border-t border-gray-200 pt-5 mt-3 transition-all duration-200"
       >
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField label="Заголовок" required>
-            <Input
-              :model-value="form.title"
-              @update:model-value="updateField('title', $event)"
-              placeholder="Введите заголовок..."
-              class="w-full"
-            />
-          </FormField>
-
           <FormField label="Дата">
             <Input
               :model-value="form.date"
@@ -90,7 +81,7 @@
           </FormField>
         </div>
 
-        <FormField label="Теги">
+        <FormField label="Теги (необязательно)">
           <div class="flex flex-wrap gap-2 mb-3">
             <Badge
               v-for="tag in form.tags"

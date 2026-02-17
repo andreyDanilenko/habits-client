@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
+  import { shallowRef, watch, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import { Logo, MenuIcon } from '@/shared/ui/icon'
   import { Button } from '@/shared/ui'
@@ -55,7 +55,7 @@
   const props = defineProps<Props>()
   const route = useRoute()
 
-  const headerWidget = ref<Component | null>(null)
+  const headerWidget = shallowRef<Component | null>(null)
 
   const currentModule = computed(() => getModuleByPath(route.path))
 

@@ -90,6 +90,14 @@ export function formatRelativeTime(date: Date | string): string {
 }
 
 /**
+ * Краткий превью текста без markdown-разметки (для карточек)
+ */
+export function getTextPreview(text: string, maxLength: number = 150): string {
+  if (!text) return ''
+  return text.replace(/[#*_`[\]]/g, '').substring(0, maxLength)
+}
+
+/**
  * Получает приветствие в зависимости от времени суток
  */
 export function getGreeting(): string {

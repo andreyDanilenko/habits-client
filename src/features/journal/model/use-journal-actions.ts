@@ -17,10 +17,8 @@ export const useJournalActions = ({ handleSaveEntry, handleDeleteEntry }: UseJou
       props: {
         entry: undefined,
       },
-      onConfirm: (entryData?: CreateJournalEntryDto) => {
-        if (entryData) {
-          handleSaveEntry(entryData)
-        }
+      onConfirm: async (entryData?: CreateJournalEntryDto) => {
+        if (entryData) await handleSaveEntry(entryData)
       },
     })
   }
@@ -31,13 +29,8 @@ export const useJournalActions = ({ handleSaveEntry, handleDeleteEntry }: UseJou
       props: {
         entry,
       },
-      onConfirm: (entryData?: CreateJournalEntryDto & { id?: string }) => {
-        if (entryData) {
-          handleSaveEntry({
-            ...entryData,
-            id: entry.id,
-          })
-        }
+      onConfirm: async (entryData?: CreateJournalEntryDto & { id?: string }) => {
+        if (entryData) await handleSaveEntry({ ...entryData, id: entry.id })
       },
     })
   }

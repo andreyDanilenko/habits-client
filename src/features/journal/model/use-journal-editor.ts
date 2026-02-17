@@ -20,8 +20,7 @@ export const useJournalEditor = (entryId?: string) => {
   const contentTextarea = ref<HTMLTextAreaElement | null>(null)
 
   const form = reactive<CreateJournalEntryDto & { id?: string; date: string }>({
-    title: '',
-    content: '',
+    description: '',
     mood: undefined,
     date: getTodayDateString(),
     tags: [],
@@ -38,24 +37,16 @@ export const useJournalEditor = (entryId?: string) => {
   })
 
   // Статистика
-  const characterCount = computed(() => form.content.length)
+  const characterCount = computed(() => (form.description ?? '').length)
   const wordCount = computed(() => {
-    if (!form.content.trim()) return 0
-    return form.content.trim().split(/\s+/).length
+    if (!(form.description ?? '').trim()) return 0
+    return (form.description ?? '').trim().split(/\s+/).length
   })
-  const readingTime = computed(() => {
-    // Средняя скорость чтения: 200 слов в минуту
-    return Math.ceil(wordCount.value / 200) || 1
-  })
+  const readingTime = computed(() => Math.ceil(wordCount.value / 200) || 1)
 
   // Валидация
-  const canPreview = computed(() => {
-    return form.title.trim().length > 0 && form.content.trim().length > 0
-  })
-
-  const canPublish = computed(() => {
-    return form.title.trim().length > 0 && form.content.trim().length > 0
-  })
+  const canPreview = computed(() => (form.description ?? '').trim().length > 0)
+  const canPublish = computed(() => (form.description ?? '').trim().length > 0)
 
   // Работа с тегами
   const addTag = () => {
@@ -77,10 +68,10 @@ export const useJournalEditor = (entryId?: string) => {
     const textarea = contentTextarea.value
     const start = textarea.selectionStart
     const end = textarea.selectionEnd
-    const selectedText = form.content.substring(start, end)
+    const desc = form.description ?? ''
+    const selectedText = desc.substring(start, end)
     const newText = before + selectedText + after
-
-    form.content = form.content.substring(0, start) + newText + form.content.substring(end)
+    form.description = desc.substring(0, start) + newText + desc.substring(end)
 
     // Восстанавливаем фокус и позицию курсора
     nextTick(() => {

@@ -21,6 +21,9 @@ export const API_ENDPOINTS = {
     NOTES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/notes`,
     NOTE: (workspaceId: string, noteId: string) =>
       apiV1 + `/workspaces/${workspaceId}/notes/${noteId}`,
+    JOURNAL: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/journal`,
+    JOURNAL_ENTRY: (workspaceId: string, entryId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/journal/${entryId}`,
     CURRENCIES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/currencies`,
     CURRENCY: (workspaceId: string, id: string) =>
       apiV1 + `/workspaces/${workspaceId}/currencies/${id}`,
@@ -47,8 +50,4 @@ export const API_ENDPOINTS = {
     CALENDAR: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/calendar`,
   },
 
-  JOURNAL: {
-    BASE: apiV1 + '/journal',
-    BY_DATE: (date: string) => apiV1 + `/journal/${date}`,
-  },
 } as const
