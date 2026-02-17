@@ -50,10 +50,11 @@ export const useCalendarPage = () => {
 
       const startStr = format(monthStart, 'yyyy-MM-dd')
       const endStr = format(monthEnd, 'yyyy-MM-dd')
+      const workspaceId = workspaceStore.currentWorkspace.id
 
       const [calendarResponse, habitsResponse] = await Promise.all([
-        habitService.getCalendar(startStr, endStr),
-        habitService.getHabits(),
+        habitService.getCalendar(workspaceId, startStr, endStr),
+        habitService.getHabits(workspaceId),
       ])
 
       calendarData.value = calendarResponse

@@ -53,8 +53,9 @@ export const useCalendarWidget = () => {
 
       const startStr = format(monthStart, 'yyyy-MM-dd')
       const endStr = format(monthEnd, 'yyyy-MM-dd')
+      const workspaceId = workspaceStore.currentWorkspace.id
 
-      const response = await habitService.getCalendar(startStr, endStr)
+      const response = await habitService.getCalendar(workspaceId, startStr, endStr)
       calendarData.value = response
     } catch (error) {
       console.error('Failed to load calendar:', error)

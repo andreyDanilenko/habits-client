@@ -160,7 +160,7 @@
   const loadStats = async () => {
     isLoadingStats.value = true
     try {
-      const response = await habitService.getStats(props.habit.id)
+      const response = await habitService.getStats(props.habit.workspaceId, props.habit.id)
       stats.value = response
     } catch (error) {
       console.error('Failed to load stats:', error)
@@ -185,7 +185,6 @@
     return Array.from(dates).sort()
   })
 
-  // Расчет текущего стрика (дни подряд до сегодня)
   const currentStreak = computed(() => {
     if (completedDates.value.length === 0) return 0
 
@@ -218,7 +217,6 @@
     return streak
   })
 
-  // Расчет самого длинного стрика
   const longestStreak = computed(() => {
     if (completedDates.value.length === 0) return 0
 

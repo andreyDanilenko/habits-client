@@ -38,13 +38,13 @@ export const API_ENDPOINTS = {
   },
 
   HABITS: {
-    BASE: apiV1 + '/habits',
-    DETAIL: (id: string) => apiV1 + `/habits/${id}`,
-    COMPLETE: (id: string) => apiV1 + `/habits/${id}/complete`,
-    TOGGLE: (id: string) => apiV1 + `/habits/${id}/toggle`,
-    STATS: (id: string) => apiV1 + `/habits/${id}/stats`,
-    COMPLETIONS: apiV1 + '/habits/completions',
-    CALENDAR: apiV1 + '/habits/calendar',
+    BASE: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits`,
+    DETAIL: (workspaceId: string, habitsId: string) => apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}`,
+    COMPLETE: (workspaceId: string, habitsId: string) => apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}/complete`,
+    TOGGLE: (workspaceId: string, habitsId: string) => apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}/toggle`,
+    STATS: (workspaceId: string, habitsId: string) => apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}/stats`,
+    COMPLETIONS:(workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/completions`,
+    CALENDAR: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/calendar`,
   },
 
   JOURNAL: {

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { habitService } from '@/entities/habit'
 import type { Habit, HabitCompletion, CreateHabitDto, UpdateHabitDto } from '@/entities/habit'
 import { getLocalDateString } from '@/shared/lib'
+import { useWorkspaceStore } from '@/entities/workspace'
 
 export const useHabitStore = defineStore('habit', () => {
   // State
@@ -10,6 +11,7 @@ export const useHabitStore = defineStore('habit', () => {
   const completions = ref<HabitCompletion[]>([])
   const isLoading = ref(false)
   const selectedDate = ref<Date>(new Date())
+  const workspaceStore = useWorkspaceStore()
 
   // Getters
   const todayHabits = computed((): Array<Habit & { completed: boolean }> => {
@@ -52,11 +54,18 @@ export const useHabitStore = defineStore('habit', () => {
 
   // Actions
   const fetchHabits = async (targetDate?: Date) => {
+    if (!workspaceStore.currentWorkspace) {
+      habits.value = []
+      completions.value = []
+      return
+    }
+
     isLoading.value = true
     try {
       const dateToFetch = targetDate || selectedDate.value
       const dateString = getLocalDateString(dateToFetch)
-      const data = await habitService.getHabits(dateString)
+      const workspaceId = workspaceStore.currentWorkspace.id
+      const data = await habitService.getHabits(workspaceId, dateString)
       habits.value = data || []
       await fetchCompletions()
     } catch (error) {
@@ -67,9 +76,16 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const fetchAllHabits = async () => {
+    if (!workspaceStore.currentWorkspace) {
+      habits.value = []
+      completions.value = []
+      return
+    }
+
     isLoading.value = true
     try {
-      const data = await habitService.getHabits()
+      const workspaceId = workspaceStore.currentWorkspace.id
+      const data = await habitService.getHabits(workspaceId)
       habits.value = data || []
       await fetchCompletions()
     } catch (error) {
@@ -80,12 +96,19 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const fetchCompletions = async () => {
+    if (!workspaceStore.currentWorkspace) {
+      completions.value = []
+      return
+    }
+
     try {
       const endDate = new Date()
       const startDate = new Date()
       startDate.setDate(startDate.getDate() - 90)
 
+      const workspaceId = workspaceStore.currentWorkspace.id
       const allCompletions = await habitService.getHabitCompletionsForHabit(
+        workspaceId,
         '',
         getLocalDateString(startDate),
         getLocalDateString(endDate),
@@ -97,6 +120,10 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const createHabit = async (data: CreateHabitDto | Partial<Habit>): Promise<Habit> => {
+    if (!workspaceStore.currentWorkspace) {
+      throw new Error('Workspace is not selected')
+    }
+
     try {
       const habitData: CreateHabitDto = {
         title: data.title || '',
@@ -112,7 +139,8 @@ export const useHabitStore = defineStore('habit', () => {
         oneTimeDate: (data as any).oneTimeDate,
         isActive: (data as any).isActive ?? true,
       }
-      const habit = await habitService.createHabit(habitData)
+      const workspaceId = workspaceStore.currentWorkspace.id
+      const habit = await habitService.createHabit(workspaceId, habitData)
       habits.value.push(habit)
       return habit
     } catch (error) {
@@ -122,6 +150,10 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
+    if (!workspaceStore.currentWorkspace) {
+      throw new Error('Workspace is not selected')
+    }
+
     try {
       const habitData: any = {}
 
@@ -140,7 +172,8 @@ export const useHabitStore = defineStore('habit', () => {
       if ((data as any).oneTimeDate !== undefined) habitData.oneTimeDate = (data as any).oneTimeDate
       if ((data as any).isActive !== undefined) habitData.isActive = (data as any).isActive
 
-      const habit = await habitService.updateHabit(id, habitData)
+      const workspaceId = workspaceStore.currentWorkspace.id
+      const habit = await habitService.updateHabit(workspaceId, id, habitData)
       const index = habits.value.findIndex((h) => h.id === id)
       if (index !== -1) {
         habits.value[index] = habit
@@ -153,8 +186,13 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const deleteHabit = async (id: string): Promise<void> => {
+    if (!workspaceStore.currentWorkspace) {
+      throw new Error('Workspace is not selected')
+    }
+
     try {
-      await habitService.deleteHabit(id)
+      const workspaceId = workspaceStore.currentWorkspace.id
+      await habitService.deleteHabit(workspaceId, id)
       habits.value = habits.value.filter((h) => h.id !== id)
       completions.value = completions.value.filter((c) => c.habitId !== id)
     } catch (error) {
@@ -168,9 +206,14 @@ export const useHabitStore = defineStore('habit', () => {
     time?: string
     note?: string
   }): Promise<void> => {
+    if (!workspaceStore.currentWorkspace) {
+      throw new Error('Workspace is not selected')
+    }
+
     try {
       const today = getLocalDateString(selectedDate.value)
-      const completion = await habitService.createCompletion(data.habitId, {
+      const workspaceId = workspaceStore.currentWorkspace.id
+      const completion = await habitService.createCompletion(workspaceId, data.habitId, {
         date: today,
         notes: data.note || '',
         rating: 0,
@@ -186,9 +229,14 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const toggleCompletion = async (habitId: string) => {
+    if (!workspaceStore.currentWorkspace) {
+      throw new Error('Workspace is not selected')
+    }
+
     try {
       const today = getLocalDateString(selectedDate.value)
-      const response = await habitService.toggleCompletion(habitId, today)
+      const workspaceId = workspaceStore.currentWorkspace.id
+      const response = await habitService.toggleCompletion(workspaceId, habitId, today)
 
       if (response.completed && response.completion) {
         completions.value.push(response.completion)
