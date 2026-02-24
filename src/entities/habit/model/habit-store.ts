@@ -119,27 +119,18 @@ export const useHabitStore = defineStore('habit', () => {
     }
   }
 
-  const createHabit = async (data: CreateHabitDto | Partial<Habit>): Promise<Habit> => {
-    if (!workspaceStore.currentWorkspace) {
-      throw new Error('Workspace is not selected')
-    }
-
+  const createHabit = async (data: CreateHabitDto): Promise<Habit> => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) throw new Error('Workspace is not selected')
+  
     try {
       const habitData: CreateHabitDto = {
-        title: data.title || '',
-        description: data.description,
-        color: data.color,
-        icon: data.icon,
-        targetDays: data.targetDays,
-        dailyGoal: data.dailyGoal,
-        preferredTime: data.preferredTime,
-        category: data.category,
-        scheduleType: (data as any).scheduleType || 'recurring',
-        recurringDays: (data as any).recurringDays,
-        oneTimeDate: (data as any).oneTimeDate,
-        isActive: (data as any).isActive ?? true,
-      }
-      const workspaceId = workspaceStore.currentWorkspace.id
+        ...data,
+        title: data.title ?? '',
+        scheduleType: data.scheduleType ?? 'recurring',
+        isActive: data.isActive ?? true,
+      };
+  
       const habit = await habitService.createHabit(workspaceId, habitData)
       habits.value.push(habit)
       return habit
@@ -150,35 +141,20 @@ export const useHabitStore = defineStore('habit', () => {
   }
 
   const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
-    if (!workspaceStore.currentWorkspace) {
-      throw new Error('Workspace is not selected')
-    }
-
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) throw new Error('Workspace is not selected')
+  
     try {
-      const habitData: any = {}
-
-      if (data.title !== undefined) habitData.title = data.title
-      if (data.description !== undefined) habitData.description = data.description
-      if (data.color !== undefined) habitData.color = data.color
-      if (data.icon !== undefined) habitData.icon = data.icon
-      if (data.targetDays !== undefined) habitData.targetDays = data.targetDays
-      if (data.dailyGoal !== undefined) habitData.dailyGoal = data.dailyGoal
-      if (data.preferredTime !== undefined) habitData.preferredTime = data.preferredTime
-      if (data.category !== undefined) habitData.category = data.category
-      if ((data as any).scheduleType !== undefined)
-        habitData.scheduleType = (data as any).scheduleType
-      if ((data as any).recurringDays !== undefined)
-        habitData.recurringDays = (data as any).recurringDays
-      if ((data as any).oneTimeDate !== undefined) habitData.oneTimeDate = (data as any).oneTimeDate
-      if ((data as any).isActive !== undefined) habitData.isActive = (data as any).isActive
-
-      const workspaceId = workspaceStore.currentWorkspace.id
-      const habit = await habitService.updateHabit(workspaceId, id, habitData)
+      const habitData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== undefined)
+      )
+  
+      const updatedHabit = await habitService.updateHabit(workspaceId, id, habitData)
+      
       const index = habits.value.findIndex((h) => h.id === id)
-      if (index !== -1) {
-        habits.value[index] = habit
-      }
-      return habit
+      if (index !== -1) habits.value[index] = updatedHabit
+  
+      return updatedHabit
     } catch (error) {
       console.error('Failed to update habit:', error)
       throw error
