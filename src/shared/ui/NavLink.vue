@@ -4,7 +4,7 @@
     :class="[
       'inline-flex flex-row items-center rounded-lg font-medium transition-colors',
       customClass && customClass.includes('justify-') ? '' : 'justify-start',
-      'focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300',
+      'focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-primary-light',
       sizeClasses,
       variantClasses,
       isActive ? activeClasses : '',
@@ -72,20 +72,19 @@
   })
 
   const variantClasses = computed(() => {
-    const baseVariants: Record<NonNullable<Props['variant']>, string> = {
-      default: 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600',
-      ghost: 'text-gray-700 hover:bg-gray-100',
-      active: 'bg-indigo-50 text-indigo-600 font-medium',
+    const baseVariants: Record<string, string> = {
+      default: 'text-text-primary hover:bg-primary-light hover:text-primary-default',
+      ghost: 'text-text-primary hover:bg-bg-tertiary',
+      active: 'bg-primary-light text-primary-default font-medium',
     }
     return baseVariants[props.variant]
   })
 
   const activeClasses = computed(() => {
-    return 'bg-indigo-50 text-indigo-600 font-medium'
+    return 'bg-primary-light text-primary-default font-medium'
   })
 
   const isActive = computed(() => {
-    // Если явно передан isActive, используем его
     if (props.isActive !== undefined) {
       return props.isActive
     }
@@ -96,7 +95,6 @@
       if (props.exact) {
         return currentPath === props.to
       }
-      // Для вложенных путей проверяем точное совпадение или начало пути
       if (currentPath === props.to) return true
       if (currentPath.startsWith(props.to) && currentPath[props.to.length] === '/') {
         return true

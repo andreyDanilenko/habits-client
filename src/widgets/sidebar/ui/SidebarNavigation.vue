@@ -18,11 +18,11 @@
       <Button
         v-else
         :key="`nav-button-${item.id}`"
-        :variant="item.variant === 'danger' ? 'ghost' : item.isActive ? 'ghost' : 'ghost'"
+        :variant="item.variant === 'danger' ? 'ghost' : 'ghost'"
         size="md"
         :left-icon="item.icon"
         :icon-only="collapsed"
-        :custom-class="`w-full ${collapsed ? 'justify-center' : 'justify-start'} ${item.isActive ? 'bg-indigo-50 text-indigo-600 font-medium' : ''} ${item.variant === 'danger' ? 'text-red-600 hover:bg-red-50' : ''}`"
+        :custom-class="`w-full ${collapsed ? 'justify-center' : 'justify-start'} ${item.isActive ? 'bg-primary-light text-primary-default font-medium' : ''} ${item.variant === 'danger' ? 'text-error-default hover:bg-error-light' : ''}`"
         @click="handleItemClick(item)"
       >
         <span v-if="!collapsed" :class="{ 'font-medium': item.variant === 'danger' || item.isActive }">

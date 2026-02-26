@@ -4,7 +4,10 @@ import App from '@/app/App.vue'
 import router from '@/app/router'
 import { api } from '@/shared/api'
 import { handleUnauthorized } from '@/features/auth'
+import { initTheme } from '@/shared/lib/use-theme'
 import '@/styles/main.css'
+
+initTheme()
 
 const app = createApp(App)
 const pinia = createPinia()
