@@ -21,13 +21,14 @@ button {
 }
 
 
-/* Базовые переменные (светлая тема) */
+/* Base variables (light theme) */
 @theme {
-  /* ===== ОСНОВНЫЕ ЦВЕТА ===== */
+  /* ===== MAIN COLORS ===== */
   /* Primary (Indigo) */
   --color-primary-light: #eef2ff;      /* indigo-50 */
   --color-primary-default: #6366f1;     /* indigo-500 */
   --color-primary-dark: #4f46e5;        /* indigo-700 */
+  --color-primary-darker: #3730a3;      /* indigo-800 */
   
   /* Secondary (Purple) */
   --color-secondary-light: #f3e8ff;     /* purple-100 */
@@ -42,29 +43,45 @@ button {
   --color-success-text: #166534;        /* green-800 */
   --color-success-icon: #16a34a;        /* green-600 */
   
-  /* ===== ФОНЫ ===== */
+  /* Error */
+  --color-error-light: #fee2e2;         /* red-100 */
+  --color-error-default: #ef4444;       /* red-500 */
+  --color-error-dark: #dc2626;          /* red-600 */
+  --color-error-darker: #b91c1c;        /* red-700 */
+  
+  /* Warning */
+  --color-warning-light: #fef3c7;       /* amber-100 */
+  --color-warning-default: #f59e0b;     /* amber-500 */
+  --color-warning-dark: #d97706;        /* amber-600 */
+  
+  /* Info */
+  --color-info-light: #dbeafe;          /* blue-100 */
+  --color-info-default: #3b82f6;        /* blue-500 */
+  --color-info-dark: #2563eb;           /* blue-600 */
+  
+  /* ===== BACKGROUNDS ===== */
   --color-bg-primary: #ffffff;           /* white */
   --color-bg-secondary: #f9fafb;         /* gray-50 */
   --color-bg-tertiary: #f3f4f6;          /* gray-100 */
   
-  /* ===== ТЕКСТ ===== */
+  /* ===== TEXT ===== */
   --color-text-primary: #111827;         /* gray-900 */
   --color-text-secondary: #6b7280;       /* gray-500 */
   --color-text-muted: #9ca3af;           /* gray-400 */
   --color-text-disabled: #d1d5db;        /* gray-300 */
   
-  /* ===== ГРАНИЦЫ ===== */
+  /* ===== BORDERS ===== */
   --color-border-light: #e5e7eb;         /* gray-200 */
   --color-border-default: #d1d5db;       /* gray-300 */
   --color-border-hover: #9ca3af;         /* gray-400 */
   
-  /* ===== ТОЧКИ ДЛЯ ЛЕГЕНДЫ ===== */
+  /* ===== LEGEND DOTS ===== */
   --color-regular-dot: var(--color-primary-default);
   --color-special-dot: var(--color-secondary-default);
   --color-success-dot: var(--color-success-default);
   --color-muted-dot: var(--color-text-disabled);
   
-  /* ===== ПРИВЫЧКИ (CalendarDay) ===== */
+  /* ===== HABITS (CalendarDay) ===== */
   --color-regular-bg: #e0e7ff;           /* indigo-100 */
   --color-regular-text: #3730a3;         /* indigo-800 */
   --color-regular-border: #a5b4fc;       /* indigo-300 */
@@ -105,51 +122,22 @@ button {
   --color-journal-tag-border: var(--color-primary-light);
   --color-journal-tag-hover: color-mix(in srgb, var(--color-primary-light) 80%, transparent);
   
-  /* ===== ТЕНИ ===== */
+  /* ===== SHADOWS ===== */
   --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 
-
+  /* Additional colors */
   --color-teal-50: #f0fdfa;
   --color-orange-50: #fff7ed;
-  
-  /* Для emerald используем success */
-  --color-success-light: #dcfce7;
-  --color-success-border: #86efac
-
-  --color-primary-light: #eef2ff;
-  --color-primary-default: #6366f1;
-  --color-primary-dark: #4f46e5;
-  --color-primary-darker: #3730a3;
-  
-  /* Error */
-  --color-error-light: #fee2e2;
-  --color-error-default: #ef4444;
-  --color-error-dark: #dc2626;
-  --color-error-darker: #b91c1c;
-  
-  /* Success */
-  --color-success-light: #dcfce7;
-  --color-success-default: #22c55e;
-  --color-success-dark: #16a34a;
-  
-  /* Warning */
-  --color-warning-light: #fef3c7;
-  --color-warning-default: #f59e0b;
-  --color-warning-dark: #d97706;
-  
-  /* Info */
-  --color-info-light: #dbeafe;
-  --color-info-default: #3b82f6;
-  --color-info-dark: #2563eb;
 }
 
-/* ===== ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ ТЕМНОЙ ТЕМЫ ===== */
+/* ===== DARK THEME OVERRIDES ===== */
 .dark {
   /* ===== Primary (Indigo) ===== */
   --color-primary-light: #1e1b4b;        /* indigo-950 */
   --color-primary-default: #818cf8;      /* indigo-400 */
   --color-primary-dark: #a5b4fc;         /* indigo-300 */
+  --color-primary-darker: #c7d2fe;       /* indigo-200 */
   
   /* ===== Secondary (Purple) ===== */
   --color-secondary-light: #581c87;       /* purple-900 */
@@ -164,29 +152,45 @@ button {
   --color-success-text: #86efac;          /* green-300 */
   --color-success-icon: #4ade80;          /* green-400 */
   
-  /* ===== ФОНЫ ===== */
+  /* ===== Error ===== */
+  --color-error-light: #7f1d1d;           /* red-900 */
+  --color-error-default: #f87171;         /* red-400 */
+  --color-error-dark: #fca5a5;            /* red-300 */
+  --color-error-darker: #fee2e2;          /* red-100 */
+  
+  /* ===== Warning ===== */
+  --color-warning-light: #422006;         /* amber-950 */
+  --color-warning-default: #fbbf24;       /* amber-400 */
+  --color-warning-dark: #fcd34d;          /* amber-300 */
+  
+  /* ===== Info ===== */
+  --color-info-light: #1e3a8a;            /* blue-900 */
+  --color-info-default: #60a5fa;          /* blue-400 */
+  --color-info-dark: #93c5fd;             /* blue-300 */
+  
+  /* ===== BACKGROUNDS ===== */
   --color-bg-primary: #1f2937;            /* gray-800 */
   --color-bg-secondary: #111827;          /* gray-900 */
   --color-bg-tertiary: #374151;           /* gray-700 */
   
-  /* ===== ТЕКСТ ===== */
+  /* ===== TEXT ===== */
   --color-text-primary: #f3f4f6;          /* gray-100 */
   --color-text-secondary: #9ca3af;        /* gray-400 */
   --color-text-muted: #6b7280;            /* gray-500 */
   --color-text-disabled: #4b5563;         /* gray-600 */
   
-  /* ===== ГРАНИЦЫ ===== */
+  /* ===== BORDERS ===== */
   --color-border-light: #374151;          /* gray-700 */
   --color-border-default: #4b5563;        /* gray-600 */
   --color-border-hover: #6b7280;          /* gray-500 */
   
-  /* ===== ТОЧКИ ДЛЯ ЛЕГЕНДЫ ===== */
+  /* ===== LEGEND DOTS ===== */
   --color-regular-dot: var(--color-primary-default);
   --color-special-dot: var(--color-secondary-default);
   --color-success-dot: var(--color-success-default);
   --color-muted-dot: var(--color-text-disabled);
   
-  /* ===== ПРИВЫЧКИ (CalendarDay) ===== */
+  /* ===== HABITS (CalendarDay) ===== */
   --color-regular-bg: #312e81;           /* indigo-900 */
   --color-regular-text: #a5b4fc;         /* indigo-300 */
   --color-regular-border: #6366f1;       /* indigo-500 */
@@ -217,35 +221,12 @@ button {
   --color-journal-tag-border: var(--color-primary-light);
   --color-journal-tag-hover: color-mix(in srgb, var(--color-primary-light) 80%, transparent);
   
-  /* ===== ТЕНИ ===== */
+  /* ===== SHADOWS ===== */
   --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.4);
 
+  /* Additional colors */
   --color-teal-50: #134e4a;
   --color-orange-50: #7c2d12;
-  
-  --color-success-light: #14532d;
-  --color-success-border: #4ade80;
-
-  --color-primary-light: #1e1b4b;
-  --color-primary-default: #818cf8;
-  --color-primary-dark: #a5b4fc;
-  --color-primary-darker: #c7d2fe;
-  
-  --color-error-light: #7f1d1d;
-  --color-error-default: #f87171;
-  --color-error-dark: #fca5a5;
-  --color-error-darker: #fee2e2;
-  
-  --color-success-light: #14532d;
-  --color-success-default: #4ade80;
-  --color-success-dark: #86efac;
-  
-  --color-warning-light: #422006;
-  --color-warning-default: #fbbf24;
-  --color-warning-dark: #fcd34d;
-  
-  --color-info-light: #1e3a8a;
-  --color-info-default: #60a5fa;
-  --color-info-dark: #93c5fd;
 }
+
