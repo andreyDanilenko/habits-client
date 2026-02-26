@@ -1,9 +1,9 @@
 <template>
-  <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
+  <div class="h-screen bg-bg-secondary flex flex-col overflow-hidden">
     <AppHeader v-if="showHeader" :sidebar-ref="sidebarRef" />
     <div class="flex flex-1 overflow-hidden items-stretch">
       <AppSidebar v-if="showHeader" ref="sidebarRef" />
-      <main class="flex-1 overflow-y-auto">
+      <main class="flex-1 overflow-y-auto bg-bg-primary">
         <div class="container mx-auto px-4 py-6 md:py-8">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">

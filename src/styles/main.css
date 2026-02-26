@@ -1,21 +1,112 @@
 @import 'tailwindcss';
 
 h1 {
-  @apply text-3xl font-bold text-gray-900;
+  @apply text-3xl font-bold;
 }
 
 h2 {
-  @apply text-xl font-semibold text-gray-900;
+  @apply text-xl font-semibold;
 }
 
 h3 {
-  @apply text-lg font-semibold text-gray-900;
+  @apply text-lg font-semibold;
 }
 
 h4 {
-  @apply text-base font-medium text-gray-900;
+  @apply text-base font-medium;
 }
 
 button {
   @apply cursor-pointer;
+}
+
+
+
+
+/* Базовые переменные (светлая тема) */
+@theme {
+  /* Основные цвета текста */
+  --color-text-primary: #111827;      /* основной текст */
+  --color-text-secondary: #6b7280;     /* второстепенный текст */
+  --color-text-muted: #9ca3af;        /* заглушки, подсказки */
+  --color-text-disabled: #d1d5db;      /* неактивный текст */
+  
+  /* Цвета фона */
+  --color-bg-primary: #ffffff;         /* основной фон */
+  --color-bg-secondary: #f9fafb;       /* второстепенный фон */
+  --color-bg-tertiary: #f3f4f6;        /* третичный фон */
+  
+  /* Цвета границ */
+  --color-border-light: #e5e7eb;       /* светлые границы */
+  --color-border-default: #d1d5db;      /* обычные границы */
+  --color-border-hover: #9ca3af;        /* границы при наведении */
+  
+  /* Основные цвета */
+  --color-primary-default: #6366f1;     /* основной акцент (indigo-500) */
+  --color-primary-light: #eef2ff;       /* светлый акцент (indigo-50) */
+  --color-primary-dark: #4f46e5;        /* темный акцент (indigo-700) */
+  
+  /* Точки для легенды */
+  --color-regular-dot: #6366f1;         /* регулярная - indigo-500 */
+  --color-special-dot: #a855f7;         /* разовая - purple-500 */
+  --color-success-dot: #22c55e;         /* выполнено - green-500 */
+  --color-muted-dot: #d1d5db;           /* не выполнено - gray-300 */
+  
+  /* Цвета для привычек */
+  --color-success-bg: #dcfce7;          /* фон выполнено */
+  --color-success-text: #166534;        /* текст выполнено */
+  --color-success-border: #86efac;      /* граница выполнено */
+  --color-success-icon: #16a34a;        /* галочка */
+  
+  --color-regular-bg: #e0e7ff;          /* фон обычной привычки */
+  --color-regular-text: #3730a3;        /* текст обычной привычки */
+  --color-regular-border: #a5b4fc;      /* граница обычной привычки */
+  
+  --color-special-bg: #f3e8ff;          /* фон одноразовой привычки */
+  --color-special-text: #6b21a5;        /* текст одноразовой привычки */
+  --color-special-border: #d8b4fe;      /* граница одноразовой привычки */
+}
+
+/* Переопределение для темной темы */
+.dark {
+  /* Основные цвета текста */
+  --color-text-primary: #f3f4f6;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-text-disabled: #4b5563;
+  
+  /* Цвета фона */
+  --color-bg-primary: #1f2937;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #374151;
+  
+  /* Цвета границ */
+  --color-border-light: #374151;
+  --color-border-default: #4b5563;
+  --color-border-hover: #6b7280;
+  
+  /* Основные цвета */
+  --color-primary-default: #818cf8;
+  --color-primary-light: #1e1b4b;
+  --color-primary-dark: #a5b4fc;
+  
+  /* Точки для легенды */
+  --color-regular-dot: #818cf8;         /* регулярная - indigo-400 */
+  --color-special-dot: #c084fc;         /* разовая - purple-400 */
+  --color-success-dot: #4ade80;         /* выполнено - green-400 */
+  --color-muted-dot: #6b7280;           /* не выполнено - gray-500 */
+  
+  /* Цвета для привычек */
+  --color-success-bg: #14532d;
+  --color-success-text: #86efac;
+  --color-success-border: #4ade80;
+  --color-success-icon: #4ade80;
+  
+  --color-regular-bg: #312e81;
+  --color-regular-text: #a5b4fc;
+  --color-regular-border: #6366f1;
+  
+  --color-special-bg: #581c87;
+  --color-special-text: #d8b4fe;
+  --color-special-border: #c084fc;
 }

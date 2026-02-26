@@ -1,10 +1,10 @@
 <template>
   <div
     :class="[
-      'bg-white rounded-xl',
-      shadow ? 'shadow-sm' : '',
+      'bg-bg-primary rounded-xl',
+      shadow ? 'shadow-card' : '',
       padding ? 'p-6' : '',
-      border ? 'border border-gray-300' : '',
+      border ? 'border border-border-default' : '',
     ]"
   >
     <slot />

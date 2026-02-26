@@ -1,7 +1,7 @@
 <template>
   <Card :border="true" :padding="true">
     <div v-if="isLoading" class="text-center py-12">
-      <p class="text-gray-500">Загрузка календаря...</p>
+      <p class="text-text-muted">Загрузка календаря...</p>
     </div>
 
     <div v-else>
@@ -10,7 +10,7 @@
         <div
           v-for="day in weekDays"
           :key="day"
-          class="text-center text-sm font-semibold text-gray-600 py-2"
+          class="text-center text-sm font-semibold text-text-secondary py-2"
         >
           {{ day }}
         </div>
