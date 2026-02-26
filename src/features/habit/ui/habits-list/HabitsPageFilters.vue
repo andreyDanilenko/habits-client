@@ -1,21 +1,17 @@
 <template>
-  <Card :border="true" :padding="true" class="bg-white">
+  <Card :border="true" :padding="true" class="bg-bg-primary">
     <div class="flex flex-col gap-4">
-      <!-- Фильтры -->
       <div class="flex flex-wrap gap-3">
-        <!-- Фильтр по дате -->
         <div class="flex-1 min-w-[200px]">
-          <label class="block text-xs font-medium text-gray-700 mb-1">Дата</label>
-          <input
-            type="date"
-            :value="selectedDate"
-            @input="handleDateInput"
-            :disabled="showAll"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
-          />
+          <FormField label="Дата">
+            <Input
+              v-model="dateModel"
+              type="date"
+              :disabled="showAll"
+            />
+          </FormField>
         </div>
 
-        <!-- Кнопка "Показать все" -->
         <div class="flex items-end">
           <Button
             :variant="showAll ? 'secondary' : 'outline'"
@@ -27,7 +23,6 @@
           </Button>
         </div>
 
-        <!-- Сброс фильтров -->
         <div class="flex items-end">
           <Button
             v-if="hasActiveFilters"
@@ -41,12 +36,11 @@
         </div>
       </div>
 
-      <!-- Индикаторы активных фильтров -->
-      <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
+      <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 pt-2 border-t border-border-light">
         <Badge
           v-if="selectedDate"
           variant="outline"
-          class="bg-indigo-50 text-indigo-700 border-indigo-200 flex items-center gap-1"
+          class="bg-primary-light text-primary-dark border-primary-light flex items-center gap-1"
         >
           Дата: {{ formatDate(selectedDate) }}
           <Button
@@ -62,7 +56,7 @@
         <Badge
           v-if="showAll"
           variant="outline"
-          class="bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1"
+          class="bg-success-light text-success-text border-success-border flex items-center gap-1"
         >
           Показать все
           <Button
@@ -81,11 +75,12 @@
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue'
   import { formatDateRu } from '@/shared/lib'
-  import { Card, Button, Badge } from '@/shared/ui'
+  import { Card, Button, Badge, FormField, Input } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
 
-  defineProps<{
+  const props = defineProps<{
     selectedDate?: string
     showAll?: boolean
     hasActiveFilters: boolean
@@ -97,10 +92,10 @@
     'reset-filter': []
   }>()
 
-  const handleDateInput = (event: Event) => {
-    const target = event.target as HTMLInputElement
-    emit('date-change', target.value)
-  }
+  const dateModel = computed({
+    get: () => props.selectedDate || '',
+    set: (value) => emit('date-change', value)
+  })
 
   const handleClearDate = () => {
     emit('date-change', '')

@@ -4,7 +4,6 @@
     @close="$emit('close')"
   >
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <!-- Название -->
       <FormField
         label="Название привычки"
         required
@@ -12,17 +11,15 @@
         :current-length="form.title.length"
         :max-length="50"
       >
-        <input
+        <Input
           v-model="form.title"
           type="text"
           required
           maxlength="50"
           placeholder="Например: Утренняя зарядка"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
         />
       </FormField>
 
-      <!-- Описание -->
       <FormField
         label="Описание (необязательно)"
         :show-char-count="true"
@@ -34,13 +31,12 @@
           rows="3"
           maxlength="200"
           placeholder="Краткое описание вашей привычки..."
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary placeholder:text-text-muted resize-none"
         />
       </FormField>
 
-      <!-- Цвет -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2"> Цвет </label>
+        <label class="block text-sm font-medium text-text-secondary mb-2"> Цвет </label>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="color in colors"
@@ -53,9 +49,8 @@
         </div>
       </div>
 
-      <!-- Иконка -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2"> Иконка </label>
+        <label class="block text-sm font-medium text-text-secondary mb-2"> Иконка </label>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="icon in icons"
@@ -69,23 +64,21 @@
         </div>
       </div>
 
-      <!-- Цель -->
       <FormField label="Цель на день">
         <div class="flex items-center space-x-2">
-          <input
+          <Input
             v-model.number="form.dailyGoal"
             type="number"
             min="1"
             max="10"
-            class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="w-20"
           />
-          <span class="text-gray-600">раз(а) в день</span>
+          <span class="text-text-secondary">раз(а) в день</span>
         </div>
       </FormField>
 
-      <!-- Время дня -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2"> Предпочтительное время </label>
+        <label class="block text-sm font-medium text-text-secondary mb-2"> Предпочтительное время </label>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="time in timesOfDay"
@@ -98,24 +91,22 @@
         </div>
       </div>
 
-      <!-- Категория -->
       <FormField label="Категория">
         <select
           v-model="form.category"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary"
         >
-          <option value="">Без категории</option>
-          <option value="health">Здоровье</option>
-          <option value="sport">Спорт</option>
-          <option value="study">Учеба</option>
-          <option value="work">Работа</option>
-          <option value="personal">Личное</option>
+          <option value="" class="text-text-muted">Без категории</option>
+          <option value="health" class="text-text-primary">Здоровье</option>
+          <option value="sport" class="text-text-primary">Спорт</option>
+          <option value="study" class="text-text-primary">Учеба</option>
+          <option value="work" class="text-text-primary">Работа</option>
+          <option value="personal" class="text-text-primary">Личное</option>
         </select>
       </FormField>
 
-      <!-- Тип расписания -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2"> Тип расписания </label>
+        <label class="block text-sm font-medium text-text-secondary mb-2"> Тип расписания </label>
         <div class="flex gap-2">
           <SelectButton
             :is-selected="form.scheduleType === 'recurring'"
@@ -132,10 +123,9 @@
         </div>
       </div>
 
-      <!-- Для регулярных привычек: выбор дней недели -->
       <div v-if="form.scheduleType === 'recurring'">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-          Дни недели <span class="text-red-500">*</span>
+        <label class="block text-sm font-medium text-text-secondary mb-2">
+          Дни недели <span class="text-error-default">*</span>
         </label>
         <div class="flex flex-wrap gap-2">
           <SelectButton
@@ -147,20 +137,18 @@
             @click="toggleDay(day.value)"
           />
         </div>
-        <p v-if="form.recurringDays.length === 0" class="mt-1 text-sm text-red-500">
+        <p v-if="form.recurringDays.length === 0" class="mt-1 text-sm text-error-default">
           Выберите хотя бы один день недели
         </p>
       </div>
 
-      <!-- Для разовых привычек: выбор даты -->
       <div v-if="form.scheduleType === 'one_time'">
         <FormField label="Дата выполнения" required>
-          <input
+          <Input
             v-model="form.oneTimeDate"
             type="date"
             required
             :min="minDate"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           />
         </FormField>
       </div>
@@ -179,7 +167,7 @@
 
 <script setup lang="ts">
   import { reactive, computed, ref } from 'vue'
-  import { ModalContent, Button, FormField, SelectButton } from '@/shared/ui'
+  import { ModalContent, Button, FormField, SelectButton, Input } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   interface Props {
@@ -206,7 +194,7 @@
     scheduleType: (props.habit?.scheduleType as 'recurring' | 'one_time') || 'recurring',
     recurringDays: props.habit?.recurringDays
       ? [...props.habit.recurringDays]
-      : [0, 1, 2, 3, 4, 5, 6], // По умолчанию все дни: 0=Вс, 1=Пн, ..., 6=Сб
+      : [0, 1, 2, 3, 4, 5, 6],
     oneTimeDate: props.habit?.oneTimeDate || '',
     isActive: props.habit?.isActive ?? true,
   })
@@ -241,7 +229,6 @@
     { value: 6, label: 'Сб' },
   ]
 
-  // Минимальная дата для разовых привычек (сегодня)
   const minDate = computed(() => {
     const today = new Date()
     return today.toISOString().split('T')[0]
@@ -264,13 +251,11 @@
       return
     }
 
-    // Валидация для регулярных привычек
     if (form.scheduleType === 'recurring' && form.recurringDays.length === 0) {
       alert('Пожалуйста, выберите хотя бы один день недели')
       return
     }
 
-    // Валидация для разовых привычек
     if (form.scheduleType === 'one_time' && !form.oneTimeDate) {
       alert('Пожалуйста, выберите дату выполнения')
       return

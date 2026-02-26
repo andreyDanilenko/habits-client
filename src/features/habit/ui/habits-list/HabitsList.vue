@@ -3,7 +3,9 @@
     <Card
       v-for="habit in habits"
       :key="habit.id"
-      class="p-6 hover:shadow-md transition-shadow cursor-pointer group"
+      class="hover:shadow-card-hover transition-shadow cursor-pointer group"
+      :border="true"
+      :padding="true"
       @click="$emit('select-habit', habit)"
     >
       <HabitsListItem

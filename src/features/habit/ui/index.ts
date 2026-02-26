@@ -1,7 +1,6 @@
 export { default as AddEditHabitModal } from '@/features/habit/ui/AddEditHabitModal.vue'
 export { default as HabitDetailsModal } from '@/features/habit/ui/HabitDetailsModal.vue'
 export { default as MarkCompletionModal } from '@/features/habit/ui/MarkCompletionModal.vue'
-export { default as HabitsEmptyState } from '@/features/habit/ui/habits-list/HabitsEmptyState.vue'
 export { default as HabitsListItem } from '@/features/habit/ui/habits-list/HabitsListItem.vue'
 export { default as HabitsPageHeader } from '@/features/habit/ui/habits-list/HabitsPageHeader.vue'
 export { default as HabitsPageStats } from '@/features/habit/ui/habits-list/HabitsPageStats.vue'

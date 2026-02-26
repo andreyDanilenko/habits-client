@@ -68,7 +68,7 @@
 </script>
 
 <style scoped>
-/* Специально для date input */
+/* Для date input */
 input[type="date"] {
   color-scheme: light dark;
 }
@@ -89,8 +89,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
-/* Для темной темы */
-.dark input[type="date"]::-webkit-calendar-picker-indicator {
+/* Для time input */
+input[type="time"] {
+  color-scheme: light dark;
+}
+
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field,
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+  color: var(--color-text-primary);
+}
+
+input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+  color: var(--color-text-primary);
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 </style>
