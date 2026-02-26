@@ -2,12 +2,12 @@
   <span
     class="px-2 py-1 text-xs font-medium rounded-full"
     :class="[
-      variant === 'default' && 'bg-gray-100 text-gray-800',
-      variant === 'blue' && 'bg-blue-50 text-blue-700',
-      variant === 'green' && 'bg-green-50 text-green-700',
-      variant === 'indigo' && 'bg-indigo-50 text-indigo-700',
-      variant === 'purple' && 'bg-purple-50 text-purple-700',
-      variant === 'outline' && 'border border-gray-300 bg-white text-gray-700',
+      variant === 'default' && 'bg-badge-default-bg text-badge-default-text',
+      variant === 'blue' && 'bg-badge-blue-bg text-badge-blue-text',
+      variant === 'green' && 'bg-badge-green-bg text-badge-green-text',
+      variant === 'indigo' && 'bg-badge-indigo-bg text-badge-indigo-text',
+      variant === 'purple' && 'bg-badge-purple-bg text-badge-purple-text',
+      variant === 'outline' && 'border border-border-default bg-bg-primary text-text-primary',
     ]"
   >
     <slot />

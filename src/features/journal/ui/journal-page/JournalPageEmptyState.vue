@@ -1,10 +1,10 @@
 <template>
   <div class="text-center py-16">
     <Card :border="true" :padding="true" class="max-w-md mx-auto">
-      <h3 class="mb-2">
+      <h3 class="mb-2 text-text-primary">
         {{ hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей' }}
       </h3>
-      <p class="text-gray-600 mb-6">
+      <p class="text-text-secondary mb-6">
         {{
           hasActiveFilters
             ? 'Попробуйте изменить фильтры или поисковый запрос'

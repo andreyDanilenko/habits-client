@@ -1,13 +1,17 @@
 <template>
   <ModalContent :title="title" :description="description" @close="$emit('close')">
     <slot>
-      <p class="text-gray-700">{{ message }}</p>
+      <p class="text-text-primary">{{ message }}</p>
     </slot>
 
     <template #footer>
       <div class="flex justify-end space-x-3">
         <Button type="button" variant="outline" @click="$emit('close')"> Отмена </Button>
-        <Button type="button" :variant="confirmVariant" @click="$emit('confirm', true)">
+        <Button 
+          type="button" 
+          :variant="confirmVariant === 'danger' ? 'danger' : 'primary'" 
+          @click="$emit('confirm', true)"
+        >
           {{ confirmText }}
         </Button>
       </div>

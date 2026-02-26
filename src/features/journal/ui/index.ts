@@ -1,7 +1,5 @@
 export { default as JournalEntryCard } from './JournalEntryCard.vue'
 export { default as JournalEntryModal } from './JournalEntryModal.vue'
-export { default as JournalMetadataPanel } from './JournalMetadataPanel.vue'
-export { default as JournalContentEditor } from './JournalContentEditor.vue'
 export { default as JournalPageHeader } from './journal-page/JournalPageHeader.vue'
 export { default as JournalPageStats } from './journal-page/JournalPageStats.vue'
 export { default as JournalPageFilters } from './journal-page/JournalPageFilters.vue'

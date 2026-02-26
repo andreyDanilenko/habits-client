@@ -9,8 +9,8 @@
     >
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-gray-600 mb-1">{{ item.label }}</p>
-          <p class="text-2xl font-bold text-gray-900">{{ item.value }}</p>
+          <p class="text-sm text-text-secondary mb-1">{{ item.label }}</p>
+          <p class="text-2xl font-bold text-text-primary">{{ item.value }}</p>
         </div>
         <div
           v-if="item.emoji"
@@ -37,15 +37,15 @@
   }>()
 
   const cardClassMap: Record<StatColor, string> = {
-    indigo: 'bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200',
-    emerald: 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200',
-    amber: 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200',
+    indigo: 'bg-gradient-to-br from-primary-light to-secondary-light border-primary-light',
+    emerald: 'bg-gradient-to-br from-success-light to-teal-50 border-success-border',
+    amber: 'bg-gradient-to-br from-amber-light to-orange-50 border-amber-border',
   }
 
   const iconWrapperClassMap: Record<StatColor, string> = {
-    indigo: 'bg-indigo-100',
-    emerald: 'bg-emerald-100',
-    amber: 'bg-amber-100',
+    indigo: 'bg-primary-light',
+    emerald: 'bg-success-light',
+    amber: 'bg-amber-light',
   }
 
   function getCardClasses(color: StatColor): string {

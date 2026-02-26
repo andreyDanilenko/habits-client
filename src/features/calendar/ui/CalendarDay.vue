@@ -56,6 +56,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
   import type { CalendarDay } from '../model'
 
