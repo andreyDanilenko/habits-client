@@ -65,7 +65,7 @@
       </div>
     </Card>
 
-    <Card class="p-6">
+    <Card v-if="isAdmin" class="p-6">
       <h2 class="text-text-primary mb-4">Биллинг и лицензии</h2>
       <p class="text-sm text-text-secondary mb-4">
         Покупка модулей на уровне аккаунта: подписка или вечная лицензия, для одного воркспейса или
@@ -95,11 +95,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, onMounted } from 'vue'
+  import { ref, reactive, computed, onMounted } from 'vue'
   import { Card, Button, Input } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
 
   const userStore = useUserStore()
+  const isAdmin = computed(() => {
+    const role = userStore.currentUser?.role
+    return role === 'ADMIN' || (typeof role === 'string' && role.toUpperCase() === 'ADMIN')
+  })
 
   const isSaving = ref(false)
   const showDeleteConfirm = ref(false)

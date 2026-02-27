@@ -76,7 +76,7 @@
               <p v-else class="text-sm text-text-muted mb-1">
                 Включить модуль может владелец workspace или админ (при наличии лицензии).
               </p>
-              <Button variant="secondary" @click="goToActivation(module.id)">
+              <Button variant="secondary" disabled>
                 Перейти к покупке / связь с владельцем
               </Button>
             </template>
@@ -107,14 +107,12 @@
 
 <script setup lang="ts">
   import { computed, ref, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
   import { useUserStore } from '@/entities/user'
   import { usePermissions, useWorkspaceStore, workspaceService } from '@/entities/workspace'
   import { modules } from '@/app/modules/config'
   import { Card, Button, Modal, ConfirmModal } from '@/shared/ui'
   import type { Module } from '@/app/modules/config'
 
-  const router = useRouter()
   const workspaceStore = useWorkspaceStore()
   const { isOwner } = usePermissions()
   const userStore = useUserStore()
@@ -164,10 +162,6 @@
     } finally {
       activatingModule.value = null
     }
-  }
-
-  function goToActivation(moduleCode: string) {
-    router.push({ path: '/billing', query: { module: moduleCode } })
   }
 
   function openDisableConfirm(module: Module) {

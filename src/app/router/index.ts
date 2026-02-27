@@ -89,6 +89,7 @@ const routes: RouteRecordRaw[] = [
     name: 'Billing',
     component: () => import('@/pages/billing'),
     meta: { requiresAuth: true },
+    beforeEnter: requireAdmin(),
   },
   {
     path: '/admin',

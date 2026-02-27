@@ -1,5 +1,36 @@
 @import 'tailwindcss';
 
+/* Мобильный viewport: один скролл, высота по видимой области (без панелей браузера на iPhone) */
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+#app {
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  /* 100dvh = динамическая высота viewport на iOS (учитывает панели браузера) */
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+}
+
+.app-layout {
+  height: 100%;
+  min-height: 0;
+  /* На мобильных ограничиваем высоту видимой областью */
+  max-height: 100dvh;
+  max-height: -webkit-fill-available;
+}
+
 h1 {
   @apply text-3xl font-bold;
 }

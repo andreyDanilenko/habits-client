@@ -91,6 +91,16 @@
       </div>
     </Card>
 
+    <!-- Приложение: ярлык на рабочий стол -->
+    <Card class="p-6">
+      <h2 class="text-text-primary mb-4">Приложение</h2>
+      <p class="text-sm text-text-secondary">
+        Чтобы открывать HabitFlow как приложение с главного экрана: на телефоне в меню браузера выберите
+        <strong>«Добавить на главный экран»</strong> или <strong>«Установить приложение»</strong>;
+        на компьютере — пункт <strong>«Установить HabitFlow»</strong> в меню браузера.
+      </p>
+    </Card>
+
     <!-- Права доступа (Soon) -->
     <Card v-if="isOwner" class="p-6">
       <h2 class="text-text-primary mb-4">Права доступа</h2>
