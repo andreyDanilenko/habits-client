@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+  <div class="min-h-screen bg-gradient-to-b bg-bg-primary">
     <div class="max-w-5xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
       <!-- Hero -->
       <header class="text-center mb-12">
-        <h1 class="text-3xl font-bold text-gray-900 tracking-tight sm:text-4xl">
+        <h1 class="text-3xl font-bold text-text-primary tracking-tight sm:text-4xl">
           Биллинг и лицензии
         </h1>
-        <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="mt-3 text-lg text-text-secondary max-w-2xl mx-auto">
           Покупка модулей привязана к аккаунту: один раз купили — используете во всех своих
           воркспейсах или только в выбранном, в зависимости от тарифа.
         </p>
@@ -14,17 +14,17 @@
 
       <!-- Мои лицензии (кратко) -->
       <section v-if="licensesCount > 0" class="mb-10">
-        <Card class="p-5 border border-indigo-100 bg-indigo-50/30" :shadow="true" :border="true">
+        <Card class="p-5 border border-primary-light bg-primary-light/30" :shadow="true" :border="true">
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
               <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-600"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-primary-light text-primary-default"
               >
                 <span class="text-lg font-semibold">{{ licensesCount }}</span>
               </div>
               <div>
-                <h2 class="font-semibold text-gray-900">Активных лицензий</h2>
-                <p class="text-sm text-gray-600">Доступно для включения в настройках воркспейса</p>
+                <h2 class="font-semibold text-text-primary">Активных лицензий</h2>
+                <p class="text-sm text-text-secondary">Доступно для включения в настройках воркспейса</p>
               </div>
             </div>
             <Button variant="outline" size="sm" @click="$router.push('/workspace-settings')">
@@ -36,23 +36,23 @@
 
       <!-- Способы оплаты -->
       <section class="mb-12">
-        <h2 class="text-xl font-semibold text-gray-900 mb-1">Способы оплаты</h2>
-        <p class="text-sm text-gray-500 mb-5">
+        <h2 class="text-xl font-semibold text-text-primary mb-1">Способы оплаты</h2>
+        <p class="text-sm text-text-muted mb-5">
           После выбора модуля и тарифа будет доступна оплата одним из способов ниже.
         </p>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div
             v-for="method in paymentMethods"
             :key="method.id"
-            class="group relative flex flex-col items-center rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
+            class="group relative flex flex-col items-center rounded-xl border border-border-light bg-bg-primary p-6 shadow-sm transition-all hover:border-primary-light hover:shadow-md"
           >
             <div
-              class="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-2xl transition-colors group-hover:bg-indigo-50"
+              class="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-bg-tertiary text-2xl transition-colors group-hover:bg-primary-light"
             >
               {{ method.icon }}
             </div>
-            <span class="font-medium text-gray-900">{{ method.name }}</span>
-            <span class="mt-0.5 text-center text-xs text-gray-500">{{ method.note }}</span>
+            <span class="font-medium text-text-primary">{{ method.name }}</span>
+            <span class="mt-0.5 text-center text-xs text-text-muted">{{ method.note }}</span>
             <Button variant="outline" size="sm" disabled class="mt-4 w-full">
               {{ method.buttonLabel }}
             </Button>
@@ -62,8 +62,8 @@
 
       <!-- Модули и тарифы -->
       <section>
-        <h2 class="text-xl font-semibold text-gray-900 mb-1">Модули и тарифы</h2>
-        <p class="text-sm text-gray-500 mb-8">
+        <h2 class="text-xl font-semibold text-text-primary mb-1">Модули и тарифы</h2>
+        <p class="text-sm text-text-muted mb-8">
           Тестовые данные. Лицензия «все воркспейсы» — один раз купили, используете везде; «один
           воркспейс» — только для выбранного workspace.
         </p>
@@ -73,28 +73,28 @@
             v-for="item in billingModules"
             :key="item.id"
             :ref="(el) => setModuleRef(item.id, el)"
-            class="overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300"
+            class="overflow-hidden rounded-2xl border bg-bg-primary shadow-sm transition-all duration-300"
             :class="[
               highlightModuleId === item.id
-                ? 'border-indigo-400 ring-2 ring-indigo-400/20 shadow-md'
-                : 'border-gray-200 hover:border-gray-300',
+                ? 'border-primary-default ring-2 ring-primary-default/20 shadow-md'
+                : 'border-border-light hover:border-border-hover',
             ]"
           >
             <!-- Заголовок модуля -->
-            <div class="border-b border-gray-100 bg-gray-50/50 px-6 py-4">
+            <div class="border-b border-border-light bg-bg-secondary/50 px-6 py-4">
               <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                   <div
                     class="flex h-11 w-11 items-center justify-center rounded-xl text-2xl"
                     :class="
-                      item.isFree ? 'bg-green-100 text-green-700' : 'bg-indigo-100 text-indigo-600'
+                      item.isFree ? 'bg-success-light text-success-dark' : 'bg-primary-light text-primary-default'
                     "
                   >
                     {{ item.emoji }}
                   </div>
                   <div>
-                    <h3 class="font-semibold text-gray-900">{{ item.label }}</h3>
-                    <p class="text-sm text-gray-500">{{ item.description }}</p>
+                    <h3 class="font-semibold text-text-primary">{{ item.label }}</h3>
+                    <p class="text-sm text-text-muted">{{ item.description }}</p>
                   </div>
                 </div>
                 <Badge v-if="item.isFree" variant="green">Бесплатно</Badge>
@@ -110,26 +110,26 @@
                   class="relative flex flex-col rounded-xl border p-5 transition-colors"
                   :class="
                     plan.popular
-                      ? 'border-indigo-200 bg-indigo-50/30'
-                      : 'border-gray-200 bg-white hover:bg-gray-50/50'
+                      ? 'border-primary-light bg-primary-light/30'
+                      : 'border-border-light bg-bg-primary hover:bg-bg-secondary'
                   "
                 >
                   <Badge v-if="plan.popular" variant="indigo" class="absolute -top-2.5 right-3">
                     Популярный
                   </Badge>
-                  <span class="text-sm font-medium text-gray-700">{{ plan.name }}</span>
+                  <span class="text-sm font-medium text-text-secondary">{{ plan.name }}</span>
                   <span
                     class="mt-2 text-2xl font-bold tracking-tight"
-                    :class="plan.isFree ? 'text-green-600' : 'text-indigo-600'"
+                    :class="plan.isFree ? 'text-success-default' : 'text-primary-default'"
                   >
                     {{ plan.price }}
                   </span>
-                  <span class="mt-0.5 text-xs text-gray-500">{{ plan.note }}</span>
+                  <span class="mt-0.5 text-xs text-text-muted">{{ plan.note }}</span>
                   <Button
                     variant="outline"
                     size="sm"
                     :class="
-                      plan.popular ? 'border-indigo-300 text-indigo-700 hover:bg-indigo-50' : ''
+                      plan.popular ? 'border-primary-light text-primary-dark hover:bg-primary-light' : ''
                     "
                     disabled
                     class="mt-4 w-full"
@@ -146,20 +146,20 @@
       <!-- Связь с владельцем -->
       <section class="mt-12">
         <Card
-          class="overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50/50 p-6"
+          class="overflow-hidden border-2 border-warning-border bg-gradient-to-br from-warning-light to-orange-50/50 p-6"
           :shadow="true"
           :border="true"
         >
           <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-start gap-4">
               <div
-                class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100 text-2xl"
+                class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-warning-light text-2xl"
               >
                 📬
               </div>
               <div>
-                <h2 class="font-semibold text-gray-900">Индивидуальные условия</h2>
-                <p class="mt-1 text-sm text-gray-700">
+                <h2 class="font-semibold text-warning-text">Индивидуальные условия</h2>
+                <p class="mt-1 text-sm text-warning-text/80">
                   Корпоративная лицензия, особые тарифы или оплата по счёту — свяжитесь с владельцем
                   приложения. После договорённости доступ к модулю будет выдан вручную (админ).
                 </p>

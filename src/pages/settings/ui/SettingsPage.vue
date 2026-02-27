@@ -1,12 +1,12 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
     <div>
-      <h1>Настройки</h1>
-      <p class="mt-2 text-gray-600">Управляйте настройками своего аккаунта</p>
+      <h1 class="text-text-primary">Настройки</h1>
+      <p class="mt-2 text-text-secondary">Управляйте настройками своего аккаунта</p>
     </div>
 
     <Card class="p-6">
-      <h2 class="mb-4">Профиль</h2>
+      <h2 class="text-text-primary mb-4">Профиль</h2>
 
       <div class="space-y-4">
         <Input
@@ -34,31 +34,31 @@
     </Card>
 
     <Card class="p-6">
-      <h2 class="mb-4">Уведомления</h2>
+      <h2 class="text-text-primary mb-4">Уведомления</h2>
 
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <div class="flex-1">
-            <p class="text-sm font-medium text-gray-900">Email уведомления</p>
-            <p class="text-sm text-gray-500">Получать уведомления на email</p>
+            <p class="text-sm font-medium text-text-primary">Email уведомления</p>
+            <p class="text-sm text-text-secondary">Получать уведомления на email</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input v-model="notifications.email" type="checkbox" class="sr-only peer" />
             <div
-              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"
+              class="w-11 h-6 bg-bg-tertiary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-default after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-default"
             ></div>
           </label>
         </div>
 
         <div class="flex items-center justify-between">
           <div class="flex-1">
-            <p class="text-sm font-medium text-gray-900">Напоминания о привычках</p>
-            <p class="text-sm text-gray-500">Ежедневные напоминания о выполнении привычек</p>
+            <p class="text-sm font-medium text-text-primary">Напоминания о привычках</p>
+            <p class="text-sm text-text-secondary">Ежедневные напоминания о выполнении привычек</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input v-model="notifications.reminders" type="checkbox" class="sr-only peer" />
             <div
-              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"
+              class="w-11 h-6 bg-bg-tertiary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border-default after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-default"
             ></div>
           </label>
         </div>
@@ -66,25 +66,25 @@
     </Card>
 
     <Card class="p-6">
-      <h2 class="mb-4">Биллинг и лицензии</h2>
-      <p class="text-sm text-gray-600 mb-4">
+      <h2 class="text-text-primary mb-4">Биллинг и лицензии</h2>
+      <p class="text-sm text-text-secondary mb-4">
         Покупка модулей на уровне аккаунта: подписка или вечная лицензия, для одного воркспейса или
         для всех. Оплата картой, СБП, QR и др.
       </p>
       <router-link
         to="/billing"
-        class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
+        class="inline-flex items-center text-primary-default hover:text-primary-dark font-medium"
       >
         Перейти к биллингу →
       </router-link>
     </Card>
 
-    <Card class="p-6 border-red-200">
-      <h2 class="text-red-900 mb-4">Опасная зона</h2>
+    <Card class="p-6 border-red-200 dark:border-red-900">
+      <h2 class="text-red-900 dark:text-red-400 mb-4">Опасная зона</h2>
 
       <div class="space-y-4">
         <div>
-          <p class="text-sm text-gray-700 mb-2">
+          <p class="text-sm text-text-secondary mb-2">
             Удаление аккаунта приведет к безвозвратному удалению всех ваших данных.
           </p>
           <Button variant="danger" @click="showDeleteConfirm = true"> Удалить аккаунт </Button>

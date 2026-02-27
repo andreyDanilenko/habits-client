@@ -99,7 +99,6 @@ const routes: RouteRecordRaw[] = [
   },
 ]
 
-// Добавляем роуты из модулей (доступ к роуту = модуль включён в workspace + право)
 modules.forEach((module) => {
   module.routes.forEach((route) => {
     const record: RouteRecordRaw = {

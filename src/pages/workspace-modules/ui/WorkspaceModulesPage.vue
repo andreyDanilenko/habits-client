@@ -1,29 +1,29 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
     <div>
-      <h1>Модули</h1>
-      <p class="mt-2 text-gray-600">
+      <h1 class="text-text-primary">Модули</h1>
+      <p class="mt-2 text-text-secondary">
         Доступные и неактивные модули в этом workspace. Включите нужные модули для работы.
       </p>
     </div>
 
     <!-- Доступные модули -->
     <Card class="p-6">
-      <h2 class="mb-4 text-lg font-semibold">Доступные модули</h2>
-      <p class="text-sm text-gray-600 mb-4">Эти модули уже включены в вашем workspace.</p>
+      <h2 class="mb-4 text-lg font-semibold text-text-primary">Доступные модули</h2>
+      <p class="text-sm text-text-secondary mb-4">Эти модули уже включены в вашем workspace.</p>
       <div class="space-y-3">
         <div
           v-for="module in availableModules"
           :key="module.id"
-          class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg border border-gray-200 bg-gray-50/50"
+          class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg border border-border-light bg-bg-secondary/50"
         >
-          <component :is="module.icon" class="w-8 h-8 text-indigo-600 flex-shrink-0" />
+          <component :is="module.icon" class="w-8 h-8 text-primary-default flex-shrink-0" />
           <div class="flex-1 min-w-0">
-            <p class="font-medium text-gray-900">{{ module.label }}</p>
-            <p class="text-sm text-gray-500">Модуль активен</p>
+            <p class="font-medium text-text-primary">{{ module.label }}</p>
+            <p class="text-sm text-text-muted">Модуль активен</p>
           </div>
           <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="text-sm text-green-600 font-medium">Доступен</span>
+            <span class="text-sm text-success-default font-medium">Доступен</span>
             <Button
               v-if="canActivateModules"
               variant="outline"
@@ -35,7 +35,7 @@
             </Button>
           </div>
         </div>
-        <p v-if="availableModules.length === 0" class="text-sm text-gray-500 py-2">
+        <p v-if="availableModules.length === 0" class="text-sm text-text-muted py-2">
           Нет включённых модулей.
         </p>
       </div>
@@ -43,20 +43,20 @@
 
     <!-- Недоступные модули (с заглушкой и кнопкой «Активировать») -->
     <Card class="p-6">
-      <h2 class="mb-4 text-lg font-semibold">Недоступные модули</h2>
-      <p class="text-sm text-gray-600 mb-4">
+      <h2 class="mb-4 text-lg font-semibold text-text-primary">Недоступные модули</h2>
+      <p class="text-sm text-text-secondary mb-4">
         Включите модуль, чтобы использовать его в этом workspace.
       </p>
       <div class="space-y-3">
         <div
           v-for="module in unavailableModules"
           :key="module.id"
-          class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg border border-gray-200 bg-gray-50/30"
+          class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg border border-border-light bg-bg-secondary/30"
         >
-          <component :is="module.icon" class="w-8 h-8 text-gray-400 flex-shrink-0" />
+          <component :is="module.icon" class="w-8 h-8 text-text-muted flex-shrink-0" />
           <div class="flex-1 min-w-0">
-            <p class="font-medium text-gray-700">{{ module.label }}</p>
-            <p class="text-sm text-gray-500 mt-0.5">
+            <p class="font-medium text-text-primary">{{ module.label }}</p>
+            <p class="text-sm text-text-secondary mt-0.5">
               Модуль пока не активирован. Нажмите «Активировать», чтобы включить его в workspace.
             </p>
           </div>
@@ -70,10 +70,10 @@
               Активировать
             </Button>
             <template v-else>
-              <p v-if="canActivateModules" class="text-sm text-gray-500 mb-1">
+              <p v-if="canActivateModules" class="text-sm text-text-muted mb-1">
                 Нужна лицензия: купите модуль или запросите выдачу у админа.
               </p>
-              <p v-else class="text-sm text-gray-500 mb-1">
+              <p v-else class="text-sm text-text-muted mb-1">
                 Включить модуль может владелец workspace или админ (при наличии лицензии).
               </p>
               <Button variant="secondary" @click="goToActivation(module.id)">
@@ -82,7 +82,7 @@
             </template>
           </div>
         </div>
-        <p v-if="unavailableModules.length === 0" class="text-sm text-gray-500 py-2">
+        <p v-if="unavailableModules.length === 0" class="text-sm text-text-muted py-2">
           Все модули уже включены.
         </p>
       </div>
