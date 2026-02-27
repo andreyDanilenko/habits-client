@@ -27,7 +27,13 @@
         <span class="text-2xl">{{ getMoodEmoji(entry.mood) }}</span>
       </div>
     </div>
-    
+
+    <div class="mb-4">
+      <p class="text-text-primary line-clamp-3 leading-relaxed">
+        {{ getPreview(entry.description) }}
+      </p>
+    </div>
+
     <div v-if="entry.tags && entry.tags.length > 0" class="flex flex-wrap gap-2 mb-4">
       <Badge
         v-for="tag in entry.tags"
@@ -69,7 +75,7 @@
 <script setup lang="ts">
   import { Card, Badge, Button } from '@/shared/ui'
   import { CogIcon, DeleteIcon } from '@/shared/ui/icon'
-  import { formatDateRu, formatTimeRu } from '@/shared/lib'
+  import { formatDateRu, formatTimeRu, getTextPreview } from '@/shared/lib'
   import type { JournalEntry } from '@/entities/journal'
   import { getMoodEmoji } from '@/features/journal/model/journal-constants'
 
@@ -86,4 +92,5 @@
 
   const formatDate = (dateStr: string) => formatDateRu(dateStr, 'd MMMM yyyy')
   const formatTime = (dateStr: string) => formatTimeRu(dateStr)
+  const getPreview = (description: string) => getTextPreview(description ?? '', 150)
 </script>

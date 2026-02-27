@@ -89,6 +89,11 @@ export function formatRelativeTime(date: Date | string): string {
   return formatDateRu(dateObj, 'd MMMM yyyy, HH:mm')
 }
 
+export function getTextPreview(text: string, maxLength: number = 150): string {
+  if (!text) return ''
+  return text.replace(/[#*_`[\]]/g, '').substring(0, maxLength)
+}
+
 export function getGreeting(): string {
   const hour = new Date().getHours()
   if (hour >= 4 && hour < 12) return 'Доброе утро'

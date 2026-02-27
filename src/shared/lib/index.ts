@@ -11,4 +11,5 @@ export {
   formatDateDisplay,
   formatRelativeTime,
   getGreeting,
+  getTextPreview,
 } from './date'
