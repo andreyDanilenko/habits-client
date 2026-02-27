@@ -27,13 +27,7 @@
         <span class="text-2xl">{{ getMoodEmoji(entry.mood) }}</span>
       </div>
     </div>
-
-    <div class="mb-4">
-      <p class="text-text-primary line-clamp-3 leading-relaxed">
-        {{ getPreview(entry.description) }}
-      </p>
-    </div>
-
+    
     <div v-if="entry.tags && entry.tags.length > 0" class="flex flex-wrap gap-2 mb-4">
       <Badge
         v-for="tag in entry.tags"

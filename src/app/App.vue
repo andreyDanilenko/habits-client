@@ -7,7 +7,11 @@
         <div class="container mx-auto px-4 py-6 md:py-8">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
-              <component :is="Component" />
+              <component
+                v-if="Component"
+                :is="Component"
+                :key="route.fullPath"
+              />
             </transition>
           </router-view>
         </div>

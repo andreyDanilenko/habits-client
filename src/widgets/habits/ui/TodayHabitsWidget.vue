@@ -1,15 +1,15 @@
 <template>
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
-      <h2>Привычки на сегодня</h2>
+      <h2 class="text-text-primary">Привычки на сегодня</h2>
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
-      <p class="text-gray-500">Загрузка...</p>
+      <p class="text-text-secondary">Загрузка...</p>
     </div>
 
     <div v-else-if="habits.length === 0" class="text-center py-8">
-      <p class="text-gray-500 mb-4">Нет привычек на сегодня</p>
+      <p class="text-text-secondary mb-4">Нет привычек на сегодня</p>
       <Button variant="link" size="sm" @click="$emit('add-habit')">
         Создать первую привычку
       </Button>
@@ -19,28 +19,28 @@
       <div
         v-for="habit in habits"
         :key="habit.id"
-        class="flex items-center justify-between p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        class="flex items-center justify-between p-4 border border-border-default rounded-lg hover:bg-bg-secondary transition-colors"
       >
         <div class="flex-1">
           <div class="flex items-center space-x-3">
             <div
               class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-              :style="{ backgroundColor: habit.color || '#6366f1' }"
+              :style="{ backgroundColor: habit.color || 'var(--color-primary-default)' }"
             >
               {{ habit.icon || '📝' }}
             </div>
             <div class="flex-1">
-              <h3>{{ habit.title }}</h3>
+              <h3 class="text-text-primary">{{ habit.title }}</h3>
               <div v-if="(habit.dailyGoal || 1) > 1" class="mt-2 flex items-center space-x-2">
-                <span class="text-xs text-gray-500">
+                <span class="text-xs text-text-secondary">
                   Прогресс: {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
                 </span>
-                <div class="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden max-w-24">
+                <div class="flex-1 h-1.5 bg-bg-tertiary rounded-full overflow-hidden max-w-24">
                   <div
                     class="h-full rounded-full transition-all"
                     :style="{
                       width: `${Math.min((getProgress(habit.id) / (habit.dailyGoal || 1)) * 100, 100)}%`,
-                      backgroundColor: habit.color || '#6366f1',
+                      backgroundColor: habit.color || 'var(--color-primary-default)',
                     }"
                   />
                 </div>
@@ -49,7 +49,7 @@
                 <span
                   class="text-xs"
                   :class="
-                    getProgress(habit.id) >= 1 ? 'text-green-600 font-medium' : 'text-gray-500'
+                    getProgress(habit.id) >= 1 ? 'text-success-default font-medium' : 'text-text-muted'
                   "
                 >
                   {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}
