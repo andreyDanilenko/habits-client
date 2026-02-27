@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-    <div v-if="title" class="px-6 py-4 border-b border-gray-100">
+  <div class="bg-bg-primary rounded-xl shadow-card-hover overflow-hidden">
+    <div v-if="title" class="px-6 py-4 border-b border-border-light">
       <div class="flex items-center justify-between">
-        <h3>
+        <h3 class="text-text-primary">
           {{ title }}
         </h3>
         <Button
@@ -14,7 +14,7 @@
           :left-icon="XMarkIcon"
         />
       </div>
-      <p v-if="description" class="mt-1 text-sm text-gray-600">
+      <p v-if="description" class="mt-1 text-sm text-text-secondary">
         {{ description }}
       </p>
     </div>
@@ -23,7 +23,7 @@
       <slot />
     </div>
 
-    <div v-if="hasFooterSlot" class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+    <div v-if="hasFooterSlot" class="px-6 py-4 border-t border-border-light">
       <slot name="footer" />
     </div>
   </div>

@@ -1,13 +1,22 @@
 <template>
   <div class="space-y-8">
     <div v-for="group in groupedEntries" :key="group.date" class="space-y-4">
-      <div class="flex items-center gap-3 sticky top-0 bg-gray-50 py-2 z-10 -mx-2 px-2 rounded-lg">
-        <div class="h-px flex-1 bg-gray-300"></div>
-        <h2 class="text-sm font-semibold text-gray-700 whitespace-nowrap">
+      <div
+        class="flex items-center gap-3 sticky top-0 bg-bg-primary/80 backdrop-blur-sm py-2 z-10 -mx-2 px-2 rounded-lg"
+      >
+        <div class="h-px flex-1 bg-border-light"></div>
+
+        <h2 class="text-sm font-semibold text-text-primary whitespace-nowrap">
           {{ group.dateLabel }}
         </h2>
-        <div class="h-px flex-1 bg-gray-300"></div>
-        <Badge variant="outline" size="sm" class="bg-gray-100">
+
+        <div class="h-px flex-1 bg-border-light"></div>
+
+        <Badge
+          variant="outline"
+          size="sm"
+          class="bg-badge-default-bg text-badge-default-text border-border-default"
+        >
           {{ group.entries.length }}
         </Badge>
       </div>

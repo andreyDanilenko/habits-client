@@ -1,28 +1,28 @@
 <template>
   <div class="max-w-5xl mx-auto space-y-6">
     <div>
-      <h1 class="text-2xl font-semibold text-gray-900">Админ-панель</h1>
-      <p class="mt-2 text-gray-600">
+      <h1 class="text-2xl font-semibold text-text-primary">Админ-панель</h1>
+      <p class="mt-2 text-text-secondary">
         Список пользователей и их воркспейсы. Только для администраторов.
       </p>
     </div>
 
     <Card class="p-6">
-      <h2 class="mb-4 text-lg font-medium text-gray-900">Пользователи</h2>
+      <h2 class="mb-4 text-lg font-medium text-text-primary">Пользователи</h2>
 
       <div v-if="isLoading" class="flex justify-center py-8">
         <Spinner />
       </div>
 
-      <div v-else-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg">
-        <p class="text-sm text-red-800">{{ error }}</p>
+      <div v-else-if="error" class="p-4 bg-error-light border border-error-border rounded-lg">
+        <p class="text-sm text-error-default">{{ error }}</p>
       </div>
 
-      <div v-else-if="users.length === 0" class="py-8 text-center text-gray-500">
+      <div v-else-if="users.length === 0" class="py-8 text-center text-text-muted">
         Нет пользователей
       </div>
 
-      <div v-else class="divide-y divide-gray-200">
+      <div v-else class="divide-y divide-border-light">
         <div
           v-for="user in users"
           :key="user.id"
@@ -30,18 +30,18 @@
         >
           <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="font-medium text-gray-900">{{ user.name || user.email }}</span>
+              <span class="font-medium text-text-primary">{{ user.name || user.email }}</span>
               <Badge v-if="user.role === 'ADMIN'" variant="indigo">{{ user.role }}</Badge>
               <Badge v-else variant="default">{{ user.role }}</Badge>
             </div>
-            <p class="mt-0.5 text-sm text-gray-500">{{ user.email }}</p>
+            <p class="mt-0.5 text-sm text-text-secondary">{{ user.email }}</p>
             <div v-if="user.workspaces?.length" class="mt-2">
-              <p class="text-xs font-medium text-gray-600 mb-1">Воркспейсы:</p>
+              <p class="text-xs font-medium text-text-secondary mb-1">Воркспейсы:</p>
               <div class="flex flex-wrap gap-1.5 items-center">
                 <span
                   v-for="ws in user.workspaces"
                   :key="ws.id"
-                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-bg-tertiary text-text-primary"
                 >
                   {{ ws.name }}
                   <Button
@@ -57,7 +57,7 @@
                 </span>
               </div>
             </div>
-            <p v-else class="mt-2 text-xs text-gray-400">Нет воркспейсов</p>
+            <p v-else class="mt-2 text-xs text-text-muted">Нет воркспейсов</p>
           </div>
           <div class="flex-shrink-0">
             <Button
@@ -78,7 +78,9 @@
       <ConfirmModal
         title="Удалить пользователя?"
         description="Это действие нельзя отменить."
-        :message="deleteTarget ? `Пользователь ${deleteTarget.email} будет удалён (деактивирован).` : ''"
+        :message="
+          deleteTarget ? `Пользователь ${deleteTarget.email} будет удалён (деактивирован).` : ''
+        "
         confirm-text="Удалить"
         confirm-variant="danger"
         @close="closeDeleteConfirm"

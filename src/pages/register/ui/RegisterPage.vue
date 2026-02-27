@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+  <div class="min-h-screen flex items-center justify-center bg-bg-secondary py-12 px-4">
     <div class="max-w-md w-full space-y-8">
       <!-- Логотип -->
       <div class="text-center">
         <div class="mx-auto flex justify-center">
           <Logo :size="48" />
         </div>
-        <h1 class="mt-6">Регистрация в HabitFlow</h1>
-        <p class="mt-2 text-gray-600">Создайте аккаунт и начните отслеживать свои привычки</p>
+        <h1 class="text-text-primary mt-6">Регистрация в HabitFlow</h1>
+        <p class="mt-2 text-text-secondary">Создайте аккаунт и начните отслеживать свои привычки</p>
       </div>
 
       <Card class="p-8">
@@ -58,9 +58,9 @@
           </div>
 
           <div class="text-center">
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-text-secondary">
               Уже есть аккаунт?
-              <router-link to="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+              <router-link to="/login" class="font-medium text-primary-default hover:text-primary-dark">
                 Войти
               </router-link>
             </p>

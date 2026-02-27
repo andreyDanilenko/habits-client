@@ -1,12 +1,10 @@
 <template>
   <ModalContent :title="entry ? 'Редактировать запись' : 'Запись за день'" @close="handleClose">
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <!-- Дата -->
       <FormField label="Дата">
         <Input v-model="form.date" type="date" required />
       </FormField>
 
-      <!-- Настроение -->
       <FormField label="Настроение">
         <div class="flex flex-wrap gap-2">
           <SelectButton
@@ -25,24 +23,22 @@
         </div>
       </FormField>
 
-      <!-- Описание -->
       <FormField label="Описание за день">
         <textarea
           v-model="form.description"
           rows="8"
           placeholder="Как прошел ваш день? Что вы чувствуете?"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default resize-none bg-bg-primary text-text-primary placeholder:text-text-muted"
         />
       </FormField>
 
-      <!-- Теги (необязательно) -->
       <FormField label="Теги (необязательно)">
         <div class="flex flex-wrap gap-2 items-center">
           <Badge
-            v-for="tag in (form.tags || [])"
+            v-for="tag in form.tags || []"
             :key="tag"
             variant="outline"
-            class="cursor-pointer"
+            class="cursor-pointer hover:bg-primary-light/80 transition-colors"
             @click="removeTag(tag)"
           >
             {{ tag }} ×
@@ -54,9 +50,7 @@
             class="inline-block w-auto min-w-[140px]"
             @keydown.enter.prevent="addTag"
           />
-          <Button type="button" variant="outline" size="sm" @click="addTag">
-            Добавить
-          </Button>
+          <Button type="button" variant="outline" size="sm" @click="addTag"> Добавить </Button>
         </div>
       </FormField>
     </form>
@@ -74,10 +68,7 @@
   import { computed, ref, watch } from 'vue'
   import { ModalContent, FormField, Input, Button, SelectButton, Badge } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
-  import {
-    MOOD_DEFINITIONS,
-    getTodayDateString,
-  } from '@/features/journal/model/journal-constants'
+  import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'
 
   interface Props {
     entry?: JournalEntry | null
@@ -152,6 +143,3 @@
     emit('confirm', form.value as CreateJournalEntryDto & { id?: string })
   }
 </script>
-
-<style scoped>
-</style>

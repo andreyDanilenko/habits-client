@@ -1,8 +1,12 @@
 <template>
   <div>
-    <label v-if="label" :for="id || name" class="block text-sm font-medium text-gray-700 mb-1">
+    <label
+      v-if="label"
+      :for="id || name"
+      class="block text-sm font-medium text-text-secondary mb-1"
+    >
       {{ label }}
-      <span v-if="required" class="text-red-500">*</span>
+      <span v-if="required" class="text-error-default">*</span>
     </label>
 
     <input
@@ -13,18 +17,23 @@
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
-        'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors',
+        'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors bg-bg-primary text-text-primary',
         inputClasses,
         {
-          'border-gray-300 focus:ring-indigo-500 focus:border-transparent': !error && !disabled,
-          'border-red-300 focus:ring-red-500 focus:border-transparent': error && !disabled,
-          'bg-gray-100 cursor-not-allowed': disabled,
+          'border-border-default focus:ring-primary-default focus:border-primary-default':
+            !error && !disabled,
+          'border-error-light focus:ring-error-default focus:border-error-default':
+            error && !disabled,
+          'bg-bg-tertiary cursor-not-allowed border-border-light': disabled,
         },
       ]"
       v-bind="$attrs"
     />
 
-    <p v-if="error || hint" :class="['mt-1 text-sm', error ? 'text-red-600' : 'text-gray-500']">
+    <p
+      v-if="error || hint"
+      :class="['mt-1 text-sm', error ? 'text-error-default' : 'text-text-muted']"
+    >
       {{ error || hint }}
     </p>
   </div>
@@ -63,3 +72,51 @@
     set: (value) => emit('update:modelValue', value),
   })
 </script>
+
+<style scoped>
+  /* Для date input */
+  input[type='date'] {
+    color-scheme: light dark;
+  }
+
+  input[type='date']::-webkit-datetime-edit-text,
+  input[type='date']::-webkit-datetime-edit-month-field,
+  input[type='date']::-webkit-datetime-edit-day-field,
+  input[type='date']::-webkit-datetime-edit-year-field {
+    color: var(--color-text-primary);
+  }
+
+  input[type='date']::-webkit-datetime-edit-fields-wrapper {
+    color: var(--color-text-primary);
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+    cursor: pointer;
+  }
+
+  /* Для time input */
+  input[type='time'] {
+    color-scheme: light dark;
+  }
+
+  input[type='time']::-webkit-datetime-edit-hour-field,
+  input[type='time']::-webkit-datetime-edit-minute-field,
+  input[type='time']::-webkit-datetime-edit-ampm-field {
+    color: var(--color-text-primary);
+  }
+
+  input[type='time']::-webkit-datetime-edit-fields-wrapper {
+    color: var(--color-text-primary);
+  }
+
+  input[type='time']::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+    cursor: pointer;
+  }
+
+  .dark input[type='date']::-webkit-calendar-picker-indicator,
+  .dark input[type='time']::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+</style>

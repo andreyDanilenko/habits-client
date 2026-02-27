@@ -11,11 +11,11 @@
       props.size === 'circle' && 'w-8 h-8 rounded-full border-2',
       props.isSelected
         ? props.size === 'circle'
-          ? 'border-gray-700'
-          : 'border-indigo-500 text-indigo-700 bg-indigo-50'
+          ? 'border-text-primary'
+          : 'border-primary-default text-primary-dark bg-primary-light'
         : props.size === 'circle'
-          ? 'border-gray-300'
-          : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50',
+          ? 'border-border-default'
+          : 'border-border-default text-text-primary bg-bg-primary hover:bg-bg-tertiary',
     ]"
     :style="props.customStyle"
     @click="$emit('click')"

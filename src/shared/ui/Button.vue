@@ -7,7 +7,7 @@
       customClass && customClass.includes('justify-') ? '' : 'justify-center',
       'focus:outline-none',
       props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon'
-        ? 'focus:ring-1 focus:ring-offset-0 focus:ring-indigo-300'
+        ? 'focus:ring-1 focus:ring-offset-0 focus:ring-primary-light'
         : '',
       'disabled:opacity-50 disabled:cursor-not-allowed relative',
       iconOnly ? 'p-1 rounded' : sizeClasses,
@@ -16,10 +16,8 @@
     ]"
     @click="handleClick"
   >
-    <!-- Спиннер при загрузке -->
-    <Spinner v-if="loading" class="w-4 h-4 mr-2" />
+    <Spinner v-if="loading" class="w-4 h-4 mr-2" :class="spinnerColor" />
 
-    <!-- Иконка слева -->
     <component
       v-if="leftIcon"
       :is="leftIcon"
@@ -27,7 +25,6 @@
       :class="iconOnly ? '' : customClass && customClass.includes('justify-center') ? '' : 'mr-2'"
     />
 
-    <!-- Основной контент -->
     <template v-if="!iconOnly">
       <slot />
     </template>
@@ -84,37 +81,43 @@
     if (props.variant === 'icon') {
       const iconColorClasses = {
         default:
-          'text-gray-400 hover:text-gray-600 hover:bg-gray-100 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+          'text-text-muted hover:text-text-secondary hover:bg-bg-tertiary disabled:hover:text-text-muted disabled:hover:bg-transparent',
         danger:
-          'text-gray-400 hover:text-red-600 hover:bg-red-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+          'text-text-muted hover:text-error-default hover:bg-error-light disabled:hover:text-text-muted disabled:hover:bg-transparent',
         success:
-          'text-gray-400 hover:text-green-600 hover:bg-green-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+          'text-text-muted hover:text-success-default hover:bg-success-light disabled:hover:text-text-muted disabled:hover:bg-transparent',
         warning:
-          'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
-        info: 'text-gray-400 hover:text-blue-600 hover:bg-blue-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent',
+          'text-text-muted hover:text-warning-default hover:bg-warning-light disabled:hover:text-text-muted disabled:hover:bg-transparent',
+        info: 'text-text-muted hover:text-info-default hover:bg-info-light disabled:hover:text-text-muted disabled:hover:bg-transparent',
       }
       return `p-1 rounded ${iconColorClasses[props.iconColor]}`
     }
 
-    const baseVariants: Record<NonNullable<Props['variant']>, string> = {
+    const baseVariants: Record<string, string> = {
       primary:
-        'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 disabled:hover:bg-indigo-600 disabled:active:bg-indigo-600',
+        'bg-primary-default text-white hover:bg-primary-dark active:bg-primary-darker disabled:hover:bg-primary-default disabled:active:bg-primary-default',
       secondary:
-        'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300 disabled:hover:bg-gray-100 disabled:active:bg-gray-100',
+        'bg-bg-tertiary text-text-primary hover:bg-border-light active:bg-border-default disabled:hover:bg-bg-tertiary disabled:active:bg-bg-tertiary',
       outline:
-        'border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100 disabled:hover:bg-transparent disabled:active:bg-transparent',
+        'border border-border-default text-text-primary hover:bg-bg-tertiary active:bg-border-light disabled:hover:bg-transparent disabled:active:bg-transparent',
       ghost:
-        'text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-0 disabled:hover:bg-transparent disabled:active:bg-transparent',
+        'text-text-primary hover:bg-bg-tertiary active:bg-border-light focus:ring-0 disabled:hover:bg-transparent disabled:active:bg-transparent',
       danger:
-        'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:hover:bg-red-600 disabled:active:bg-red-600',
+        'bg-error-default text-white hover:bg-error-dark active:bg-error-darker disabled:hover:bg-error-default disabled:active:bg-error-default',
       icon: '',
-      link: 'bg-transparent text-indigo-600 hover:text-indigo-700 focus:ring-0 disabled:hover:text-indigo-600',
+      link: 'bg-transparent text-primary-default hover:text-primary-dark focus:ring-0 disabled:hover:text-primary-default',
     }
 
     return baseVariants[props.variant ?? 'primary']
   })
 
-  // Маппинг размера кнопки к размеру иконки
+  const spinnerColor = computed(() => {
+    if (props.variant === 'primary' || props.variant === 'danger') {
+      return 'text-white'
+    }
+    return 'text-current'
+  })
+
   const iconSize = computed(() => {
     if (props.iconOnly) return 'sm'
     return props.size === 'lg' ? 'md' : props.size === 'sm' ? 'xs' : 'sm'

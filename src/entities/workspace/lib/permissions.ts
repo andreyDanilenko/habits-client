@@ -197,7 +197,10 @@ export function requireOwnerOrAdmin() {
   return () => {
     const { isOwner } = usePermissions()
     const userStore = useUserStore()
-    const isAdmin = userStore.currentUser?.role === 'ADMIN' || (typeof userStore.currentUser?.role === 'string' && userStore.currentUser.role.toUpperCase() === 'ADMIN')
+    const isAdmin =
+      userStore.currentUser?.role === 'ADMIN' ||
+      (typeof userStore.currentUser?.role === 'string' &&
+        userStore.currentUser.role.toUpperCase() === 'ADMIN')
     if (isOwner.value || isAdmin) {
       return true
     }
@@ -210,10 +213,12 @@ export function requireOwnerOrAdmin() {
  * Принимает getAvailableModules из конфига (чтобы избежать циклического импорта).
  * Используется в router с meta.module.
  */
-export function requireModuleEnabled(getAvailableModules: (
-  enabled: string[],
-  hasPermission: (p: WorkspacePermission) => boolean,
-) => { id: string; routes: { path: string }[] }[]) {
+export function requireModuleEnabled(
+  getAvailableModules: (
+    enabled: string[],
+    hasPermission: (p: WorkspacePermission) => boolean,
+  ) => { id: string; routes: { path: string }[] }[],
+) {
   return (to: { meta: { module?: string } }): true | { path: string } => {
     const workspaceStore = useWorkspaceStore()
     const { hasPermission } = usePermissions()

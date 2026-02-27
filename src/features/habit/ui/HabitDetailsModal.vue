@@ -1,32 +1,36 @@
 <template>
   <ModalContent :title="habit.title" @close="$emit('close')">
     <div class="space-y-6">
-      <!-- Основная информация -->
       <div class="flex items-start space-x-4">
         <div
           class="w-16 h-16 rounded-xl flex items-center justify-center text-2xl text-white font-bold"
-          :style="{ backgroundColor: habit.color || '#6366f1' }"
+          :style="{ backgroundColor: habit.color || 'var(--color-primary-default)' }"
         >
           {{ habit.icon || '📝' }}
         </div>
         <div class="flex-1">
-          <h3>{{ habit.title }}</h3>
-          <p v-if="habit.description" class="mt-2 text-gray-600">
+          <h3 class="text-text-primary">{{ habit.title }}</h3>
+          <p v-if="habit.description" class="mt-2 text-text-secondary">
             {{ habit.description }}
           </p>
           <div class="mt-3 flex flex-wrap gap-2">
-            <Badge v-if="habit.category">
+            <Badge
+              v-if="habit.category"
+              variant="outline"
+              class="bg-badge-blue-bg text-badge-blue-text border-blue-200"
+            >
               {{ getCategoryLabel(habit.category) }}
             </Badge>
-            <Badge variant="blue"> Цель: {{ habit.dailyGoal || 1 }} раз/день </Badge>
-            <Badge variant="green">
+            <Badge variant="blue" class="bg-badge-blue-bg text-badge-blue-text">
+              Цель: {{ habit.dailyGoal || 1 }} раз/день
+            </Badge>
+            <Badge variant="green" class="bg-badge-green-bg text-badge-green-text">
               {{ getTimeLabel(habit.preferredTime) }}
             </Badge>
           </div>
         </div>
       </div>
 
-      <!-- Статистика -->
       <div class="grid grid-cols-2 gap-4">
         <StatCard
           label="Сегодня выполнено"
@@ -44,7 +48,6 @@
         />
       </div>
 
-      <!-- Стрики -->
       <div class="grid grid-cols-2 gap-4">
         <StatCard
           label="Текущая серия"
@@ -70,22 +73,20 @@
         />
       </div>
 
-      <!-- Прогресс сегодня -->
       <ProgressBar
         variant="detailed"
         label="Прогресс сегодня"
         :current="todayCompletions"
         :total="habit.dailyGoal || 1"
-        :color="habit.color || '#6366f1'"
+        :color="habit.color || 'var(--color-primary-default)'"
         :description="`Цель: выполнить ${habit.dailyGoal || 1} ${habit.dailyGoal === 1 ? 'раз' : 'раза'} в день`"
       />
 
-      <!-- История последних выполнений -->
       <div>
-        <h4 class="mb-3">Последние выполнения</h4>
+        <h4 class="text-text-primary mb-3">Последние выполнения</h4>
         <div v-if="recentCompletions.length === 0" class="text-center py-4">
-          <p class="text-gray-500">Пока нет выполнений</p>
-          <p class="text-xs text-gray-400 mt-2">
+          <p class="text-text-secondary">Пока нет выполнений</p>
+          <p class="text-xs text-text-muted mt-2">
             Отмечайте выполнение привычки, чтобы видеть историю
           </p>
         </div>
@@ -93,19 +94,19 @@
           <div
             v-for="completion in recentCompletions"
             :key="completion.id"
-            class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+            class="p-3 bg-bg-secondary rounded-lg hover:bg-bg-tertiary transition-colors"
           >
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center space-x-2">
-                  <span class="text-sm font-medium text-gray-900">{{
+                  <span class="text-sm font-medium text-text-primary">{{
                     formatDate(completion.date)
                   }}</span>
-                  <span v-if="completion.time" class="text-xs text-gray-500"
+                  <span v-if="completion.time" class="text-xs text-text-muted"
                     >в {{ completion.time }}</span
                   >
                 </div>
-                <p v-if="completion.notes" class="text-sm text-gray-600 mt-1 italic">
+                <p v-if="completion.notes" class="text-sm text-text-secondary mt-1 italic">
                   "{{ completion.notes }}"
                 </p>
               </div>
@@ -178,7 +179,6 @@
     return props.completions.filter((c) => c.habitId === props.habit.id).length
   })
 
-  // Уникальные даты выполнения (для расчета стриков)
   const completedDates = computed(() => {
     const dates = new Set<string>()
     props.completions.filter((c) => c.habitId === props.habit.id).forEach((c) => dates.add(c.date))
@@ -194,7 +194,6 @@
     let streak = 0
     let checkDate = new Date(today)
 
-    // Проверяем, выполнено ли сегодня
     const todayStr = getLocalDateString(today)
     const hasToday = completedDates.value.includes(todayStr)
 
@@ -246,7 +245,6 @@
       .slice(0, 5)
   })
 
-  // Уникальные дни выполнения (для статистики)
   const completedDaysCount = computed(() => {
     return completedDates.value.length
   })

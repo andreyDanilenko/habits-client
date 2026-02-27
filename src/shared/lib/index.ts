@@ -1,5 +1,7 @@
 export type { ModalConfig, ModalInstance } from './modal'
 export { modalManager, useModal } from './modal'
+export { useTheme, initTheme } from './use-theme'
+export type { ThemeMode } from './use-theme'
 export {
   getLocalDateString,
   formatLocalDate,
@@ -8,6 +10,5 @@ export {
   formatTimeRu,
   formatDateDisplay,
   formatRelativeTime,
-  getTextPreview,
   getGreeting,
 } from './date'

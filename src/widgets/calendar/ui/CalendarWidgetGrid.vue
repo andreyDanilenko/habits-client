@@ -1,17 +1,15 @@
 <template>
   <div>
-    <!-- Дни недели -->
     <div class="grid grid-cols-7 gap-1 mb-2">
       <div
         v-for="day in weekDays"
         :key="day"
-        class="text-center text-xs font-medium text-gray-500 py-1"
+        class="text-center text-xs font-medium text-text-secondary py-1"
       >
         {{ day }}
       </div>
     </div>
 
-    <!-- Календарь -->
     <div class="grid grid-cols-7 gap-1 relative">
       <CalendarWidgetDay
         v-for="day in calendarDays"

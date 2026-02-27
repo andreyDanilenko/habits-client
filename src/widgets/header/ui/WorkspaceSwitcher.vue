@@ -5,20 +5,20 @@
         <Button variant="ghost" size="md" custom-class="w-full justify-between gap-2">
           <div
             class="w-6 h-6 rounded flex-shrink-0"
-            :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"
+            :style="{ backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)' }"
           />
-          <span class="text-sm font-medium text-gray-700 whitespace-nowrap">
+          <span class="text-sm font-medium text-text-primary whitespace-nowrap">
             {{ currentWorkspace?.name || 'Workspace' }}
           </span>
-          <ChevronDownIcon class="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <ChevronDownIcon class="w-4 h-4 text-text-muted flex-shrink-0" />
         </Button>
       </template>
 
-      <div class="w-64 bg-white rounded-lg shadow-lg border border-gray-300">
+      <div class="w-64 bg-bg-primary rounded-lg shadow-card border border-border-default">
         <!-- Заголовок -->
-        <div class="px-4 py-3 border-b border-gray-300">
+        <div class="px-4 py-3 border-b border-border-light">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-semibold text-gray-700">Рабочие пространства</p>
+            <p class="text-sm font-semibold text-text-primary">Рабочие пространства</p>
             <Button
               @click.stop="openWorkspaceSettings"
               icon-only
@@ -37,23 +37,23 @@
             size="sm"
             @click.stop="switchWorkspace(workspace.id)"
             custom-class="w-full justify-start gap-3 !px-4 !py-2"
-            :class="{ 'bg-indigo-50': workspace.id === currentWorkspace?.id }"
+            :class="{ 'bg-primary-light': workspace.id === currentWorkspace?.id }"
           >
             <span
               class="w-4 h-4 rounded flex-shrink-0"
-              :style="{ backgroundColor: workspace.color || '#6366f1' }"
+              :style="{ backgroundColor: workspace.color || 'var(--color-primary-default)' }"
             />
-            <span class="flex-1 text-left truncate min-w-0">
+            <span class="flex-1 text-left truncate min-w-0 text-text-primary">
               {{ workspace.name }}
             </span>
             <span v-if="workspace.id === currentWorkspace?.id" class="flex-shrink-0">
-              <CheckIcon class="w-4 h-4 text-indigo-600" />
+              <CheckIcon class="w-4 h-4 text-primary-default" />
             </span>
           </Button>
         </div>
 
         <!-- Действия -->
-        <div class="border-t border-gray-300 p-2">
+        <div class="border-t border-border-light p-2">
           <Button
             @click.stop="openCreateModal"
             variant="ghost"

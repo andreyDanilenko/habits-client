@@ -1,4 +1,4 @@
-import type { Habit } from '@/entities/habit'
+import type { Habit, CreateHabitDto } from '@/entities/habit'
 import { useModal } from '@/shared/lib/modal'
 import { useHabitStore } from '@/entities/habit'
 import { AddEditHabitModal, HabitDetailsModal, MarkCompletionModal } from '@/features/habit/ui'
@@ -15,8 +15,8 @@ export const useHabitActions = () => {
         habit: undefined,
       },
       onConfirm: async (habitData?: Partial<Habit>) => {
-        if (habitData) {
-          await habitStore.createHabit(habitData)
+        if (habitData?.title) {
+          await habitStore.createHabit(habitData as CreateHabitDto)
         }
       },
     })

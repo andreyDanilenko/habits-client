@@ -1,20 +1,20 @@
 <template>
   <div class="relative">
-    <Tooltip trigger="hover" placement="bottom">
+    <Tooltip trigger="hover" placement="bottom" variant="dropdown">
       <template #trigger>
-        <Button variant="ghost" size="sm" class="!p-1 rounded-full" @click="toggleDropdown">
+        <Button variant="ghost" size="sm" class="!p-1 rounded-full">
           <div
-            class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white text-sm font-medium"
+            class="w-8 h-8 bg-primary-default rounded-full flex items-center justify-center text-white text-sm font-medium"
           >
             {{ userInitials }}
           </div>
         </Button>
       </template>
 
-      <div class="w-56">
-        <div class="px-3 pt-3 pb-2 border-b border-gray-300">
-          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Аккаунт</p>
-          <p class="mt-1 text-sm font-medium text-gray-900 truncate">
+      <div class="w-56 bg-bg-primary rounded-lg shadow-card border border-border-default">
+        <div class="px-3 pt-3 pb-2 border-b border-border-light">
+          <p class="text-xs font-semibold text-text-muted uppercase tracking-wide">Аккаунт</p>
+          <p class="mt-1 text-sm font-medium text-text-primary truncate">
             {{ userEmail }}
           </p>
         </div>
@@ -23,7 +23,7 @@
           <Button
             variant="ghost"
             size="sm"
-            custom-class="w-full justify-start !px-4 !py-2"
+            custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
             @click="
               () => {
                 router.push('/profile')
@@ -36,7 +36,7 @@
           <Button
             variant="ghost"
             size="sm"
-            custom-class="w-full justify-start !px-4 !py-2"
+            custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
             @click="
               () => {
                 router.push('/settings')
@@ -49,7 +49,7 @@
           <Button
             variant="ghost"
             size="sm"
-            custom-class="w-full justify-start !px-4 !py-2 text-red-600"
+            custom-class="w-full justify-start !px-4 !py-2 text-error-default hover:bg-error-light"
             @click="handleLogout"
           >
             Выйти
@@ -74,10 +74,6 @@
 
   const userInitials = computed(() => userStore.userInitials || 'U')
   const userEmail = computed(() => userStore.currentUser?.email || 'Пользователь')
-
-  const toggleDropdown = () => {
-    showDropdown.value = !showDropdown.value
-  }
 
   const closeDropdown = () => {
     showDropdown.value = false

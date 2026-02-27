@@ -11,7 +11,7 @@
 
     <!-- Sidebar -->
     <aside
-      class="bg-white border-r border-gray-300 transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
+      class="bg-bg-primary border-r border-border-default transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
       :class="sidebarClasses"
     >
       <nav class="p-4 flex flex-col h-full overflow-y-auto">
@@ -36,7 +36,7 @@
         </div>
 
         <!-- Workspace Switcher -->
-        <div class="mb-4 pb-4 border-b border-gray-200 flex-shrink-0">
+        <div class="mb-4 pb-4 border-b border-border-light flex-shrink-0">
           <div v-if="!isCollapsed" class="w-full">
             <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsed" />
             <WorkspaceSwitcher />
@@ -44,7 +44,9 @@
           <div v-else class="flex justify-center">
             <div
               class="w-8 h-8 rounded flex-shrink-0 cursor-pointer"
-              :style="{ backgroundColor: currentWorkspace?.color || '#6366f1' }"
+              :style="{
+                backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)',
+              }"
               :title="currentWorkspace?.name || 'Workspace'"
             />
           </div>
@@ -75,7 +77,7 @@
         </div>
 
         <!-- Нижняя секция -->
-        <div class="border-t border-gray-200 pt-4 mt-auto flex-shrink-0">
+        <div class="border-t border-border-light pt-4 mt-auto flex-shrink-0">
           <SidebarNavigation
             :items="footerNavItems"
             :collapsed="isCollapsed"
@@ -216,7 +218,10 @@
   const footerNavItems = computed<SidebarNavItem[]>(() => {
     const items: SidebarNavItem[] = []
     const userStore = useUserStore()
-    const isAdmin = userStore.currentUser?.role === 'ADMIN' || (typeof userStore.currentUser?.role === 'string' && userStore.currentUser.role.toUpperCase() === 'ADMIN')
+    const isAdmin =
+      userStore.currentUser?.role === 'ADMIN' ||
+      (typeof userStore.currentUser?.role === 'string' &&
+        userStore.currentUser.role.toUpperCase() === 'ADMIN')
     if (isAdmin) {
       items.push({
         id: 'admin',
