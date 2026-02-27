@@ -42,12 +42,7 @@
 
 <script setup lang="ts">
   import { Modal, ConfirmModal } from '@/shared/ui'
-  import {
-    NotesPageHeader,
-    NotesList,
-    NotesEmptyState,
-    NoteFormModal,
-  } from '@/features/notes/ui'
+  import { NotesPageHeader, NotesList, NotesEmptyState, NoteFormModal } from '@/features/notes/ui'
   import { useNotesPage } from '@/features/notes/model'
 
   const {

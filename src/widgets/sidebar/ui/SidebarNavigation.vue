@@ -25,7 +25,10 @@
         :custom-class="`w-full ${collapsed ? 'justify-center' : 'justify-start'} ${item.isActive ? 'bg-primary-light text-primary-default font-medium' : ''} ${item.variant === 'danger' ? 'text-error-default hover:bg-error-light' : ''}`"
         @click="handleItemClick(item)"
       >
-        <span v-if="!collapsed" :class="{ 'font-medium': item.variant === 'danger' || item.isActive }">
+        <span
+          v-if="!collapsed"
+          :class="{ 'font-medium': item.variant === 'danger' || item.isActive }"
+        >
           {{ item.label }}
         </span>
       </Button>

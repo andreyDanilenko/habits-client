@@ -7,7 +7,9 @@
     >
       <div class="min-w-0 flex-1 cursor-pointer" @click="$emit('edit-note', note)">
         <h3 class="font-medium text-gray-900 truncate">{{ note.title }}</h3>
-        <p v-if="note.content" class="mt-1 text-sm text-gray-600 line-clamp-2">{{ note.content }}</p>
+        <p v-if="note.content" class="mt-1 text-sm text-gray-600 line-clamp-2">
+          {{ note.content }}
+        </p>
         <p class="mt-1 text-xs text-gray-400">{{ formatDate(note.updatedAt) }}</p>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">

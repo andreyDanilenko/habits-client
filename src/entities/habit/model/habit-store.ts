@@ -122,15 +122,15 @@ export const useHabitStore = defineStore('habit', () => {
   const createHabit = async (data: CreateHabitDto): Promise<Habit> => {
     const workspaceId = workspaceStore.currentWorkspace?.id
     if (!workspaceId) throw new Error('Workspace is not selected')
-  
+
     try {
       const habitData: CreateHabitDto = {
         ...data,
         title: data.title ?? '',
         scheduleType: data.scheduleType ?? 'recurring',
         isActive: data.isActive ?? true,
-      };
-  
+      }
+
       const habit = await habitService.createHabit(workspaceId, habitData)
       habits.value.push(habit)
       return habit
@@ -143,17 +143,17 @@ export const useHabitStore = defineStore('habit', () => {
   const updateHabit = async (id: string, data: UpdateHabitDto | Partial<Habit>): Promise<Habit> => {
     const workspaceId = workspaceStore.currentWorkspace?.id
     if (!workspaceId) throw new Error('Workspace is not selected')
-  
+
     try {
       const habitData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== undefined)
+        Object.entries(data).filter(([_, value]) => value !== undefined),
       )
-  
+
       const updatedHabit = await habitService.updateHabit(workspaceId, id, habitData)
-      
+
       const index = habits.value.findIndex((h) => h.id === id)
       if (index !== -1) habits.value[index] = updatedHabit
-  
+
       return updatedHabit
     } catch (error) {
       console.error('Failed to update habit:', error)

@@ -44,7 +44,9 @@
           <div v-else class="flex justify-center">
             <div
               class="w-8 h-8 rounded flex-shrink-0 cursor-pointer"
-              :style="{ backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)' }"
+              :style="{
+                backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)',
+              }"
               :title="currentWorkspace?.name || 'Workspace'"
             />
           </div>
@@ -216,7 +218,10 @@
   const footerNavItems = computed<SidebarNavItem[]>(() => {
     const items: SidebarNavItem[] = []
     const userStore = useUserStore()
-    const isAdmin = userStore.currentUser?.role === 'ADMIN' || (typeof userStore.currentUser?.role === 'string' && userStore.currentUser.role.toUpperCase() === 'ADMIN')
+    const isAdmin =
+      userStore.currentUser?.role === 'ADMIN' ||
+      (typeof userStore.currentUser?.role === 'string' &&
+        userStore.currentUser.role.toUpperCase() === 'ADMIN')
     if (isAdmin) {
       items.push({
         id: 'admin',

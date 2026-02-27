@@ -66,19 +66,15 @@
 
       <FormField label="Цель на день">
         <div class="flex items-center space-x-2">
-          <Input
-            v-model.number="form.dailyGoal"
-            type="number"
-            min="1"
-            max="10"
-            class="w-20"
-          />
+          <Input v-model.number="form.dailyGoal" type="number" min="1" max="10" class="w-20" />
           <span class="text-text-secondary">раз(а) в день</span>
         </div>
       </FormField>
 
       <div>
-        <label class="block text-sm font-medium text-text-secondary mb-2"> Предпочтительное время </label>
+        <label class="block text-sm font-medium text-text-secondary mb-2">
+          Предпочтительное время
+        </label>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="time in timesOfDay"
@@ -144,12 +140,7 @@
 
       <div v-if="form.scheduleType === 'one_time'">
         <FormField label="Дата выполнения" required>
-          <Input
-            v-model="form.oneTimeDate"
-            type="date"
-            required
-            :min="minDate"
-          />
+          <Input v-model="form.oneTimeDate" type="date" required :min="minDate" />
         </FormField>
       </div>
     </form>

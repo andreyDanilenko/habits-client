@@ -79,9 +79,7 @@
     <Card class="p-6">
       <h2 class="mb-4">Модули</h2>
       <div class="space-y-4">
-        <p class="text-sm text-gray-600">
-          Просмотр и включение модулей для этого workspace.
-        </p>
+        <p class="text-sm text-gray-600">Просмотр и включение модулей для этого workspace.</p>
         <router-link
           to="/workspace-modules"
           class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium"

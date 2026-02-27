@@ -7,17 +7,22 @@
         <span v-if="current !== undefined && total !== undefined">
           {{ current }} / {{ total }}
         </span>
-        <span v-else class="text-sm font-medium text-text-primary"> {{ computedPercentage }}% </span>
+        <span v-else class="text-sm font-medium text-text-primary">
+          {{ computedPercentage }}%
+        </span>
       </div>
-      
+
       <!-- Detailed вариант -->
       <div v-else class="flex justify-between items-center mb-2">
         <p class="text-sm font-medium text-text-secondary">{{ label }}</p>
-        <p class="text-sm font-semibold" :class="isCompleted ? 'text-success-default' : 'text-text-muted'">
+        <p
+          class="text-sm font-semibold"
+          :class="isCompleted ? 'text-success-default' : 'text-text-muted'"
+        >
           {{ Math.round(computedPercentage) }}%
         </p>
       </div>
-      
+
       <!-- Полоса прогресса -->
       <div
         class="bg-bg-tertiary rounded-full overflow-hidden"
@@ -28,13 +33,18 @@
           :class="isCompleted && variant === 'detailed' ? 'bg-success-default' : ''"
           :style="{
             width: `${Math.min(computedPercentage, 100)}%`,
-            backgroundColor: isCompleted && variant === 'detailed' ? undefined : color || 'var(--color-primary-default)',
+            backgroundColor:
+              isCompleted && variant === 'detailed'
+                ? undefined
+                : color || 'var(--color-primary-default)',
           }"
         >
-          <span v-if="isCompleted && variant === 'detailed'" class="text-xs text-white font-bold">✓</span>
+          <span v-if="isCompleted && variant === 'detailed'" class="text-xs text-white font-bold"
+            >✓</span
+          >
         </div>
       </div>
-      
+
       <!-- Описание для detailed варианта -->
       <p v-if="variant === 'detailed' && description" class="text-xs text-text-muted mt-1">
         {{ description }}

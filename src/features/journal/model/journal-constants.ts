@@ -23,4 +23,3 @@ export const getMoodEmoji = (mood: number | null | undefined) => {
 export const getTodayDateString = () => new Date().toISOString().split('T')[0]
 
 export const DEFAULT_JOURNAL_CONTENT_TYPE = 'text'
-

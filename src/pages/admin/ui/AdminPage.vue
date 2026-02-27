@@ -78,7 +78,9 @@
       <ConfirmModal
         title="Удалить пользователя?"
         description="Это действие нельзя отменить."
-        :message="deleteTarget ? `Пользователь ${deleteTarget.email} будет удалён (деактивирован).` : ''"
+        :message="
+          deleteTarget ? `Пользователь ${deleteTarget.email} будет удалён (деактивирован).` : ''
+        "
         confirm-text="Удалить"
         confirm-variant="danger"
         @close="closeDeleteConfirm"

@@ -1,7 +1,18 @@
 <template>
-  <div class="relative inline-block" :ref="(el) => { dropdown.containerRef.value = (el as HTMLElement) ?? null }">
+  <div
+    class="relative inline-block"
+    :ref="
+      (el) => {
+        dropdown.containerRef.value = (el as HTMLElement) ?? null
+      }
+    "
+  >
     <div
-      :ref="(el) => { dropdown.triggerRef.value = (el as HTMLElement) ?? null }"
+      :ref="
+        (el) => {
+          dropdown.triggerRef.value = (el as HTMLElement) ?? null
+        }
+      "
       @click="toggle"
       class="cursor-pointer"
       :class="triggerClass"
@@ -21,7 +32,11 @@
       >
         <div
           v-if="isOpen"
-          :ref="(el) => { dropdown.dropdownRef.value = (el as HTMLElement) ?? null }"
+          :ref="
+            (el) => {
+              dropdown.dropdownRef.value = (el as HTMLElement) ?? null
+            }
+          "
           :class="[
             'absolute z-50 pointer-events-auto',
             'bg-white rounded-lg shadow-lg border border-gray-200',
@@ -49,7 +64,11 @@
       >
         <div
           v-if="isOpen"
-          :ref="(el) => { dropdown.dropdownRef.value = (el as HTMLElement) ?? null }"
+          :ref="
+            (el) => {
+              dropdown.dropdownRef.value = (el as HTMLElement) ?? null
+            }
+          "
           :class="[
             'fixed z-50 pointer-events-auto',
             'bg-white rounded-lg shadow-lg border border-gray-200',

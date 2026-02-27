@@ -25,10 +25,8 @@
 </template>
 
 <script setup lang="ts">
-  import Card from './Card.vue'
+  import Card from '../Card.vue'
   import type { StatColor, StatsCardItem } from './StatsCards.types'
-
-  export type { StatsCardItem } from './StatsCards.types'
 
   const colors: StatColor[] = ['indigo', 'emerald', 'amber']
 

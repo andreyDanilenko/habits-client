@@ -36,7 +36,13 @@
   const iconSvgAttrs = (attrs: Record<string, unknown>) => {
     const { size, class: c, ...rest } = attrs
     const sizeClass = size === 'sm' ? 'w-5 h-5' : size === 'xs' ? 'w-4 h-4' : 'w-5 h-5'
-    return { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 20 20', fill: 'currentColor', class: `${sizeClass} text-text-primary ${c || ''}`.trim(), ...rest }
+    return {
+      xmlns: 'http://www.w3.org/2000/svg',
+      viewBox: '0 0 20 20',
+      fill: 'currentColor',
+      class: `${sizeClass} text-text-primary ${c || ''}`.trim(),
+      ...rest,
+    }
   }
 
   const SunIcon: FunctionalComponent = (_, { attrs }) =>

@@ -35,7 +35,7 @@
       <FormField label="Теги (необязательно)">
         <div class="flex flex-wrap gap-2 items-center">
           <Badge
-            v-for="tag in (form.tags || [])"
+            v-for="tag in form.tags || []"
             :key="tag"
             variant="outline"
             class="cursor-pointer hover:bg-primary-light/80 transition-colors"
@@ -50,9 +50,7 @@
             class="inline-block w-auto min-w-[140px]"
             @keydown.enter.prevent="addTag"
           />
-          <Button type="button" variant="outline" size="sm" @click="addTag">
-            Добавить
-          </Button>
+          <Button type="button" variant="outline" size="sm" @click="addTag"> Добавить </Button>
         </div>
       </FormField>
     </form>
@@ -70,10 +68,7 @@
   import { computed, ref, watch } from 'vue'
   import { ModalContent, FormField, Input, Button, SelectButton, Badge } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
-  import {
-    MOOD_DEFINITIONS,
-    getTodayDateString,
-  } from '@/features/journal/model/journal-constants'
+  import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'
 
   interface Props {
     entry?: JournalEntry | null

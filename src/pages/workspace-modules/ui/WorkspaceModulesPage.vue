@@ -76,10 +76,7 @@
               <p v-else class="text-sm text-gray-500 mb-1">
                 Включить модуль может владелец workspace или админ (при наличии лицензии).
               </p>
-              <Button
-                variant="secondary"
-                @click="goToActivation(module.id)"
-              >
+              <Button variant="secondary" @click="goToActivation(module.id)">
                 Перейти к покупке / связь с владельцем
               </Button>
             </template>
@@ -151,13 +148,9 @@
 
   const enabledSet = computed(() => new Set(workspaceStore.enabledModules))
 
-  const availableModules = computed(() =>
-    modules.filter((m) => enabledSet.value.has(m.id)),
-  )
+  const availableModules = computed(() => modules.filter((m) => enabledSet.value.has(m.id)))
 
-  const unavailableModules = computed(() =>
-    modules.filter((m) => !enabledSet.value.has(m.id)),
-  )
+  const unavailableModules = computed(() => modules.filter((m) => !enabledSet.value.has(m.id)))
 
   async function activateModule(moduleCode: string) {
     const ws = workspaceStore.currentWorkspace

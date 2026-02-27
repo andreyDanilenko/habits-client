@@ -19,7 +19,7 @@
           </span>
         </div>
       </div>
-      
+
       <div
         v-if="entry.mood"
         class="ml-3 flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary-light to-secondary-light flex items-center justify-center border-2 border-primary-light group-hover:border-primary-default transition-colors"
@@ -75,7 +75,7 @@
 <script setup lang="ts">
   import { Card, Badge, Button } from '@/shared/ui'
   import { CogIcon, DeleteIcon } from '@/shared/ui/icon'
-  import { formatDateRu, formatTimeRu, getTextPreview } from '@/shared/lib'
+  import { formatDateRu, formatTimeRu } from '@/shared/lib'
   import type { JournalEntry } from '@/entities/journal'
   import { getMoodEmoji } from '@/features/journal/model/journal-constants'
 
@@ -92,5 +92,4 @@
 
   const formatDate = (dateStr: string) => formatDateRu(dateStr, 'd MMMM yyyy')
   const formatTime = (dateStr: string) => formatTimeRu(dateStr)
-  const getPreview = (description: string) => getTextPreview(description ?? '', 150)
 </script>

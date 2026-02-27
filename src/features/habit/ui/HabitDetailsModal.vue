@@ -14,7 +14,11 @@
             {{ habit.description }}
           </p>
           <div class="mt-3 flex flex-wrap gap-2">
-            <Badge v-if="habit.category" variant="outline" class="bg-badge-blue-bg text-badge-blue-text border-blue-200">
+            <Badge
+              v-if="habit.category"
+              variant="outline"
+              class="bg-badge-blue-bg text-badge-blue-text border-blue-200"
+            >
               {{ getCategoryLabel(habit.category) }}
             </Badge>
             <Badge variant="blue" class="bg-badge-blue-bg text-badge-blue-text">

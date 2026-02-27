@@ -81,7 +81,9 @@ export const useJournalPage = () => {
           return entryDate >= weekAgo
         }
         if (selectedDate.value === 'month') {
-          return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+          return (
+            entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+          )
         }
         return true
       })
@@ -140,7 +142,9 @@ export const useJournalPage = () => {
     const now = new Date()
     return filteredEntries.value.filter((entry) => {
       const entryDate = parseISO(entry.date)
-      return entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+      return (
+        entryDate.getMonth() === now.getMonth() && entryDate.getFullYear() === now.getFullYear()
+      )
     }).length
   })
 
@@ -174,14 +178,17 @@ export const useJournalPage = () => {
         let dateLabel = ''
         if (isToday(entryDate)) dateLabel = 'Сегодня'
         else if (isYesterday(entryDate)) dateLabel = 'Вчера'
-        else if (isThisWeek(entryDate)) dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: ru })
+        else if (isThisWeek(entryDate))
+          dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: ru })
         else if (isThisMonth(entryDate)) dateLabel = format(entryDate, 'd MMMM', { locale: ru })
         else dateLabel = format(entryDate, 'd MMMM yyyy', { locale: ru })
         if (dateLabel) dateLabel = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1)
         return {
           date,
           dateLabel,
-          entries: list.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
+          entries: list.sort(
+            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+          ),
         }
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

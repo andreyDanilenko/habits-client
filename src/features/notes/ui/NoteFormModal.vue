@@ -1,7 +1,13 @@
 <template>
-  <Modal :is-open="isOpen" content-class="bg-white rounded-xl shadow-lg p-6" @update:is-open="$emit('update:isOpen', $event)">
+  <Modal
+    :is-open="isOpen"
+    content-class="bg-white rounded-xl shadow-lg p-6"
+    @update:is-open="$emit('update:isOpen', $event)"
+  >
     <form class="space-y-4" @submit.prevent="$emit('save')">
-      <h2 class="text-lg font-semibold">{{ isEdit ? 'Редактировать заметку' : 'Новая заметка' }}</h2>
+      <h2 class="text-lg font-semibold">
+        {{ isEdit ? 'Редактировать заметку' : 'Новая заметка' }}
+      </h2>
       <input
         :value="form.title"
         type="text"
@@ -45,6 +51,9 @@
   function emitForm(event: Event, field: 'title' | 'content') {
     const target = event.target as HTMLInputElement
     const value = target?.value ?? ''
-    emit('update:form', field === 'title' ? { ...props.form, title: value } : { ...props.form, content: value })
+    emit(
+      'update:form',
+      field === 'title' ? { ...props.form, title: value } : { ...props.form, content: value },
+    )
   }
 </script>

@@ -32,10 +32,13 @@
   const cardClasses = computed(() => {
     if (props.variant === 'gradient') {
       const colorMap = {
-        indigo: 'bg-gradient-to-br from-primary-light to-primary-light/80 border border-primary-light',
-        purple: 'bg-gradient-to-br from-secondary-light to-secondary-light/80 border border-secondary-light',
+        indigo:
+          'bg-gradient-to-br from-primary-light to-primary-light/80 border border-primary-light',
+        purple:
+          'bg-gradient-to-br from-secondary-light to-secondary-light/80 border border-secondary-light',
         blue: 'bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200',
-        green: 'bg-gradient-to-br from-success-light to-success-light/80 border border-success-border',
+        green:
+          'bg-gradient-to-br from-success-light to-success-light/80 border border-success-border',
         red: 'bg-gradient-to-br from-red-50 to-red-100 border border-red-200',
         yellow: 'bg-gradient-to-br from-amber-light to-amber-light/80 border border-amber-border',
       }

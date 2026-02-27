@@ -64,8 +64,8 @@
       <section>
         <h2 class="text-xl font-semibold text-gray-900 mb-1">Модули и тарифы</h2>
         <p class="text-sm text-gray-500 mb-8">
-          Тестовые данные. Лицензия «все воркспейсы» — один раз купили, используете везде;
-          «один воркспейс» — только для выбранного workspace.
+          Тестовые данные. Лицензия «все воркспейсы» — один раз купили, используете везде; «один
+          воркспейс» — только для выбранного workspace.
         </p>
 
         <div class="space-y-8">
@@ -86,7 +86,9 @@
                 <div class="flex items-center gap-3">
                   <div
                     class="flex h-11 w-11 items-center justify-center rounded-xl text-2xl"
-                    :class="item.isFree ? 'bg-green-100 text-green-700' : 'bg-indigo-100 text-indigo-600'"
+                    :class="
+                      item.isFree ? 'bg-green-100 text-green-700' : 'bg-indigo-100 text-indigo-600'
+                    "
                   >
                     {{ item.emoji }}
                   </div>
@@ -112,11 +114,7 @@
                       : 'border-gray-200 bg-white hover:bg-gray-50/50'
                   "
                 >
-                  <Badge
-                    v-if="plan.popular"
-                    variant="indigo"
-                    class="absolute -top-2.5 right-3"
-                  >
+                  <Badge v-if="plan.popular" variant="indigo" class="absolute -top-2.5 right-3">
                     Популярный
                   </Badge>
                   <span class="text-sm font-medium text-gray-700">{{ plan.name }}</span>
@@ -130,7 +128,9 @@
                   <Button
                     variant="outline"
                     size="sm"
-                    :class="plan.popular ? 'border-indigo-300 text-indigo-700 hover:bg-indigo-50' : ''"
+                    :class="
+                      plan.popular ? 'border-indigo-300 text-indigo-700 hover:bg-indigo-50' : ''
+                    "
                     disabled
                     class="mt-4 w-full"
                   >
@@ -160,9 +160,8 @@
               <div>
                 <h2 class="font-semibold text-gray-900">Индивидуальные условия</h2>
                 <p class="mt-1 text-sm text-gray-700">
-                  Корпоративная лицензия, особые тарифы или оплата по счёту — свяжитесь с
-                  владельцем приложения. После договорённости доступ к модулю будет выдан вручную
-                  (админ).
+                  Корпоративная лицензия, особые тарифы или оплата по счёту — свяжитесь с владельцем
+                  приложения. После договорённости доступ к модулю будет выдан вручную (админ).
                 </p>
               </div>
             </div>
@@ -177,239 +176,239 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, watch, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { Card, Button, Badge } from '@/shared/ui'
-import { useWorkspaceStore } from '@/entities/workspace'
+  import { ref, onMounted, nextTick, watch, computed } from 'vue'
+  import { useRoute } from 'vue-router'
+  import { Card, Button, Badge } from '@/shared/ui'
+  import { useWorkspaceStore } from '@/entities/workspace'
 
-const route = useRoute()
-const workspaceStore = useWorkspaceStore()
-const highlightModuleId = ref<string | null>(null)
-const moduleRefs = ref<Record<string, HTMLElement | null>>({})
+  const route = useRoute()
+  const workspaceStore = useWorkspaceStore()
+  const highlightModuleId = ref<string | null>(null)
+  const moduleRefs = ref<Record<string, HTMLElement | null>>({})
 
-const licensesCount = computed(() => workspaceStore.licenses?.length ?? 0)
+  const licensesCount = computed(() => workspaceStore.licenses?.length ?? 0)
 
-function setModuleRef(id: string, el: unknown) {
-  moduleRefs.value[id] = el as HTMLElement | null
-}
-
-function scrollToModule(moduleCode: string) {
-  const el = moduleRefs.value[moduleCode]
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    highlightModuleId.value = moduleCode
-    setTimeout(() => {
-      highlightModuleId.value = null
-    }, 2500)
+  function setModuleRef(id: string, el: unknown) {
+    moduleRefs.value[id] = el as HTMLElement | null
   }
-}
 
-onMounted(() => {
-  workspaceStore.loadLicenses?.()
-  const module = route.query.module
-  const code = Array.isArray(module) ? module[0] : module
-  if (code) {
-    nextTick(() => scrollToModule(code))
+  function scrollToModule(moduleCode: string) {
+    const el = moduleRefs.value[moduleCode]
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      highlightModuleId.value = moduleCode
+      setTimeout(() => {
+        highlightModuleId.value = null
+      }, 2500)
+    }
   }
-})
 
-watch(
-  () => route.query.module,
-  (module) => {
+  onMounted(() => {
+    workspaceStore.loadLicenses?.()
+    const module = route.query.module
     const code = Array.isArray(module) ? module[0] : module
-    if (code) nextTick(() => scrollToModule(code))
-  },
-)
+    if (code) {
+      nextTick(() => scrollToModule(code))
+    }
+  })
 
-const paymentMethods = [
-  {
-    id: 'card',
-    name: 'Банковская карта',
-    note: 'Visa, Mastercard, МИР',
-    icon: '💳',
-    buttonLabel: 'Оплатить картой',
-  },
-  {
-    id: 'sbp',
-    name: 'СБП',
-    note: 'Система быстрых платежей',
-    icon: '📱',
-    buttonLabel: 'Оплатить через СБП',
-  },
-  {
-    id: 'qr',
-    name: 'QR-оплата',
-    note: 'Сканирование QR-кода',
-    icon: '📷',
-    buttonLabel: 'Показать QR',
-  },
-  {
-    id: 'invoice',
-    name: 'По счёту',
-    note: 'Для юр. лиц',
-    icon: '📄',
-    buttonLabel: 'Запросить счёт',
-  },
-]
+  watch(
+    () => route.query.module,
+    (module) => {
+      const code = Array.isArray(module) ? module[0] : module
+      if (code) nextTick(() => scrollToModule(code))
+    },
+  )
 
-const billingModules = [
-  {
-    id: 'habits',
-    label: 'Привычки',
-    description: 'Трекер привычек, календарь, дневник.',
-    emoji: '✅',
-    isFree: true,
-    plans: [
-      {
-        id: 'habits-core',
-        name: 'Базовый',
-        price: 'Бесплатно',
-        note: 'Core-модуль по умолчанию',
-        isFree: true,
-        popular: false,
-      },
-    ],
-  },
-  {
-    id: 'crm',
-    label: 'CRM',
-    description: 'Контакты и сделки.',
-    emoji: '👥',
-    isFree: false,
-    plans: [
-      {
-        id: 'crm-sub-month',
-        name: 'Подписка, месяц',
-        price: '299 ₽/мес',
-        note: 'Для всех ваших воркспейсов',
-        isFree: false,
-        popular: true,
-      },
-      {
-        id: 'crm-sub-year',
-        name: 'Подписка, год',
-        price: '2 990 ₽/год',
-        note: 'Экономия 2 месяца',
-        isFree: false,
-        popular: false,
-      },
-      {
-        id: 'crm-perpetual-all',
-        name: 'Вечная, все воркспейсы',
-        price: '9 990 ₽',
-        note: 'Один раз, везде',
-        isFree: false,
-        popular: false,
-      },
-      {
-        id: 'crm-perpetual-one',
-        name: 'Вечная, один воркспейс',
-        price: '4 990 ₽',
-        note: 'Только выбранный workspace',
-        isFree: false,
-        popular: false,
-      },
-    ],
-  },
-  {
-    id: 'notes',
-    label: 'Заметки',
-    description: 'Простые заметки по воркспейсу.',
-    emoji: '📝',
-    isFree: false,
-    plans: [
-      {
-        id: 'notes-sub-month',
-        name: 'Подписка, месяц',
-        price: '99 ₽/мес',
-        note: 'Для всех воркспейсов',
-        isFree: false,
-        popular: true,
-      },
-      {
-        id: 'notes-perpetual-all',
-        name: 'Вечная, все воркспейсы',
-        price: '1 990 ₽',
-        note: 'Один раз, везде',
-        isFree: false,
-        popular: false,
-      },
-    ],
-  },
-  {
-    id: 'inventory',
-    label: 'Склад',
-    description: 'Учёт остатков и номенклатуры (в разработке).',
-    emoji: '📦',
-    isFree: false,
-    plans: [
-      {
-        id: 'inventory-sub-month',
-        name: 'Подписка, месяц',
-        price: '499 ₽/мес',
-        note: 'Для всех воркспейсов',
-        isFree: false,
-        popular: true,
-      },
-      {
-        id: 'inventory-perpetual-all',
-        name: 'Вечная, все воркспейсы',
-        price: '14 990 ₽',
-        note: 'Один раз, везде',
-        isFree: false,
-        popular: false,
-      },
-    ],
-  },
-  {
-    id: 'finance',
-    label: 'Финансы',
-    description: 'Проводки и отчёты (в разработке).',
-    emoji: '💰',
-    isFree: false,
-    plans: [
-      {
-        id: 'finance-sub-month',
-        name: 'Подписка, месяц',
-        price: '599 ₽/мес',
-        note: 'Для всех воркспейсов',
-        isFree: false,
-        popular: true,
-      },
-      {
-        id: 'finance-perpetual-all',
-        name: 'Вечная, все воркспейсы',
-        price: '19 990 ₽',
-        note: 'Один раз, везде',
-        isFree: false,
-        popular: false,
-      },
-    ],
-  },
-  {
-    id: 'hr',
-    label: 'HR',
-    description: 'Сотрудники и роли (в разработке).',
-    emoji: '👔',
-    isFree: false,
-    plans: [
-      {
-        id: 'hr-sub-month',
-        name: 'Подписка, месяц',
-        price: '399 ₽/мес',
-        note: 'Для всех воркспейсов',
-        isFree: false,
-        popular: false,
-      },
-      {
-        id: 'hr-perpetual-all',
-        name: 'Вечная, все воркспейсы',
-        price: '9 990 ₽',
-        note: 'Один раз, везде',
-        isFree: false,
-        popular: false,
-      },
-    ],
-  },
-]
+  const paymentMethods = [
+    {
+      id: 'card',
+      name: 'Банковская карта',
+      note: 'Visa, Mastercard, МИР',
+      icon: '💳',
+      buttonLabel: 'Оплатить картой',
+    },
+    {
+      id: 'sbp',
+      name: 'СБП',
+      note: 'Система быстрых платежей',
+      icon: '📱',
+      buttonLabel: 'Оплатить через СБП',
+    },
+    {
+      id: 'qr',
+      name: 'QR-оплата',
+      note: 'Сканирование QR-кода',
+      icon: '📷',
+      buttonLabel: 'Показать QR',
+    },
+    {
+      id: 'invoice',
+      name: 'По счёту',
+      note: 'Для юр. лиц',
+      icon: '📄',
+      buttonLabel: 'Запросить счёт',
+    },
+  ]
+
+  const billingModules = [
+    {
+      id: 'habits',
+      label: 'Привычки',
+      description: 'Трекер привычек, календарь, дневник.',
+      emoji: '✅',
+      isFree: true,
+      plans: [
+        {
+          id: 'habits-core',
+          name: 'Базовый',
+          price: 'Бесплатно',
+          note: 'Core-модуль по умолчанию',
+          isFree: true,
+          popular: false,
+        },
+      ],
+    },
+    {
+      id: 'crm',
+      label: 'CRM',
+      description: 'Контакты и сделки.',
+      emoji: '👥',
+      isFree: false,
+      plans: [
+        {
+          id: 'crm-sub-month',
+          name: 'Подписка, месяц',
+          price: '299 ₽/мес',
+          note: 'Для всех ваших воркспейсов',
+          isFree: false,
+          popular: true,
+        },
+        {
+          id: 'crm-sub-year',
+          name: 'Подписка, год',
+          price: '2 990 ₽/год',
+          note: 'Экономия 2 месяца',
+          isFree: false,
+          popular: false,
+        },
+        {
+          id: 'crm-perpetual-all',
+          name: 'Вечная, все воркспейсы',
+          price: '9 990 ₽',
+          note: 'Один раз, везде',
+          isFree: false,
+          popular: false,
+        },
+        {
+          id: 'crm-perpetual-one',
+          name: 'Вечная, один воркспейс',
+          price: '4 990 ₽',
+          note: 'Только выбранный workspace',
+          isFree: false,
+          popular: false,
+        },
+      ],
+    },
+    {
+      id: 'notes',
+      label: 'Заметки',
+      description: 'Простые заметки по воркспейсу.',
+      emoji: '📝',
+      isFree: false,
+      plans: [
+        {
+          id: 'notes-sub-month',
+          name: 'Подписка, месяц',
+          price: '99 ₽/мес',
+          note: 'Для всех воркспейсов',
+          isFree: false,
+          popular: true,
+        },
+        {
+          id: 'notes-perpetual-all',
+          name: 'Вечная, все воркспейсы',
+          price: '1 990 ₽',
+          note: 'Один раз, везде',
+          isFree: false,
+          popular: false,
+        },
+      ],
+    },
+    {
+      id: 'inventory',
+      label: 'Склад',
+      description: 'Учёт остатков и номенклатуры (в разработке).',
+      emoji: '📦',
+      isFree: false,
+      plans: [
+        {
+          id: 'inventory-sub-month',
+          name: 'Подписка, месяц',
+          price: '499 ₽/мес',
+          note: 'Для всех воркспейсов',
+          isFree: false,
+          popular: true,
+        },
+        {
+          id: 'inventory-perpetual-all',
+          name: 'Вечная, все воркспейсы',
+          price: '14 990 ₽',
+          note: 'Один раз, везде',
+          isFree: false,
+          popular: false,
+        },
+      ],
+    },
+    {
+      id: 'finance',
+      label: 'Финансы',
+      description: 'Проводки и отчёты (в разработке).',
+      emoji: '💰',
+      isFree: false,
+      plans: [
+        {
+          id: 'finance-sub-month',
+          name: 'Подписка, месяц',
+          price: '599 ₽/мес',
+          note: 'Для всех воркспейсов',
+          isFree: false,
+          popular: true,
+        },
+        {
+          id: 'finance-perpetual-all',
+          name: 'Вечная, все воркспейсы',
+          price: '19 990 ₽',
+          note: 'Один раз, везде',
+          isFree: false,
+          popular: false,
+        },
+      ],
+    },
+    {
+      id: 'hr',
+      label: 'HR',
+      description: 'Сотрудники и роли (в разработке).',
+      emoji: '👔',
+      isFree: false,
+      plans: [
+        {
+          id: 'hr-sub-month',
+          name: 'Подписка, месяц',
+          price: '399 ₽/мес',
+          note: 'Для всех воркспейсов',
+          isFree: false,
+          popular: false,
+        },
+        {
+          id: 'hr-perpetual-all',
+          name: 'Вечная, все воркспейсы',
+          price: '9 990 ₽',
+          note: 'Один раз, везде',
+          isFree: false,
+          popular: false,
+        },
+      ],
+    },
+  ]
 </script>

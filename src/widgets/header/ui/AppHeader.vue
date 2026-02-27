@@ -1,5 +1,7 @@
 <template>
-  <header class="sticky top-0 bg-bg-primary border-b border-border-default shadow-sm flex-shrink-0 z-50">
+  <header
+    class="sticky top-0 bg-bg-primary border-b border-border-default shadow-sm flex-shrink-0 z-50"
+  >
     <div class="container mx-auto px-4">
       <!-- Desktop версия -->
       <div class="hidden lg:flex items-center justify-between h-16">

@@ -22,16 +22,20 @@ export function useTheme() {
     deserializer: (value) => {
       if (value === 'light' || value === 'dark') return value
       return 'light'
-    }
+    },
   })
 
   function setTheme(newMode: ThemeMode) {
     mode.value = newMode
   }
 
-  watch(mode, (newMode) => {
-    applyTheme(newMode === 'dark')
-  }, { immediate: true })
+  watch(
+    mode,
+    (newMode) => {
+      applyTheme(newMode === 'dark')
+    },
+    { immediate: true },
+  )
 
   return { mode, setTheme }
 }

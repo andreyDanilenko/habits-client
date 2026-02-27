@@ -9,13 +9,15 @@
       :completion-rate="completionRate"
     />
 
-    <HabitsPageFilters
+    <PageFilters
+      :enabled-filters="[PageFiltersEnum.DATE, PageFiltersEnum.SHOW_ALL]"
+      :has-active-filters="hasActiveFilters"
       :selected-date="selectedDate"
       :show-all="showAll"
-      :has-active-filters="hasActiveFilters"
       @date-change="handleDateChange"
       @show-all="handleShowAll"
       @reset-filter="handleResetFilter"
+      @clear-filters="handleResetFilter"
     />
 
     <div v-if="isLoading" class="text-center py-12">
@@ -24,11 +26,13 @@
     </div>
 
     <EmptyState
-       v-else-if="habits.length === 0"
-      :title="true ? 'Привычки не найдены' : 'Нет привычек'"
-      :description="hasActiveFilters 
-        ? 'Попробуйте изменить фильтры или сбросить их'
-        : 'Создайте свою первую привычку, чтобы начать отслеживать прогресс'"
+      v-else-if="habits.length === 0"
+      :title="hasActiveFilters ? 'Привычки не найдены' : 'Нет привычек'"
+      :description="
+        hasActiveFilters
+          ? 'Попробуйте изменить фильтры или сбросить их'
+          : 'Создайте свою первую привычку, чтобы начать отслеживать прогресс'
+      "
       action-button-text="Создать привычку"
       :show-clear-filters="hasActiveFilters"
       @clear-filters="handleResetFilter"
@@ -49,16 +53,10 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { Spinner, EmptyState } from '@/shared/ui'
-  import {
-    HabitsPageHeader,
-    HabitsPageStats,
-    HabitsPageFilters,
-    HabitsList,
-  } from '@/features/habit/ui'
+  import { Spinner, EmptyState, PageFilters, PageFiltersEnum } from '@/shared/ui'
+  import { HabitsPageHeader, HabitsPageStats, HabitsList } from '@/features/habit/ui'
   import { useHabitsPage } from '@/features/habit/model'
 
-  
   const {
     habits,
     isLoading,

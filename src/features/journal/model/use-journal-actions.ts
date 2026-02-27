@@ -8,7 +8,10 @@ interface UseJournalActionsParams {
   handleDeleteEntry: (entry: JournalEntry) => void | Promise<void>
 }
 
-export const useJournalActions = ({ handleSaveEntry, handleDeleteEntry }: UseJournalActionsParams) => {
+export const useJournalActions = ({
+  handleSaveEntry,
+  handleDeleteEntry,
+}: UseJournalActionsParams) => {
   const { openModal } = useModal()
 
   const handleCreateEntry = () => {
@@ -40,7 +43,8 @@ export const useJournalActions = ({ handleSaveEntry, handleDeleteEntry }: UseJou
       component: ConfirmModal,
       props: {
         title: 'Удалить запись',
-        message: 'Вы уверены, что хотите удалить эту запись дневника? Это действие нельзя отменить.',
+        message:
+          'Вы уверены, что хотите удалить эту запись дневника? Это действие нельзя отменить.',
         confirmText: 'Удалить',
         confirmVariant: 'danger',
       },
@@ -56,4 +60,3 @@ export const useJournalActions = ({ handleSaveEntry, handleDeleteEntry }: UseJou
     deleteEntry,
   }
 }
-

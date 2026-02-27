@@ -3,9 +3,9 @@
     <BellIcon size="l" :color="iconColor" />
 
     <!-- Маленькая точка (когда мало уведомлений) -->
-    <span 
-      v-if="unreadCount > 0 && !showMessageBadge" 
-      class="absolute top-2 right-4 w-2 h-2 bg-error-default rounded-full" 
+    <span
+      v-if="unreadCount > 0 && !showMessageBadge"
+      class="absolute top-2 right-4 w-2 h-2 bg-error-default rounded-full"
     />
 
     <!-- Бейдж с числом (когда много уведомлений) -->

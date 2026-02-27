@@ -6,10 +6,7 @@
   >
     <div class="space-y-4">
       <FormField label="Во сколько выполнили?">
-        <Input
-          v-model="form.time"
-          type="time"
-        />
+        <Input v-model="form.time" type="time" />
       </FormField>
 
       <FormField label="Заметка (необязательно)">

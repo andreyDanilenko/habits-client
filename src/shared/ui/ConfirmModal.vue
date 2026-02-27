@@ -7,9 +7,9 @@
     <template #footer>
       <div class="flex justify-end space-x-3">
         <Button type="button" variant="outline" @click="$emit('close')"> Отмена </Button>
-        <Button 
-          type="button" 
-          :variant="confirmVariant === 'danger' ? 'danger' : 'primary'" 
+        <Button
+          type="button"
+          :variant="confirmVariant === 'danger' ? 'danger' : 'primary'"
           @click="$emit('confirm', true)"
         >
           {{ confirmText }}

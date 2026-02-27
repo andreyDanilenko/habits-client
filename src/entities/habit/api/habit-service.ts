@@ -36,13 +36,21 @@ export const habitService = {
   },
 
   updateHabit: async (workspaceId: string, id: string, data: UpdateHabitDto): Promise<Habit> => {
-    const response = await api.put<{ habit: Habit }>(API_ENDPOINTS.HABITS.DETAIL(workspaceId, id), data)
+    const response = await api.put<{ habit: Habit }>(
+      API_ENDPOINTS.HABITS.DETAIL(workspaceId, id),
+      data,
+    )
     return response.habit
   },
 
-  deleteHabit: (workspaceId: string, id: string): Promise<void> => api.delete(API_ENDPOINTS.HABITS.DETAIL(workspaceId, id)),
+  deleteHabit: (workspaceId: string, id: string): Promise<void> =>
+    api.delete(API_ENDPOINTS.HABITS.DETAIL(workspaceId, id)),
 
-  toggleCompletion: async (workspaceId: string, id: string, date?: string): Promise<ToggleResponse> => {
+  toggleCompletion: async (
+    workspaceId: string,
+    id: string,
+    date?: string,
+  ): Promise<ToggleResponse> => {
     const response = await api.post<{ completed: boolean; completion?: HabitCompletion }>(
       API_ENDPOINTS.HABITS.TOGGLE(workspaceId, id),
       { date: date || getLocalDateString() },
@@ -54,11 +62,17 @@ export const habitService = {
   },
 
   getStats: async (workspaceId: string, id: string): Promise<HabitStats> => {
-    const response = await api.get<{ stats: HabitStats }>(API_ENDPOINTS.HABITS.STATS(workspaceId, id))
+    const response = await api.get<{ stats: HabitStats }>(
+      API_ENDPOINTS.HABITS.STATS(workspaceId, id),
+    )
     return response.stats
   },
 
-  getCalendar: async (workspaceId: string, startDate?: string, endDate?: string): Promise<CalendarResponse> => {
+  getCalendar: async (
+    workspaceId: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<CalendarResponse> => {
     const params = new URLSearchParams()
     if (startDate) params.append('start', startDate)
     if (endDate) params.append('end', endDate)

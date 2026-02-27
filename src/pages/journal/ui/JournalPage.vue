@@ -10,16 +10,18 @@
       :average-mood-emoji="averageMoodEmoji"
     />
 
-    <JournalPageFilters
+    <PageFilters
+      :enabled-filters="[PageFiltersEnum.SEARCH, PageFiltersEnum.MOOD, PageFiltersEnum.PERIOD]"
+      :has-active-filters="hasActiveFilters"
       :search-query="searchQuery"
       :selected-mood="selectedMood"
-      :selected-date="selectedDate"
+      :selected-period="selectedDate"
       :mood-options="moodOptions"
-      :date-options="dateOptions"
-      :has-active-filters="hasActiveFilters"
+      :period-options="dateOptions"
+      search-placeholder="Поиск по записям, тегам, содержимому..."
       @update:search-query="searchQuery = $event"
       @update:selected-mood="selectedMood = $event"
-      @update:selected-date="selectedDate = $event"
+      @update:selected-period="selectedDate = $event"
       @clear-filters="clearFilters"
     />
 
@@ -27,13 +29,15 @@
       <Spinner />
       <p class="text-gray-500 mt-4">Загрузка записей...</p>
     </div>
-    
+
     <EmptyState
       v-else-if="filteredEntries.length === 0"
       :title="hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей'"
-      :description="hasActiveFilters
-        ? 'Попробуйте изменить фильтры или поисковый запрос'
-        : 'Начните вести дневник и записывайте свои мысли, достижения и планы'"
+      :description="
+        hasActiveFilters
+          ? 'Попробуйте изменить фильтры или поисковый запрос'
+          : 'Начните вести дневник и записывайте свои мысли, достижения и планы'
+      "
       action-button-text="Создать запись"
       :show-clear-filters="hasActiveFilters"
       @clear-filters="clearFilters"
@@ -50,11 +54,10 @@
 </template>
 
 <script setup lang="ts">
-  import { Spinner, EmptyState } from '@/shared/ui'
+  import { Spinner, EmptyState, PageFilters, PageFiltersEnum } from '@/shared/ui'
   import {
     JournalPageHeader,
     JournalPageStats,
-    JournalPageFilters,
     JournalPageEntriesList,
   } from '@/features/journal/ui'
   import { useJournalPage, useJournalActions } from '@/features/journal/model'
@@ -77,7 +80,11 @@
     handleSaveEntry,
   } = useJournalPage()
 
-  const { handleCreateEntry: openCreateModal, editEntry, deleteEntry } = useJournalActions({
+  const {
+    handleCreateEntry: openCreateModal,
+    editEntry,
+    deleteEntry,
+  } = useJournalActions({
     handleSaveEntry,
     handleDeleteEntry,
   })

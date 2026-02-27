@@ -18,7 +18,7 @@ function getStorage(storageType: StorageType): Storage {
       removeItem: () => {},
       clear: () => {},
       length: 0,
-      key: () => null
+      key: () => null,
     }
   }
   return storageType === 'local' ? localStorage : sessionStorage
@@ -37,7 +37,7 @@ export function useStorage<T>(options: StorageOptions<T>) {
       } catch {
         return initialValue
       }
-    }
+    },
   } = options
 
   const storage = getStorage(storageType)
@@ -75,9 +75,13 @@ export function useStorage<T>(options: StorageOptions<T>) {
     data.value = loadFromStorage()
   })
 
-  watch(data, (newValue) => {
-    saveToStorage(newValue)
-  }, { deep: true })
+  watch(
+    data,
+    (newValue) => {
+      saveToStorage(newValue)
+    },
+    { deep: true },
+  )
 
   return {
     data,
@@ -86,21 +90,21 @@ export function useStorage<T>(options: StorageOptions<T>) {
     clear,
     reload: () => {
       data.value = loadFromStorage()
-    }
+    },
   }
 }
 
 export function useLocalStorage<T>(options: StorageOptions<T>) {
   return useStorage<T>({
     ...options,
-    storageType: 'local'
+    storageType: 'local',
   })
 }
 
 export function useSessionStorage<T>(options: StorageOptions<T>) {
   return useStorage<T>({
     ...options,
-    storageType: 'session'
+    storageType: 'session',
   })
 }
 
@@ -108,7 +112,7 @@ export function useLocalStorageSimple<T>(key: string, initialValue: T) {
   return useStorage<T>({
     key,
     initialValue,
-    storageType: 'local'
+    storageType: 'local',
   })
 }
 
@@ -116,7 +120,7 @@ export function useSessionStorageSimple<T>(key: string, initialValue: T) {
   return useStorage<T>({
     key,
     initialValue,
-    storageType: 'session'
+    storageType: 'session',
   })
 }
 
@@ -126,7 +130,7 @@ export function useLocalStorageString(key: string, initialValue: string) {
     initialValue,
     storageType: 'local',
     serializer: (value) => value,
-    deserializer: (value) => value ?? initialValue
+    deserializer: (value) => value ?? initialValue,
   })
 }
 
@@ -136,6 +140,6 @@ export function useSessionStorageString(key: string, initialValue: string) {
     initialValue,
     storageType: 'session',
     serializer: (value) => value,
-    deserializer: (value) => value ?? initialValue
+    deserializer: (value) => value ?? initialValue,
   })
 }
