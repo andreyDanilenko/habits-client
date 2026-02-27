@@ -3,8 +3,11 @@
     <AppHeader v-if="showHeader" :sidebar-ref="sidebarRef" />
     <div class="flex flex-1 min-h-0 overflow-hidden items-stretch">
       <AppSidebar v-if="showHeader" ref="sidebarRef" />
-      <main class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-bg-primary overscroll-contain">
-        <div class="container mx-auto px-4 py-6 md:py-8">
+      <main 
+        class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain"
+        :class="[showHeader ? 'bg-bg-primary' : 'bg-bg-secondary']"
+      >
+        <div :class="contentClass">
           <router-view v-slot="{ Component }">
             <transition name="fade" mode="out-in">
               <component
@@ -31,6 +34,12 @@
   const route = useRoute()
   const showHeader = computed(() => route.name !== 'Login' && route.name !== 'Register')
   const sidebarRef = ref<InstanceType<typeof AppSidebar> | null>(null)
+  
+  const contentClass = computed(() => {
+    return showHeader.value 
+      ? 'container mx-auto px-4 py-6 md:py-8' 
+      : ''
+  })
 </script>
 
 <style scoped>
