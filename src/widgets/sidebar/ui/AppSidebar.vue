@@ -14,8 +14,7 @@
       class="bg-bg-primary border-r border-border-default transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
       :class="sidebarClasses"
     >
-      <nav class="p-4 flex flex-col h-full overflow-y-auto">
-        <!-- Кнопки управления -->
+      <nav class="p-4 flex flex-col h-full overflow-y-auto sidebar-nav">
         <div class="flex justify-end mb-4 flex-shrink-0">
           <Button
             v-if="isMobile"
@@ -35,7 +34,6 @@
           />
         </div>
 
-        <!-- Workspace Switcher -->
         <div class="mb-4 pb-4 border-b border-border-light flex-shrink-0">
           <div v-if="!isCollapsed" class="w-full">
             <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsed" />
@@ -52,7 +50,6 @@
           </div>
         </div>
 
-        <!-- Модули -->
         <div class="mb-4 flex-shrink-0">
           <SidebarSectionHeader title="Модули" :collapsed="isCollapsed" />
           <SidebarNavigation
@@ -63,7 +60,6 @@
           />
         </div>
 
-        <!-- Роуты модуля -->
         <div
           v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
           class="mb-4 flex-1 min-h-0 overflow-y-auto"
@@ -76,8 +72,7 @@
           />
         </div>
 
-        <!-- Нижняя секция -->
-        <div class="border-t border-border-light pt-4 mt-auto flex-shrink-0">
+        <div class="border-t border-border-light pt-4 mt-auto flex-shrink-0 sidebar-footer">
           <SidebarNavigation
             :items="footerNavItems"
             :collapsed="isCollapsed"
@@ -140,7 +135,6 @@
     return availableModules.value[0] || null
   })
 
-  // Функция для определения модуля по роуту
   const detectModuleFromRoute = () => {
     const currentPath = route.path
     for (const module of availableModules.value) {
@@ -149,13 +143,11 @@
         return
       }
     }
-    // Если модуль не найден, выбираем первый доступный
     if (availableModules.value.length > 0 && !selectedModuleId.value) {
       selectedModuleId.value = availableModules.value[0].id
     }
   }
 
-  // Обновляем selectedModuleId при изменении роута
   watch(
     () => route.path,
     () => {
@@ -187,7 +179,6 @@
     }
   }
 
-  // Структура данных для навигации модулей
   const modulesNavItems = computed<SidebarNavItem[]>(() => {
     return availableModules.value.map((module) => {
       const routes = getModuleRoutes(module)
@@ -347,6 +338,14 @@
   .fade-enter-from,
   .fade-leave-to {
     opacity: 0;
+  }
+
+  .sidebar-nav {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .sidebar-footer {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   @media (min-width: 1024px) {
