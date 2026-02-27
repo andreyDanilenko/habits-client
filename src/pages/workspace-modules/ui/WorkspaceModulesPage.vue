@@ -176,7 +176,7 @@
 
   async function confirmDisable() {
     if (!disableTarget.value || !workspaceStore.currentWorkspace) return
-    const { id: moduleCode, label } = disableTarget.value
+    const { id: moduleCode } = disableTarget.value
     disablingModule.value = moduleCode
     try {
       await workspaceService.disableModule(workspaceStore.currentWorkspace.id, moduleCode)

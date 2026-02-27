@@ -74,7 +74,8 @@
         return
       }
       loader().then((m) => {
-        headerWidget.value = m?.default ?? null
+        const comp = m && typeof m === 'object' && 'default' in m ? m.default : m
+        headerWidget.value = comp ?? null
       })
     },
     { immediate: true },

@@ -75,10 +75,6 @@
   const userInitials = computed(() => userStore.userInitials || 'U')
   const userEmail = computed(() => userStore.currentUser?.email || 'Пользователь')
 
-  const toggleDropdown = () => {
-    showDropdown.value = !showDropdown.value
-  }
-
   const closeDropdown = () => {
     showDropdown.value = false
   }

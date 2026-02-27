@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
+import type {
+  RouteRecordRaw,
+  RouteLocationNormalized,
+  NavigationGuardNext,
+} from 'vue-router'
 import { authGuard, requireAdmin } from '@/features/auth'
 import { requireOwnerOrAdmin, requirePermission, requireModuleEnabled } from '@/entities/workspace'
 import { modules, getAvailableModules } from '@/app/modules/config'
@@ -81,7 +85,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/module-activation/:moduleCode',
     name: 'ModuleActivation',
-    redirect: (to) => ({ path: '/billing', query: { module: to.params.moduleCode } }),
+    redirect: (to: RouteLocationNormalized) => ({
+      path: '/billing',
+      query: { module: to.params.moduleCode as string },
+    }),
     meta: { requiresAuth: true },
   },
   {
@@ -111,7 +118,7 @@ modules.forEach((module) => {
         module: module.id,
         ...route.meta,
       },
-      beforeEnter: (to, _from, next) => {
+      beforeEnter: (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
         const moduleGuard = requireModuleEnabled(getAvailableModules)
         const moduleResult = moduleGuard(to)
         if (moduleResult !== true) {

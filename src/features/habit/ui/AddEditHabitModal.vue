@@ -66,7 +66,14 @@
 
       <FormField label="Цель на день">
         <div class="flex items-center space-x-2">
-          <Input v-model.number="form.dailyGoal" type="number" min="1" max="10" class="w-20" />
+          <Input
+            :model-value="String(form.dailyGoal)"
+            type="number"
+            min="1"
+            max="10"
+            class="w-20"
+            @update:model-value="(v) => (form.dailyGoal = Math.max(1, Math.min(10, Number(v) || 1)))"
+          />
           <span class="text-text-secondary">раз(а) в день</span>
         </div>
       </FormField>
