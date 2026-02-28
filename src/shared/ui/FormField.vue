@@ -5,6 +5,7 @@
       <span v-if="required" class="text-error-default">*</span>
     </label>
     <slot />
+    <p v-if="error" class="mt-1 text-xs text-error-default">{{ error }}</p>
     <div v-if="showCharCount || hint" class="mt-1 flex justify-between">
       <p v-if="hint" class="text-xs text-text-muted">{{ hint }}</p>
       <p v-if="showCharCount" class="text-xs text-text-muted">
@@ -19,6 +20,7 @@
     label?: string
     required?: boolean
     hint?: string
+    error?: string
     showCharCount?: boolean
     currentLength?: number
     maxLength?: number

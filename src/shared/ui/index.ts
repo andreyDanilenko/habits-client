@@ -17,5 +17,9 @@ export { default as FormField } from './FormField.vue'
 export { default as SelectButton } from './SelectButton.vue'
 export { default as EmptyState } from './EmptyState.vue'
 export { default as PageFilters } from './PageFilters/PageFilters.vue'
-
 export { PageFiltersEnum } from './PageFilters/PageFilters.types'
+
+export { DataTable } from './DataTable'
+export type { DataTableColumn, DataTableProps, SortOrder } from './DataTable/DataTable.types'
+export { Pagination } from './Pagination'
+export { Drawer } from './Drawer'

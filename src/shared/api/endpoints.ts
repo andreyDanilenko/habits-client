@@ -40,6 +40,19 @@ export const API_ENDPOINTS = {
     USER_LICENSES: (userId: string) => apiV1 + `/admin/users/${userId}/licenses`,
   },
 
+  CRM: {
+    CONTACTS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/contacts`,
+    CONTACT: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/contacts/${id}`,
+    COMPANIES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/companies`,
+    COMPANY: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/companies/${id}`,
+    DEALS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/deals`,
+    DEAL: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/deals/${id}`,
+    PIPELINES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/pipelines`,
+  },
+
   HABITS: {
     BASE: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits`,
     DETAIL: (workspaceId: string, habitsId: string) =>

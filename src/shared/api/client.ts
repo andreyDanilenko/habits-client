@@ -4,6 +4,12 @@ import { mockApi } from './mock-client'
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
+/** CRM (контакты, компании, сделки) всегда на моках, если бэкенд ещё не отдаёт эти эндпоинты */
+function isCrmMockUrl(url: string): boolean {
+  if (!url.includes('/workspaces/')) return false
+  return url.includes('/contacts') || url.includes('/companies') || url.includes('/deals') || url.includes('/pipelines')
+}
+
 type UnauthorizedHandler = () => void | Promise<void>
 
 class ApiClient {
@@ -52,7 +58,7 @@ class ApiClient {
   }
 
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    if (USE_MOCK_API) {
+    if (USE_MOCK_API || isCrmMockUrl(url)) {
       return mockApi.get<T>(url)
     }
     const response = await this.client.get<{ status: string; data?: T }>(url, config)
@@ -60,7 +66,7 @@ class ApiClient {
   }
 
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    if (USE_MOCK_API) {
+    if (USE_MOCK_API || isCrmMockUrl(url)) {
       return mockApi.post<T>(url, data)
     }
     const response = await this.client.post<{ status: string; data?: T }>(url, data, config)
@@ -68,7 +74,7 @@ class ApiClient {
   }
 
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    if (USE_MOCK_API) {
+    if (USE_MOCK_API || isCrmMockUrl(url)) {
       return mockApi.put<T>(url, data)
     }
     const response = await this.client.put<{ status: string; data?: T }>(url, data, config)
@@ -76,7 +82,7 @@ class ApiClient {
   }
 
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    if (USE_MOCK_API) {
+    if (USE_MOCK_API || isCrmMockUrl(url)) {
       return mockApi.delete<T>(url)
     }
     const response = await this.client.delete<{ status: string; data?: T }>(url, config)
