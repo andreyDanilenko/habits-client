@@ -1,0 +1,6 @@
+export { default as ContactsToolbar } from './ContactsToolbar.vue'
+export { default as ContactsTableWidget } from './ContactsTableWidget.vue'
+export { default as ContactFormModal } from './ContactFormModal.vue'
+export { default as ContactQuickViewPanel } from './ContactQuickViewPanel.vue'
+export { default as ContactsFiltersPanel } from './ContactsFiltersPanel.vue'
+export type { ContactFilters } from './ContactsFiltersPanel.vue'
