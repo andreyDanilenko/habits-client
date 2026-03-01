@@ -32,6 +32,8 @@ export interface CreateCompanyDto {
   phone?: string
   email?: string
   website?: string
+  legalAddress?: CompanyAddress
+  actualAddress?: CompanyAddress
   tags?: string[]
   ownerId?: string
 }

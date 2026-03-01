@@ -117,17 +117,11 @@
           </template>
           <!-- Вкладка 3: Активность -->
           <template v-else-if="activeTab === 'activity'">
-            <ul class="space-y-3">
-              <li class="flex gap-3 text-sm border-l-2 border-border-light pl-4 py-1">
-                <span class="text-text-muted shrink-0">{{ formatDateTime(contact.createdAt) }}</span>
-                <span>Создание контакта</span>
-              </li>
-              <li class="flex gap-3 text-sm border-l-2 border-border-light pl-4 py-1">
-                <span class="text-text-muted shrink-0">{{ formatDateTime(contact.updatedAt) }}</span>
-                <span>Изменение данных</span>
-              </li>
-              <li class="text-text-muted text-sm">Звонки, письма — (скоро).</li>
-            </ul>
+            <ActivityFeed
+              entity-type="contact"
+              :entity-id="contactId"
+              :can-create="canCreateCrm"
+            />
           </template>
           <!-- Вкладка 4: Задачи -->
           <template v-else>
@@ -166,8 +160,9 @@
   import { Modal, ConfirmModal, Button, Spinner } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { ContactFormModal } from '@/features/contacts'
+  import { ActivityFeed } from '@/features/activity'
   import { contactService } from '@/entities/contact'
-  import { useWorkspaceStore } from '@/entities/workspace'
+  import { useWorkspaceStore, usePermissions, WorkspacePermission } from '@/entities/workspace'
   import type { Contact, CreateContactDto } from '@/entities/contact'
 
   const route = useRoute()
@@ -190,6 +185,8 @@
 
   const workspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? '')
   const contactId = computed(() => route.params.id as string)
+  const { hasPermission } = usePermissions()
+  const canCreateCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
   const initials = computed(() => {
     if (!contact.value) return '?'
     const f = contact.value.firstName?.slice(0, 1) ?? ''
@@ -205,11 +202,6 @@
   function formatDate(iso: string) {
     const d = new Date(iso)
     return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
-  }
-
-  function formatDateTime(iso: string) {
-    const d = new Date(iso)
-    return d.toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
   }
 
   async function fetchContact() {

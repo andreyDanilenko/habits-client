@@ -9,6 +9,7 @@ export function useContactsPage() {
   const tableState = useContactsTableState()
 
   const searchQuery = ref('')
+  const companyIdFilter = ref('')
   const contacts = ref<Contact[]>([])
   const total = ref(0)
   const isLoading = ref(false)
@@ -28,6 +29,7 @@ export function useContactsPage() {
       const res = await contactService.getList({
         workspaceId: workspaceId.value,
         search: searchQuery.value || undefined,
+        companyId: companyIdFilter.value || undefined,
         page: tableState.page.value,
         limit: tableState.pageSize.value,
         sortBy: tableState.sortBy.value ?? undefined,
@@ -48,6 +50,7 @@ export function useContactsPage() {
     [
       () => workspaceId.value,
       searchQuery,
+      companyIdFilter,
       () => tableState.page.value,
       () => tableState.pageSize.value,
       () => tableState.sortBy.value,
@@ -82,6 +85,7 @@ export function useContactsPage() {
     ...tableState,
     workspaceId,
     searchQuery,
+    companyIdFilter,
     contacts,
     total,
     isLoading,

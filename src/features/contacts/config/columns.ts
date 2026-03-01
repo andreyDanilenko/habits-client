@@ -12,12 +12,14 @@ function formatDate(iso: string): string {
 }
 
 function primaryPhone(c: Contact): string {
+  if (!c.phones) return ''
   const p = c.phones.find((x) => x.isPrimary) ?? c.phones[0]
   return p?.number ?? ''
 }
 
 function primaryEmail(c: Contact): string {
-  const e = c.emails.find((x) => x.isPrimary) ?? c.emails[0]
+  if (!c.emails) return ''
+  const e = c.emails?.find((x) => x.isPrimary) ?? c.emails[0]
   return e?.address ?? ''
 }
 

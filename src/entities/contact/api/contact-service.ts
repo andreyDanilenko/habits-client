@@ -8,6 +8,8 @@ export interface ContactsListParams {
   limit?: number
   sortBy?: string | null
   sortOrder?: 'asc' | 'desc'
+  /** Фильтр по компании (ID) */
+  companyId?: string
 }
 
 export interface ContactsListResponse {
@@ -23,6 +25,7 @@ export const contactService = {
     if (params.limit != null) q.set('limit', String(params.limit))
     if (params.sortBy) q.set('sortBy', params.sortBy)
     if (params.sortOrder) q.set('sortOrder', params.sortOrder)
+    if (params.companyId) q.set('companyId', params.companyId)
     const query = q.toString()
     const url = query
       ? `${API_ENDPOINTS.CRM.CONTACTS(params.workspaceId)}?${query}`

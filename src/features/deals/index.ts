@@ -1,2 +1,3 @@
 export { useDealsPage, useDealsTableState } from './model'
-export { DealsToolbar, DealsTableWidget, DealFormModal } from './ui'
+export type { DealsViewMode } from './model/use-deals-page'
+export { DealsToolbar, DealsTableWidget, DealsKanbanView, DealFormModal } from './ui'

@@ -36,7 +36,7 @@
 <script setup lang="ts">
   import { h } from 'vue'
   import { DataTable, Button, Pagination } from '@/shared/ui'
-  import { companyColumns } from '../config/columns'
+  import { getCompanyColumns } from '../config/columns'
   import CompaniesTableRowActions from './CompaniesTableRowActions.vue'
   import type { Company } from '@/entities/company'
 
@@ -57,7 +57,17 @@
     fetchCompanies: () => Promise<void>
   }>()
 
-  const emit = defineEmits<{ edit: [company: Company]; delete: [company: Company] }>()
+  const emit = defineEmits<{
+    edit: [company: Company]
+    delete: [company: Company]
+    'company-click': [company: Company]
+    'contacts-click': [company: Company]
+  }>()
+
+  const companyColumns = getCompanyColumns({
+    onCompanyClick: (company) => emit('company-click', company),
+    onContactsClick: (company) => emit('contacts-click', company),
+  })
 
   const onSelectAll = () => {
     props.handleSelectAll(props.companies.map((c) => c.id))

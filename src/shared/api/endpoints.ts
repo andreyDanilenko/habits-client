@@ -51,6 +51,11 @@ export const API_ENDPOINTS = {
     DEAL: (workspaceId: string, id: string) =>
       apiV1 + `/workspaces/${workspaceId}/deals/${id}`,
     PIPELINES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/pipelines`,
+    ACTIVITIES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/activities`,
+    ACTIVITY: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/activities/${id}`,
+    ACTIVITY_IMPORTANT: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/activities/${id}/important`,
   },
 
   HABITS: {

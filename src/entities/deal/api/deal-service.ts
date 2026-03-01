@@ -10,6 +10,11 @@ export interface DealsListParams {
   sortOrder?: 'asc' | 'desc'
   pipelineId?: string
   stageId?: string
+  /** Фильтр по компании */
+  companyId?: string
+  /** Фильтр по дате создания (ISO) */
+  dateFrom?: string
+  dateTo?: string
 }
 
 export interface DealsListResponse {
@@ -27,6 +32,9 @@ export const dealService = {
     if (params.sortOrder) q.set('sortOrder', params.sortOrder)
     if (params.pipelineId) q.set('pipelineId', params.pipelineId)
     if (params.stageId) q.set('stageId', params.stageId)
+    if (params.companyId) q.set('companyId', params.companyId)
+    if (params.dateFrom) q.set('dateFrom', params.dateFrom)
+    if (params.dateTo) q.set('dateTo', params.dateTo)
     const query = q.toString()
     const url = query
       ? `${API_ENDPOINTS.CRM.DEALS(params.workspaceId)}?${query}`

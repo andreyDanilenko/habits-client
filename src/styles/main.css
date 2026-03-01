@@ -163,6 +163,13 @@ button {
   --color-orange-50: #fff7ed;
 }
 
+/* DataTable loading bar animation */
+@keyframes data-table-progress {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(-100%); }
+}
+
 /* ===== DARK THEME OVERRIDES ===== */
 .dark {
   /* ===== Primary (Indigo) ===== */

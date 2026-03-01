@@ -97,9 +97,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
   import { Modal, ConfirmModal, Drawer } from '@/shared/ui'
-  import { useRouter } from 'vue-router'
   import { useUserStore } from '@/entities/user'
   import {
     useContactsPage,
@@ -114,11 +114,13 @@
   import type { ContactFilters } from '@/features/contacts'
   import type { Company, CreateCompanyDto } from '@/entities/company'
 
+  const route = useRoute()
   const router = useRouter()
   const userStore = useUserStore()
   const {
     workspaceId,
     searchQuery,
+    companyIdFilter,
     contacts,
     total,
     isLoading,
@@ -139,6 +141,14 @@
     updateContact,
     deleteContact,
   } = useContactsPage()
+
+  watch(
+    () => route.query.companyId,
+    (id) => {
+      companyIdFilter.value = (id as string) ?? ''
+    },
+    { immediate: true },
+  )
 
   const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
 

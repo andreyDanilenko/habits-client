@@ -24,6 +24,8 @@
       :fetch-companies="fetchCompanies"
       @edit="openEditModal"
       @delete="confirmDelete"
+      @company-click="goToCompany"
+      @contacts-click="goToContactsByCompany"
     />
 
     <CompanyFormModal
@@ -49,6 +51,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
   import { Modal, ConfirmModal } from '@/shared/ui'
   import {
     useCompaniesPage,
@@ -57,6 +60,8 @@
     CompanyFormModal,
   } from '@/features/companies'
   import type { Company, CreateCompanyDto } from '@/entities/company'
+
+  const router = useRouter()
 
   const {
     searchQuery,
@@ -112,6 +117,14 @@
   const confirmDelete = (company: Company) => {
     companyToDelete.value = company
     showDeleteModal.value = true
+  }
+
+  function goToCompany(company: Company) {
+    router.push({ name: 'CrmCompanyDetail', params: { id: company.id } })
+  }
+
+  function goToContactsByCompany(company: Company) {
+    router.push({ path: '/crm/contacts', query: { companyId: company.id } })
   }
 
   const doDelete = async () => {

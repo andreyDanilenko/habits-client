@@ -124,6 +124,15 @@ export const modules: Module[] = [
         component: () => import('@/pages/crm/deals'),
         permissions: [WorkspacePermission.CRM_VIEW],
       },
+      {
+        path: '/crm/deals/:id',
+        name: 'CrmDealDetail',
+        label: 'Карточка сделки',
+        icon: ListIcon,
+        component: () => import('@/pages/crm/deal-detail'),
+        permissions: [WorkspacePermission.CRM_VIEW],
+        meta: { hideFromMenu: true },
+      },
     ],
   },
   {

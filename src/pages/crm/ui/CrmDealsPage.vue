@@ -2,9 +2,35 @@
   <div class="max-w-7xl mx-auto space-y-6 pb-8">
     <h1 class="text-text-primary">CRM — Сделки</h1>
 
-    <DealsToolbar @create="openCreateModal" />
+    <DealsToolbar
+      :pipelines="pipelines"
+      :view-mode="viewMode"
+      :selected-pipeline-id="selectedPipelineId"
+      :date-from="dateFrom"
+      :date-to="dateTo"
+      @create="openCreateModal"
+      @update:view-mode="viewMode = $event"
+      @update:selected-pipeline-id="selectedPipelineId = $event"
+      @update:date-from="dateFrom = $event"
+      @update:date-to="dateTo = $event"
+    />
+
+    <DealsKanbanView
+      v-if="viewMode === 'kanban'"
+      v-model:columns="kanbanColumns"
+      :pipelines="pipelines"
+      :is-loading="isLoading"
+      :is-error="isError"
+      :saving-deal-ids="savingDealIds"
+      @move="handleDealMove"
+      @open-deal="openDealCard"
+      @edit="openEditModal"
+      @copy="openEditModal"
+      @delete="confirmDelete"
+    />
 
     <DealsTableWidget
+      v-else
       :deals="deals"
       :pipelines="pipelines"
       :total="total"
@@ -63,12 +89,14 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { useRouter } from 'vue-router'
   import { Modal, ConfirmModal } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
   import {
     useDealsPage,
     DealsToolbar,
     DealsTableWidget,
+    DealsKanbanView,
     DealFormModal,
   } from '@/features/deals'
   import { ContactFormModal } from '@/features/contacts'
@@ -76,6 +104,7 @@
   import type { Deal, CreateDealDto } from '@/entities/deal'
   import type { Contact, CreateContactDto } from '@/entities/contact'
 
+  const router = useRouter()
   const userStore = useUserStore()
   const {
     workspaceId,
@@ -84,6 +113,13 @@
     total,
     isLoading,
     isError,
+    viewMode,
+    selectedPipelineId,
+    dateFrom,
+    dateTo,
+    kanbanColumns,
+    savingDealIds,
+    handleDealMove,
     page,
     pageSize,
     sortBy,
@@ -99,6 +135,10 @@
     deleteDeal,
     defaultStageId,
   } = useDealsPage()
+
+  const openDealCard = (deal: Deal) => {
+    router.push({ name: 'CrmDealDetail', params: { id: deal.id } })
+  }
 
   const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
 
