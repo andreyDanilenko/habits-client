@@ -11,10 +11,12 @@
       />
     </div>
     <div class="flex gap-2 flex-shrink-0">
-      <Button variant="primary" size="md" @click="$emit('create')">
-        <PlusIcon class="size-5 mr-2" />
-        Создать компанию
-      </Button>
+      <PermissionGuard :permission="CRM_PERMISSIONS.companyCreate">
+        <Button variant="primary" size="md" @click="$emit('create')">
+          <PlusIcon class="size-5 mr-2" />
+          Создать компанию
+        </Button>
+      </PermissionGuard>
     </div>
   </div>
 </template>
@@ -22,6 +24,8 @@
 <script setup lang="ts">
   import { Button } from '@/shared/ui'
   import { PlusIcon, SearchIcon } from '@/shared/ui/icon'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
 
   defineProps<{ searchQuery: string }>()
   defineEmits<{ 'update:searchQuery': [value: string]; create: [] }>()

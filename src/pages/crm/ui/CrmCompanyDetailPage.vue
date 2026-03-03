@@ -166,13 +166,13 @@
             <div class="flex items-center justify-between gap-4 mb-4">
               <h3 class="text-sm font-medium text-text-secondary">
                 Сделки компании
-                <span v-if="companyDeals.length" class="ml-2 font-normal text-text-primary">
+                <span v-if="companyDeals && companyDeals.length" class="ml-2 font-normal text-text-primary">
                   — общая сумма: {{ formatSum(companyDealsSum) }}
                 </span>
               </h3>
             </div>
             <div v-if="companyDealsLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
-            <div v-else-if="companyDeals.length === 0" class="text-text-muted text-sm py-4">
+            <div v-else-if="companyDeals && companyDeals.length === 0" class="text-text-muted text-sm py-4">
               Нет сделок по этой компании.
             </div>
             <ul v-else class="space-y-2">

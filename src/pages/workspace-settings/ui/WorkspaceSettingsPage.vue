@@ -101,16 +101,19 @@
       </p>
     </Card>
 
-    <!-- Права доступа (Soon) -->
+    <!-- Права доступа -->
     <Card v-if="isOwner" class="p-6">
       <h2 class="text-text-primary mb-4">Права доступа</h2>
       <div class="space-y-4">
-        <div class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <p class="text-sm text-blue-800 dark:text-blue-300">
-            <span class="font-semibold">Soon:</span> Настройка детальных прав доступа для ролей
-            (ADMIN, MEMBER, GUEST).
-          </p>
-        </div>
+        <p class="text-sm text-text-secondary">
+          Управляйте ролями workspace и их правами доступа.
+        </p>
+        <router-link
+          to="/workspace-settings/roles"
+          class="inline-flex items-center text-primary-default hover:text-primary-dark font-medium"
+        >
+          Перейти к управлению ролями →
+        </router-link>
       </div>
     </Card>
 

@@ -179,10 +179,13 @@
                   class="flex flex-col gap-2 rounded-lg border border-border-light bg-bg-secondary px-3 py-2"
                 >
                   <div class="flex items-center gap-2">
-                    <div class="h-6 w-1.5 rounded-full" :style="{ backgroundColor: element.color || '#94A3B8' }" />
+                    <div
+                      class="h-6 w-1.5 rounded-full"
+                      :style="{ backgroundColor: (element as any).color || '#94A3B8' }"
+                    />
 
                     <input
-                      v-model="element.name"
+                      v-model="(element as any).name"
                       type="text"
                       class="flex-1 rounded-md border border-border-light bg-bg-primary px-2 py-1 text-xs text-text-primary focus:outline-none focus:ring-1 focus:ring-primary-default"
                       :placeholder="`Этап ${index + 1}`"
@@ -190,7 +193,7 @@
                     />
 
                     <input
-                      v-model.number="element.probability"
+                      v-model.number="(element as any).probability"
                       type="number"
                       min="0"
                       max="100"
@@ -200,7 +203,7 @@
                     <span class="text-xs text-text-muted">%</span>
 
                     <input
-                      v-model="element.color"
+                      v-model="(element as any).color"
                       type="color"
                       class="h-7 w-10 cursor-pointer rounded-md border border-border-light bg-bg-primary"
                       :disabled="!canManage || isSaving"
@@ -211,7 +214,7 @@
                     <div class="flex items-center gap-3">
                       <label class="inline-flex items-center gap-1">
                         <input
-                          :checked="element.isFinal"
+                          :checked="(element as any).isFinal"
                           type="checkbox"
                           :disabled="!canManage || isSaving"
                           class="h-3.5 w-3.5 rounded border-border-light text-primary-default focus:ring-primary-default"
@@ -222,7 +225,7 @@
 
                       <label class="inline-flex items-center gap-1">
                         <input
-                          :checked="element.isLost"
+                          :checked="(element as any).isLost"
                           type="checkbox"
                           :disabled="!canManage || isSaving"
                           class="h-3.5 w-3.5 rounded border-border-light text-error-default focus:ring-error-default"

@@ -1,10 +1,12 @@
 <template>
   <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center flex-wrap">
     <div class="flex gap-2 flex-shrink-0 flex-wrap items-center">
-      <Button variant="primary" size="md" @click="$emit('create')">
-        <PlusIcon class="size-5 mr-2" />
-        Создать сделку
-      </Button>
+      <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
+        <Button variant="primary" size="md" @click="$emit('create')">
+          <PlusIcon class="size-5 mr-2" />
+          Создать сделку
+        </Button>
+      </PermissionGuard>
 
       <div v-if="pipelines.length > 1" class="flex items-center gap-2">
         <label class="text-sm text-text-secondary whitespace-nowrap">Воронка:</label>
@@ -79,6 +81,8 @@
   import { PlusIcon, ListIcon } from '@/shared/ui/icon'
   import type { Pipeline } from '@/entities/deal'
   import type { DealsViewMode, DealsStatusFilter } from '../model/use-deals-page'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
 
   defineProps<{
     pipelines: Pipeline[]

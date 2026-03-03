@@ -307,9 +307,6 @@
   function buildKanbanColumns(): KanbanColumnModel<Deal>[] {
     const pipeline = selectedPipeline.value
     const pipelineId = pipeline?.id
-    const stageIds = pipeline?.stages?.length
-      ? new Set(pipeline.stages.map((s) => s.id))
-      : new Set<string>()
     const dealsInOtherPipelines = pipelineId
       ? deals.value.filter((d) => d.pipelineId !== pipelineId)
       : deals.value

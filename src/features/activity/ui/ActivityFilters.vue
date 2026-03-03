@@ -11,47 +11,37 @@
     <div>
       <label class="block text-xs font-medium text-text-muted mb-2">Тип событий</label>
       <div class="flex flex-wrap gap-3">
-        <label class="inline-flex items-center gap-2 cursor-pointer">
-          <input
-            v-model="localTypesAll"
-            type="checkbox"
-            class="rounded border-border-default text-primary-default"
-            @change="onTypesAllChange"
-          />
-          <span class="text-sm">Все</span>
-        </label>
-        <label
+        <Checkbox
+          v-model="localTypesAll"
+          label="Все"
+          size="sm"
+          container-class="items-center"
+          @change="onTypesAllChange"
+        />
+        <Checkbox
           v-for="opt in typeOptions"
           :key="opt.value"
-          class="inline-flex items-center gap-2 cursor-pointer"
-        >
-          <input
-            :checked="localTypes.includes(opt.value)"
-            type="checkbox"
-            class="rounded border-border-default text-primary-default"
-            @change="toggleType(opt.value)"
-          />
-          <span class="text-sm">{{ opt.label }} {{ opt.emoji }}</span>
-        </label>
+          :model-value="localTypes.includes(opt.value)"
+          size="sm"
+          :label="`${opt.label} ${opt.emoji}`"
+          container-class="items-center"
+          @change="() => toggleType(opt.value)"
+        />
       </div>
     </div>
 
     <div>
       <label class="block text-xs font-medium text-text-muted mb-2">Период</label>
       <div class="space-y-2">
-        <label
+        <Radio
           v-for="p in periodOptions"
           :key="p.value"
-          class="flex items-center gap-2 cursor-pointer"
-        >
-          <input
-            v-model="localPeriod"
-            type="radio"
-            :value="p.value"
-            class="text-primary-default"
-          />
-          <span class="text-sm">{{ p.label }}</span>
-        </label>
+          :model-value="localPeriod === p.value"
+          size="sm"
+          :label="p.label"
+          container-class="items-center"
+          @change="() => (localPeriod = p.value)"
+        />
       </div>
       <div v-if="localPeriod === 'custom'" class="mt-2 grid grid-cols-2 gap-2">
         <div>
@@ -74,14 +64,12 @@
     </div>
 
     <div>
-      <label class="inline-flex items-center gap-2 cursor-pointer">
-        <input
-          v-model="localImportantOnly"
-          type="checkbox"
-          class="rounded border-border-default text-primary-default"
-        />
-        <span class="text-sm text-text-muted">Только важные</span>
-      </label>
+      <Checkbox
+        v-model="localImportantOnly"
+        label="Только важные"
+        size="sm"
+        container-class="items-center"
+      />
     </div>
 
     <div>
@@ -104,7 +92,7 @@
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Button } from '@/shared/ui'
+  import { Button, Checkbox, Radio } from '@/shared/ui'
   import type { ActivityFilters as ActivityFiltersType, ActivityType } from '@/entities/activity'
 
   const props = defineProps<{

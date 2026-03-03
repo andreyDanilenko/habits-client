@@ -38,6 +38,7 @@
             >
               <Checkbox
                 :model-value="allSelected"
+                size="sm"
                 aria-label="Выбрать все"
                 @update:model-value="onSelectAll?.()"
               />
@@ -99,6 +100,7 @@
             >
               <Checkbox
                 :model-value="selectedIdsSet.has(getRowId(row))"
+                size="sm"
                 aria-label="Выбрать строку"
                 @update:model-value="onSelect?.(getRowId(row))"
                 @click.stop

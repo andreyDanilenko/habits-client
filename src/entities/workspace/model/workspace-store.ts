@@ -133,6 +133,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       applyWorkspaceHeader(workspace)
 
       await loadModules(workspaceId)
+      try {
+        const { useAuthStore } = await import('@/features/auth')
+        const authStore = useAuthStore()
+        await authStore.loadEffectivePermissions()
+      } catch (error) {
+        console.error('Failed to reload permissions after workspace switch:', error)
+      }
       const { useHabitStore } = await import('@/entities/habit')
       const habitStore = useHabitStore()
       await habitStore.fetchHabits(new Date())

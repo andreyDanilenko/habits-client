@@ -41,10 +41,12 @@
         >
           Фильтры
         </Button>
-        <Button variant="primary" size="md" @click="$emit('create')">
-          <PlusIcon class="size-5 mr-2" />
-          Создать контакт
-        </Button>
+        <PermissionGuard :permission="CRM_PERMISSIONS.contactCreate">
+          <Button variant="primary" size="md" @click="$emit('create')">
+            <PlusIcon class="size-5 mr-2" />
+            Создать контакт
+          </Button>
+        </PermissionGuard>
       </div>
     </div>
     <Transition name="filters-slide">
@@ -65,6 +67,8 @@
   import { PlusIcon, SearchIcon, ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
   import ContactsFiltersPanel from './ContactsFiltersPanel.vue'
   import type { ContactFilters } from './ContactsFiltersPanel.vue'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
 
   const props = defineProps<{
     searchQuery: string

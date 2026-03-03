@@ -70,9 +70,22 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/settings/members',
+    name: 'SettingsMembers',
+    component: () => import('@/pages/settings/members'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/workspace-settings',
     name: 'WorkspaceSettings',
     component: () => import('@/pages/workspace-settings'),
+    meta: { requiresAuth: true },
+    beforeEnter: requireOwnerOrAdmin(),
+  },
+  {
+    path: '/workspace-settings/roles',
+    name: 'WorkspaceRoles',
+    component: () => import('@/pages/workspace-settings/roles'),
     meta: { requiresAuth: true },
     beforeEnter: requireOwnerOrAdmin(),
   },

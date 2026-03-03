@@ -3,7 +3,12 @@ import { ref, computed } from 'vue'
 import { authService } from '@/features/auth'
 import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
-import type { LoginDto, RegisterDto, AuthResponse, EffectivePermissions } from '@/features/auth'
+import type {
+  LoginDto,
+  RegisterDto,
+  AuthResponse,
+  EffectivePermissions,
+} from '@/features/auth'
 
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(null)

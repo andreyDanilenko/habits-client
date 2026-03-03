@@ -3,6 +3,7 @@ export type {
   CreateWorkspaceDto,
   UpdateWorkspaceDto,
   WorkspaceModule,
+  Member,
 } from './types/workspace'
 
 export { useWorkspaceStore } from './model/workspace-store'
