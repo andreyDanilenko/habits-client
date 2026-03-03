@@ -82,6 +82,21 @@
           </div>
         </FormField>
 
+        <FormField label="Воронка">
+          <select
+            v-model="form.pipelineId"
+            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary"
+          >
+            <option
+              v-for="pipeline in pipelines"
+              :key="pipeline.id"
+              :value="pipeline.id"
+            >
+              {{ pipeline.name }}
+            </option>
+          </select>
+        </FormField>
+
         <FormField label="Этап">
           <select
             v-model="form.stageId"
@@ -139,12 +154,15 @@
       isOpen: boolean
       deal: Deal | null
       pipelines: Pipeline[]
+      /** Воронка, этапы которой показывать в селекте (если не задана — воронка по умолчанию) */
+      pipelineId?: string
       defaultStageId: string | undefined
       workspaceId: string
       defaultOwnerId: string
       preselectedContact?: Contact | null
     }>(),
     {
+      pipelineId: undefined,
       preselectedContact: null,
     },
   )
@@ -171,6 +189,7 @@
     companyNameDisplay: '',
     budgetStr: '',
     currency: 'RUB' as 'RUB' | 'USD' | 'EUR',
+    pipelineId: '',
     stageId: '',
     expectedCloseDate: '',
     description: '',
@@ -178,8 +197,13 @@
   })
 
   const stages = computed(() => {
-    const def = props.pipelines.find((p) => p.isDefault) ?? props.pipelines[0]
-    return def?.stages ?? []
+    const explicitPipelineId = form.value.pipelineId || props.pipelineId
+    const pipeline =
+      (explicitPipelineId &&
+        props.pipelines.find((p) => p.id === explicitPipelineId)) ||
+      props.pipelines.find((p) => p.isDefault) ||
+      props.pipelines[0]
+    return pipeline?.stages ?? []
   })
 
   const ownerOptions = computed(() => {
@@ -251,7 +275,16 @@
     () => [props.isOpen, props.deal, props.defaultStageId, props.preselectedContact] as const,
     async ([open, deal, defaultStageId, preselected]) => {
       if (open) {
-        const firstStageId = stages.value[0]?.id ?? ''
+        const explicitPipelineId = props.deal?.pipelineId ?? props.pipelineId
+        const fallbackPipeline =
+          explicitPipelineId &&
+          props.pipelines.find((p) => p.id === explicitPipelineId)
+        const defaultPipeline =
+          fallbackPipeline ||
+          props.pipelines.find((p) => p.isDefault) ||
+          props.pipelines[0]
+        const initialPipelineId = defaultPipeline?.id ?? ''
+        const firstStageId = defaultPipeline?.stages?.[0]?.id ?? stages.value[0]?.id ?? ''
         form.value = {
           name: deal?.name ?? '',
           contactId: deal?.contactId ?? '',
@@ -259,6 +292,7 @@
           companyNameDisplay: '',
           budgetStr: deal?.budget != null ? String(deal.budget) : '',
           currency: deal?.currency ?? 'RUB',
+          pipelineId: deal?.pipelineId ?? initialPipelineId,
           stageId: deal?.stageId ?? defaultStageId ?? firstStageId,
           expectedCloseDate: deal?.expectedCloseDate?.slice(0, 10) ?? '',
           description: deal?.description ?? '',
@@ -296,11 +330,32 @@
     { immediate: true },
   )
 
+  watch(
+    () => form.value.pipelineId,
+    (newPipelineId) => {
+      if (!newPipelineId) return
+      const pipeline = props.pipelines.find((p) => p.id === newPipelineId)
+      const firstStageId = pipeline?.stages?.[0]?.id
+      if (!firstStageId) return
+      const stageInPipeline = pipeline.stages.some((s) => s.id === form.value.stageId)
+      if (!stageInPipeline) {
+        form.value.stageId = firstStageId
+      }
+    },
+  )
+
   const handleSubmit = async () => {
     if (!form.value.name.trim()) return
     saving.value = true
     try {
-      const pipelineId = props.pipelines.find((p) => p.stages.some((s) => s.id === form.value.stageId))?.id ?? props.pipelines[0]?.id ?? 'pl1'
+      const pipelineId =
+        form.value.pipelineId ||
+        props.pipelineId ||
+        props.pipelines.find((p) =>
+          p.stages?.some((s) => s.id === form.value.stageId),
+        )?.id ||
+        props.pipelines[0]?.id ||
+        ''
       const data: CreateDealDto = {
         name: form.value.name.trim(),
         contactId: form.value.contactId || undefined,

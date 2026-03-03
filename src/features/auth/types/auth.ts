@@ -18,3 +18,9 @@ export interface AuthResponse {
     name?: string
   }
 }
+
+export interface EffectivePermissions {
+  permissions: string[]
+  roles: string[]
+  systemRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST'
+}

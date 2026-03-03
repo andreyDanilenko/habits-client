@@ -6,6 +6,7 @@ import { useDealsTableState } from './use-deals-table-state'
 import type { KanbanColumnModel } from '@/shared/ui'
 
 export type DealsViewMode = 'kanban' | 'table'
+export type DealsStatusFilter = 'all' | 'open' | 'won' | 'lost'
 
 export function useDealsPage() {
   const workspaceStore = useWorkspaceStore()
@@ -21,6 +22,7 @@ export function useDealsPage() {
   const selectedPipelineId = ref<string>('')
   const dateFrom = ref<string>('')
   const dateTo = ref<string>('')
+  const statusFilter = ref<DealsStatusFilter>('all')
 
   const workspaceId = computed(
     () => workspaceStore.currentWorkspace?.id ?? workspaceStore.workspaces?.[0]?.id ?? '',
@@ -45,13 +47,20 @@ export function useDealsPage() {
     isError.value = false
     try {
       const isKanban = viewMode.value === 'kanban'
+      const statusParam =
+        isKanban
+          ? 'open'
+          : statusFilter.value === 'all'
+            ? undefined
+            : statusFilter.value
       const res = await dealService.getList({
         workspaceId: workspaceId.value,
         page: isKanban ? 1 : tableState.page.value,
         limit: isKanban ? 500 : tableState.pageSize.value,
         sortBy: isKanban ? undefined : (tableState.sortBy.value ?? undefined),
         sortOrder: isKanban ? 'asc' : tableState.sortOrder.value,
-        pipelineId: isKanban ? selectedPipelineId.value || undefined : undefined,
+        pipelineId: selectedPipelineId.value || undefined,
+        status: statusParam,
         dateFrom: dateFrom.value || undefined,
         dateTo: dateTo.value || undefined,
       })
@@ -81,6 +90,7 @@ export function useDealsPage() {
       selectedPipelineId,
       dateFrom,
       dateTo,
+      statusFilter,
     ],
     fetchDeals,
   )
@@ -119,7 +129,8 @@ export function useDealsPage() {
   }
 
   const defaultPipeline = computed(() => pipelines.value.find((p) => p.isDefault) ?? pipelines.value[0])
-  const defaultStageId = computed(() => defaultPipeline.value?.stages[0]?.id)
+  /** Первый этап выбранной воронки — для формы создания сделки (сделка попадает в выбранную воронку) */
+  const defaultStageId = computed(() => currentPipeline.value?.stages?.[0]?.id ?? defaultPipeline.value?.stages?.[0]?.id)
 
   const currentPipeline = computed(() =>
     pipelines.value.find((p) => p.id === selectedPipelineId.value) ?? defaultPipeline.value,
@@ -130,7 +141,8 @@ export function useDealsPage() {
   function buildKanbanColumns(): KanbanColumnModel<Deal>[] {
     const pipeline = currentPipeline.value
     if (!pipeline) return []
-    return pipeline.stages
+    const stages = pipeline.stages ?? []
+    return stages
       .sort((a, b) => a.order - b.order)
       .map((stage) => {
         const stageDeals = deals.value.filter((d) => d.stageId === stage.id)
@@ -152,7 +164,7 @@ export function useDealsPage() {
       kanbanColumns.value = []
       return
     }
-    const stages = [...pipeline.stages].sort((a, b) => a.order - b.order)
+    const stages = [...(pipeline.stages ?? [])].sort((a, b) => a.order - b.order)
     const current = kanbanColumns.value
     const stageIds = stages.map((s) => s.id)
 
@@ -184,12 +196,29 @@ export function useDealsPage() {
 
   const savingDealIds = ref<Set<string>>(new Set())
 
+  /** Не применяем обновления колонок от DnD — источник истины только deals, иначе при двух эмитах (remove+add) возможен дубль. */
+  function setKanbanColumnsFromBoard(_v: KanbanColumnModel<Deal>[]) {
+    // no-op: колонки только из syncKanbanColumnsInPlace и handleDealMove
+  }
+
   async function handleDealMove(payload: { item: unknown; toColumnId?: string }) {
     const deal = payload.item as Deal
-    if (!payload.toColumnId || !deal?.id) return
+    const toId = payload.toColumnId
+    if (!toId || !deal?.id) return
     savingDealIds.value = new Set(savingDealIds.value).add(deal.id)
+    const prevDeals = deals.value.map((d) => (d.id === deal.id ? { ...d } : d))
+    const prevIdx = deals.value.findIndex((d) => d.id === deal.id)
+    if (prevIdx >= 0) {
+      deals.value = deals.value.map((d, i) => (i === prevIdx ? { ...d, stageId: toId } : d))
+      kanbanColumns.value = buildKanbanColumns()
+    }
     try {
-      await updateDeal(deal.id, { stageId: payload.toColumnId }, { skipRefetch: true })
+      await dealService.update(workspaceId.value, deal.id, { stageId: toId })
+    } catch {
+      if (prevIdx >= 0) {
+        deals.value = prevDeals
+        kanbanColumns.value = buildKanbanColumns()
+      }
     } finally {
       const next = new Set(savingDealIds.value)
       next.delete(deal.id)
@@ -209,8 +238,10 @@ export function useDealsPage() {
     selectedPipelineId,
     dateFrom,
     dateTo,
+    statusFilter,
     currentPipeline,
     kanbanColumns,
+    setKanbanColumnsFromBoard,
     savingDealIds,
     handleDealMove,
     fetchDeals,

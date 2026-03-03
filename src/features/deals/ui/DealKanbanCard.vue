@@ -55,7 +55,6 @@
   const props = defineProps<{
     deal: Deal
     companyOrContactName?: string
-    /** Блокировка карточки на время сохранения этапа (без перезагрузки доски) */
     saving?: boolean
   }>()
 

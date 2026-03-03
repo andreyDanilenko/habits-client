@@ -159,7 +159,6 @@
                 </tbody>
               </table>
             </div>
-            <p class="mt-2 text-xs text-text-muted">Привязать/создать контакт — в разработке.</p>
           </template>
 
           <!-- Вкладка 3: Сделки -->
@@ -200,6 +199,18 @@
               :entity-id="companyId"
             />
           </template>
+
+          <!-- Вкладка 5: Проекты -->
+          <template v-else-if="activeTab === 'projects'">
+            <ProjectEntityPanel
+              :workspace-id="workspaceId"
+              entity-type="crm_company"
+              :entity-id="companyId"
+              :entity-name="company?.name"
+              :can-edit="canEditCrm"
+              projects-base-path="/projects"
+            />
+          </template>
         </div>
       </div>
     </template>
@@ -211,6 +222,58 @@
       @close="showFormModal = false; fetchCompany()"
       @update="handleUpdate"
     />
+    <Modal :is-open="showAttachContactModal" @close="closeAttachContactModal">
+      <div class="space-y-4">
+        <h2 class="text-lg font-semibold text-text-primary">Привязать контакт</h2>
+        <p class="text-sm text-text-secondary">
+          Выберите существующий контакт, который нужно привязать к компании.
+        </p>
+        <input
+          v-model="attachSearch"
+          type="text"
+          class="w-full px-3 py-2 border rounded-md border-border-default bg-bg-primary text-sm"
+          placeholder="Поиск по имени или email"
+        />
+        <div class="max-h-64 overflow-y-auto border border-border-light rounded-md">
+          <ul v-if="!attachLoading && attachCandidates.length" class="divide-y divide-border-light">
+            <li
+              v-for="c in attachCandidates"
+              :key="c.id"
+              class="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-bg-tertiary"
+              @click="selectedAttachContactId = c.id"
+            >
+              <input
+                type="radio"
+                class="shrink-0"
+                :value="c.id"
+                v-model="selectedAttachContactId"
+              />
+              <div class="min-w-0">
+                <p class="text-sm text-text-primary truncate">
+                  {{ contactDisplayName(c) }}
+                </p>
+                <p class="text-xs text-text-muted truncate">
+                  {{ c.emails?.[0]?.address ?? c.phones?.[0]?.number ?? '—' }}
+                </p>
+              </div>
+            </li>
+          </ul>
+          <div v-else-if="attachLoading" class="p-3 text-sm text-text-muted">Загрузка…</div>
+          <div v-else class="p-3 text-sm text-text-muted">Контакты не найдены.</div>
+        </div>
+        <div class="flex justify-end gap-2">
+          <Button size="sm" variant="ghost" @click="closeAttachContactModal">Отмена</Button>
+          <Button
+            size="sm"
+            variant="primary"
+            :disabled="!selectedAttachContactId || !workspaceId"
+            @click="confirmAttachContact"
+          >
+            Привязать
+          </Button>
+        </div>
+      </div>
+    </Modal>
     <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
       <ConfirmModal
         title="Удалить компанию?"
@@ -231,10 +294,11 @@
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { CompanyFormModal } from '@/features/companies'
   import { ActivityFeed } from '@/features/activity'
+  import { ProjectEntityPanel } from '@/features/projects'
   import { companyService } from '@/entities/company'
   import { contactService } from '@/entities/contact'
   import { dealService } from '@/entities/deal'
-  import { useWorkspaceStore } from '@/entities/workspace'
+  import { useWorkspaceStore, usePermissions, WorkspacePermission } from '@/entities/workspace'
   import type { Company, CreateCompanyDto, CompanyAddress } from '@/entities/company'
   import type { Contact } from '@/entities/contact'
   import type { Deal } from '@/entities/deal'
@@ -250,6 +314,7 @@
   const isLoading = ref(true)
   const showFormModal = ref(false)
   const showDeleteModal = ref(false)
+  const showAttachContactModal = ref(false)
   const activeTab = ref('main')
 
   const tabs = [
@@ -257,10 +322,13 @@
     { id: 'contacts', label: 'Контакты' },
     { id: 'deals', label: 'Сделки' },
     { id: 'activity', label: 'Активность' },
+    { id: 'projects', label: 'Проекты' },
   ]
 
   const workspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? '')
   const companyId = computed(() => route.params.id as string)
+  const { hasPermission } = usePermissions()
+  const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
   const companyDealsSum = computed(() =>
     companyDeals.value.reduce((acc: number, d: Deal) => acc + (d.budget ?? 0), 0),
@@ -353,8 +421,53 @@
     showFormModal.value = true
   }
 
+  const attachCandidates = ref<Contact[]>([])
+  const attachLoading = ref(false)
+  const attachSearch = ref('')
+  const selectedAttachContactId = ref<string | null>(null)
+
+  async function loadAttachCandidates() {
+    if (!workspaceId.value) {
+      attachCandidates.value = []
+      return
+    }
+    attachLoading.value = true
+    try {
+      const res = await contactService.getList({
+        workspaceId: workspaceId.value,
+        search: attachSearch.value || undefined,
+        limit: 50,
+        page: 1,
+      })
+      attachCandidates.value = res.contacts
+    } catch {
+      attachCandidates.value = []
+    } finally {
+      attachLoading.value = false
+    }
+  }
+
   function openAttachContact() {
-    // TODO: модалка выбора контакта для привязки
+    selectedAttachContactId.value = null
+    attachSearch.value = ''
+    showAttachContactModal.value = true
+    void loadAttachCandidates()
+  }
+
+  function closeAttachContactModal() {
+    showAttachContactModal.value = false
+  }
+
+  async function confirmAttachContact() {
+    if (!workspaceId.value || !companyId.value || !selectedAttachContactId.value) return
+    await companyService.attachContact(
+      workspaceId.value,
+      companyId.value,
+      selectedAttachContactId.value,
+    )
+    showAttachContactModal.value = false
+    await fetchCompany()
+    await fetchCompanyContacts()
   }
 
   function openCreateContact() {

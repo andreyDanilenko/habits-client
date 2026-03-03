@@ -3,7 +3,7 @@
     <Transition name="drawer">
       <div
         v-if="isOpen"
-        class="DrawerRoot fixed inset-0 z-40 flex justify-end"
+        class="DrawerRoot fixed inset-0 z-[100] flex justify-end"
         role="dialog"
         aria-modal="true"
         :aria-label="title || 'Панель'"

@@ -40,11 +40,10 @@
   const columns = defineModel<KanbanColumnModel[]>('columns', { required: true })
 
   function onColumnUpdate(updated: KanbanColumnModel) {
-    const col = columns.value.find((c: KanbanColumnModel) => c.id === updated.id)
-    if (col) {
-      col.items = updated.items
-    }
-    emit('update:columns', [...columns.value])
+    const next = columns.value.map((c) =>
+      c.id === updated.id ? { ...c, items: updated.items } : c,
+    )
+    emit('update:columns', next)
   }
 
   function onMove(e: { item: unknown; fromColumnId?: string; toColumnId?: string }) {

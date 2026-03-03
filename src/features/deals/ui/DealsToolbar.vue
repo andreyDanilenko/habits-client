@@ -37,6 +37,23 @@
         </button>
       </div>
 
+      <div
+        v-if="viewMode === 'table'"
+        class="flex items-center gap-2"
+      >
+        <label class="text-sm text-text-secondary whitespace-nowrap">Статус:</label>
+        <select
+          :value="status"
+          class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm min-w-[140px]"
+          @change="$emit('update:status', ($event.target as HTMLSelectElement).value as DealsStatusFilter)"
+        >
+          <option value="all">Все</option>
+          <option value="open">Активные</option>
+          <option value="won">Успешные</option>
+          <option value="lost">Проигранные</option>
+        </select>
+      </div>
+
       <div class="flex items-center gap-2">
         <label class="text-sm text-text-secondary whitespace-nowrap">Период:</label>
         <input
@@ -61,7 +78,7 @@
   import { Button } from '@/shared/ui'
   import { PlusIcon, ListIcon } from '@/shared/ui/icon'
   import type { Pipeline } from '@/entities/deal'
-  import type { DealsViewMode } from '../model/use-deals-page'
+  import type { DealsViewMode, DealsStatusFilter } from '../model/use-deals-page'
 
   defineProps<{
     pipelines: Pipeline[]
@@ -69,6 +86,7 @@
     selectedPipelineId: string
     dateFrom: string
     dateTo: string
+    status: DealsStatusFilter
   }>()
 
   defineEmits<{
@@ -77,5 +95,6 @@
     'update:selectedPipelineId': [id: string]
     'update:dateFrom': [value: string]
     'update:dateTo': [value: string]
+    'update:status': [value: DealsStatusFilter]
   }>()
 </script>

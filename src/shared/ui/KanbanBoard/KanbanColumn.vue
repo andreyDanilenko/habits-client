@@ -11,14 +11,15 @@
         </div>
       </slot>
     </div>
-    <div class="KanbanColumn__Body flex-1 overflow-y-auto p-2 min-h-[120px]">
+    <div class="KanbanColumn__Body flex-1 overflow-y-auto p-2 min-h-[200px] flex flex-col">
       <DndList
         :model-value="column.items"
         :item-key="itemKey"
         :group="dndGroup"
         tag="div"
-        class="space-y-2"
+        class="space-y-2 min-h-full flex-1"
         :disabled="disabled"
+        :empty-insert-threshold="40"
         @update:model-value="onListChange"
         @change="onDndChange"
       >

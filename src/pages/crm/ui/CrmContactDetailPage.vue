@@ -35,7 +35,7 @@
           <div class="flex flex-wrap gap-2 mt-3">
             <Button size="sm" variant="outline" @click="openEdit">Редактировать</Button>
             <Button size="sm" variant="ghost" @click="confirmDeleteContact">Удалить</Button>
-            <Button size="sm" variant="primary" @click="goToCreateDeal">Добавить в сделку</Button>
+            <Button size="sm" variant="primary" @click="openAttachToDeal">Добавить в сделку</Button>
           </div>
         </div>
       </header>
@@ -110,10 +110,40 @@
           </template>
           <!-- Вкладка 2: Сделки -->
           <template v-else-if="activeTab === 'deals'">
-            <div class="flex flex-col gap-4">
-              <Button size="sm" variant="primary" @click="goToCreateDeal">Создать сделку из контакта</Button>
-              <p class="text-text-muted text-sm">Таблица сделок по контакту (название, бюджет, этап, ответственный, дата) — (скоро).</p>
+            <div class="flex items-center justify-between gap-4 mb-4">
+              <h3 class="text-sm font-medium text-text-secondary">
+                Сделки по контакту
+                <span v-if="contactDeals.length" class="ml-2 font-normal text-text-primary">
+                  — всего: {{ contactDeals.length }}
+                </span>
+              </h3>
+              <Button size="sm" variant="primary" @click="openAttachToDeal">
+                Добавить в сделку
+              </Button>
             </div>
+            <div v-if="contactDealsLoading" class="text-text-muted text-sm py-4">
+              Загрузка…
+            </div>
+            <div v-else-if="!contactDeals.length" class="text-text-muted text-sm py-4">
+              Пока нет сделок, связанных с этим контактом.
+            </div>
+            <ul v-else class="space-y-2">
+              <li
+                v-for="deal in contactDeals"
+                :key="deal.id"
+                class="flex items-center justify-between gap-4 py-2 border-b border-border-light"
+              >
+                <router-link
+                  :to="{ name: 'CrmDealDetail', params: { id: deal.id } }"
+                  class="text-primary-default hover:underline text-sm"
+                >
+                  {{ deal.name }}
+                </router-link>
+                <span class="text-sm font-medium text-primary-default">
+                  {{ formatMoney(deal.budget, deal.currency) }}
+                </span>
+              </li>
+            </ul>
           </template>
           <!-- Вкладка 3: Активность -->
           <template v-else-if="activeTab === 'activity'">
@@ -123,7 +153,18 @@
               :can-create="canCreateCrm"
             />
           </template>
-          <!-- Вкладка 4: Задачи -->
+          <!-- Вкладка 4: Проекты -->
+          <template v-else-if="activeTab === 'projects'">
+            <ProjectEntityPanel
+              :workspace-id="workspaceId"
+              entity-type="crm_contact"
+              :entity-id="contactId"
+              :entity-name="contact ? `${contact.firstName} ${contact.lastName}`.trim() : undefined"
+              :can-edit="canCreateCrm"
+              projects-base-path="/projects"
+            />
+          </template>
+          <!-- Вкладка 5: Задачи -->
           <template v-else>
             <p class="text-text-muted text-sm">Список задач по контакту. Создать задачу (тема, срок, ответственный) — (скоро).</p>
           </template>
@@ -151,6 +192,14 @@
         @confirm="doDelete"
       />
     </Modal>
+
+    <DealsAttachContactModal
+      :is-open="showAttachToDealModal"
+      :workspace-id="workspaceId"
+      :contact="contact"
+      @close="showAttachToDealModal = false"
+      @attached="fetchContactDeals"
+    />
   </div>
 </template>
 
@@ -161,9 +210,13 @@
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { ContactFormModal } from '@/features/contacts'
   import { ActivityFeed } from '@/features/activity'
+  import { ProjectEntityPanel } from '@/features/projects'
   import { contactService } from '@/entities/contact'
+  import { dealService } from '@/entities/deal'
   import { useWorkspaceStore, usePermissions, WorkspacePermission } from '@/entities/workspace'
+  import { DealsAttachContactModal } from '@/features/deals'
   import type { Contact, CreateContactDto } from '@/entities/contact'
+  import type { Deal } from '@/entities/deal'
 
   const route = useRoute()
   const router = useRouter()
@@ -171,15 +224,19 @@
 
   const contact = ref<Contact | null>(null)
   const isLoading = ref(true)
+  const contactDeals = ref<Deal[]>([])
+  const contactDealsLoading = ref(false)
   const activeTab = ref('main')
   const showFormModal = ref(false)
   const showDeleteModal = ref(false)
   const contactActive = ref(true)
+  const showAttachToDealModal = ref(false)
 
   const tabs = [
     { id: 'main', label: 'Основная информация' },
     { id: 'deals', label: 'Сделки' },
     { id: 'activity', label: 'Активность' },
+    { id: 'projects', label: 'Проекты' },
     { id: 'tasks', label: 'Задачи' },
   ]
 
@@ -212,14 +269,36 @@
     isLoading.value = true
     try {
       contact.value = await contactService.getById(workspaceId.value, contactId.value)
+      await fetchContactDeals()
     } catch {
       contact.value = null
+      contactDeals.value = []
     } finally {
       isLoading.value = false
     }
   }
 
   watch([workspaceId, contactId], fetchContact, { immediate: true })
+
+  async function fetchContactDeals() {
+    if (!workspaceId.value || !contactId.value) {
+      contactDeals.value = []
+      return
+    }
+    contactDealsLoading.value = true
+    try {
+      const res = await dealService.getList({
+        workspaceId: workspaceId.value,
+        contactId: contactId.value,
+        limit: 100,
+      })
+      contactDeals.value = res.deals
+    } catch {
+      contactDeals.value = []
+    } finally {
+      contactDealsLoading.value = false
+    }
+  }
 
   function openEdit() {
     showFormModal.value = true
@@ -229,8 +308,16 @@
     showDeleteModal.value = true
   }
 
-  function goToCreateDeal() {
-    router.push('/crm/deals')
+  function openAttachToDeal() {
+    if (!contact.value) return
+    showAttachToDealModal.value = true
+  }
+
+  function formatMoney(value: number, currency: string): string {
+    return (
+      new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value) +
+      (currency === 'RUB' ? ' ₽' : ` ${currency}`)
+    )
   }
 
   async function doDelete() {

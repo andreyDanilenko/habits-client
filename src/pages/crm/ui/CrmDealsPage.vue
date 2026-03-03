@@ -8,16 +8,19 @@
       :selected-pipeline-id="selectedPipelineId"
       :date-from="dateFrom"
       :date-to="dateTo"
+      :status="statusFilter"
       @create="openCreateModal"
       @update:view-mode="viewMode = $event"
       @update:selected-pipeline-id="selectedPipelineId = $event"
       @update:date-from="dateFrom = $event"
       @update:date-to="dateTo = $event"
+      @update:status="statusFilter = $event"
     />
 
     <DealsKanbanView
       v-if="viewMode === 'kanban'"
-      v-model:columns="kanbanColumns"
+      :columns="kanbanColumns"
+      @update:columns="setKanbanColumnsFromBoard"
       :pipelines="pipelines"
       :is-loading="isLoading"
       :is-error="isError"
@@ -50,19 +53,11 @@
       @delete="confirmDelete"
     />
 
-    <ContactFormModal
-      :is-open="showContactModal"
-      :contact="null"
-      :workspace-id="workspaceId"
-      :default-owner-id="defaultOwnerId"
-      @close="closeContactModal"
-      @save="onContactCreatedFromDeal"
-    />
-
     <DealFormModal
       :is-open="showFormModal"
       :deal="dealToEdit"
       :pipelines="pipelines"
+      :pipeline-id="selectedPipelineId"
       :default-stage-id="defaultStageId"
       :workspace-id="workspaceId"
       :default-owner-id="defaultOwnerId"
@@ -72,6 +67,25 @@
       @update="handleUpdate"
       @create-contact="openCreateContactFromDeal"
       @preselected-applied="preselectedContactForDeal = null"
+    />
+
+    <ContactFormModal
+      :is-open="showContactModal"
+      :contact="null"
+      :workspace-id="workspaceId"
+      :default-owner-id="defaultOwnerId"
+      :preselected-company="preselectedCompanyForContact"
+      @close="closeContactModal"
+      @save="onContactCreatedFromDeal"
+      @create-company="openCreateCompanyFromContact"
+      @preselected-company-applied="preselectedCompanyForContact = null"
+    />
+
+    <CompanyFormModal
+      :is-open="showCompanyModal"
+      :company="null"
+      @close="showCompanyModal = false"
+      @save="onCompanyCreatedFromContact"
     />
 
     <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
@@ -100,9 +114,12 @@
     DealFormModal,
   } from '@/features/deals'
   import { ContactFormModal } from '@/features/contacts'
+  import { CompanyFormModal } from '@/features/companies'
   import { contactService } from '@/entities/contact'
+  import { companyService } from '@/entities/company'
   import type { Deal, CreateDealDto } from '@/entities/deal'
   import type { Contact, CreateContactDto } from '@/entities/contact'
+  import type { Company, CreateCompanyDto } from '@/entities/company'
 
   const router = useRouter()
   const userStore = useUserStore()
@@ -117,7 +134,9 @@
     selectedPipelineId,
     dateFrom,
     dateTo,
+    statusFilter,
     kanbanColumns,
+    setKanbanColumnsFromBoard,
     savingDealIds,
     handleDealMove,
     page,
@@ -148,6 +167,8 @@
   const dealToDelete = ref<Deal | null>(null)
   const showContactModal = ref(false)
   const preselectedContactForDeal = ref<Contact | null>(null)
+  const showCompanyModal = ref(false)
+  const preselectedCompanyForContact = ref<Company | null>(null)
 
   const openCreateModal = () => {
     dealToEdit.value = null
@@ -166,6 +187,20 @@
 
   const openCreateContactFromDeal = () => {
     showContactModal.value = true
+  }
+
+  const openCreateCompanyFromContact = () => {
+    showCompanyModal.value = true
+  }
+
+  const onCompanyCreatedFromContact = async (data: CreateCompanyDto) => {
+    if (!workspaceId.value) return
+    try {
+      const created = await companyService.create(workspaceId.value, data)
+      preselectedCompanyForContact.value = created
+    } finally {
+      showCompanyModal.value = false
+    }
   }
 
   const closeContactModal = () => {

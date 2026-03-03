@@ -21,9 +21,19 @@ export interface WorkspaceModule {
   workspaceId: string
   moduleId?: string
   moduleName: string
+  /** Признак core-модуля (is_core в БД): можно включать без лицензии. */
+  isCore?: boolean
   status?: string
   enabled: boolean
   config?: Record<string, any>
   createdAt: string
   updatedAt: string
+}
+
+export interface Member {
+  id: string
+  email: string
+  name: string
+  systemRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST'
+  joinedAt: string
 }

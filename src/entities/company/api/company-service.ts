@@ -49,4 +49,26 @@ export const companyService = {
   delete: async (workspaceId: string, id: string): Promise<void> => {
     await api.delete(API_ENDPOINTS.CRM.COMPANY(workspaceId, id))
   },
+
+  attachContact: async (
+    workspaceId: string,
+    companyId: string,
+    contactId: string,
+    position?: string,
+  ): Promise<void> => {
+    await api.post(
+      API_ENDPOINTS.CRM.COMPANY_ATTACH_CONTACT(workspaceId, companyId, contactId),
+      position ? { position } : undefined,
+    )
+  },
+
+  detachContact: async (
+    workspaceId: string,
+    companyId: string,
+    contactId: string,
+  ): Promise<void> => {
+    await api.delete(
+      API_ENDPOINTS.CRM.COMPANY_DETACH_CONTACT(workspaceId, companyId, contactId),
+    )
+  },
 }

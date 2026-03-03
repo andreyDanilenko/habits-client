@@ -43,15 +43,8 @@
       :fetch-contacts="fetchContacts"
       @edit="openEditModal"
       @delete="confirmDelete"
-      @add-to-deal="goToCreateDeal"
+      @add-to-deal="openAttachToDeal"
       @row-click="openQuickView"
-    />
-
-    <CompanyFormModal
-      :is-open="showCompanyModal"
-      :company="null"
-      @close="showCompanyModal = false"
-      @save="onCompanyCreatedFromContact"
     />
 
     <ContactFormModal
@@ -65,6 +58,13 @@
       @update="handleUpdate"
       @create-company="openCreateCompanyFromContact"
       @preselected-company-applied="preselectedCompanyForContact = null"
+    />
+
+    <CompanyFormModal
+      :is-open="showCompanyModal"
+      :company="null"
+      @close="showCompanyModal = false"
+      @save="onCompanyCreatedFromContact"
     />
 
     <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
@@ -90,9 +90,17 @@
         @close="contactQuickView = null"
         @edit="openEditFromQuickView"
         @open-card="goToContactCard"
-        @create-deal="goToCreateDeal"
+        @create-deal="openAttachToDeal"
       />
     </Drawer>
+
+    <DealsAttachContactModal
+      :is-open="showAttachToDealModal"
+      :workspace-id="workspaceId"
+      :contact="contactForDeal"
+      @close="closeAttachToDeal"
+      @attached="closeAttachToDeal"
+    />
   </div>
 </template>
 
@@ -108,6 +116,7 @@
     ContactFormModal,
     ContactQuickViewPanel,
   } from '@/features/contacts'
+  import { DealsAttachContactModal } from '@/features/deals'
   import { CompanyFormModal } from '@/features/companies'
   import { companyService } from '@/entities/company'
   import type { Contact, CreateContactDto } from '@/entities/contact'
@@ -157,6 +166,8 @@
   const showDeleteModal = ref(false)
   const contactToDelete = ref<Contact | null>(null)
   const contactQuickView = ref<Contact | null>(null)
+  const showAttachToDealModal = ref(false)
+  const contactForDeal = ref<Contact | null>(null)
   const showFilters = ref(false)
   const showCompanyModal = ref(false)
   const preselectedCompanyForContact = ref<Company | null>(null)
@@ -191,9 +202,15 @@
     router.push(`/crm/contacts/${contact.id}`)
   }
 
-  function goToCreateDeal(_contact: Contact) {
+  function openAttachToDeal(contact: Contact) {
     contactQuickView.value = null
-    router.push('/crm/deals')
+    contactForDeal.value = contact
+    showAttachToDealModal.value = true
+  }
+
+  function closeAttachToDeal() {
+    showAttachToDealModal.value = false
+    contactForDeal.value = null
   }
 
   async function bulkDelete() {

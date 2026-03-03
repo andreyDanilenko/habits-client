@@ -30,8 +30,19 @@
             />
             <span v-else class="cursor-pointer hover:underline" @click="editingName = true">{{ deal.name }}</span>
           </h1>
-          <div class="flex items-center gap-3 mt-2 text-sm">
+          <div class="flex flex-wrap items-center gap-3 mt-2 text-sm">
             <span class="font-medium text-primary-default">{{ formatMoney(deal.budget, deal.currency) }}</span>
+
+            <select
+              v-model="selectedPipelineId"
+              class="px-2 py-1 border border-border-default rounded bg-bg-primary text-text-primary text-sm"
+              @change="onPipelineChangeFromEvent($event)"
+            >
+              <option v-for="p in pipelines" :key="p.id" :value="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+
             <select
               :value="deal.stageId"
               class="px-2 py-1 border border-border-default rounded bg-bg-primary text-text-primary text-sm"
@@ -133,6 +144,15 @@
             entity-type="deal"
             :entity-id="dealId"
           />
+          <ProjectEntityPanel
+            v-else-if="activeTab === 'projects'"
+            :workspace-id="workspaceId"
+            entity-type="crm_deal"
+            :entity-id="dealId"
+            :entity-name="deal?.name"
+            :can-edit="canEditCrm"
+            projects-base-path="/projects"
+          />
           <div v-else-if="activeTab === 'tasks'" class="text-text-muted text-sm">
             Связанные задачи (в разработке).
           </div>
@@ -147,6 +167,7 @@
       :is-open="showFormModal"
       :deal="deal"
       :pipelines="pipelines"
+      :pipeline-id="deal?.pipelineId"
       :default-stage-id="defaultStageId"
       :workspace-id="workspaceId"
       :default-owner-id="defaultOwnerId"
@@ -172,11 +193,14 @@
   import { useRoute, useRouter } from 'vue-router'
   import { Modal, ConfirmModal, Button, Spinner } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
-  import { useWorkspaceStore } from '@/entities/workspace'
+  import { useWorkspaceStore, usePermissions, WorkspacePermission } from '@/entities/workspace'
   import { useUserStore } from '@/entities/user'
   import { dealService } from '@/entities/deal'
   import { DealFormModal } from '@/features/deals'
   import { ActivityFeed } from '@/features/activity'
+  import { ProjectEntityPanel } from '@/features/projects'
+  import { contactService } from '@/entities/contact'
+  import { companyService } from '@/entities/company'
   import type { Deal, Pipeline, CreateDealDto } from '@/entities/deal'
 
   const route = useRoute()
@@ -187,6 +211,8 @@
   const workspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? '')
   const dealId = computed(() => route.params.id as string)
   const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
+  const { hasPermission } = usePermissions()
+  const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
   const deal = ref<Deal | null>(null)
   const pipelines = ref<Pipeline[]>([])
@@ -199,17 +225,23 @@
   const showFormModal = ref(false)
   const showDeleteModal = ref(false)
   const activeTab = ref('activity')
+  const selectedPipelineId = ref<string>('')
 
   const tabs = [
     { id: 'activity', label: 'Активность' },
+    { id: 'projects', label: 'Проекты' },
     { id: 'tasks', label: 'Задачи' },
     { id: 'products', label: 'Товары/Услуги' },
   ]
 
   const stages = computed(() => {
-    const pipeline: Pipeline | undefined = pipelines.value.find((p: Pipeline) =>
-      p.stages.some((s: { id: string }) => s.id === deal.value?.stageId),
-    ) ?? pipelines.value[0]
+    const explicitId = selectedPipelineId.value || deal.value?.pipelineId
+    const pipeline: Pipeline | undefined =
+      (explicitId && pipelines.value.find((p) => p.id === explicitId)) ||
+      pipelines.value.find((p: Pipeline) =>
+        p.stages.some((s: { id: string }) => s.id === deal.value?.stageId),
+      ) ||
+      pipelines.value[0]
     return pipeline?.stages ?? []
   })
 
@@ -223,6 +255,35 @@
     try {
       deal.value = await dealService.getById(workspaceId.value, id)
       pipelines.value = await dealService.getPipelines(workspaceId.value)
+      const initialPipelineId =
+        deal.value?.pipelineId ||
+        pipelines.value.find((p) =>
+          p.stages.some((s) => s.id === deal.value?.stageId),
+        )?.id ||
+        pipelines.value[0]?.id ||
+        ''
+      selectedPipelineId.value = initialPipelineId
+
+      // Load contact and company display names for header links
+      contactName.value = ''
+      companyName.value = ''
+      if (deal.value?.contactId) {
+        try {
+          const contact = await contactService.getById(workspaceId.value, deal.value.contactId)
+          const fullName = [contact.firstName, contact.lastName].filter(Boolean).join(' ')
+          contactName.value = fullName || contact.emails?.[0]?.address || 'Контакт'
+        } catch {
+          contactName.value = 'Контакт'
+        }
+      }
+      if (deal.value?.companyId) {
+        try {
+          const company = await companyService.getById(workspaceId.value, deal.value.companyId)
+          companyName.value = company.name || 'Компания'
+        } catch {
+          companyName.value = 'Компания'
+        }
+      }
     } catch {
       isError.value = true
       deal.value = null
@@ -249,6 +310,17 @@
     editingName.value = false
   }
 
+  function onPipelineChangeFromEvent(evt: Event) {
+    const pipelineId = (evt.target as HTMLSelectElement)?.value
+    if (!pipelineId) return
+    selectedPipelineId.value = pipelineId
+    const pipeline = pipelines.value.find((p) => p.id === pipelineId)
+    const firstStageId = pipeline?.stages?.[0]?.id
+    if (firstStageId) {
+      onStageChange(firstStageId)
+    }
+  }
+
   function onStageChangeFromEvent(evt: Event) {
     const stageId = (evt.target as HTMLSelectElement)?.value
     if (stageId) onStageChange(stageId)
@@ -256,8 +328,12 @@
 
   async function onStageChange(stageId: string) {
     if (!deal.value || !workspaceId.value) return
-    await dealService.update(workspaceId.value, deal.value.id, { stageId })
-    deal.value = { ...deal.value, stageId }
+    const pipelineId = selectedPipelineId.value || deal.value.pipelineId
+    const updated = await dealService.update(workspaceId.value, deal.value.id, {
+      stageId,
+      pipelineId,
+    })
+    deal.value = updated
   }
 
   function openEditModal() {
@@ -266,8 +342,9 @@
 
   async function handleUpdate(id: string, data: CreateDealDto) {
     if (!workspaceId.value) return
-    deal.value = await dealService.update(workspaceId.value, id, data)
+    await dealService.update(workspaceId.value, id, data)
     showFormModal.value = false
+    await fetchDeal()
   }
 
   function confirmDelete() {

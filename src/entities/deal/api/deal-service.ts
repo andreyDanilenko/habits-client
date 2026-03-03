@@ -12,6 +12,8 @@ export interface DealsListParams {
   stageId?: string
   /** Фильтр по компании */
   companyId?: string
+  /** Фильтр по статусу сделки */
+  status?: 'open' | 'won' | 'lost'
   /** Фильтр по дате создания (ISO) */
   dateFrom?: string
   dateTo?: string
@@ -33,6 +35,7 @@ export const dealService = {
     if (params.pipelineId) q.set('pipelineId', params.pipelineId)
     if (params.stageId) q.set('stageId', params.stageId)
     if (params.companyId) q.set('companyId', params.companyId)
+    if (params.status) q.set('status', params.status)
     if (params.dateFrom) q.set('dateFrom', params.dateFrom)
     if (params.dateTo) q.set('dateTo', params.dateTo)
     const query = q.toString()

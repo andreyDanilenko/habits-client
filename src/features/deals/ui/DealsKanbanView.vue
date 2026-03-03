@@ -11,7 +11,8 @@
     </div>
     <KanbanBoard
       v-else
-      v-model:columns="columnsModel"
+      :columns="columnsModel"
+      @update:columns="(v) => (columnsModel = v)"
       :item-key="getDealId"
       dnd-group="deals"
       :disabled="false"
@@ -59,6 +60,14 @@
         Копировать
       </button>
       <button
+        v-if="showRemoveFromProject"
+        type="button"
+        class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
+        @click="contextMenu.deal && (emit('remove-from-project', contextMenu.deal), contextMenu.deal = null)"
+      >
+        Убрать из проекта
+      </button>
+      <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
         @click="emit('delete', contextMenu.deal); contextMenu.deal = null"
@@ -83,12 +92,16 @@
     return (d as Deal).id
   }
 
-  const props = defineProps<{
-    pipelines: Pipeline[]
-    isLoading: boolean
-    isError: boolean
-    savingDealIds?: Set<string>
-  }>()
+  const props = withDefaults(
+    defineProps<{
+      pipelines: Pipeline[]
+      isLoading: boolean
+      isError: boolean
+      savingDealIds?: Set<string>
+      showRemoveFromProject?: boolean
+    }>(),
+    { showRemoveFromProject: false },
+  )
 
   const savingDealIdsSet = computed(() => props.savingDealIds ?? new Set())
 
@@ -100,6 +113,7 @@
     edit: [deal: Deal]
     copy: [deal: Deal]
     delete: [deal: Deal]
+    'remove-from-project': [deal: Deal]
   }>()
 
   const contextMenu = reactive<{ x: number; y: number; deal: Deal | null }>({
@@ -113,12 +127,16 @@
   }
 
   function onCardContextMenu(evt: MouseEvent, deal: Deal) {
+    console.log('env', deal);
+    
     contextMenu.x = evt.clientX
     contextMenu.y = evt.clientY
     contextMenu.deal = deal
   }
 
   function getCompanyOrContact(_deal: Deal): string {
+    console.log('env', _deal);
+
     return '—'
   }
 
