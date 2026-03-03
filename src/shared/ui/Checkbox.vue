@@ -1,8 +1,6 @@
 <template>
   <div :class="['flex', containerClass]">
-    <!-- Визуальный чекбокс по дизайн-системе -->
     <div class="flex items-start">
-      <!-- Реальный input для форм и доступности -->
       <input
         :id="inputId"
         v-model="modelValue"
@@ -12,7 +10,6 @@
         v-bind="$attrs"
       />
 
-      <!-- Кастомный визуальный бокс -->
       <button
         type="button"
         :aria-checked="modelValue"
@@ -64,6 +61,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { CheckIcon } from './icon'
+  import type { ComponentSize } from './Button.vue'
 
   let checkboxIdCounter = 0
 
@@ -76,7 +74,7 @@
     disabled?: boolean
     hint?: string
     error?: boolean
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+    size?: ComponentSize
     containerClass?: string
   }
 
@@ -110,36 +108,26 @@
     modelValue.value = !modelValue.value
   }
 
-  // Размер визуального бокса: 16 / 20 / 24 / 32 / 40 px
   const boxSizeClasses = computed(() => {
-    switch (props.size) {
-      case 'xs':
-        return 'w-4 h-4'
-      case 'sm':
-        return 'w-5 h-5'
-      case 'lg':
-        return 'w-10 h-10'
-      case 'xl':
-        return 'w-10 h-10'
-      default:
-        return 'w-6 h-6'
+    const sizes = {
+      xs: 'w-3.5 h-3.5',   // 14px
+      sm: 'w-4 h-4',       // 16px
+      md: 'w-5 h-5',       // 20px
+      lg: 'w-6 h-6',       // 24px
+      xl: 'w-7 h-7',       // 28px
     }
+    return sizes[props.size]
   })
 
-  // Размер иконки галочки внутри
   const iconSize = computed(() => {
-    switch (props.size) {
-      case 'xs':
-        return 'xs'
-      case 'sm':
-        return 'xs'
-      case 'lg':
-        return 'lg'
-      case 'xl':
-        return 'lg'
-      default:
-        return 'sm'
+    const sizes = {
+      xs: 10,
+      sm: 12,
+      md: 14,
+      lg: 16,
+      xl: 18,
     }
+    return sizes[props.size]
   })
 
   const checkboxClasses = computed(() => {
@@ -161,32 +149,24 @@
   })
 
   const labelSizeClasses = computed(() => {
-    switch (props.size) {
-      case 'xs':
-        return 'text-xs'
-      case 'sm':
-        return 'text-xs'
-      case 'lg':
-        return 'text-base'
-      case 'xl':
-        return 'text-base'
-      default:
-        return 'text-sm'
+    const sizes = {
+      xs: 'text-2xs',
+      sm: 'text-xs',
+      md: 'text-xs',
+      lg: 'text-sm',
+      xl: 'text-sm',
     }
+    return sizes[props.size]
   })
 
   const hintSizeClasses = computed(() => {
-    switch (props.size) {
-      case 'xs':
-        return 'text-2xs'
-      case 'sm':
-        return 'text-xs'
-      case 'lg':
-        return 'text-sm'
-      case 'xl':
-        return 'text-sm'
-      default:
-        return 'text-xs'
+    const sizes = {
+      xs: 'text-2xs',
+      sm: 'text-2xs',
+      md: 'text-xs',
+      lg: 'text-xs',
+      xl: 'text-sm',
     }
+    return sizes[props.size]
   })
 </script>

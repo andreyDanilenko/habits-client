@@ -71,45 +71,31 @@
               placeholder="0"
               class="flex-1"
             />
-            <select
+            <Select
               v-model="form.currency"
-              class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary min-w-[100px]"
-            >
-              <option value="RUB">RUB</option>
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-            </select>
+              size="sm"
+              class="min-w-[100px]"
+              :options="currencyOptions"
+            />
           </div>
         </FormField>
 
         <FormField label="Воронка">
-          <select
+          <Select
             v-model="form.pipelineId"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary"
-          >
-            <option
-              v-for="pipeline in pipelines"
-              :key="pipeline.id"
-              :value="pipeline.id"
-            >
-              {{ pipeline.name }}
-            </option>
-          </select>
+            :options="pipelineOptions"
+          />
         </FormField>
 
         <FormField label="Этап">
-          <select
+          <Select
             v-model="form.stageId"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary"
-          >
-            <option v-for="stage in stages" :key="stage.id" :value="stage.id">
-              {{ stage.name }}
-            </option>
-          </select>
+            :options="stageOptions"
+          />
         </FormField>
 
         <FormField label="Плановая дата закрытия">
-          <Input v-model="form.expectedCloseDate" type="date" />
+          <DateInput v-model="form.expectedCloseDate" />
         </FormField>
 
         <FormField label="Описание">
@@ -122,14 +108,10 @@
         </FormField>
 
         <FormField label="Ответственный">
-          <select
+          <Select
             v-model="form.ownerId"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary"
-          >
-            <option v-for="u in ownerOptions" :key="u.id" :value="u.id">
-              {{ u.label }}
-            </option>
-          </select>
+            :options="ownerOptions"
+          />
         </FormField>
 
         <div class="flex justify-end gap-2 pt-2">
@@ -143,7 +125,15 @@
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField } from '@/shared/ui'
+  import {
+    Modal,
+    ModalContent,
+    Button,
+    Input,
+    DateInput,
+    FormField,
+    Select,
+  } from '@/shared/ui'
   import { contactService } from '@/entities/contact'
   import { companyService } from '@/entities/company'
   import type { Deal, CreateDealDto, Pipeline } from '@/entities/deal'
@@ -182,6 +172,8 @@
   const contactSearching = ref(false)
   const selectedContactDisplay = ref('')
 
+  
+
   const form = ref({
     name: '',
     contactId: '',
@@ -206,9 +198,29 @@
     return pipeline?.stages ?? []
   })
 
+  const currencyOptions = [
+    { value: 'RUB', label: 'RUB' },
+    { value: 'USD', label: 'USD' },
+    { value: 'EUR', label: 'EUR' },
+  ]
+
+  const pipelineOptions = computed(() =>
+    props.pipelines.map((p) => ({
+      value: p.id,
+      label: p.name,
+    })),
+  )
+
+  const stageOptions = computed(() =>
+    stages.value.map((s) => ({
+      value: s.id,
+      label: s.name,
+    })),
+  )
+
   const ownerOptions = computed(() => {
     const id = props.defaultOwnerId || '1'
-    return [{ id, label: 'Текущий пользователь' }]
+    return [{ value: id, label: 'Текущий пользователь' }]
   })
 
   function contactDisplayName(c: Contact) {

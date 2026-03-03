@@ -10,7 +10,7 @@
           <Input
             v-model="form.firstName"
             placeholder="Имя"
-            :class="{ 'border-error-default': errors.firstName }"
+            :error="errors.firstName"
             @blur="validateFirstName"
           />
         </FormField>
@@ -20,14 +20,13 @@
         </FormField>
 
         <FormField label="Телефон" :error="errors.phone">
-          <input
-            :value="form.phone"
+          <Input
+            v-model="phoneModel"
             type="tel"
             placeholder="+7 (999) 999-99-99"
-            maxlength="18"
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors bg-bg-primary text-text-primary border-border-default focus:ring-primary-default focus:border-primary-default"
-            :class="{ 'border-error-default': errors.phone }"
-            @input="onPhoneInput"
+            :error="errors.phone"
+            inputClasses="w-full"
+            @update:modelValue="(val: string) => phoneModel = val"
           />
         </FormField>
 
@@ -36,19 +35,16 @@
             v-model="form.email"
             type="email"
             placeholder="email@example.com"
-            :class="{ 'border-error-default': errors.email }"
+            :error="errors.email"
             @blur="validateEmail"
           />
         </FormField>
 
         <FormField label="Компания">
           <div class="relative">
-            <input
+            <Input
               v-model="companyQuery"
-              type="text"
               placeholder="Поиск компании..."
-              autocomplete="off"
-              class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-default"
               @focus="showCompanyDropdown = true"
               @blur="onCompanyBlur"
             />
@@ -110,11 +106,9 @@
               </span>
             </div>
             <div class="flex gap-2">
-              <input
+              <Input
                 v-model="tagInput"
-                type="text"
                 placeholder="Добавить тег..."
-                class="flex-1 px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-primary-default"
                 @keydown.enter.prevent="addTag"
               />
               <Button type="button" variant="outline" size="sm" @click="addTag">
@@ -125,17 +119,15 @@
         </FormField>
 
         <FormField label="Ответственный">
-          <select
+          <Select
             v-model="form.ownerId"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary"
-          >
-            <option v-for="u in ownerOptions" :key="u.id" :value="u.id">
-              {{ u.label }}
-            </option>
-          </select>
+            :options="ownerSelectOptions"
+            placeholder="Выберите ответственного"
+            size="lg"
+          />
         </FormField>
 
-        <div class="flex flex-wrap justify-end gap-2 pt-2">
+        <div class="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" @click="$emit('close')">
             Отмена
           </Button>
@@ -146,7 +138,7 @@
             :loading="saving"
             @click="handleSubmit(false)"
           >
-            Сохранить и создать ещё
+            Сохранить и создать
           </Button>
           <Button type="submit" :loading="saving">
             Сохранить
@@ -159,11 +151,12 @@
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField } from '@/shared/ui'
+  import { Modal, ModalContent, Button, Input, FormField, Select } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
   import { companyService } from '@/entities/company'
   import type { Contact, CreateContactDto } from '@/entities/contact'
   import type { Company } from '@/entities/company'
+  import type { ComponentSize } from '@/shared/ui/Button.vue'
 
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -186,20 +179,21 @@
     return '7' + d
   }
 
-  const props = withDefaults(
-    defineProps<{
-      isOpen: boolean
-      contact: Contact | null
-      workspaceId?: string
-      defaultOwnerId?: string
-      preselectedCompany?: Company | null
-    }>(),
-    {
-      workspaceId: '',
-      defaultOwnerId: '1',
-      preselectedCompany: null,
-    },
-  )
+  interface Props {
+    isOpen: boolean
+    contact: Contact | null
+    workspaceId?: string
+    defaultOwnerId?: string
+    preselectedCompany?: Company | null
+    size?: ComponentSize
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    workspaceId: '',
+    defaultOwnerId: '1',
+    preselectedCompany: null,
+    size: 'lg',
+  })
 
   const emit = defineEmits<{
     close: []
@@ -216,13 +210,32 @@
   const companySearching = ref(false)
   const tagInput = ref('')
 
-  const errors = ref({
+  interface FormErrors {
+    firstName: string
+    phone: string
+    email: string
+  }
+
+  const errors = ref<FormErrors>({
     firstName: '',
     phone: '',
     email: '',
   })
 
-  const form = ref({
+  interface ContactForm {
+    firstName: string
+    lastName: string
+    phone: string
+    email: string
+    companyId: string
+    companyNameDisplay: string
+    position: string
+    birthday: string
+    tags: string[]
+    ownerId: string
+  }
+
+  const form = ref<ContactForm>({
     firstName: '',
     lastName: '',
     phone: '',
@@ -231,21 +244,44 @@
     companyNameDisplay: '',
     position: '',
     birthday: '',
-    tags: [] as string[],
+    tags: [],
     ownerId: '',
   })
 
-  const ownerOptions = computed(() => {
+  // Computed для телефона с маской
+  const phoneModel = computed<string>({
+    get: () => form.value.phone,
+    set: (value: string) => {
+      form.value.phone = formatPhoneMask(value)
+      errors.value.phone = ''
+    }
+  })
+
+  interface OwnerOption {
+    id: string
+    label: string
+  }
+
+  const ownerOptions = computed<OwnerOption[]>(() => {
     const id = props.defaultOwnerId || '1'
     return [{ id, label: 'Текущий пользователь' }]
   })
 
-  function validateFirstName() {
+  interface SelectOption {
+    value: string
+    label: string
+  }
+
+  const ownerSelectOptions = computed<SelectOption[]>(() => {
+    return ownerOptions.value.map(o => ({ value: o.id, label: o.label }))
+  })
+
+  function validateFirstName(): void {
     const v = form.value.firstName.trim()
     errors.value.firstName = v ? '' : 'Обязательное поле'
   }
 
-  function validateEmail() {
+  function validateEmail(): void {
     const v = form.value.email.trim()
     if (!v) {
       errors.value.email = ''
@@ -254,19 +290,13 @@
     errors.value.email = EMAIL_REGEX.test(v) ? '' : 'Некорректный формат email'
   }
 
-  function onPhoneInput(e: Event) {
-    const target = (e.target as HTMLInputElement)
-    const raw = target.value
-    form.value.phone = formatPhoneMask(raw)
-    errors.value.phone = ''
-  }
-
-  function onCompanyBlur() {
+  function onCompanyBlur(): void {
     setTimeout(() => { showCompanyDropdown.value = false }, 150)
   }
 
   let companySearchTimeout: ReturnType<typeof setTimeout> | null = null
-  async function searchCompanies() {
+  
+  async function searchCompanies(): Promise<void> {
     const q = companyQuery.value.trim()
     if (!props.workspaceId) {
       companyOptions.value = []
@@ -292,7 +322,7 @@
     companySearchTimeout = setTimeout(searchCompanies, 300)
   })
 
-  function selectCompany(co: Company) {
+  function selectCompany(co: Company): void {
     form.value.companyId = co.id
     form.value.companyNameDisplay = co.name
     companyQuery.value = ''
@@ -300,19 +330,19 @@
     companyOptions.value = []
   }
 
-  function emitCreateCompany() {
+  function emitCreateCompany(): void {
     emit('create-company')
     showCompanyDropdown.value = false
   }
 
-  function addTag() {
+  function addTag(): void {
     const t = tagInput.value.trim()
     if (!t || form.value.tags.includes(t)) return
     form.value.tags = [...form.value.tags, t]
     tagInput.value = ''
   }
 
-  function removeTag(tag: string) {
+  function removeTag(tag: string): void {
     form.value.tags = form.value.tags.filter((x) => x !== tag)
   }
 
@@ -335,7 +365,7 @@
     }
   }
 
-  function resetForm() {
+  function resetForm(): void {
     form.value = {
       firstName: '',
       lastName: '',
@@ -383,7 +413,7 @@
         if (contact?.companyId && props.workspaceId) {
           companyService
             .getById(props.workspaceId, contact.companyId)
-            .then((c) => {
+            .then((c: Company) => {
               form.value.companyNameDisplay = c.name
             })
             .catch(() => {})
@@ -400,7 +430,7 @@
     { immediate: true },
   )
 
-  async function handleSubmit(closeAfter: boolean) {
+  async function handleSubmit(closeAfter: boolean): Promise<void> {
     validateFirstName()
     validateEmail()
     if (!form.value.firstName.trim()) return

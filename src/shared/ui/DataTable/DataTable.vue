@@ -38,7 +38,7 @@
             >
               <Checkbox
                 :model-value="allSelected"
-                size="sm"
+                :size="checkboxSize"
                 aria-label="Выбрать все"
                 @update:model-value="onSelectAll?.()"
               />
@@ -100,7 +100,7 @@
             >
               <Checkbox
                 :model-value="selectedIdsSet.has(getRowId(row))"
-                size="sm"
+                :size="checkboxSize"
                 aria-label="Выбрать строку"
                 @update:model-value="onSelect?.(getRowId(row))"
                 @click.stop
@@ -143,12 +143,14 @@
   import { computed } from 'vue'
   import Checkbox from '@/shared/ui/Checkbox.vue'
   import type { DataTableProps, SortOrder } from './DataTable.types'
+  import type { ComponentSize } from '@/shared/ui/Button.vue'
   import DataTableCell from './DataTableCell.vue'
 
   const props = withDefaults(
     defineProps<
       DataTableProps<unknown> & {
         sortOrder?: SortOrder
+        checkboxSize?: ComponentSize  // Добавляем пропс для размера чекбокса
       }
     >(),
     {
@@ -159,6 +161,7 @@
       selectable: false,
       sortOrder: 'asc',
       className: '',
+      checkboxSize: 'md',  // По умолчанию 20px!
     },
   )
 

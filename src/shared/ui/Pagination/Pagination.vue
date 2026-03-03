@@ -1,29 +1,49 @@
 <template>
-  <div class="Pagination">
-    <span class="Pagination__ResultsInfo">
+  <div
+    class="flex flex-wrap items-center justify-between gap-4 w-full min-h-12"
+  >
+    <span class="text-sm text-text-secondary">
       Показано
-      <span class="Pagination__ResultsInfoNum">{{ start }}</span>–
-      <span class="Pagination__ResultsInfoNum">{{ end }}</span>
+      <span class="font-medium text-text-primary">{{ start }}</span>–
+      <span class="font-medium text-text-primary">{{ end }}</span>
       из
-      <span class="Pagination__ResultsInfoNum">{{ total }}</span>
+      <span class="font-medium text-text-primary">{{ total }}</span>
     </span>
-    <nav class="Pagination__Nav" aria-label="Пагинация">
+
+    <nav
+      class="flex items-center gap-2"
+      aria-label="Пагинация"
+    >
       <button
         type="button"
-        class="Pagination__Btn"
+        class="inline-flex items-center justify-center w-8 h-8 rounded-full text-text-muted hover:text-primary-default disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Предыдущая страница"
         :disabled="page <= 1"
         @click="emit('page-change', page - 1)"
       >
         <ArrowLeftIcon size="sm" />
       </button>
-      <div class="Pagination__Numbers">
-        <template v-for="(p, i) in pageNumbers" :key="p === 'ellipsis' ? `e-${i}` : p">
-          <span v-if="p === 'ellipsis'" class="Pagination__Ellipsis" aria-hidden>…</span>
+
+      <div class="flex items-center gap-1">
+        <template v-for="(p, i) in pageNumbers">
+          <span
+            v-if="p === 'ellipsis'"
+            :key="`e-${i}`"
+            class="min-w-8 text-center text-sm text-text-secondary"
+            aria-hidden="true"
+          >
+            …
+          </span>
           <button
             v-else
+            :key="p"
             type="button"
-            :class="['Pagination__Page', { 'Pagination__Page--active': p === page }]"
+            :class="[
+              'inline-flex items-center justify-center min-w-8 h-8 px-2 rounded text-sm border transition-colors',
+              p === page
+                ? 'bg-primary-default text-white border-primary-default cursor-default'
+                : 'bg-bg-primary text-text-secondary border-border-default hover:border-primary-default hover:text-primary-default',
+            ]"
             :aria-current="p === page ? 'page' : undefined"
             @click="emit('page-change', p)"
           >
@@ -31,9 +51,10 @@
           </button>
         </template>
       </div>
+
       <button
         type="button"
-        class="Pagination__Btn"
+        class="inline-flex items-center justify-center w-8 h-8 rounded-full text-text-muted hover:text-primary-default disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="Следующая страница"
         :disabled="page >= totalPages"
         @click="emit('page-change', page + 1)"
@@ -47,7 +68,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
-  import './Pagination.css'
 
   const MAX_VISIBLE_PAGES = 5
 
