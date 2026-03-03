@@ -49,6 +49,13 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         currentWorkspace.value = current
         applyWorkspaceHeader(current)
         await loadModules(current.id)
+        try {
+          const { useAuthStore } = await import('@/features/auth')
+          const authStore = useAuthStore()
+          await authStore.loadEffectivePermissions()
+        } catch (error) {
+          console.error('Failed to load permissions for current workspace:', error)
+        }
         return
       }
       if (list.length > 0) {
