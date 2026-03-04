@@ -18,7 +18,7 @@
             {{ perm.name }}
           </option>
         </select>
-        <Button size="sm" :disabled="!selectedPermissionId" @click="onGrant">
+        <Button size="md" :disabled="!selectedPermissionId" @click="onGrant">
           Выдать право
         </Button>
       </div>
@@ -46,7 +46,7 @@
               до {{ perm.expiresAt }}
             </span>
           </div>
-          <Button size="sm" variant="secondary" @click="onRevoke(perm.permissionId)">
+          <Button size="md" variant="secondary" @click="onRevoke(perm.permissionId)">
             Отозвать
           </Button>
         </li>

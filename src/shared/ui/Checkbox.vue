@@ -81,7 +81,7 @@
   const props = withDefaults(defineProps<Props>(), {
     required: false,
     disabled: false,
-    size: 'md',
+    size: 'lg',
     error: false,
     containerClass: 'items-start',
   })
@@ -115,6 +115,7 @@
       md: 'w-5 h-5',       // 20px
       lg: 'w-6 h-6',       // 24px
       xl: 'w-7 h-7',       // 28px
+      xxl: 'w-8 h-8',      // 32px
     }
     return sizes[props.size]
   })
@@ -126,6 +127,7 @@
       md: 14,
       lg: 16,
       xl: 18,
+      xxl: 20,
     }
     return sizes[props.size]
   })
@@ -155,6 +157,7 @@
       md: 'text-xs',
       lg: 'text-sm',
       xl: 'text-sm',
+      xxl: 'text-base',
     }
     return sizes[props.size]
   })
@@ -166,6 +169,7 @@
       md: 'text-xs',
       lg: 'text-xs',
       xl: 'text-sm',
+      xxl: 'text-sm',
     }
     return sizes[props.size]
   })

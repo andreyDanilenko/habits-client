@@ -13,8 +13,8 @@
         <p class="mt-1 text-xs text-text-muted">{{ formatDate(note.updatedAt) }}</p>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
-        <Button variant="ghost" size="sm" @click="$emit('edit-note', note)">Изменить</Button>
-        <Button variant="ghost" size="sm" class="text-error-default" @click="$emit('delete-note', note)">
+        <Button variant="ghost" size="md" @click="$emit('edit-note', note)">Изменить</Button>
+        <Button variant="ghost" size="md" class="text-error-default" @click="$emit('delete-note', note)">
           Удалить
         </Button>
       </div>

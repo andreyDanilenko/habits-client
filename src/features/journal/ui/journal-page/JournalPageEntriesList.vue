@@ -14,7 +14,7 @@
 
         <Badge
           variant="outline"
-          size="sm"
+          size="md"
           class="bg-badge-default-bg text-badge-default-text border-border-default"
         >
           {{ group.entries.length }}

@@ -33,9 +33,9 @@
       />
 
       <div
-        class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-text-muted"
+        class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-text-primary"
       >
-        <CalendarIcon :size="iconSize" />
+        <CalendarIcon :size="iconSize" class="text-current" />
       </div>
     </div>
 
@@ -69,7 +69,8 @@
   const props = withDefaults(defineProps<Props>(), {
     required: false,
     disabled: false,
-    size: 'md',
+    size: 'lg',
+    placeholder: 'ДД.ММ.ГГГГ',
   })
 
   const emit = defineEmits<{
@@ -81,18 +82,22 @@
     set: (value: string) => emit('update:modelValue', value),
   })
 
-  // Высота: 24, 28, 32, 36, 40px (UI.md)
+  // Единая высота 24 | 32 | 40 | 48 px как у Input/Button/Select
   const sizeClasses = computed(() => {
     const sizes = {
-      xs: 'px-2 py-1 text-xs',
-      sm: 'px-2.5 py-1.5 text-xs',
-      md: 'px-3 py-2 text-sm',
-      lg: 'px-3.5 py-2.5 text-sm',
-      xl: 'px-4 py-3 text-base',
+      xs: 'h-6 min-h-6 px-2 text-xs',
+      sm: 'h-6 min-h-6 px-2 text-xs',
+      md: 'h-8 min-h-8 px-3 text-sm',
+      lg: 'h-10 min-h-10 px-4 text-sm',
+      xl: 'h-10 min-h-10 px-4 text-base',
+      xxl: 'h-12 min-h-12 px-5 text-base',
     }
     return sizes[props.size]
   })
 
-  const iconSize = computed(() => props.size)
+  const iconSize = computed(() => {
+    const sizes = { xs: 14, sm: 14, md: 16, lg: 18, xl: 18, xxl: 20 }
+    return sizes[props.size]
+  })
 </script>
 

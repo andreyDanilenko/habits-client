@@ -47,7 +47,7 @@
               placeholder="Поиск по имени..."
               class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-default"
             />
-            <Button size="sm" variant="primary" @click="openAddModal('crm_contact')">Добавить контакты</Button>
+            <Button size="md" variant="primary" @click="openAddModal('crm_contact')">Добавить контакты</Button>
           </div>
         </div>
         <div v-if="contactsLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -56,7 +56,7 @@
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
         >
           {{ contactsSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет контактов.' }}
-          <Button v-if="!contactsSearch" size="sm" variant="primary" class="mt-2" @click="openAddModal('crm_contact')">
+          <Button v-if="!contactsSearch" size="md" variant="primary" class="mt-2" @click="openAddModal('crm_contact')">
             Добавить контакты
           </Button>
         </div>
@@ -92,7 +92,7 @@
               placeholder="Поиск по названию..."
               class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-default"
             />
-            <Button size="sm" variant="primary" @click="openAddModal('crm_company')">Добавить компании</Button>
+            <Button size="md" variant="primary" @click="openAddModal('crm_company')">Добавить компании</Button>
           </div>
         </div>
         <div v-if="companiesLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -101,7 +101,7 @@
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
         >
           {{ companiesSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет компаний.' }}
-          <Button v-if="!companiesSearch" size="sm" variant="primary" class="mt-2" @click="openAddModal('crm_company')">
+          <Button v-if="!companiesSearch" size="md" variant="primary" class="mt-2" @click="openAddModal('crm_company')">
             Добавить компании
           </Button>
         </div>
@@ -141,8 +141,8 @@
                 <option v-for="p in pipelines" :key="p.id" :value="p.id">{{ p.name }}</option>
               </select>
             </template>
-            <Button size="sm" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
-            <Button size="sm" variant="outline" @click="openAddModal('crm_deal')">Добавить сделки</Button>
+            <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
+            <Button size="md" variant="outline" @click="openAddModal('crm_deal')">Добавить сделки</Button>
           </div>
         </div>
         <div v-if="dealsLoading && pipelines.length === 0" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -153,8 +153,8 @@
         >
           В этом проекте пока нет сделок.
           <div class="flex gap-2 justify-center mt-2">
-            <Button size="sm" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
-            <Button size="sm" variant="outline" @click="openAddModal('crm_deal')">Добавить сделки</Button>
+            <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
+            <Button size="md" variant="outline" @click="openAddModal('crm_deal')">Добавить сделки</Button>
           </div>
         </div>
         <DealsKanbanView

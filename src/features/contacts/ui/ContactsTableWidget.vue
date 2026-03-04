@@ -19,7 +19,7 @@
     :row-actions="(row: unknown) => rowActionsRenderer(row as Contact)"
   >
     <template #headerActions>
-      <Button variant="ghost" size="sm" :disabled="isLoading" @click="fetchContacts">
+      <Button variant="ghost" size="md" :disabled="isLoading" @click="fetchContacts">
         Обновить
       </Button>
     </template>

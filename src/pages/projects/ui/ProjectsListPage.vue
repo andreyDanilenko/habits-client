@@ -60,7 +60,7 @@
             </div>
             <div class="flex items-center gap-1 shrink-0" @click.prevent>
               <Button
-                size="sm"
+                size="md"
                 variant="ghost"
                 title="Редактировать"
                 @click="openEdit(project)"
@@ -68,7 +68,7 @@
                 Редактировать
               </Button>
               <Button
-                size="sm"
+                size="md"
                 variant="ghost"
                 class="text-danger-default hover:bg-danger-light"
                 title="Удалить"

@@ -34,7 +34,7 @@
             v-for="workspace in workspaces"
             :key="workspace.id"
             variant="ghost"
-            size="sm"
+            size="md"
             @click.stop="switchWorkspace(workspace.id)"
             custom-class="w-full justify-start gap-3 !px-4 !py-2"
             :class="{ 'bg-primary-light': workspace.id === currentWorkspace?.id }"
@@ -57,7 +57,7 @@
           <Button
             @click.stop="openCreateModal"
             variant="ghost"
-            size="sm"
+            size="md"
             class="w-full"
             :left-icon="PlusIcon"
           >

@@ -8,7 +8,7 @@
         </p>
       </div>
 
-      <Button v-if="canManage" size="sm" @click="startCreate">
+      <Button v-if="canManage" size="md" @click="startCreate">
         Создать воронку
       </Button>
     </div>
@@ -88,12 +88,12 @@
           </h2>
 
           <div v-if="currentPipeline && canManage" class="flex items-center gap-2">
-            <Button variant="outline" size="sm" :disabled="isSaving" @click="startCreate">
+            <Button variant="outline" size="md" :disabled="isSaving" @click="startCreate">
               Новая
             </Button>
             <Button
               variant="ghost"
-              size="sm"
+              size="md"
               class="text-error-default hover:bg-error-light"
               :disabled="isSaving"
               @click="confirmDelete(currentPipeline)"
@@ -154,7 +154,7 @@
                 v-if="canManage"
                 type="button"
                 variant="outline"
-                size="sm"
+                size="md"
                 :disabled="isSaving"
                 @click="addStage"
               >

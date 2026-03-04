@@ -6,13 +6,17 @@
         class="fixed inset-0 z-50 overflow-y-auto"
         @click.self="handleBackdropClick"
       >
-        <div class="flex min-h-full items-center justify-center p-4">
+        <div class="flex min-h-full min-w-0 items-center justify-center p-4">
           <Transition name="fade">
             <div v-if="isOpen" class="fixed inset-0 bg-black/50" @click="handleBackdropClick" />
           </Transition>
 
           <Transition name="slide-up">
-            <div v-if="isOpen" class="relative z-10 w-full max-w-md mx-auto" :class="contentClass">
+            <div
+              v-if="isOpen"
+              class="relative z-10 w-full min-w-0 max-w-[min(42rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-x-auto overflow-y-auto mx-auto"
+              :class="contentClass"
+            >
               <slot />
             </div>
           </Transition>

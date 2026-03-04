@@ -5,16 +5,15 @@
   >
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium text-text-secondary">Фильтр активности</span>
-      <Button variant="ghost" size="sm" @click="$emit('close')">Закрыть</Button>
+      <Button variant="ghost" size="md" @click="$emit('close')">Закрыть</Button>
     </div>
 
-    <div>
-      <label class="block text-xs font-medium text-text-muted mb-2">Тип событий</label>
+    <FormField label="Тип событий">
       <div class="flex flex-wrap gap-3">
         <Checkbox
           v-model="localTypesAll"
           label="Все"
-          size="sm"
+          size="md"
           container-class="items-center"
           @change="onTypesAllChange"
         />
@@ -22,77 +21,71 @@
           v-for="opt in typeOptions"
           :key="opt.value"
           :model-value="localTypes.includes(opt.value)"
-          size="sm"
+          size="md"
           :label="`${opt.label} ${opt.emoji}`"
           container-class="items-center"
           @change="() => toggleType(opt.value)"
         />
       </div>
-    </div>
+    </FormField>
 
-    <div>
-      <label class="block text-xs font-medium text-text-muted mb-2">Период</label>
+    <FormField label="Период">
       <div class="space-y-2">
         <Radio
           v-for="p in periodOptions"
           :key="p.value"
           :model-value="localPeriod === p.value"
-          size="sm"
+          size="md"
           :label="p.label"
           container-class="items-center"
           @change="() => (localPeriod = p.value)"
         />
       </div>
       <div v-if="localPeriod === 'custom'" class="mt-2 grid grid-cols-2 gap-2">
-        <div>
-          <label class="block text-xs text-text-muted mb-1">С</label>
-          <input
+        <FormField label="С">
+          <DatePicker
             v-model="localDateFrom"
-            type="date"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm"
+            size="md"
+            placeholder="ДД.ММ.ГГГГ"
           />
-        </div>
-        <div>
-          <label class="block text-xs text-text-muted mb-1">По</label>
-          <input
+        </FormField>
+        <FormField label="По">
+          <DatePicker
             v-model="localDateTo"
-            type="date"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm"
+            size="md"
+            placeholder="ДД.ММ.ГГГГ"
           />
-        </div>
+        </FormField>
       </div>
-    </div>
+    </FormField>
 
-    <div>
+    <FormField>
       <Checkbox
         v-model="localImportantOnly"
         label="Только важные"
-        size="sm"
+        size="md"
         container-class="items-center"
       />
-    </div>
+    </FormField>
 
-    <div>
-      <label class="block text-xs font-medium text-text-muted mb-1">Поиск</label>
-      <input
+    <FormField label="Поиск">
+      <SearchInput
         v-model="localSearch"
-        type="text"
+        size="md"
         placeholder="Поиск по тексту..."
-        class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm placeholder-text-muted"
-        @input="onSearchInput"
       />
-    </div>
+    </FormField>
 
     <div class="flex gap-2 pt-2">
-      <Button variant="ghost" size="sm" @click="handleReset">Сбросить</Button>
-      <Button variant="primary" size="sm" @click="handleApply">Применить</Button>
+      <Button variant="ghost" size="md" @click="handleReset">Сбросить</Button>
+      <Button variant="primary" size="md" @click="handleApply">Применить</Button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Button, Checkbox, Radio } from '@/shared/ui'
+  import { Button, Checkbox, Radio, FormField, DatePicker, SearchInput } from '@/shared/ui'
   import type { ActivityFilters as ActivityFiltersType, ActivityType } from '@/entities/activity'
 
   const props = defineProps<{
@@ -134,7 +127,6 @@
   const localDateTo = ref('')
   const localImportantOnly = ref(false)
   const localSearch = ref('')
-  let searchDebounce: ReturnType<typeof setTimeout> | null = null
   const debouncedSearch = ref('')
 
   watch(
@@ -192,13 +184,6 @@
       localTypes.value = [...localTypes.value, value]
     }
     localTypesAll.value = localTypes.value.length === 0
-  }
-
-  function onSearchInput() {
-    if (searchDebounce) clearTimeout(searchDebounce)
-    searchDebounce = setTimeout(() => {
-      debouncedSearch.value = localSearch.value
-    }, 300)
   }
 
   function buildFilters(): ActivityFiltersType {

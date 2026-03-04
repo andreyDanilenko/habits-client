@@ -17,8 +17,8 @@
           <h1 class="text-text-primary text-xl font-semibold">{{ company.name }}</h1>
           <p v-if="company.inn" class="text-text-secondary text-sm mt-0.5">ИНН {{ company.inn }}</p>
           <div class="flex flex-wrap gap-2 mt-3">
-            <Button size="sm" variant="outline" @click="openEdit">Редактировать</Button>
-            <Button size="sm" variant="ghost" @click="confirmDeleteCompany">Удалить</Button>
+            <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
+            <Button size="md" variant="ghost" @click="confirmDeleteCompany">Удалить</Button>
           </div>
         </div>
       </header>
@@ -121,8 +121,8 @@
             <div class="flex items-center justify-between gap-4 mb-4">
               <h3 class="text-sm font-medium text-text-secondary">Сотрудники компании</h3>
               <div class="flex gap-2">
-                <Button size="sm" variant="ghost" @click="openAttachContact">Привязать контакт</Button>
-                <Button size="sm" variant="outline" @click="openCreateContact">Создать контакт</Button>
+                <Button size="md" variant="ghost" @click="openAttachContact">Привязать контакт</Button>
+                <Button size="md" variant="outline" @click="openCreateContact">Создать контакт</Button>
               </div>
             </div>
             <div v-if="companyContacts.length === 0" class="text-text-muted text-sm py-4">
@@ -262,9 +262,9 @@
           <div v-else class="p-3 text-sm text-text-muted">Контакты не найдены.</div>
         </div>
         <div class="flex justify-end gap-2">
-          <Button size="sm" variant="ghost" @click="closeAttachContactModal">Отмена</Button>
+          <Button size="md" variant="ghost" @click="closeAttachContactModal">Отмена</Button>
           <Button
-            size="sm"
+            size="md"
             variant="primary"
             :disabled="!selectedAttachContactId || !workspaceId"
             @click="confirmAttachContact"

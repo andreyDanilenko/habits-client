@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-bg-primary rounded-xl shadow-card-hover">
+  <div class="min-w-0 bg-bg-primary rounded-xl shadow-card-hover">
     <div v-if="title" class="px-6 py-4 border-b border-border-light">
       <div class="flex items-center justify-between">
         <h3 class="text-text-primary">
@@ -10,7 +10,7 @@
           @click="handleClose"
           icon-only
           variant="icon"
-          size="sm"
+          size="md"
           :left-icon="XMarkIcon"
         />
       </div>

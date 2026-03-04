@@ -27,7 +27,7 @@
             <Button
               v-if="canActivateModules"
               variant="outline"
-              size="sm"
+              size="md"
               :loading="disablingModule === module.id"
               @click="openDisableConfirm(module)"
             >

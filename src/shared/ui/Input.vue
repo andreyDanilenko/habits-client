@@ -11,23 +11,32 @@
 
     <div class="relative">
       <div
-        v-if="slots.leftIcon || leftIcon"
+        v-if="slots?.leftIcon || leftIcon"
         class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
         :class="iconLeftClasses"
       >
         <slot name="leftIcon">
-          <component :is="leftIcon" :size="iconSizeValue" />
+          <component v-if="leftIcon" :is="leftIcon" :size="iconSizeValue" />
         </slot>
       </div>
 
+      <!-- Кастомная иконка календаря для type="date" -->
       <div
-        v-if="showClear || slots.rightIcon || rightIcon"
-        class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1"
+        v-else-if="type === 'date' && !disabled"
+        class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+        :class="iconLeftClasses"
+      >
+        <CalendarIcon :size="iconSizeValue" />
+      </div>
+
+      <div
+        v-if="showClear || slots?.rightIcon || rightIcon"
+        class="absolute right-0 top-0 bottom-0 flex items-center gap-1 pr-3 pointer-events-none"
       >
         <button
           v-if="showClear && modelValue && !disabled"
           type="button"
-          class="text-text-muted hover:text-text-secondary transition-colors focus:outline-none rounded-full hover:bg-bg-tertiary"
+          class="text-text-muted hover:text-text-secondary transition-colors focus:outline-none rounded-full hover:bg-bg-tertiary pointer-events-auto"
           :class="clearButtonSizeClasses"
           :aria-label="clearButtonLabel"
           @click="clearInput"
@@ -36,9 +45,9 @@
           <XMarkIcon :size="iconSizeValue" />
         </button>
 
-        <div v-if="slots.rightIcon || rightIcon" class="text-text-muted">
+        <div v-if="slots?.rightIcon || rightIcon" class="text-text-muted flex items-center justify-center h-full min-w-[2rem] pointer-events-auto">
           <slot name="rightIcon">
-            <component :is="rightIcon" :size="iconSizeValue" />
+            <component v-if="rightIcon" :is="rightIcon" :size="iconSizeValue" />
           </slot>
         </div>
       </div>
@@ -64,6 +73,8 @@
           },
           leftPaddingClass,
           rightPaddingClass,
+          // Скрываем нативную иконку для date
+          { 'date-input': type === 'date' },
         ]"
         v-bind="$attrs"
         @input="onInput"
@@ -84,7 +95,7 @@
   import { computed, ref, useSlots } from 'vue'
   import type { Component } from 'vue'
   import type { ComponentSize } from './Button.vue'
-  import { XMarkIcon } from './icon'
+  import { XMarkIcon, CalendarIcon } from './icon'
 
   const slots = useSlots()
 
@@ -119,10 +130,9 @@
 
   const emit = defineEmits<{
     'update:modelValue': [value: string]
-    'clear': []
+    clear: []
   }>()
 
-  // Единая высота 24 | 32 | 40 | 48 px как у Button/Select
   const inputSizeClasses = computed(() => {
     const sizes = {
       xs: 'h-6 min-h-6 px-2 text-xs',
@@ -172,7 +182,7 @@
   })
 
   const leftPaddingClass = computed(() => {
-    if (!slots.leftIcon && !props.leftIcon) return 'pl-3'
+    if (!slots?.leftIcon && !props.leftIcon) return 'pl-3'
     const sizes = {
       xs: 'pl-7',
       sm: 'pl-7',
@@ -185,7 +195,7 @@
   })
 
   const rightPaddingClass = computed(() => {
-    const hasRightContent = props.showClear || slots.rightIcon || props.rightIcon
+    const hasRightContent = props.showClear || slots?.rightIcon || props.rightIcon
     if (!hasRightContent) return 'pr-3'
     const sizes = {
       xs: 'pr-7',
@@ -216,3 +226,20 @@
     blur: () => inputEl.value?.blur(),
   })
 </script>
+
+<style scoped>
+/* Скрываем нативную иконку календаря */
+.date-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+/* Для Firefox */
+.date-input::-moz-calendar-picker-indicator {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+</style>

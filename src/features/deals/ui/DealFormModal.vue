@@ -11,44 +11,20 @@
         </FormField>
 
         <FormField label="Контакт">
-          <div class="relative">
-            <input
-              v-model="contactQuery"
-              type="text"
-              placeholder="Поиск контакта..."
-              autocomplete="off"
-              class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-default"
-              @focus="showContactDropdown = true"
-              @blur="onContactBlur"
-            />
-            <div
-              v-if="showContactDropdown && (contactQuery || contactOptions.length > 0)"
-              class="absolute left-0 right-0 top-full mt-1 max-h-48 overflow-auto rounded-lg border border-border-default bg-bg-primary shadow-lg z-10"
-            >
-              <button
-                v-if="contactQuery"
-                type="button"
-                class="w-full px-3 py-2 text-left text-sm text-primary-default hover:bg-bg-tertiary"
-                @mousedown.prevent="emitCreateContact"
-              >
-                + Создать новый контакт
-              </button>
-              <button
-                v-for="c in contactOptions"
-                :key="c.id"
-                type="button"
-                class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                @mousedown.prevent="selectContact(c)"
-              >
-                {{ contactDisplayName(c) }}
-              </button>
-              <p v-if="contactSearching" class="px-3 py-2 text-sm text-text-muted">Поиск...</p>
-              <p v-if="contactQuery && !contactSearching && contactOptions.length === 0" class="px-3 py-2 text-sm text-text-muted">Ничего не найдено</p>
-            </div>
-            <p v-if="form.contactId" class="mt-1 text-xs text-text-muted">
-              Выбран: {{ selectedContactDisplay }}
-            </p>
-          </div>
+          <SearchSelect
+            v-model="form.contactId"
+            :query="contactQuery"
+            :options="contactOptions"
+            :loading="contactSearching"
+            :selected-label="selectedContactDisplay"
+            placeholder="Поиск контакта..."
+            create-label="+ Создать новый контакт"
+            :get-option-label="getContactOptionLabel"
+            @update:query="contactQuery = $event"
+            @search="onContactSearch"
+            @select="onSelectContact"
+            @create="$emit('create-contact')"
+          />
         </FormField>
 
         <FormField label="Компания">
@@ -73,7 +49,6 @@
             />
             <Select
               v-model="form.currency"
-              size="sm"
               class="min-w-[100px]"
               :options="currencyOptions"
             />
@@ -95,7 +70,7 @@
         </FormField>
 
         <FormField label="Плановая дата закрытия">
-          <DateInput v-model="form.expectedCloseDate" />
+          <DatePicker v-model="form.expectedCloseDate" />
         </FormField>
 
         <FormField label="Описание">
@@ -130,10 +105,12 @@
     ModalContent,
     Button,
     Input,
-    DateInput,
+    DatePicker,
     FormField,
     Select,
+    SearchSelect,
   } from '@/shared/ui'
+  import type { SearchSelectOption } from '@/shared/ui'
   import { contactService } from '@/entities/contact'
   import { companyService } from '@/entities/company'
   import type { Deal, CreateDealDto, Pipeline } from '@/entities/deal'
@@ -167,7 +144,6 @@
 
   const saving = ref(false)
   const contactQuery = ref('')
-  const showContactDropdown = ref(false)
   const contactOptions = ref<Contact[]>([])
   const contactSearching = ref(false)
   const selectedContactDisplay = ref('')
@@ -228,9 +204,11 @@
     return n || c.emails?.[0]?.address || c.id
   }
 
-  let searchTimeout: ReturnType<typeof setTimeout> | null = null
-  async function searchContacts() {
-    const q = contactQuery.value.trim()
+  function getContactOptionLabel(c: SearchSelectOption) {
+    return contactDisplayName(c as unknown as Contact)
+  }
+
+  async function onContactSearch(q: string) {
     if (!q || !props.workspaceId) {
       contactOptions.value = []
       return
@@ -250,21 +228,11 @@
     }
   }
 
-  watch(contactQuery, () => {
-    if (searchTimeout) clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(searchContacts, 300)
-  })
-
-  function onContactBlur() {
-    setTimeout(() => { showContactDropdown.value = false }, 150)
-  }
-
   async function selectContact(c: Contact) {
     form.value.contactId = c.id
     form.value.companyId = c.companyId ?? ''
     selectedContactDisplay.value = contactDisplayName(c)
     contactQuery.value = ''
-    showContactDropdown.value = false
     contactOptions.value = []
     if (c.companyId && props.workspaceId) {
       try {
@@ -278,9 +246,8 @@
     }
   }
 
-  function emitCreateContact() {
-    emit('create-contact')
-    showContactDropdown.value = false
+  function onSelectContact(c: SearchSelectOption) {
+    selectContact(c as unknown as Contact)
   }
 
   watch(

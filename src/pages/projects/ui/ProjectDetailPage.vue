@@ -29,8 +29,8 @@
             Обновлён: {{ formatDate(project.updatedAt) }}
           </p>
           <div class="flex flex-wrap gap-2 mt-3">
-            <Button size="sm" variant="outline" @click="openEdit">Редактировать</Button>
-            <Button size="sm" variant="ghost" class="text-danger-default" @click="confirmDelete">
+            <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
+            <Button size="md" variant="ghost" class="text-danger-default" @click="confirmDelete">
               Удалить
             </Button>
           </div>

@@ -2,70 +2,62 @@
   <div class="rounded-lg border border-border-default bg-bg-primary p-4 space-y-4">
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium text-text-secondary">Расширенные фильтры</span>
-      <Button variant="ghost" size="sm" @click="$emit('reset')">Сбросить фильтры</Button>
+      <Button variant="ghost"  @click="$emit('reset')">Сбросить фильтры</Button>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div>
-        <label class="block text-xs font-medium text-text-muted mb-1">Компания</label>
-        <select
-          :value="filters.companyId"
-          class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm"
-          @change="(e) => updateCompanyId(e)"
-        >
-          <option value="">Все компании</option>
-          <option v-for="c in companies" :key="c.id" :value="c.id">{{ c.name }}</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-text-muted mb-1">Дата создания (с)</label>
-        <input
-          :value="filters.dateFrom"
-          type="date"
-          class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm"
-          @input="(e) => updateDateFrom(e)"
+      <FormField label="Компания">
+        <Select
+          :model-value="filters.companyId ?? ''"
+          :options="companyOptions"
+          
+          placeholder="Все компании"
+          @update:model-value="setCompanyId($event)"
         />
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-text-muted mb-1">Дата создания (по)</label>
-        <input
-          :value="filters.dateTo"
-          type="date"
-          class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm"
-          @input="(e) => updateDateTo(e)"
+      </FormField>
+      <FormField label="Дата создания (с)">
+        <DatePicker
+          :model-value="filters.dateFrom ?? ''"
+          
+          @update:model-value="$emit('update:filters', { ...filters, dateFrom: $event || undefined })"
         />
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-text-muted mb-1">Ответственный</label>
-        <select
-          :value="filters.ownerId"
-          class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm"
-          @change="(e) => updateOwnerId(e)"
-        >
-          <option value="">Все</option>
-          <option value="1">Текущий пользователь</option>
-        </select>
-      </div>
+      </FormField>
+      <FormField label="Дата создания (по)">
+        <DatePicker
+          :model-value="filters.dateTo ?? ''"
+          @update:model-value="$emit('update:filters', { ...filters, dateTo: $event || undefined })"
+        />
+      </FormField>
+      <FormField label="Ответственный">
+        <Select
+          :model-value="filters.ownerId ?? ''"
+          :options="ownerOptions"
+          
+          placeholder="Все"
+          @update:model-value="setOwnerId($event)"
+        />
+      </FormField>
     </div>
-    <div v-if="availableTags.length">
-      <label class="block text-xs font-medium text-text-muted mb-1">Теги</label>
+    <FormField v-if="availableTags.length" label="Теги">
       <div class="flex flex-wrap gap-2">
         <button
           v-for="tag in availableTags"
           :key="tag"
           type="button"
-          :class="['px-2 py-1 rounded text-sm transition-colors', selectedTags.includes(tag) ? 'bg-primary-default text-white' : 'bg-bg-tertiary text-text-secondary hover:bg-border-light']"
+          class="cursor-pointer transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-1 rounded-full"
           @click="toggleTag(tag)"
         >
-          {{ tag }}
+          <Badge :variant="selectedTags.includes(tag) ? 'indigo' : 'outline'">
+            {{ tag }}
+          </Badge>
         </button>
       </div>
-    </div>
+    </FormField>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { Button } from '@/shared/ui'
+  import { Button, FormField, Select, DatePicker, Badge } from '@/shared/ui'
 
   export interface ContactFilters {
     companyId?: string
@@ -94,23 +86,23 @@
 
   const selectedTags = computed(() => props.filters.tags ?? [])
 
-  function updateCompanyId(e: Event) {
-    const v = (e.target as HTMLSelectElement)?.value
+  const companyOptions = computed(() => [
+    { value: '', label: 'Все компании' },
+    ...props.companies.map((c) => ({ value: c.id, label: c.name })),
+  ])
+
+  const ownerOptions = [
+    { value: '', label: 'Все' },
+    { value: '1', label: 'Текущий пользователь' },
+  ]
+
+  function setCompanyId(value: string | number | null | undefined) {
+    const v = value === '' || value == null ? undefined : String(value)
     emit('update:filters', { ...props.filters, companyId: v })
   }
 
-  function updateDateFrom(e: Event) {
-    const v = (e.target as HTMLInputElement)?.value
-    emit('update:filters', { ...props.filters, dateFrom: v })
-  }
-
-  function updateDateTo(e: Event) {
-    const v = (e.target as HTMLInputElement)?.value
-    emit('update:filters', { ...props.filters, dateTo: v })
-  }
-
-  function updateOwnerId(e: Event) {
-    const v = (e.target as HTMLSelectElement)?.value
+  function setOwnerId(value: string | number | null | undefined) {
+    const v = value === '' || value == null ? undefined : String(value)
     emit('update:filters', { ...props.filters, ownerId: v })
   }
 

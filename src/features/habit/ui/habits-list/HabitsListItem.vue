@@ -50,7 +50,7 @@
         {{ progress === 1 ? 'выполнение' : progress < 5 ? 'выполнения' : 'выполнений' }} сегодня
       </div>
       <div class="flex items-center space-x-2">
-        <Button variant="link" size="sm" @click.stop="$emit('edit', habit)"> Редактировать </Button>
+        <Button variant="link" size="md" @click.stop="$emit('edit', habit)"> Редактировать </Button>
       </div>
     </div>
   </div>

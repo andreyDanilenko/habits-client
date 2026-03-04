@@ -20,7 +20,7 @@
             @click="$emit('update:search-query', '')"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             class="hover:bg-bg-tertiary rounded-lg transition-colors"
           >
             <XMarkIcon class="w-4 h-4" />
@@ -95,7 +95,7 @@
         <div v-if="enabledFilters.includes(PageFiltersEnum.SHOW_ALL)" class="flex items-end">
           <Button
             :variant="showAll ? 'secondary' : 'outline'"
-            size="sm"
+            size="md"
             @click="$emit('show-all')"
             class="whitespace-nowrap"
           >
@@ -107,7 +107,7 @@
           <Button
             v-if="hasActiveFilters"
             variant="outline"
-            size="sm"
+            size="md"
             @click="$emit('clear-filters')"
             class="whitespace-nowrap"
           >
@@ -127,7 +127,7 @@
             @click.stop="$emit('update:search-query', '')"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -145,7 +145,7 @@
             @click.stop="$emit('update:selected-mood', null)"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -163,7 +163,7 @@
             @click.stop="handleClearDate"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -181,7 +181,7 @@
             @click.stop="$emit('update:selected-period', null)"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -199,7 +199,7 @@
             @click.stop="$emit('reset-filter')"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >

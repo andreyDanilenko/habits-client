@@ -2,7 +2,7 @@
   <div class="relative">
     <Tooltip trigger="hover" placement="bottom" variant="dropdown">
       <template #trigger>
-        <Button variant="ghost" size="sm" class="!p-1 rounded-full">
+        <Button variant="ghost" size="md" class="!p-1 rounded-full">
           <div
             class="w-8 h-8 bg-primary-default rounded-full flex items-center justify-center text-white text-sm font-medium"
           >
@@ -22,7 +22,7 @@
         <div class="py-2">
           <Button
             variant="ghost"
-            size="sm"
+            size="md"
             custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
             @click="
               () => {
@@ -35,7 +35,7 @@
           </Button>
           <Button
             variant="ghost"
-            size="sm"
+            size="md"
             custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
             @click="
               () => {
@@ -48,7 +48,7 @@
           </Button>
           <Button
             variant="ghost"
-            size="sm"
+            size="md"
             custom-class="w-full justify-start !px-4 !py-2 text-error-default hover:bg-error-light"
             @click="handleLogout"
           >

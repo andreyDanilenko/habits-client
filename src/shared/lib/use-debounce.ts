@@ -1,31 +1,32 @@
-import { ref, watch, type Ref } from 'vue'
+import { onUnmounted, ref, watch, type Ref } from 'vue'
 
 /**
- * Простой композабл для debounce значений
+ * Debounce реактивного значения.
  * @param value - Реактивное значение
  * @param delay - Задержка в мс
- * @returns Debounced значение
+ * @returns Ref с отложенным значением
  */
-export function useDebounce<T>(value: Ref<T>, delay: number = 300) {
+export function useDebounce<T>(value: Ref<T>, delay: number = 300): Ref<T> {
   const debouncedValue = ref(value.value) as Ref<T>
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   watch(value, (newValue) => {
-    if (timeout) {
-      clearTimeout(timeout)
-    }
-
+    if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => {
       debouncedValue.value = newValue
       timeout = null
     }, delay)
   })
 
+  onUnmounted(() => {
+    if (timeout) clearTimeout(timeout)
+  })
+
   return debouncedValue
 }
 
 /**
- * Хук для debounce функции
+ * Debounce функции (для поиска, submit и т.п.).
  * @param fn - Функция
  * @param delay - Задержка в мс
  * @returns Debounced функция
@@ -33,14 +34,11 @@ export function useDebounce<T>(value: Ref<T>, delay: number = 300) {
 export function useDebounceFn<T extends (...args: any[]) => any>(
   fn: T,
   delay: number = 300
-) {
+): (...args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null
 
   const debouncedFn = (...args: Parameters<T>) => {
-    if (timeout) {
-      clearTimeout(timeout)
-    }
-
+    if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => {
       fn(...args)
       timeout = null
@@ -48,9 +46,7 @@ export function useDebounceFn<T extends (...args: any[]) => any>(
   }
 
   onUnmounted(() => {
-    if (timeout) {
-      clearTimeout(timeout)
-    }
+    if (timeout) clearTimeout(timeout)
   })
 
   return debouncedFn

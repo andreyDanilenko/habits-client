@@ -3,8 +3,9 @@
     <h1 class="text-text-primary">CRM — Контакты</h1>
 
     <ContactsToolbar
-      v-model:search-query="searchQuery"
+      v-model:search-input="searchInput"
       v-model:show-filters="showFilters"
+      @search="onSearch"
       :filters="contactFilters"
       :companies="filterCompanies"
       :available-tags="availableTags"
@@ -19,9 +20,9 @@
       class="flex items-center gap-4 py-2 px-4 rounded-lg bg-bg-tertiary border border-border-light"
     >
       <span class="text-sm text-text-secondary">Выбрано: {{ selectedIds.size }}</span>
-      <Button variant="outline" size="sm" @click="bulkDelete">Удалить</Button>
-      <Button variant="ghost" size="sm" disabled>Изменить ответственного</Button>
-      <Button variant="ghost" size="sm" disabled>Добавить тег</Button>
+      <Button variant="outline" size="md" @click="bulkDelete">Удалить</Button>
+      <Button variant="ghost" size="md" disabled>Изменить ответственного</Button>
+      <Button variant="ghost" size="md" disabled>Добавить тег</Button>
     </div>
 
     <ContactsTableWidget
@@ -128,6 +129,7 @@
   const userStore = useUserStore()
   const {
     workspaceId,
+    searchInput,
     searchQuery,
     companyIdFilter,
     contacts,
@@ -158,6 +160,10 @@
     },
     { immediate: true },
   )
+
+  function onSearch(value: string) {
+    searchQuery.value = value
+  }
 
   const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
 

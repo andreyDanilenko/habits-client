@@ -4,7 +4,7 @@
       v-if="loading"
       class="absolute left-3 top-1/2 -translate-y-1/2 z-10 text-text-muted pointer-events-none flex items-center justify-center"
     >
-      <Spinner size="sm" class="animate-spin" />
+      <Spinner size="md" class="animate-spin" />
     </div>
     <div
       v-else
@@ -34,10 +34,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onUnmounted } from 'vue'
+    import { computed, ref } from 'vue'
   import Input from './Input.vue'
   import { SearchIcon } from './icon'
   import Spinner from './Spinner.vue'
+  import { useDebounceFn } from '@/shared/lib'
   import type { ComponentSize } from './Button.vue'
 
   interface Props {
@@ -69,20 +70,25 @@
   }>()
 
   const inputRef = ref<InstanceType<typeof Input> | null>(null)
-  let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+  // Создаем debounced функцию для поиска
+  const debouncedSearch = useDebounceFn((value: string) => {
+    emit('search', value)
+  }, props.debounce)
 
   const iconSize = computed(() => {
-    const sizes = { xs: 14, sm: 16, md: 18, lg: 20, xl: 22 }
+    const sizes = { xs: 14, sm: 14, md: 16, lg: 18, xl: 18, xxl: 20 }
     return sizes[props.size]
   })
 
   const iconWrapperClasses = computed(() => {
     const sizes = {
       xs: 'w-3.5 h-3.5',
-      sm: 'w-4 h-4',
-      md: 'w-5 h-5',
-      lg: 'w-6 h-6',
-      xl: 'w-7 h-7',
+      sm: 'w-3.5 h-3.5',
+      md: 'w-4 h-4',
+      lg: 'w-4 h-4',
+      xl: 'w-4 h-4',
+      xxl: 'w-5 h-5',
     }
     return sizes[props.size]
   })
@@ -90,35 +96,28 @@
   const leftIconClasses = computed(() => {
     const sizes = {
       xs: 'pl-7',
-      sm: 'pl-8',
-      md: 'pl-9',
+      sm: 'pl-7',
+      md: 'pl-8',
       lg: 'pl-10',
-      xl: 'pl-11',
+      xl: 'pl-10',
+      xxl: 'pl-12',
     }
     return sizes[props.size]
   })
 
   const onInput = (value: string) => {
     emit('update:modelValue', value)
-    if (searchTimeout) clearTimeout(searchTimeout)
-    searchTimeout = setTimeout(() => {
-      emit('search', value)
-      searchTimeout = null
-    }, props.debounce)
+    debouncedSearch(value)
   }
 
   const onClear = () => {
     emit('clear')
-    emit('search', '')
+    emit('search', '') // при очистке отправляем сразу, без debounce
   }
 
   const handleEsc = () => {
     emit('keydown.esc')
   }
-
-  onUnmounted(() => {
-    if (searchTimeout) clearTimeout(searchTimeout)
-  })
 
   defineExpose({
     focus: () => inputRef.value?.focus(),

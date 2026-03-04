@@ -18,7 +18,7 @@
     :row-actions="(row: unknown) => rowActionsRenderer(row as Company)"
   >
     <template #headerActions>
-      <Button variant="ghost" size="sm" :disabled="isLoading" @click="fetchCompanies">
+      <Button variant="ghost" size="md" :disabled="isLoading" @click="fetchCompanies">
         Обновить
       </Button>
     </template>

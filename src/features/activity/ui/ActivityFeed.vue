@@ -1,15 +1,15 @@
 <template>
   <div class="space-y-4">
     <div v-if="canCreate" class="flex flex-wrap items-center gap-2">
-      <Button size="sm" variant="outline" @click="showComposer = true; showCallModal = false">
+      <Button size="md" variant="outline" @click="showComposer = true; showCallModal = false">
         Заметка
       </Button>
-      <Button size="sm" variant="outline" @click="showCallModal = true; showComposer = false">
+      <Button size="md" variant="outline" @click="showCallModal = true; showComposer = false">
         Звонок
       </Button>
       <div class="relative">
         <Button
-          size="sm"
+          size="md"
           variant="ghost"
           :class="{ 'bg-bg-tertiary': filtersVisible }"
           @click="filtersVisible = !filtersVisible"
@@ -56,7 +56,7 @@
 
     <div v-else-if="feed.error" class="rounded-xl border border-border-default bg-bg-primary p-6 text-center">
       <p class="text-text-secondary mb-2">Не удалось загрузить активность</p>
-      <Button size="sm" variant="outline" @click="feed.refetch()">Повторить</Button>
+      <Button size="md" variant="outline" @click="feed.refetch()">Повторить</Button>
     </div>
 
     <EmptyState
@@ -98,7 +98,7 @@
       </div>
       <div v-if="feed.hasMore" class="pt-4 flex justify-center">
         <Button
-          size="sm"
+          size="md"
           variant="ghost"
           :disabled="feed.loading"
           @click="feed.loadMore()"

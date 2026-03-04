@@ -42,7 +42,7 @@
         <Button
           type="button"
           variant="ghost"
-          size="sm"
+          size="md"
           @click="fileInputRef?.click()"
         >
           Выбрать файлы
@@ -72,11 +72,11 @@
         </label>
       </div>
       <div class="flex flex-wrap gap-2">
-        <Button variant="ghost" size="sm" @click="handleCancel">Отмена</Button>
-        <Button variant="outline" size="sm" @click="handleSaveAndAdd">
+        <Button variant="ghost" size="md" @click="handleCancel">Отмена</Button>
+        <Button variant="outline" size="md" @click="handleSaveAndAdd">
           Сохранить и еще
         </Button>
-        <Button variant="primary" size="sm" @click="handleSave">Сохранить</Button>
+        <Button variant="primary" size="md" @click="handleSave">Сохранить</Button>
       </div>
     </div>
   </div>

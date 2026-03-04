@@ -27,7 +27,7 @@
   })
 
   const iconColor = computed(() => {
-    if (props.color === 'inherit') return ''
+    if (props.color === 'inherit') return 'text-current'
 
     const colorMap = {
       indigo: 'text-indigo-600',

@@ -8,7 +8,8 @@ export function useContactsPage() {
   const workspaceStore = useWorkspaceStore()
   const tableState = useContactsTableState()
 
-  const searchQuery = ref('')
+  const searchInput = ref('') // значение в инпуте (без задержки)
+  const searchQuery = ref('') // запрос для API (с debounce)
   const companyIdFilter = ref('')
   const contacts = ref<Contact[]>([])
   const total = ref(0)
@@ -84,6 +85,7 @@ export function useContactsPage() {
   return {
     ...tableState,
     workspaceId,
+    searchInput,
     searchQuery,
     companyIdFilter,
     contacts,

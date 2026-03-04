@@ -3,10 +3,12 @@
     <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
       <div class="relative flex-1 min-w-0">
         <SearchInput
-          :model-value="searchQuery"
+          :model-value="searchInput"
           placeholder="Поиск по имени, email, телефону..."
           :clear-button-label="'Очистить поиск'"
-          @update:model-value="$emit('update:searchQuery', $event)"
+          :debounce="300"
+          @update:model-value="$emit('update:searchInput', $event)"
+          @search="$emit('search', $event)"
           @clear="handleClearSearch"
           @keydown.esc="handleEsc"
         />
@@ -15,22 +17,19 @@
       <div class="flex gap-2 flex-shrink-0">
         <Button
           variant="outline"
-          class="!p-2"
           aria-label="Импорт"
           title="Импорт"
           @click="$emit('import')"
         >
-          <ArrowLeftIcon :size="iconSize" />
+          Импорт
         </Button>
-        
         <Button
           variant="outline"
-          class="!p-2"
           aria-label="Экспорт"
           title="Экспорт"
           @click="$emit('export')"
         >
-          <ArrowRightIcon :size="iconSize" />
+          Экспорт
         </Button>
         
         <Button
@@ -66,14 +65,14 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { Button, SearchInput } from '@/shared/ui'
-  import { PlusIcon, ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
+  import { PlusIcon } from '@/shared/ui/icon'
   import ContactsFiltersPanel from './ContactsFiltersPanel.vue'
   import type { ContactFilters } from './ContactsFiltersPanel.vue'
   import { PermissionGuard } from '@/features/permissions'
   import { CRM_PERMISSIONS } from '@/features/permissions/config'
 
   const props = defineProps<{
-    searchQuery: string
+    searchInput: string
     showFilters: boolean
     filters: ContactFilters
     companies?: { id: string; name: string }[]
@@ -81,7 +80,7 @@
   }>()
 
   const emit = defineEmits<{
-    'update:searchQuery': [value: string]
+    'update:searchInput': [value: string]
     'update:showFilters': [value: boolean]
     'update:filters': [value: ContactFilters]
     create: []
@@ -91,11 +90,11 @@
     search: [value: string]
   }>()
 
-  const iconSize = computed(() => 20)
+  const iconSize = computed(() => 20) // для PlusIcon в кнопке «Создать контакт»
 
   // Очистка поиска
   const handleClearSearch = () => {
-    emit('update:searchQuery', '')
+    emit('update:searchInput', '')
     emit('search', '')
   }
 
@@ -116,7 +115,4 @@
     transform: translateY(-8px);
   }
 
-  .\!p-2 {
-    padding: 0.5rem !important;
-  }
 </style>

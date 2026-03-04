@@ -83,7 +83,7 @@
         </FormField>
 
         <FormField label="День рождения">
-          <Input v-model="form.birthday" type="date" />
+          <DatePicker v-model="form.birthday" />
         </FormField>
 
         <FormField label="Теги">
@@ -111,7 +111,7 @@
                 placeholder="Добавить тег..."
                 @keydown.enter.prevent="addTag"
               />
-              <Button type="button" variant="outline" size="sm" @click="addTag">
+              <Button type="button" variant="outline" size="md" @click="addTag">
                 Добавить
               </Button>
             </div>
@@ -151,7 +151,7 @@
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField, Select } from '@/shared/ui'
+  import { Modal, ModalContent, Button, Input, FormField, Select, DatePicker } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
   import { companyService } from '@/entities/company'
   import type { Contact, CreateContactDto } from '@/entities/contact'

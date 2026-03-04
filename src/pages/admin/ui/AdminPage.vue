@@ -47,7 +47,7 @@
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
+                    size="md"
                     class="!p-0.5 !min-w-0 h-5 text-xs"
                     title="Перейти в этот воркспейс"
                     @click="switchToWorkspace(ws.id)"
@@ -62,7 +62,7 @@
           <div class="flex-shrink-0">
             <Button
               variant="danger"
-              size="sm"
+              size="md"
               :disabled="user.id === currentUserId"
               :title="user.id === currentUserId ? 'Нельзя удалить себя' : 'Удалить пользователя'"
               @click="openDeleteConfirm(user)"

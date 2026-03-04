@@ -4,7 +4,7 @@
       <h3 class="text-sm font-medium text-text-secondary">Проекты</h3>
       <Button
         v-if="canEdit"
-        size="sm"
+        size="md"
         variant="outline"
         :disabled="availableToAdd.length === 0 || loadingList"
         @click="showAddModal = true"
@@ -31,7 +31,7 @@
         <p class="text-text-muted text-sm mb-3">
           {{ entityName ? `${entityName} не добавлен ни в один проект.` : 'Сущность не добавлена ни в один проект.' }}
         </p>
-        <Button v-if="canEdit" size="sm" variant="primary" @click="showAddModal = true">
+        <Button v-if="canEdit" size="md" variant="primary" @click="showAddModal = true">
           <PlusIcon class="size-4 mr-1 inline" />
           Добавить в проект
         </Button>

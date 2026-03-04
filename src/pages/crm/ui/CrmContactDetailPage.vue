@@ -33,9 +33,9 @@
             </span>
           </div>
           <div class="flex flex-wrap gap-2 mt-3">
-            <Button size="sm" variant="outline" @click="openEdit">Редактировать</Button>
-            <Button size="sm" variant="ghost" @click="confirmDeleteContact">Удалить</Button>
-            <Button size="sm" variant="primary" @click="openAttachToDeal">Добавить в сделку</Button>
+            <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
+            <Button size="md" variant="ghost" @click="confirmDeleteContact">Удалить</Button>
+            <Button size="md" variant="primary" @click="openAttachToDeal">Добавить в сделку</Button>
           </div>
         </div>
       </header>
@@ -117,7 +117,7 @@
                   — всего: {{ contactDeals.length }}
                 </span>
               </h3>
-              <Button size="sm" variant="primary" @click="openAttachToDeal">
+              <Button size="md" variant="primary" @click="openAttachToDeal">
                 Добавить в сделку
               </Button>
             </div>

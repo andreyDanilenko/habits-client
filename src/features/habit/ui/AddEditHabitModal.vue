@@ -87,7 +87,7 @@
             v-for="time in timesOfDay"
             :key="time.value"
             :is-selected="form.preferredTime === time.value"
-            size="sm"
+            size="md"
             :label="time.label"
             @click="form.preferredTime = time.value"
           />
@@ -113,13 +113,13 @@
         <div class="flex gap-2">
           <SelectButton
             :is-selected="form.scheduleType === 'recurring'"
-            size="sm"
+            size="md"
             label="Регулярная"
             @click="form.scheduleType = 'recurring'"
           />
           <SelectButton
             :is-selected="form.scheduleType === 'one_time'"
-            size="sm"
+            size="md"
             label="Разовая"
             @click="form.scheduleType = 'one_time'"
           />
@@ -135,7 +135,7 @@
             v-for="day in weekDays"
             :key="day.value"
             :is-selected="isDaySelected(day.value)"
-            size="sm"
+            size="md"
             :label="day.label"
             @click="toggleDay(day.value)"
           />

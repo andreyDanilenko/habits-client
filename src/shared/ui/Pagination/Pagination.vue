@@ -21,7 +21,7 @@
         :disabled="page <= 1"
         @click="emit('page-change', page - 1)"
       >
-        <ArrowLeftIcon size="sm" />
+        <ArrowLeftIcon size="md" />
       </button>
 
       <div class="flex items-center gap-1">
@@ -59,7 +59,7 @@
         :disabled="page >= totalPages"
         @click="emit('page-change', page + 1)"
       >
-        <ArrowRightIcon size="sm" />
+        <ArrowRightIcon size="md" />
       </button>
     </nav>
   </div>

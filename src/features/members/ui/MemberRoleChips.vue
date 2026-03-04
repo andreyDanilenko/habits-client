@@ -4,7 +4,7 @@
       <p class="text-sm text-text-secondary">
         Роли пользователя
       </p>
-      <Button size="sm" variant="secondary" @click="isAdding = !isAdding">
+      <Button size="md" variant="secondary" @click="isAdding = !isAdding">
         Добавить роль
       </Button>
     </div>
@@ -43,7 +43,7 @@
           {{ role.name }}
         </option>
       </select>
-      <Button size="sm" :disabled="!selectedRoleId" @click="onAdd">
+      <Button size="md" :disabled="!selectedRoleId" @click="onAdd">
         Назначить
       </Button>
     </div>

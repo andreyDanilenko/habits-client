@@ -17,7 +17,7 @@
           >
             <span class="text-2xl">{{ mood.emoji }}</span>
           </SelectButton>
-          <Button v-if="form.mood" variant="ghost" size="sm" @click="form.mood = undefined">
+          <Button v-if="form.mood" variant="ghost" size="md" @click="form.mood = undefined">
             Убрать
           </Button>
         </div>
@@ -50,7 +50,7 @@
             class="inline-block w-auto min-w-[140px]"
             @keydown.enter.prevent="addTag"
           />
-          <Button type="button" variant="outline" size="sm" @click="addTag"> Добавить </Button>
+          <Button type="button" variant="outline" size="md" @click="addTag"> Добавить </Button>
         </div>
       </FormField>
     </form>

@@ -22,19 +22,19 @@
       </dl>
     </div>
     <div class="border-t border-border-light pt-4 space-y-2">
-      <Button variant="outline" size="sm" class="w-full" @click="$emit('edit', contact)">
+      <Button variant="outline" size="md" class="w-full" @click="$emit('edit', contact)">
         Редактировать
       </Button>
-      <Button variant="outline" size="sm" class="w-full" @click="$emit('call', contact)">
+      <Button variant="outline" size="md" class="w-full" @click="$emit('call', contact)">
         Позвонить
       </Button>
-      <Button variant="outline" size="sm" class="w-full" @click="$emit('email', contact)">
+      <Button variant="outline" size="md" class="w-full" @click="$emit('email', contact)">
         Написать письмо
       </Button>
-      <Button variant="primary" size="sm" class="w-full" @click="$emit('create-deal', contact)">
+      <Button variant="primary" size="md" class="w-full" @click="$emit('create-deal', contact)">
         Создать сделку
       </Button>
-      <Button variant="ghost" size="sm" class="w-full" @click="$emit('open-card', contact)">
+      <Button variant="ghost" size="md" class="w-full" @click="$emit('open-card', contact)">
         Открыть карточку
       </Button>
     </div>

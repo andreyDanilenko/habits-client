@@ -52,12 +52,12 @@
             </select>
           </div>
           <div class="flex flex-wrap gap-2 mt-3">
-            <Button size="sm" variant="outline" @click="openEditModal">Редактировать</Button>
-            <Button size="sm" variant="ghost" @click="confirmDelete">Удалить</Button>
-            <Button v-if="deal.status === 'open'" size="sm" variant="primary" @click="closeAsWon">
+            <Button size="md" variant="outline" @click="openEditModal">Редактировать</Button>
+            <Button size="md" variant="ghost" @click="confirmDelete">Удалить</Button>
+            <Button v-if="deal.status === 'open'" size="md" variant="primary" @click="closeAsWon">
               Закрыть выигрыш
             </Button>
-            <Button v-if="deal.status === 'open'" size="sm" variant="ghost" @click="closeAsLost">
+            <Button v-if="deal.status === 'open'" size="md" variant="ghost" @click="closeAsLost">
               Закрыть проигрыш
             </Button>
           </div>
