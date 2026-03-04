@@ -2,21 +2,22 @@
   <DataTable
     title="Контакты"
     :data="contacts"
-    :columns="(contactColumns as import('@/shared/ui').DataTableColumn<unknown>[])"
-    :get-row-id="(row: unknown) => (row as Contact).id"
+    :columns="contactColumns"
+    :get-row-id="getRowId"
     :loading="isLoading"
     :error="isError"
     empty-message="Нет контактов для отображения."
     error-message="Ошибка загрузки контактов. Обновите страницу."
     :selectable="true"
+
     :selected-ids="selectedIds"
     :sort-by="sortBy"
     :sort-order="sortOrder"
-    :on-row-click="(row: unknown) => emit('row-click', row as Contact)"
+    :on-row-click="handleRowClick"
     @select="handleRowSelect"
     @select-all="onSelectAll"
     @sort="handleSort"
-    :row-actions="(row: unknown) => rowActionsRenderer(row as Contact)"
+    :row-actions="rowActionsRenderer"
   >
     <template #headerActions>
       <Button variant="ghost" size="md" :disabled="isLoading" @click="fetchContacts">
@@ -30,7 +31,7 @@
           <select
             :value="pageSize"
             class="rounded border border-border-default bg-bg-primary px-2 py-1 text-sm text-text-primary"
-            @change="setPageSize(Number(($event.target as HTMLSelectElement).value))"
+            @change="onPageSizeChange"
           >
             <option v-for="opt in pageSizeOptions" :key="opt" :value="opt">{{ opt }}</option>
           </select>
@@ -79,8 +80,19 @@
     'row-click': [contact: Contact]
   }>()
 
+  const getRowId = (row: Contact): string => row.id
+
+  const handleRowClick = (row: Contact) => {
+    emit('row-click', row)
+  }
+
   const onSelectAll = () => {
     props.handleSelectAll(props.contacts.map((c) => c.id))
+  }
+
+  const onPageSizeChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement
+    props.setPageSize(Number(target.value))
   }
 
   function rowActionsRenderer(row: Contact) {

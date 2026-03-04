@@ -2,20 +2,22 @@
   <DataTable
     title="Компании"
     :data="companies"
-    :columns="(companyColumns as import('@/shared/ui').DataTableColumn<unknown>[])"
-    :get-row-id="(row: unknown) => (row as Company).id"
+    :columns="companyColumns"
+    :get-row-id="getRowId"
     :loading="isLoading"
     :error="isError"
     empty-message="Нет компаний для отображения."
     error-message="Ошибка загрузки компаний."
     :selectable="true"
+    :sticky-selection="true"
+    :sticky-actions="true"
     :selected-ids="selectedIds"
     :sort-by="sortBy"
     :sort-order="sortOrder"
     @select="handleRowSelect"
     @select-all="onSelectAll"
     @sort="handleSort"
-    :row-actions="(row: unknown) => rowActionsRenderer(row as Company)"
+    :row-actions="rowActionsRenderer"
   >
     <template #headerActions>
       <Button variant="ghost" size="md" :disabled="isLoading" @click="fetchCompanies">
@@ -36,6 +38,7 @@
 <script setup lang="ts">
   import { h } from 'vue'
   import { DataTable, Button, Pagination } from '@/shared/ui'
+  import type { DataTableColumn } from '@/shared/ui'
   import { getCompanyColumns } from '../config/columns'
   import CompaniesTableRowActions from './CompaniesTableRowActions.vue'
   import type { Company } from '@/entities/company'
@@ -64,7 +67,9 @@
     'contacts-click': [company: Company]
   }>()
 
-  const companyColumns = getCompanyColumns({
+  const getRowId = (row: Company): string => row.id
+
+  const companyColumns: DataTableColumn<Company>[] = getCompanyColumns({
     onCompanyClick: (company) => emit('company-click', company),
     onContactsClick: (company) => emit('contacts-click', company),
   })

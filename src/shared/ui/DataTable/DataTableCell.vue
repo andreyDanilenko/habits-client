@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts" generic="T = any">
   import { h } from 'vue'
   import type { DataTableColumn } from './DataTable.types'
 
@@ -13,7 +13,17 @@
     const content = props.column.render
       ? props.column.render(v, props.row)
       : (v != null ? String(v) : '')
-    return typeof content === 'string' ? h('span', content) : content
+    if (typeof content === 'string') {
+      return h(
+        'span',
+        {
+          class: 'block truncate',
+          title: content,
+        },
+        content,
+      )
+    }
+    return content
   }
 </script>
 

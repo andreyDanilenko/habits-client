@@ -23,8 +23,11 @@
       />
     </div>
 
-    <div class="w-full overflow-x-auto">
-      <table class="w-full table-fixed border-collapse">
+    <div class="w-full overflow-x-auto bg-bg-primary">
+      <table
+        class="w-full table-fixed border-spacing-x-(--spacing-2) border-spacing-y-0 bg-bg-primary"
+        :style="{ minWidth: props.minTableWidth }"
+      >
         <colgroup>
           <col v-if="selectable" style="width: 1%; min-width: 50px" />
           <col v-for="col in columns" :key="col.id" style="width: auto" />
@@ -34,7 +37,12 @@
           <tr>
             <th
               v-if="selectable"
-              class="py-3 px-2 border-b border-border-light font-semibold text-sm text-text-secondary text-left pl-4 align-middle"
+              class="py-3 px-2 border-b border-border-light font-semibold text-sm text-text-secondary text-left pl-4 align-middle bg-bg-primary"
+              :class="[
+                props.stickySelection && 'sticky left-0 z-20',
+                // небольшая тень, чтобы не было просвета между фиксированной и скроллимой частью
+                props.stickySelection && 'shadow-[2px_0_0_0_rgba(0,0,0,0.04)]',
+              ]"
             >
               <Checkbox
                 :model-value="allSelected"
@@ -50,6 +58,10 @@
               :class="[
                 col.align === 'left' ? 'text-left pl-0' : 'text-center',
               ]"
+              :style="{
+                minWidth: props.cellMinWidth,
+                maxWidth: props.cellMaxWidth,
+              }"
             >
               <button
                 v-if="col.sortable && onSort"
@@ -67,7 +79,11 @@
             </th>
             <th
               v-if="rowActions"
-              class="py-2 px-2 border-b border-border-light font-semibold text-sm text-text-secondary align-middle"
+              class="py-2 px-2 border-b border-border-light font-semibold text-sm text-text-secondary align-middle bg-bg-primary"
+              :class="[
+                props.stickyActions && 'sticky right-0 z-30',
+                props.stickyActions && 'shadow-[-2px_0_0_0_rgba(0,0,0,0.04)]',
+              ]"
             />
           </tr>
         </thead>
@@ -94,8 +110,12 @@
           >
             <td
               v-if="selectable"
-              class="py-3 px-2 pl-4 border-b border-border-light text-sm leading-snug text-text-primary text-left align-middle group-hover:bg-bg-tertiary"
-              :class="selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10'"
+              class="py-3 px-2 pl-4 border-b border-border-light text-sm leading-snug text-text-primary text-left align-middle whitespace-nowrap bg-bg-primary group-hover:bg-bg-tertiary"
+              :class="[
+                selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10',
+                props.stickySelection && 'sticky left-0 z-10',
+                props.stickySelection && 'shadow-[2px_0_0_0_rgba(0,0,0,0.04)]',
+              ]"
               @click.stop
             >
               <Checkbox
@@ -109,19 +129,27 @@
             <td
               v-for="col in columns"
               :key="col.id"
-              class="py-3 px-2 border-b border-border-light text-sm leading-snug text-text-primary align-middle group-hover:bg-bg-tertiary"
+              class="py-3 px-2 border-b border-border-light text-sm leading-snug text-text-primary align-middle whitespace-nowrap overflow-hidden bg-bg-primary group-hover:bg-bg-tertiary"
               :class="[
                 col.align === 'left' ? 'text-left pl-0' : 'text-center',
                 selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10',
                 col.cellClassName,
               ]"
+              :style="{
+                minWidth: props.cellMinWidth,
+                maxWidth: props.cellMaxWidth,
+              }"
             >
               <DataTableCell :column="col" :row="row" />
             </td>
             <td
               v-if="rowActions"
-              class="py-2 px-2 border-b border-border-light text-sm text-text-primary align-middle group-hover:bg-bg-tertiary"
-              :class="selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10'"
+              class="py-2 px-2 border-b border-border-light text-sm text-text-primary align-middle bg-bg-primary whitespace-nowrap group-hover:bg-bg-tertiary"
+              :class="[
+                selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10',
+                props.stickyActions && 'sticky right-0 z-30',
+                props.stickyActions && 'shadow-[-2px_0_0_0_rgba(0,0,0,0.04)]',
+              ]"
               @click.stop
             >
               <div class="flex items-center justify-center gap-2">
@@ -139,7 +167,7 @@
   </section>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T = any">
   import { computed } from 'vue'
   import Checkbox from '@/shared/ui/Checkbox.vue'
   import type { DataTableProps, SortOrder } from './DataTable.types'
@@ -148,9 +176,9 @@
 
   const props = withDefaults(
     defineProps<
-      DataTableProps<unknown> & {
+      DataTableProps<T> & {
         sortOrder?: SortOrder
-        checkboxSize?: ComponentSize  // Добавляем пропс для размера чекбокса
+        checkboxSize?: ComponentSize
       }
     >(),
     {
@@ -161,11 +189,16 @@
       selectable: false,
       sortOrder: 'asc',
       className: '',
-      checkboxSize: 'md',  // По умолчанию 20px!
+      checkboxSize: 'md',
+      minTableWidth: '800px',
+      cellMinWidth: '140px',
+      cellMaxWidth: '260px',
+      stickySelection: false,
+      stickyActions: false,
     },
   )
 
-  const safeData = computed(() => props.data ?? [])
+  const safeData = computed<T[]>(() => (props.data ?? []) as T[])
   const selectedIdsSet = computed(() => props.selectedIds ?? new Set())
   const allSelected = computed(
     () =>
@@ -175,7 +208,7 @@
   const colCount =
     (props.selectable ? 1 : 0) + props.columns.length + (props.rowActions ? 1 : 0)
 
-  function handleRowClick(row: unknown, e: MouseEvent) {
+  function handleRowClick(row: T, e: MouseEvent) {
     const target = e.target as HTMLElement
     if (target.closest('a')) return
     if (target.closest('button') || target.closest('input') || target.closest('[role="checkbox"]'))
@@ -184,14 +217,14 @@
       props.onRowClick(row)
       return
     }
-    if (props.onSelect) props.onSelect(props.getRowId(row as Record<string, unknown>))
+    if (props.onSelect) props.onSelect(props.getRowId(row))
   }
 
-  function handleRowKeydown(row: unknown, e: KeyboardEvent) {
+  function handleRowKeydown(row: T, e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
       if (props.onRowClick) props.onRowClick(row)
-      else if (props.onSelect) props.onSelect(props.getRowId(row as Record<string, unknown>))
+      else if (props.onSelect) props.onSelect(props.getRowId(row))
     }
   }
 </script>

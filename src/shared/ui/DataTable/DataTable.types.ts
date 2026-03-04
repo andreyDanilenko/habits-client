@@ -33,4 +33,27 @@ export interface DataTableProps<T> {
   onSort?: (columnId: string) => void
   rowActions?: (row: T) => VNode | null
   className?: string
+  /**
+   * Минимальная ширина всей таблицы (для горизонтального скролла).
+   * По умолчанию '800px'.
+   */
+  minTableWidth?: string
+  /**
+   * Минимальная ширина ячейки данных.
+   * По умолчанию '140px'.
+   */
+  cellMinWidth?: string
+  /**
+   * Максимальная ширина ячейки данных.
+   * По умолчанию '260px'.
+   */
+  cellMaxWidth?: string
+  /**
+   * Фиксировать колонку чекбоксов слева при горизонтальном скролле.
+   */
+  stickySelection?: boolean
+  /**
+   * Фиксировать колонку экшенов справа при горизонтальном скролле.
+   */
+  stickyActions?: boolean
 }

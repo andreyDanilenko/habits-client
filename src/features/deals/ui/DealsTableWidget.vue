@@ -2,20 +2,22 @@
   <DataTable
     title="Сделки"
     :data="deals"
-    :columns="(dealColumns as import('@/shared/ui').DataTableColumn<unknown>[])"
-    :get-row-id="(row: unknown) => (row as Deal).id"
+    :columns="dealColumns"
+    :get-row-id="getRowId"
     :loading="isLoading"
     :error="isError"
     empty-message="Нет сделок для отображения."
     error-message="Ошибка загрузки сделок."
     :selectable="true"
+    :sticky-selection="true"
+    :sticky-actions="true"
     :selected-ids="selectedIds"
     :sort-by="sortBy"
     :sort-order="sortOrder"
     @select="handleRowSelect"
     @select-all="onSelectAll"
     @sort="handleSort"
-    :row-actions="(row: unknown) => rowActionsRenderer(row as Deal)"
+    :row-actions="rowActionsRenderer"
   >
     <template #headerActions>
       <Button variant="ghost" size="md" :disabled="isLoading" @click="fetchDeals">
@@ -36,6 +38,7 @@
 <script setup lang="ts">
   import { h, computed } from 'vue'
   import { DataTable, Button, Pagination } from '@/shared/ui'
+  import type { DataTableColumn } from '@/shared/ui'
   import { getDealColumns } from '../config/columns'
   import DealsTableRowActions from './DealsTableRowActions.vue'
   import type { Deal, Pipeline } from '@/entities/deal'
@@ -68,7 +71,9 @@
     return stageId
   }
 
-  const dealColumns = computed(() => getDealColumns(stageName))
+  const dealColumns = computed<DataTableColumn<Deal>[]>(() => getDealColumns(stageName))
+
+  const getRowId = (row: Deal) => row.id
 
   const onSelectAll = () => {
     props.handleSelectAll(props.deals.map((d) => d.id))
