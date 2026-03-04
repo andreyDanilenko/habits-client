@@ -2,14 +2,14 @@
   <header
     class="sticky top-0 bg-bg-primary border-b border-border-default shadow-sm flex-shrink-0 z-50"
   >
-    <div class="container mx-auto px-4">
+    <div class="max-w-6xl mx-auto px-(--spacing-4)">
       <!-- Desktop версия -->
-      <div class="hidden lg:flex items-center justify-between h-16">
-        <router-link to="/" class="flex items-center space-x-3">
+      <div class="hidden lg:flex items-center justify-between h-(--layout-header-height)">
+        <router-link to="/" class="flex items-center gap-(--spacing-3) min-w-0">
           <Logo :size="32" />
-          <span class="text-xl font-bold text-text-primary"> HabitFlow </span>
+          <span class="text-(--text-xl) font-bold text-text-primary truncate"> HabitFlow </span>
         </router-link>
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-(--spacing-4) min-w-0">
           <component v-if="headerWidget" :is="headerWidget" />
           <ThemeSwitcher />
           <Notifications />
@@ -18,7 +18,7 @@
       </div>
 
       <!-- Mobile версия -->
-      <div class="flex lg:hidden items-center justify-between h-16">
+      <div class="flex lg:hidden items-center justify-between h-(--layout-header-height)">
         <Button
           v-if="sidebarRef"
           @click="openSidebar"
@@ -29,9 +29,9 @@
         />
         <div v-else class="w-10"></div>
 
-        <router-link to="/" class="flex items-center space-x-2">
+        <router-link to="/" class="flex items-center gap-(--spacing-2) min-w-0">
           <Logo :size="28" />
-          <span class="text-lg font-bold text-text-primary"> HabitFlow </span>
+          <span class="text-(--text-lg) font-bold text-text-primary truncate"> HabitFlow </span>
         </router-link>
 
         <div class="flex items-center gap-1">

@@ -2,26 +2,26 @@
   <Card :border="true" :padding="true" class="bg-bg-primary">
     <div class="flex flex-col gap-4">
       <div v-if="enabledFilters.includes(PageFiltersEnum.SEARCH)" class="relative">
-        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
-          <SearchIcon class="w-5 h-5" />
+        <div class="absolute left-(--spacing-4) top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
+          <SearchIcon class="w-(--size-8) h-(--size-8)" />
         </div>
 
-        <input
+          <input
           :value="searchQuery"
           @input="handleSearchInput"
           type="text"
           :placeholder="searchPlaceholder"
-          class="w-full pl-12 pr-12 py-3 border border-border-default rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary transition-all duration-200 shadow-sm hover:shadow-card"
+          class="w-full pl-(--spacing-10) pr-(--spacing-10) py-(--spacing-3) border border-border-default rounded-(--radius-xl) focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary transition-all duration-200 shadow-sm hover:shadow-card"
         />
 
-        <div class="absolute right-3 top-1/2 -translate-y-1/2">
+        <div class="absolute right-(--spacing-3) top-1/2 -translate-y-1/2">
           <Button
             v-if="searchQuery"
             @click="$emit('update:search-query', '')"
             icon-only
             variant="icon"
             size="md"
-            class="hover:bg-bg-tertiary rounded-lg transition-colors"
+            class="hover:bg-bg-tertiary rounded-(--radius-lg) transition-colors"
           >
             <XMarkIcon class="w-4 h-4" />
           </Button>
@@ -46,7 +46,7 @@
             <select
               :value="selectedMood ?? ''"
               @change="handleMoodChange"
-              class="w-full px-4 py-2.5 pr-10 border border-border-default rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
+              class="w-full px-(--spacing-4) py-(--spacing-3) pr-(--spacing-10) border border-border-default rounded-(--radius-xl) focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
             >
               <option value="" class="text-text-muted">Все настроения</option>
               <option
@@ -59,7 +59,7 @@
               </option>
             </select>
             <div
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              class="absolute right-(--spacing-3) top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
             >
               <ChevronDownIcon class="w-5 h-5" />
             </div>
@@ -72,7 +72,7 @@
             <select
               :value="selectedPeriod ?? ''"
               @change="handlePeriodChange"
-              class="w-full px-4 py-2.5 pr-10 border border-border-default rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
+              class="w-full px-(--spacing-4) py-(--spacing-3) pr-(--spacing-10) border border-border-default rounded-(--radius-xl) focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
             >
               <option value="" class="text-text-muted">Все даты</option>
               <option
@@ -85,7 +85,7 @@
               </option>
             </select>
             <div
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              class="absolute right-(--spacing-3) top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
             >
               <ChevronDownIcon class="w-5 h-5" />
             </div>

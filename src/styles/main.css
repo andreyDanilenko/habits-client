@@ -12,6 +12,7 @@ body {
   position: fixed;
   inset: 0;
   -webkit-overflow-scrolling: touch;
+  font-size: var(--text-base);
 }
 
 #app {
@@ -54,16 +55,33 @@ button {
 /* Base variables (light theme) */
 @theme {
   /* ===== MAIN COLORS ===== */
-  /* Primary (Indigo) */
-  --color-primary-light: #eef2ff; /* indigo-50 */
-  --color-primary-default: #6366f1; /* indigo-500 */
-  --color-primary-dark: #4f46e5; /* indigo-700 */
-  --color-primary-darker: #3730a3; /* indigo-800 */
+  /* Рычаги бренда */
+  --brand-h: 239;      /* primary hue (indigo по умолчанию) */
+  --secondary-h: 271;  /* secondary hue (purple по умолчанию) */
+  --gray-h: var(--brand-h); /* серая шкала гармонирует с брендом */
 
-  /* Secondary (Purple) */
-  --color-secondary-light: #f3e8ff; /* purple-100 */
-  --color-secondary-default: #a855f7; /* purple-500 */
-  --color-secondary-dark: #7e22ce; /* purple-700 */
+  /* Neutral gray scale (HSL-based, гармонирует с primary/secondary) */
+  --color-gray-50: hsl(var(--gray-h) 20% 98%);
+  --color-gray-100: hsl(var(--gray-h) 16% 96%);
+  --color-gray-200: hsl(var(--gray-h) 14% 90%);
+  --color-gray-300: hsl(var(--gray-h) 12% 84%);
+  --color-gray-400: hsl(var(--gray-h) 10% 70%);
+  --color-gray-500: hsl(var(--gray-h) 8% 55%);
+  --color-gray-600: hsl(var(--gray-h) 10% 40%);
+  --color-gray-700: hsl(var(--gray-h) 12% 32%);
+  --color-gray-800: hsl(var(--gray-h) 15% 24%);
+  --color-gray-900: hsl(var(--gray-h) 20% 15%);
+
+  /* Primary (динамический, вместо жесткого HEX) */
+  --color-primary-light:   hsl(var(--brand-h) 100% 97%); /* ~indigo-50 */
+  --color-primary-default: hsl(var(--brand-h) 84% 67%);  /* ~indigo-500 */
+  --color-primary-dark:    hsl(var(--brand-h) 72% 59%);  /* ~indigo-600/700 */
+  --color-primary-darker:  hsl(var(--brand-h) 54% 41%);  /* ~indigo-800 */
+
+  /* Secondary (динамический) */
+  --color-secondary-light:   hsl(var(--secondary-h) 100% 95%);
+  --color-secondary-default: hsl(var(--secondary-h) 91% 65%);
+  --color-secondary-dark:    hsl(var(--secondary-h) 72% 51%);
 
   /* Success (Green) */
   --color-success-light: #dcfce7; /* green-100 */
@@ -91,19 +109,19 @@ button {
 
   /* ===== BACKGROUNDS ===== */
   --color-bg-primary: #ffffff; /* white */
-  --color-bg-secondary: #f9fafb; /* gray-50 */
-  --color-bg-tertiary: #f3f4f6; /* gray-100 */
+  --color-bg-secondary: var(--color-gray-50);
+  --color-bg-tertiary: var(--color-gray-100);
 
   /* ===== TEXT ===== */
-  --color-text-primary: #111827; /* gray-900 */
-  --color-text-secondary: #6b7280; /* gray-500 */
-  --color-text-muted: #9ca3af; /* gray-400 */
-  --color-text-disabled: #d1d5db; /* gray-300 */
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-500);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-disabled: var(--color-gray-300);
 
   /* ===== BORDERS ===== */
-  --color-border-light: #e5e7eb; /* gray-200 */
-  --color-border-default: #d1d5db; /* gray-300 */
-  --color-border-hover: #9ca3af; /* gray-400 */
+  --color-border-light: var(--color-gray-200);
+  --color-border-default: var(--color-gray-300);
+  --color-border-hover: var(--color-gray-400);
 
   /* ===== LEGEND DOTS ===== */
   --color-regular-dot: var(--color-primary-default);
@@ -161,6 +179,57 @@ button {
   /* Additional colors */
   --color-teal-50: #f0fdfa;
   --color-orange-50: #fff7ed;
+
+
+  --unit-base: 0.25rem; /* 4px - основа для всего */
+
+  /* ===== СИСТЕМА ОТСТУПОВ ===== */
+  --spacing-1: var(--unit-base);        /* 4px */
+  --spacing-2: calc(var(--unit-base) * 2); /* 8px */
+  --spacing-3: calc(var(--unit-base) * 3); /* 12px */
+  --spacing-4: calc(var(--unit-base) * 4); /* 16px */
+  --spacing-5: calc(var(--unit-base) * 5); /* 20px */
+  --spacing-6: calc(var(--unit-base) * 6); /* 24px */
+  --spacing-8: calc(var(--unit-base) * 8); /* 32px */
+  --spacing-10: calc(var(--unit-base) * 10); /* 40px */
+  --spacing-12: calc(var(--unit-base) * 12); /* 48px */
+
+  /* ===== СКРУГЛЕНИЯ ===== */
+  --radius-sm: calc(var(--unit-base) * 1);    /* 4px */
+  --radius-md: calc(var(--unit-base) * 2);    /* 8px - твой текущий rounded-lg */
+  --radius-lg: calc(var(--unit-base) * 3);    /* 12px */
+  --radius-xl: calc(var(--unit-base) * 4);    /* 16px */
+  --radius-full: 9999px;
+
+  /* ===== РАЗМЕРЫ КОМПОНЕНТОВ ===== */
+  --size-6: calc(var(--unit-base) * 6);   /* 24px */
+  --size-8: calc(var(--unit-base) * 8);   /* 32px */
+  --size-10: calc(var(--unit-base) * 10); /* 40px */
+  --size-12: calc(var(--unit-base) * 12); /* 48px */
+
+  /* ===== LAYOUT ===== */
+  --layout-sidebar-width: calc(var(--unit-base) * 64);           /* 256px при base=16px */
+  --layout-sidebar-width-collapsed: calc(var(--unit-base) * 16);  /* 64px при base=16px */
+  --layout-header-height: calc(var(--unit-base) * 16);           /* 64px при base=16px */
+
+  /* ===== ТИПОГРАФИЯ ===== */
+  --text-xs: calc(var(--unit-base) * 3);    /* 12px */
+  --text-sm: calc(var(--unit-base) * 3.5);  /* 14px */
+  --text-base: calc(var(--unit-base) * 4);  /* 16px */
+  --text-lg: calc(var(--unit-base) * 4.5);  /* 18px */
+  --text-xl: calc(var(--unit-base) * 5);    /* 20px */
+  --text-2xl: calc(var(--unit-base) * 6);   /* 24px */
+  --text-3xl: calc(var(--unit-base) * 7);   /* 28px */
+  --text-4xl: calc(var(--unit-base) * 8);   /* 32px */
+
+  --text-xs--line-height: 1.6;
+  --text-sm--line-height: 1.55;
+  --text-base--line-height: 1.5;
+  --text-lg--line-height: 1.45;
+  --text-xl--line-height: 1.4;
+  --text-2xl--line-height: 1.35;
+  --text-3xl--line-height: 1.3;
+  --text-4xl--line-height: 1.2;
 }
 
 /* DataTable loading bar animation */
@@ -172,16 +241,16 @@ button {
 
 /* ===== DARK THEME OVERRIDES ===== */
 .dark {
-  /* ===== Primary (Indigo) ===== */
-  --color-primary-light: #1e1b4b; /* indigo-950 */
-  --color-primary-default: #818cf8; /* indigo-400 */
-  --color-primary-dark: #a5b4fc; /* indigo-300 */
-  --color-primary-darker: #c7d2fe; /* indigo-200 */
+  /* ===== Primary (dynamic, от brand-h/brand-s) ===== */
+  --color-primary-light:   hsl(var(--brand-h) 40% 20%); /* темный фон кнопок/акцентов */
+  --color-primary-default: hsl(var(--brand-h) 80% 70%); /* основной акцент */
+  --color-primary-dark:    hsl(var(--brand-h) 90% 80%); /* подсветка/hover */
+  --color-primary-darker:  hsl(var(--brand-h) 95% 88%); /* текст на темном фоне */
 
-  /* ===== Secondary (Purple) ===== */
-  --color-secondary-light: #581c87; /* purple-900 */
-  --color-secondary-default: #c084fc; /* purple-400 */
-  --color-secondary-dark: #d8b4fe; /* purple-300 */
+  /* ===== Secondary (dynamic, от secondary-h) ===== */
+  --color-secondary-light:   hsl(var(--secondary-h) 40% 20%);
+  --color-secondary-default: hsl(var(--secondary-h) 80% 70%);
+  --color-secondary-dark:    hsl(var(--secondary-h) 90% 80%);
 
   /* ===== Success (Green) ===== */
   --color-success-light: #14532d; /* green-900 */

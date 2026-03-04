@@ -36,8 +36,8 @@
   const sidebarRef = ref<InstanceType<typeof AppSidebar> | null>(null)
   
   const contentClass = computed(() => {
-    return showHeader.value 
-      ? 'container mx-auto px-4 py-6 md:py-8' 
+    return showHeader.value
+      ? 'max-w-6xl mx-auto px-(--spacing-4) py-(--spacing-6) md:py-(--spacing-8)'
       : ''
   })
 </script>

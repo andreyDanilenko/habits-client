@@ -1,7 +1,8 @@
 <template>
-  <Modal :is-open="isOpen" @close="$emit('close')">
+  <Modal :is-open="isOpen"   size="sm" @close="$emit('close')">
     <ModalContent
       :title="company ? 'Редактировать компанию' : 'Новая компания'"
+      size="sm"
       :show-close-button="true"
       @close="$emit('close')"
     >
@@ -13,18 +14,18 @@
               v-model="form.name" 
               placeholder="Название компании" 
               required 
-              size="md"
+              "
             />
           </FormField>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <FormField label="ИНН">
-              <Input v-model="form.inn" placeholder="ИНН" size="md" />
+              <Input v-model="form.inn" placeholder="ИНН" " />
             </FormField>
             <FormField label="КПП">
-              <Input v-model="form.kpp" placeholder="КПП" size="md" />
+              <Input v-model="form.kpp" placeholder="КПП" " />
             </FormField>
             <FormField label="ОГРН">
-              <Input v-model="form.ogrn" placeholder="ОГРН" size="md" />
+              <Input v-model="form.ogrn" placeholder="ОГРН" " />
             </FormField>
           </div>
         </section>
@@ -32,13 +33,13 @@
         <section class="space-y-4">
           <h3 class="text-sm font-medium text-text-secondary">Контакты</h3>
           <FormField label="Телефон">
-            <Input v-model="form.phone" type="tel" placeholder="+7 (495) 000-00-00" size="md" />
+            <Input v-model="form.phone" type="tel" placeholder="+7 (495) 000-00-00" " />
           </FormField>
           <FormField label="Email">
-            <Input v-model="form.email" type="email" placeholder="email@company.ru" size="md" />
+            <Input v-model="form.email" type="email" placeholder="email@company.ru" " />
           </FormField>
           <FormField label="Сайт">
-            <Input v-model="form.website" type="url" placeholder="https://" size="md" />
+            <Input v-model="form.website" type="url" placeholder="https://" " />
           </FormField>
         </section>
 
@@ -46,21 +47,21 @@
           <h3 class="text-sm font-medium text-text-secondary">Юридический адрес</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField label="Страна">
-              <Input v-model="form.legalCountry" placeholder="Россия" size="md" />
+              <Input v-model="form.legalCountry" placeholder="Россия" " />
             </FormField>
             <FormField label="Город">
-              <Input v-model="form.legalCity" placeholder="Москва" size="md" />
+              <Input v-model="form.legalCity" placeholder="Москва" " />
             </FormField>
           </div>
           <FormField label="Улица">
-            <Input v-model="form.legalStreet" placeholder="ул. Примерная" size="md" />
+            <Input v-model="form.legalStreet" placeholder="ул. Примерная" " />
           </FormField>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField label="Дом">
-              <Input v-model="form.legalBuilding" placeholder="1" size="md" />
+              <Input v-model="form.legalBuilding" placeholder="1" " />
             </FormField>
             <FormField label="Офис / квартира">
-              <Input v-model="form.legalApartment" placeholder="—" size="md" />
+              <Input v-model="form.legalApartment" placeholder="—" " />
             </FormField>
           </div>
         </section>
@@ -70,28 +71,28 @@
           <div class="flex items-center gap-2">
             <Checkbox
               v-model="sameAsLegal"
-              size="md" 
+              " 
             />
             <span class="text-sm text-text-secondary">Совпадает с юридическим</span>
           </div>
           <template v-if="!sameAsLegal">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField label="Страна">
-                <Input v-model="form.actualCountry" placeholder="Россия" size="md" />
+                <Input v-model="form.actualCountry" placeholder="Россия" " />
               </FormField>
               <FormField label="Город">
-                <Input v-model="form.actualCity" placeholder="Москва" size="md" />
+                <Input v-model="form.actualCity" placeholder="Москва" " />
               </FormField>
             </div>
             <FormField label="Улица">
-              <Input v-model="form.actualStreet" placeholder="ул. Примерная" size="md" />
+              <Input v-model="form.actualStreet" placeholder="ул. Примерная" " />
             </FormField>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField label="Дом">
-                <Input v-model="form.actualBuilding" placeholder="1" size="md" />
+                <Input v-model="form.actualBuilding" placeholder="1" " />
               </FormField>
               <FormField label="Офис / квартира">
-                <Input v-model="form.actualApartment" placeholder="—" size="md" />
+                <Input v-model="form.actualApartment" placeholder="—" " />
               </FormField>
             </div>
           </template>
@@ -99,13 +100,13 @@
 
         <section class="space-y-4">
           <FormField label="Теги (через запятую)">
-            <Input v-model="form.tagsStr" placeholder="важный, партнёр" size="md" />
+            <Input v-model="form.tagsStr" placeholder="важный, партнёр" " />
           </FormField>
         </section>
 
         <div class="flex justify-end gap-2 pt-2 sticky bottom-0 bg-bg-primary py-2">
           <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
-          <Button type="submit" :loading="saving" size="md">Сохранить</Button>
+          <Button type="submit" :loading="saving" ">Сохранить</Button>
         </div>
       </form>
     </ModalContent>

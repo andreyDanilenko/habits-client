@@ -10,12 +10,12 @@
       />
     </template>
 
-    <div class="w-48 bg-bg-primary rounded-lg shadow-card border border-border-default">
+    <div class="w-56 bg-bg-primary rounded-lg shadow-card border border-border-default">
       <button
         v-for="opt in options"
         :key="opt.mode"
         type="button"
-        class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-text-primary hover:bg-bg-tertiary transition-colors first:rounded-t-lg last:rounded-b-lg"
+        class="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-text-primary hover:bg-bg-tertiary transition-colors first:rounded-t-lg"
         :class="{ 'bg-primary-light text-primary-default': mode === opt.mode }"
         @click="setTheme(opt.mode)"
       >
@@ -23,6 +23,10 @@
         <span class="flex-1 min-w-0">{{ opt.label }}</span>
         <CheckIcon v-if="mode === opt.mode" class="w-4 h-4 flex-shrink-0 text-primary-default" />
       </button>
+
+      <div class="border-t border-border-light">
+        <ThemeWorkspaceToggle />
+      </div>
     </div>
   </Tooltip>
 </template>
@@ -32,6 +36,7 @@
   import { useTheme, type ThemeMode } from '@/shared/lib/use-theme'
   import { Tooltip, Button } from '@/shared/ui'
   import { CheckIcon } from '@/shared/ui/icon'
+  import ThemeWorkspaceToggle from './ThemeWorkspaceToggle.vue'
 
   const iconSvgAttrs = (attrs: Record<string, unknown>) => {
     const { size, class: c, ...rest } = attrs

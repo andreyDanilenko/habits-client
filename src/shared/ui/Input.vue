@@ -135,12 +135,12 @@
 
   const inputSizeClasses = computed(() => {
     const sizes = {
-      xs: 'h-6 min-h-6 px-2 text-xs',
-      sm: 'h-6 min-h-6 px-2 text-xs',
-      md: 'h-8 min-h-8 px-3 text-sm',
-      lg: 'h-10 min-h-10 px-4 text-sm',
-      xl: 'h-10 min-h-10 px-4 text-base',
-      xxl: 'h-12 min-h-12 px-5 text-base',
+      xs: 'h-(--size-6) min-h-(--size-6) px-(--spacing-2) text-(--text-xs)',
+      sm: 'h-(--size-6) min-h-(--size-6) px-(--spacing-2) text-(--text-xs)',
+      md: 'h-(--size-8) min-h-(--size-8) px-(--spacing-3) text-(--text-sm)',
+      lg: 'h-(--size-10) min-h-(--size-10) px-(--spacing-4) text-(--text-sm)',
+      xl: 'h-(--size-10) min-h-(--size-10) px-(--spacing-4) text-(--text-base)',
+      xxl: 'h-(--size-12) min-h-(--size-12) px-(--spacing-5) text-(--text-base)',
     }
     return sizes[props.size]
   })
@@ -159,51 +159,51 @@
 
   const iconLeftClasses = computed(() => {
     const sizes = {
-      xs: 'w-3.5 h-3.5',
-      sm: 'w-3.5 h-3.5',
-      md: 'w-4 h-4',
-      lg: 'w-4 h-4',
-      xl: 'w-4 h-4',
-      xxl: 'w-5 h-5',
+      xs: 'w-(--size-6) h-(--size-6)',
+      sm: 'w-(--size-6) h-(--size-6)',
+      md: 'w-(--size-8) h-(--size-8)',
+      lg: 'w-(--size-8) h-(--size-8)',
+      xl: 'w-(--size-8) h-(--size-8)',
+      xxl: 'w-(--size-10) h-(--size-10)',
     }
     return sizes[props.size]
   })
 
   const clearButtonSizeClasses = computed(() => {
     const sizes = {
-      xs: 'p-0.5',
-      sm: 'p-0.5',
-      md: 'p-1',
-      lg: 'p-1',
-      xl: 'p-1',
-      xxl: 'p-1.5',
+      xs: 'p-(--spacing-1)',
+      sm: 'p-(--spacing-1)',
+      md: 'p-(--spacing-2)',
+      lg: 'p-(--spacing-2)',
+      xl: 'p-(--spacing-2)',
+      xxl: 'p-(--spacing-3)',
     }
     return sizes[props.size]
   })
 
   const leftPaddingClass = computed(() => {
-    if (!slots?.leftIcon && !props.leftIcon) return 'pl-3'
+    if (!slots?.leftIcon && !props.leftIcon) return 'pl-(--spacing-3)'
     const sizes = {
-      xs: 'pl-7',
-      sm: 'pl-7',
-      md: 'pl-8',
-      lg: 'pl-10',
-      xl: 'pl-10',
-      xxl: 'pl-12',
+      xs: 'pl-(--spacing-6)',
+      sm: 'pl-(--spacing-6)',
+      md: 'pl-(--spacing-8)',
+      lg: 'pl-(--spacing-8)',
+      xl: 'pl-(--spacing-8)',
+      xxl: 'pl-(--spacing-10)',
     }
     return sizes[props.size]
   })
 
   const rightPaddingClass = computed(() => {
     const hasRightContent = props.showClear || slots?.rightIcon || props.rightIcon
-    if (!hasRightContent) return 'pr-3'
+    if (!hasRightContent) return 'pr-(--spacing-3)'
     const sizes = {
-      xs: 'pr-7',
-      sm: 'pr-7',
-      md: 'pr-8',
-      lg: 'pr-10',
-      xl: 'pr-10',
-      xxl: 'pr-12',
+      xs: 'pr-(--spacing-6)',
+      sm: 'pr-(--spacing-6)',
+      md: 'pr-(--spacing-8)',
+      lg: 'pr-(--spacing-8)',
+      xl: 'pr-(--spacing-8)',
+      xxl: 'pr-(--spacing-10)',
     }
     return sizes[props.size]
   })

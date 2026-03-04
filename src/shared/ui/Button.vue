@@ -3,7 +3,7 @@
     :type="type"
     :disabled="disabled || loading"
     :class="[
-      'cursor-pointer inline-flex items-center rounded-lg font-medium transition-colors',
+      'cursor-pointer inline-flex items-center rounded-(--radius-md) font-medium transition-colors',
       customClass && customClass.includes('justify-') ? '' : 'justify-center',
       'focus:outline-none',
       props.variant !== 'ghost' && props.variant !== 'link' && props.variant !== 'icon'
@@ -68,31 +68,32 @@
     click: [e: MouseEvent]
   }>()
 
-  // Единая высота 24 | 32 | 40 | 48 px. С иконкой и без — одинаково.
+  // ТОЛЬКО размеры заменил на переменные
   const buttonSizeClasses = computed(() => {
     const sizes = {
-      xs: 'h-6 min-h-6 px-2 text-xs',
-      sm: 'h-6 min-h-6 px-2 text-xs',
-      md: 'h-8 min-h-8 px-3 text-sm',
-      lg: 'h-10 min-h-10 px-4 text-sm',
-      xl: 'h-10 min-h-10 px-4 text-base',
-      xxl: 'h-12 min-h-12 px-5 text-base',
+      xs: 'h-(--size-6) min-h-(--size-6) px-(--spacing-2) text-(--text-xs)',
+      sm: 'h-(--size-6) min-h-(--size-6) px-(--spacing-2) text-(--text-xs)',
+      md: 'h-(--size-8) min-h-(--size-8) px-(--spacing-3) text-(--text-sm)',
+      lg: 'h-(--size-10) min-h-(--size-10) px-(--spacing-4) text-(--text-sm)',
+      xl: 'h-(--size-10) min-h-(--size-10) px-(--spacing-4) text-(--text-base)',
+      xxl: 'h-(--size-12) min-h-(--size-12) px-(--spacing-5) text-(--text-base)',
     }
     return sizes[props.size]
   })
 
   const buttonIconOnlyClasses = computed(() => {
     const sizes = {
-      xs: 'h-6 w-6 min-h-6 min-w-6 p-0 text-xs',
-      sm: 'h-6 w-6 min-h-6 min-w-6 p-0 text-xs',
-      md: 'h-8 w-8 min-h-8 min-w-8 p-0 text-sm',
-      lg: 'h-10 w-10 min-h-10 min-w-10 p-0 text-sm',
-      xl: 'h-10 w-10 min-h-10 min-w-10 p-0 text-base',
-      xxl: 'h-12 w-12 min-h-12 min-w-12 p-0 text-base',
+      xs: 'h-(--size-6) w-(--size-6) min-h-(--size-6) min-w-(--size-6) p-0 text-(--text-xs)',
+      sm: 'h-(--size-6) w-(--size-6) min-h-(--size-6) min-w-(--size-6) p-0 text-(--text-xs)',
+      md: 'h-(--size-8) w-(--size-8) min-h-(--size-8) min-w-(--size-8) p-0 text-(--text-sm)',
+      lg: 'h-(--size-10) w-(--size-10) min-h-(--size-10) min-w-(--size-10) p-0 text-(--text-sm)',
+      xl: 'h-(--size-10) w-(--size-10) min-h-(--size-10) min-w-(--size-10) p-0 text-(--text-base)',
+      xxl: 'h-(--size-12) w-(--size-12) min-h-(--size-12) min-w-(--size-12) p-0 text-(--text-base)',
     }
     return sizes[props.size]
   })
 
+  // ВСЁ остальное как в твоей рабочей кнопке
   const variantClasses = computed(() => {
     if (props.variant === 'icon') {
       const iconColorClasses = {
