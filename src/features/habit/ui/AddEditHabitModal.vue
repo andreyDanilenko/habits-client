@@ -49,8 +49,7 @@
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-text-secondary mb-2"> Иконка </label>
+      <FormField label="Иконка">
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="icon in icons"
@@ -62,7 +61,7 @@
             {{ icon }}
           </SelectButton>
         </div>
-      </div>
+      </FormField>
 
       <FormField label="Цель на день">
         <div class="flex items-center space-x-2">
@@ -78,76 +77,57 @@
         </div>
       </FormField>
 
-      <div>
-        <label class="block text-sm font-medium text-text-secondary mb-2">
-          Предпочтительное время
-        </label>
+      <FormField label="Предпочтительное время">
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="time in timesOfDay"
             :key="time.value"
             :is-selected="form.preferredTime === time.value"
-            size="md"
             :label="time.label"
             @click="form.preferredTime = time.value"
           />
         </div>
-      </div>
-
-      <FormField label="Категория">
-        <select
-          v-model="form.category"
-          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary"
-        >
-          <option value="" class="text-text-muted">Без категории</option>
-          <option value="health" class="text-text-primary">Здоровье</option>
-          <option value="sport" class="text-text-primary">Спорт</option>
-          <option value="study" class="text-text-primary">Учеба</option>
-          <option value="work" class="text-text-primary">Работа</option>
-          <option value="personal" class="text-text-primary">Личное</option>
-        </select>
       </FormField>
 
-      <div>
-        <label class="block text-sm font-medium text-text-secondary mb-2"> Тип расписания </label>
+      <FormField label="Категория">
+        <Select v-model="form.category" :options="categoryOptions" placeholder="Без категории" />
+      </FormField>
+
+      <FormField label="Тип расписания">
         <div class="flex gap-2">
           <SelectButton
             :is-selected="form.scheduleType === 'recurring'"
-            size="md"
             label="Регулярная"
             @click="form.scheduleType = 'recurring'"
           />
           <SelectButton
             :is-selected="form.scheduleType === 'one_time'"
-            size="md"
             label="Разовая"
             @click="form.scheduleType = 'one_time'"
           />
         </div>
-      </div>
+      </FormField>
 
-      <div v-if="form.scheduleType === 'recurring'">
-        <label class="block text-sm font-medium text-text-secondary mb-2">
-          Дни недели <span class="text-error-default">*</span>
-        </label>
+      <FormField
+        v-if="form.scheduleType === 'recurring'"
+        label="Дни недели"
+        required
+        :error="form.recurringDays.length === 0 ? 'Выберите хотя бы один день недели' : ''"
+      >
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="day in weekDays"
             :key="day.value"
             :is-selected="isDaySelected(day.value)"
-            size="md"
             :label="day.label"
             @click="toggleDay(day.value)"
           />
         </div>
-        <p v-if="form.recurringDays.length === 0" class="mt-1 text-sm text-error-default">
-          Выберите хотя бы один день недели
-        </p>
-      </div>
+      </FormField>
 
       <div v-if="form.scheduleType === 'one_time'">
         <FormField label="Дата выполнения" required>
-          <Input v-model="form.oneTimeDate" type="date" required :min="minDate" />
+          <DatePicker v-model="form.oneTimeDate" />
         </FormField>
       </div>
     </form>
@@ -165,7 +145,7 @@
 
 <script setup lang="ts">
   import { reactive, computed, ref } from 'vue'
-  import { ModalContent, Button, FormField, SelectButton, Input } from '@/shared/ui'
+  import { ModalContent, Button, FormField, SelectButton, Input, Select, DatePicker } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   interface Props {
@@ -217,6 +197,15 @@
     { value: 'any', label: 'Любое время' },
   ]
 
+  const categoryOptions = [
+    { value: '', label: 'Без категории' },
+    { value: 'health', label: 'Здоровье' },
+    { value: 'sport', label: 'Спорт' },
+    { value: 'study', label: 'Учеба' },
+    { value: 'work', label: 'Работа' },
+    { value: 'personal', label: 'Личное' },
+  ]
+
   const weekDays = [
     { value: 0, label: 'Вс' },
     { value: 1, label: 'Пн' },
@@ -226,11 +215,6 @@
     { value: 5, label: 'Пт' },
     { value: 6, label: 'Сб' },
   ]
-
-  const minDate = computed(() => {
-    const today = new Date()
-    return today.toISOString().split('T')[0]
-  })
 
   const selectedDaysSet = computed(() => new Set(form.recurringDays))
   const isDaySelected = (dayValue: number) => selectedDaysSet.value.has(dayValue)

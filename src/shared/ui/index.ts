@@ -23,6 +23,7 @@ export type { SegmentedOption } from './SegmentedControl.vue'
 export { default as EmptyState } from './EmptyState.vue'
 export { default as PageFilters } from './PageFilters/PageFilters.vue'
 export { PageFiltersEnum } from './PageFilters/PageFilters.types'
+export { default as Tag } from './Tag.vue'
 
 export { DataTable } from './DataTable'
 export type { DataTableColumn, DataTableProps, SortOrder } from './DataTable/DataTable.types'

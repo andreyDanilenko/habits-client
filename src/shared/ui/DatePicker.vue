@@ -20,15 +20,16 @@
           aria-label="Открыть календарь"
           @click.stop="showPicker = true"
         >
-          <CalendarIcon :size="iconSizeForIcon" class="text-current shrink-0 block" />
+          <CalendarIcon :size="calendarIconSize" class="text-current shrink-0 block" />
         </button>
       </template>
     </Input>
 
     <div
       v-if="showPicker && !disabled"
-      class="absolute z-50 mt-1 bg-bg-primary border border-border-default rounded-lg shadow-lg p-4"
-      :class="pickerPositionClass"
+      ref="pickerRef"
+      class="absolute z-50 bg-bg-primary border border-border-default rounded-lg shadow-lg p-4 min-w-[280px]"
+      :style="pickerStyles"
     >
       <div class="flex items-center justify-between mb-4">
         <button
@@ -56,7 +57,7 @@
         <div
           v-for="day in weekDays"
           :key="day"
-          class="text-xs text-text-muted text-center w-8"
+          class="text-xs text-text-muted text-center w-8 h-8 flex items-center justify-center"
         >
           {{ day }}
         </div>
@@ -64,7 +65,7 @@
           v-for="(date, index) in calendarDays"
           :key="index"
           type="button"
-          class="text-sm p-1 rounded hover:bg-bg-tertiary focus:outline-none focus:ring-1 focus:ring-primary-default min-w-8"
+          class="text-sm rounded hover:bg-bg-tertiary focus:outline-none focus:ring-1 focus:ring-primary-default w-8 h-8 flex items-center justify-center"
           :class="{
             'text-text-muted': !date.isCurrentMonth,
             'text-text-primary': date.isCurrentMonth && !isSelected(date),
@@ -99,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+  import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { CalendarIcon, ArrowLeftIcon, ArrowRightIcon } from './icon'
   import Input from './Input.vue'
   import Button from './Button.vue'
@@ -127,19 +128,118 @@
   }>()
 
   const rootRef = ref<HTMLElement | null>(null)
+  const pickerRef = ref<HTMLElement | null>(null)
   const showPicker = ref(false)
   const currentDate = ref(props.modelValue ? new Date(props.modelValue) : new Date())
+  
+  // Реактивные переменные для позиционирования
+  const pickerTop = ref('100%')
+  const pickerLeft = ref('0')
+  const pickerMargin = ref('4px 0 0 0')
+
+  // Размер иконки календаря в зависимости от размера инпута
+  const calendarIconSize = computed(() => {
+    const map: Record<ComponentSize, number> = {
+      xs: 14,
+      sm: 16,
+      md: 18,
+      lg: 20,
+      xl: 22,
+      xxl: 24,
+    }
+    return map[props.size]
+  })
+
+  // Стили для пикера
+  const pickerStyles = computed(() => ({
+    top: pickerTop.value,
+    left: pickerLeft.value,
+    margin: pickerMargin.value
+  }))
+
+  // Функция для определения оптимальной позиции пикера
+  const updatePickerPosition = async () => {
+    if (!showPicker.value || !rootRef.value || !pickerRef.value) return
+
+    await nextTick()
+    
+    const inputRect = rootRef.value.getBoundingClientRect()
+    const pickerRect = pickerRef.value.getBoundingClientRect()
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+
+    // Сбрасываем стили перед вычислением
+    pickerRef.value.style.top = ''
+    pickerRef.value.style.bottom = ''
+    pickerRef.value.style.left = ''
+    pickerRef.value.style.right = ''
+    pickerRef.value.style.margin = ''
+
+    // Проверяем горизонтальное позиционирование
+    const spaceRight = viewportWidth - inputRect.left
+    const spaceLeft = inputRect.right
+
+    if (spaceRight < pickerRect.width && spaceLeft > pickerRect.width) {
+      // Справа мало места, слева достаточно - позиционируем справа
+      pickerLeft.value = 'auto'
+      pickerRef.value.style.right = '0'
+      pickerRef.value.style.left = 'auto'
+    } else {
+      // По умолчанию позиционируем слева
+      pickerLeft.value = '0'
+      pickerRef.value.style.left = '0'
+      pickerRef.value.style.right = 'auto'
+    }
+
+    // Проверяем вертикальное позиционирование
+    const spaceBelow = viewportHeight - inputRect.bottom
+    const spaceAbove = inputRect.top
+
+    if (spaceBelow < pickerRect.height && spaceAbove > pickerRect.height) {
+      // Снизу мало места, сверху достаточно - позиционируем сверху
+      pickerTop.value = 'auto'
+      pickerRef.value.style.bottom = '100%'
+      pickerRef.value.style.top = 'auto'
+      pickerMargin.value = '0 0 4px 0'
+    } else {
+      // По умолчанию позиционируем снизу
+      pickerTop.value = '100%'
+      pickerRef.value.style.top = '100%'
+      pickerRef.value.style.bottom = 'auto'
+      pickerMargin.value = '4px 0 0 0'
+    }
+  }
 
   function onClickOutside(e: MouseEvent): void {
-    if (!rootRef.value?.contains(e.target as Node)) showPicker.value = false
+    if (!rootRef.value?.contains(e.target as Node)) {
+      showPicker.value = false
+    }
   }
 
   onMounted(() => {
     document.addEventListener('click', onClickOutside)
+    window.addEventListener('resize', () => {
+      if (showPicker.value) {
+        updatePickerPosition()
+      }
+    })
+    window.addEventListener('scroll', () => {
+      if (showPicker.value) {
+        updatePickerPosition()
+      }
+    }, true)
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('click', onClickOutside)
+    window.removeEventListener('resize', updatePickerPosition)
+    window.removeEventListener('scroll', updatePickerPosition, true)
+  })
+
+  watch(showPicker, async (newVal) => {
+    if (newVal) {
+      await updatePickerPosition()
+    }
   })
 
   watch(
@@ -154,21 +254,6 @@
     const date = new Date(props.modelValue)
     return date.toLocaleDateString('ru-RU')
   })
-
-  // Иконка календаря меньше инпута по соотношению и по центру (на шаг ниже: lg→md, md→sm, sm→xs)
-  const iconSizeForIcon = computed(() => {
-    const map: Record<ComponentSize, 'xs' | 'sm' | 'md' | 'lg' | 'xl'> = {
-      xs: 'xs',
-      sm: 'xs',
-      md: 'sm',
-      lg: 'md',
-      xl: 'lg',
-      xxl: 'lg',
-    }
-    return map[props.size]
-  })
-
-  const pickerPositionClass = computed(() => 'left-0')
 
   const currentYear = computed(() => currentDate.value.getFullYear())
   const currentMonth = computed(() => currentDate.value.getMonth())

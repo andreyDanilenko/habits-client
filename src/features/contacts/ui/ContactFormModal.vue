@@ -26,7 +26,6 @@
             placeholder="+7 (999) 999-99-99"
             :error="errors.phone"
             inputClasses="w-full"
-            @update:modelValue="(val: string) => phoneModel = val"
           />
         </FormField>
 
@@ -41,41 +40,18 @@
         </FormField>
 
         <FormField label="Компания">
-          <div class="relative">
-            <Input
-              v-model="companyQuery"
-              placeholder="Поиск компании..."
-              @focus="showCompanyDropdown = true"
-              @blur="onCompanyBlur"
-            />
-            <div
-              v-if="showCompanyDropdown && (companyQuery || companyOptions.length > 0)"
-              class="absolute left-0 right-0 top-full mt-1 max-h-48 overflow-auto rounded-lg border border-border-default bg-bg-primary shadow-lg z-10"
-            >
-              <button
-                v-if="companyQuery"
-                type="button"
-                class="w-full px-3 py-2 text-left text-sm text-primary-default hover:bg-bg-tertiary"
-                @mousedown.prevent="emitCreateCompany"
-              >
-                + Создать новую компанию
-              </button>
-              <button
-                v-for="co in companyOptions"
-                :key="co.id"
-                type="button"
-                class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                @mousedown.prevent="selectCompany(co)"
-              >
-                {{ co.name }}
-              </button>
-              <p v-if="companySearching" class="px-3 py-2 text-sm text-text-muted">Поиск...</p>
-              <p v-if="companyQuery && !companySearching && companyOptions.length === 0" class="px-3 py-2 text-sm text-text-muted">Ничего не найдено</p>
-            </div>
-            <p v-if="form.companyId" class="mt-1 text-xs text-text-muted">
-              Выбрана: {{ form.companyNameDisplay }}
-            </p>
-          </div>
+          <SearchSelect
+            v-model="form.companyId"
+            :options="companyOptions"
+            :get-option-label="getCompanyLabel"
+            :selected-label="form.companyNameDisplay"
+            :loading="companySearching"
+            placeholder="Поиск компании..."
+            create-label="+ Создать новую компанию"
+            @search="handleCompanySearch"
+            @select="applyCompany"
+            @create="emit('create-company')"
+          />
         </FormField>
 
         <FormField label="Должность">
@@ -89,21 +65,14 @@
         <FormField label="Теги">
           <div class="space-y-2">
             <div class="flex flex-wrap gap-2">
-              <span
+              <Tag
                 v-for="tag in form.tags"
                 :key="tag"
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-bg-tertiary text-sm text-text-primary"
-              >
-                {{ tag }}
-                <button
-                  type="button"
-                  class="p-0.5 rounded hover:bg-border-light text-text-muted hover:text-text-primary"
-                  aria-label="Удалить тег"
-                  @click="removeTag(tag)"
-                >
-                  <XMarkIcon class="size-3.5" />
-                </button>
-              </span>
+                :label="tag"
+                removable
+                remove-aria-label="Удалить тег"
+                @remove="removeTag(tag)"
+              />
             </div>
             <div class="flex gap-2">
               <Input
@@ -111,7 +80,7 @@
                 placeholder="Добавить тег..."
                 @keydown.enter.prevent="addTag"
               />
-              <Button type="button" variant="outline" size="md" @click="addTag">
+              <Button type="button" variant="outline"  @click="addTag">
                 Добавить
               </Button>
             </div>
@@ -151,11 +120,11 @@
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField, Select, DatePicker } from '@/shared/ui'
-  import { XMarkIcon } from '@/shared/ui/icon'
+  import { Modal, ModalContent, Button, Input, FormField, Select, DatePicker, SearchSelect, Tag } from '@/shared/ui'
   import { companyService } from '@/entities/company'
   import type { Contact, CreateContactDto } from '@/entities/contact'
   import type { Company } from '@/entities/company'
+  import type { SearchSelectOption } from '@/shared/ui'
   import type { ComponentSize } from '@/shared/ui/Button.vue'
 
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -204,11 +173,9 @@
   }>()
 
   const saving = ref(false)
-  const companyQuery = ref('')
-  const showCompanyDropdown = ref(false)
-  const companyOptions = ref<Company[]>([])
-  const companySearching = ref(false)
   const tagInput = ref('')
+  const companyOptions = ref<SearchSelectOption[]>([])
+  const companySearching = ref(false)
 
   interface FormErrors {
     firstName: string
@@ -290,14 +257,17 @@
     errors.value.email = EMAIL_REGEX.test(v) ? '' : 'Некорректный формат email'
   }
 
-  function onCompanyBlur(): void {
-    setTimeout(() => { showCompanyDropdown.value = false }, 150)
+  function getCompanyLabel(item: SearchSelectOption): string {
+    return String(item.name ?? '')
   }
 
-  let companySearchTimeout: ReturnType<typeof setTimeout> | null = null
-  
-  async function searchCompanies(): Promise<void> {
-    const q = companyQuery.value.trim()
+  function applyCompany(co: SearchSelectOption): void {
+    form.value.companyId = co.id
+    form.value.companyNameDisplay = getCompanyLabel(co)
+  }
+
+  async function handleCompanySearch(query: string): Promise<void> {
+    const q = query.trim()
     if (!props.workspaceId) {
       companyOptions.value = []
       return
@@ -309,30 +279,12 @@
         search: q || undefined,
         limit: 10,
       })
-      companyOptions.value = res.companies ?? []
+      companyOptions.value = (res.companies ?? []) as unknown as SearchSelectOption[]
     } catch {
       companyOptions.value = []
     } finally {
       companySearching.value = false
     }
-  }
-
-  watch(companyQuery, () => {
-    if (companySearchTimeout) clearTimeout(companySearchTimeout)
-    companySearchTimeout = setTimeout(searchCompanies, 300)
-  })
-
-  function selectCompany(co: Company): void {
-    form.value.companyId = co.id
-    form.value.companyNameDisplay = co.name
-    companyQuery.value = ''
-    showCompanyDropdown.value = false
-    companyOptions.value = []
-  }
-
-  function emitCreateCompany(): void {
-    emit('create-company')
-    showCompanyDropdown.value = false
   }
 
   function addTag(): void {
@@ -379,7 +331,6 @@
       ownerId: props.defaultOwnerId || '1',
     }
     errors.value = { firstName: '', phone: '', email: '' }
-    companyQuery.value = ''
     tagInput.value = ''
   }
 
@@ -407,7 +358,6 @@
           ownerId: contact?.ownerId ?? props.defaultOwnerId ?? '1',
         }
         errors.value = { firstName: '', phone: '', email: '' }
-        companyQuery.value = ''
         tagInput.value = ''
 
         if (contact?.companyId && props.workspaceId) {
@@ -422,7 +372,8 @@
         }
 
         if (preselected) {
-          selectCompany(preselected)
+          form.value.companyId = preselected.id
+          form.value.companyNameDisplay = preselected.name
           emit('preselected-company-applied')
         }
       }
