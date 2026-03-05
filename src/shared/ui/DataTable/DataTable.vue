@@ -27,13 +27,13 @@
 
     <div class="w-full overflow-x-auto bg-bg-primary">
       <table
-        class="w-full table-fixed border-spacing-x-(--spacing-2) border-spacing-y-0 bg-bg-primary"
+        class="w-full border-spacing-x-(--spacing-2) border-spacing-y-0 bg-bg-primary"
         :style="{ minWidth: props.minTableWidth }"
       >
         <colgroup>
           <col v-if="selectable" style="width: 1%; min-width: 50px" />
-          <col v-for="col in columns" :key="col.id" style="width: auto" />
-          <col v-if="rowActions" style="width: 100px" />
+          <col v-for="col in columns" :key="col.id" :style="{ minWidth: props.cellMinWidth, width: 'auto' }" />
+          <col v-if="rowActions" style="min-width: 100px; width: auto" />
         </colgroup>
         <thead>
           <tr>
@@ -81,7 +81,7 @@
               v-if="rowActions"
               class="py-2 px-2 border-b border-border-light font-semibold text-sm text-text-secondary align-middle bg-bg-primary"
               :class="[
-                props.stickyActions && 'sticky right-0 z-30',
+                props.stickyActions && 'sticky right-0 z-30 bg-bg-primary',
                 props.stickyActions && 'shadow-[-2px_0_0_0_rgba(0,0,0,0.04)]',
               ]"
             />
@@ -144,10 +144,10 @@
             </td>
             <td
               v-if="rowActions"
-              class="py-2 px-2 border-b border-border-light text-sm text-text-primary align-middle bg-bg-primary whitespace-nowrap group-hover:bg-bg-tertiary"
+              class="py-2 px-2 border-b border-border-light text-sm text-text-primary align-middle bg-bg-primary whitespace-nowrap group-hover:bg-bg-tertiary overflow-hidden"
               :class="[
                 selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10',
-                props.stickyActions && 'sticky right-0 z-30',
+                props.stickyActions && 'sticky right-0 z-30 bg-bg-primary group-hover:bg-bg-tertiary',
                 props.stickyActions && 'shadow-[-2px_0_0_0_rgba(0,0,0,0.04)]',
               ]"
               @click.stop
