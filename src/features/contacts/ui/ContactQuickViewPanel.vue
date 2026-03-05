@@ -1,31 +1,53 @@
 <template>
-  <div class="ContactQuickViewPanel flex flex-col gap-4">
-    <div>
-      <p class="font-medium text-text-primary text-lg">{{ fullName }}</p>
-      <dl class="mt-4 space-y-2 text-sm">
+  <div class="ContactQuickViewPanel flex flex-col gap-(--spacing-4)">
+    <div class="rounded-(--radius-lg) bg-bg-tertiary/60 p-(--spacing-4)">
+      <p class="font-semibold text-text-primary text-(--text-lg)">{{ fullName }}</p>
+      <dl class="mt-(--spacing-4) space-y-(--spacing-3) text-(--text-sm)">
         <template v-if="primaryPhone">
-          <dt class="text-text-muted">Телефон</dt>
-          <dd>
-            <a :href="`tel:${primaryPhone}`" class="text-primary-default hover:underline">{{
-              primaryPhone
-            }}</a>
-          </dd>
+          <div>
+            <dt class="text-(--text-xs) font-medium uppercase tracking-wider text-text-muted">
+              Телефон
+            </dt>
+            <dd class="mt-0.5">
+              <a
+                :href="`tel:${primaryPhone}`"
+                class="text-primary-default hover:text-primary-dark hover:underline transition-colors"
+              >
+                {{ primaryPhone }}
+              </a>
+            </dd>
+          </div>
         </template>
         <template v-if="primaryEmail">
-          <dt class="text-text-muted">Email</dt>
-          <dd>
-            <a :href="`mailto:${primaryEmail}`" class="text-primary-default hover:underline">{{
-              primaryEmail
-            }}</a>
-          </dd>
+          <div>
+            <dt class="text-(--text-xs) font-medium uppercase tracking-wider text-text-muted">
+              Email
+            </dt>
+            <dd class="mt-0.5">
+              <a
+                :href="`mailto:${primaryEmail}`"
+                class="text-primary-default hover:text-primary-dark hover:underline transition-colors"
+              >
+                {{ primaryEmail }}
+              </a>
+            </dd>
+          </div>
         </template>
-        <dt class="text-text-muted">Компания</dt>
-        <dd>{{ companyName }}</dd>
-        <dt class="text-text-muted">Последняя активность</dt>
-        <dd>{{ lastActivity }}</dd>
+        <div>
+          <dt class="text-(--text-xs) font-medium uppercase tracking-wider text-text-muted">
+            Компания
+          </dt>
+          <dd class="mt-0.5 text-text-primary">{{ companyName }}</dd>
+        </div>
+        <div>
+          <dt class="text-(--text-xs) font-medium uppercase tracking-wider text-text-muted">
+            Последняя активность
+          </dt>
+          <dd class="mt-0.5 text-text-secondary">{{ lastActivity }}</dd>
+        </div>
       </dl>
     </div>
-    <div class="border-t border-border-light pt-4 space-y-2">
+    <div class="border-t border-border-default pt-(--spacing-4) space-y-(--spacing-2)">
       <Button variant="outline" size="md" class="w-full" @click="$emit('edit', contact)">
         Редактировать
       </Button>

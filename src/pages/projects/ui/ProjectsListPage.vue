@@ -1,6 +1,6 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-6 pb-8">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div class="max-w-4xl mx-auto space-y-(--spacing-6) pb-(--spacing-8)">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-(--spacing-4)">
       <h1 class="text-xl font-semibold text-text-primary">Проекты</h1>
       <Button variant="primary" @click="openCreate">
         <PlusIcon class="size-4 mr-2 inline" />
@@ -8,24 +8,24 @@
       </Button>
     </div>
 
-    <div v-if="searchVisible" class="flex gap-2">
+    <div v-if="searchVisible" class="flex gap-(--spacing-2)">
       <input
         v-model="searchQuery"
         type="search"
         placeholder="Поиск по названию..."
-        class="flex-1 px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-default"
+        class="flex-1 px-(--spacing-3) py-(--spacing-2) border border-border-default rounded-(--radius-lg) bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-default"
       />
     </div>
 
-    <div v-if="isLoading" class="flex justify-center py-12">
+    <div v-if="isLoading" class="flex justify-center py-(--spacing-12)">
       <Spinner class="size-8 text-primary-default" />
     </div>
 
     <div
       v-else-if="filteredProjects.length === 0"
-      class="rounded-xl border border-border-default border-dashed bg-bg-tertiary/50 p-8 text-center"
+      class="rounded-(--radius-xl) border border-border-default border-dashed bg-bg-tertiary/50 p-(--spacing-8) text-center"
     >
-      <p class="text-text-muted mb-4">
+      <p class="text-text-muted mb-(--spacing-4)">
         {{
           searchQuery
             ? 'По запросу проектов не найдено.'
@@ -35,29 +35,32 @@
       <Button v-if="!searchQuery" variant="primary" @click="openCreate"> Создать проект </Button>
     </div>
 
-    <ul v-else class="space-y-3">
+    <ul v-else class="space-y-(--spacing-3)">
       <li
         v-for="project in filteredProjects"
         :key="project.id"
-        class="rounded-xl border border-border-default bg-bg-primary p-4 hover:border-primary-default/50 transition-colors"
+        class="rounded-(--radius-xl) border border-border-default bg-bg-primary p-(--spacing-4) hover:border-primary-default/50 transition-colors"
       >
         <router-link :to="projectLink(project.id)" class="block">
-          <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start justify-between gap-(--spacing-4)">
             <div class="min-w-0 flex-1">
               <h2 class="font-medium text-text-primary">{{ project.name }}</h2>
-              <p v-if="project.description" class="text-sm text-text-muted mt-0.5 line-clamp-2">
+              <p
+                v-if="project.description"
+                class="text-(--text-sm) text-text-muted mt-(--spacing-1) line-clamp-2"
+              >
                 {{ project.description }}
               </p>
-              <p class="text-xs text-text-muted mt-2">
+              <p class="text-(--text-xs) text-text-muted mt-(--spacing-2)">
                 {{ formatDate(project.updatedAt) }}
               </p>
-              <div class="flex flex-wrap gap-3 mt-2 text-xs text-text-secondary">
+              <div class="flex flex-wrap gap-(--spacing-3) mt-(--spacing-2) text-(--text-xs) text-text-secondary">
                 <span>Контакты: {{ getCount(project.id, 'contacts') }}</span>
                 <span>Компании: {{ getCount(project.id, 'companies') }}</span>
                 <span>Сделки: {{ getCount(project.id, 'deals') }}</span>
               </div>
             </div>
-            <div class="flex items-center gap-1 shrink-0" @click.prevent>
+            <div class="flex items-center gap-(--spacing-1) shrink-0" @click.prevent>
               <Button size="md" variant="ghost" title="Редактировать" @click="openEdit(project)">
                 Редактировать
               </Button>

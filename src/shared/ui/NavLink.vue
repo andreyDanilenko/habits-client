@@ -79,15 +79,15 @@
 
   const variantClasses = computed(() => {
     const baseVariants: Record<string, string> = {
-      default: 'text-text-primary hover:bg-primary-light hover:text-primary-default',
+      default: 'text-text-primary hover:bg-bg-tertiary hover:text-primary-default',
       ghost: 'text-text-primary hover:bg-bg-tertiary',
-      active: 'bg-primary-light text-primary-default font-medium',
+      active: 'bg-bg-tertiary text-primary-default font-medium',
     }
     return baseVariants[props.variant]
   })
 
   const activeClasses = computed(() => {
-    return 'bg-primary-light text-primary-default font-medium'
+    return 'bg-bg-tertiary text-primary-default font-medium'
   })
 
   const isActive = computed(() => {

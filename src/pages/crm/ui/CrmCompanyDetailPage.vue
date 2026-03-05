@@ -251,7 +251,7 @@
       :is-open="showFormModal"
       :company="company ?? null"
       @close="
-        showFormModal = false
+        showFormModal = false;
         fetchCompany()
       "
       @update="handleUpdate"

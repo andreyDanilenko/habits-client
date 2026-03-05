@@ -2,12 +2,6 @@ import type { Workspace } from '@/entities/workspace'
 import { hexToHsl } from './color-converter'
 
 class ThemeService {
-  private readonly defaultTheme = {
-    brandH: 239,
-    brandS: 84,
-    secondaryH: 271,
-  }
-
   private readonly workspaceThemeFlagKey = 'habitflow-use-workspace-theme'
 
   private shouldUseWorkspaceTheme(): boolean {
@@ -41,23 +35,29 @@ class ThemeService {
     if (typeof document === 'undefined') return
     const root = document.documentElement
 
+    const vars = ['--brand-h', '--brand-s', '--brand-l', '--gray-h'] as const
+
     const setBaseTheme = (h: number, s: number, l: number) => {
       root.style.setProperty('--brand-h', h.toString())
       root.style.setProperty('--brand-s', `${s}%`)
-      root.style.setProperty('--brand-l', `${l}%`) // Передаем яркость!
+      root.style.setProperty('--brand-l', `${l}%`)
       root.style.setProperty('--gray-h', h.toString())
     }
 
+    const clearWorkspaceOverrides = () => {
+      vars.forEach((v) => root.style.removeProperty(v))
+    }
+
     if (!this.shouldUseWorkspaceTheme() || !workspace?.color) {
-      setBaseTheme(this.defaultTheme.brandH, this.defaultTheme.brandS, 67)
+      clearWorkspaceOverrides()
       return
     }
 
     try {
-      const { h, s, l } = hexToHsl(workspace.color) // Убедись, что hexToHsl возвращает 'l'
+      const { h, s, l } = hexToHsl(workspace.color)
       setBaseTheme(h, s, l)
-    } catch (error) {
-      setBaseTheme(this.defaultTheme.brandH, this.defaultTheme.brandS, 67)
+    } catch {
+      clearWorkspaceOverrides()
     }
   }
 }

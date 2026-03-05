@@ -1,7 +1,7 @@
 <template>
   <h3
     v-if="title && !collapsed"
-    class="text-xs font-semibold text-text-muted uppercase tracking-wider px-3 mb-3"
+    class="text-(--text-xs) font-semibold text-text-muted uppercase tracking-wider px-(--spacing-3) mb-(--spacing-3) truncate min-w-0"
   >
     {{ title }}
   </h3>
