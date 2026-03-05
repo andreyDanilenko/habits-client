@@ -48,20 +48,14 @@
       <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-        @click="
-          emit('edit', contextMenu.deal)
-          contextMenu.deal = null
-        "
+        @click="handleEditClick"
       >
         Редактировать
       </button>
       <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-        @click="
-          emit('copy', contextMenu.deal)
-          contextMenu.deal = null
-        "
+        @click="handleCopyClick"
       >
         Копировать
       </button>
@@ -69,20 +63,14 @@
         v-if="showRemoveFromProject"
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-        @click="
-          contextMenu.deal &&
-          (emit('remove-from-project', contextMenu.deal), (contextMenu.deal = null))
-        "
+        @click="handleRemoveFromProjectClick"
       >
         Убрать из проекта
       </button>
       <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
-        @click="
-          emit('delete', contextMenu.deal)
-          contextMenu.deal = null
-        "
+        @click="handleDeleteClick"
       >
         Удалить
       </button>
@@ -133,6 +121,34 @@
     y: 0,
     deal: null,
   })
+
+  function clearContextMenu() {
+    contextMenu.deal = null
+  }
+
+  function handleEditClick() {
+    if (!contextMenu.deal) return
+    emit('edit', contextMenu.deal)
+    clearContextMenu()
+  }
+
+  function handleCopyClick() {
+    if (!contextMenu.deal) return
+    emit('copy', contextMenu.deal)
+    clearContextMenu()
+  }
+
+  function handleRemoveFromProjectClick() {
+    if (!contextMenu.deal) return
+    emit('remove-from-project', contextMenu.deal)
+    clearContextMenu()
+  }
+
+  function handleDeleteClick() {
+    if (!contextMenu.deal) return
+    emit('delete', contextMenu.deal)
+    clearContextMenu()
+  }
 
   function onColumnsUpdate(_v: KanbanColumnModel<Deal>[]) {
     // источник истины для колонок — данные сделок, обновляемые родителем

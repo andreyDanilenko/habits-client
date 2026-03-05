@@ -33,7 +33,7 @@
 
   const contentClass = computed(() => {
     return showHeader.value
-      ? 'max-w-6xl mx-auto px-(--spacing-4) py-(--spacing-6) md:py-(--spacing-8)'
+      ? 'mx-auto px-(--spacing-6) py-(--spacing-6) md:py-(--spacing-8)'
       : ''
   })
 </script>

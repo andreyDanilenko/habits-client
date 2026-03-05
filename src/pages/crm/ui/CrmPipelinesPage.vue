@@ -1,4 +1,3 @@
-<!-- features/pipelines/ui/pipelines-page.vue -->
 <template>
   <BasePageLayout
     title="CRM — Воронки продаж"
@@ -62,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import BasePageLayout from './BasePageLayout.vue'
+import { BasePageLayout } from '@/shared/ui/common'
 import { Button, Modal, ConfirmModal } from '@/shared/ui'
 import { usePipelines } from '@/features/pipelines/lib/use-pipelines'
 import PipelinesList from '@/features/pipelines/ui/PipelineList.vue'

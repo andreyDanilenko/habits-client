@@ -79,10 +79,7 @@
     <ProjectFormModal
       :is-open="showFormModal"
       :project="projectToEdit"
-      @close="
-        showFormModal = false
-        projectToEdit = null
-      "
+      @close="handleFormClose"
       @create="handleCreate"
       @update="handleUpdate"
     />
@@ -196,6 +193,11 @@
     showFormModal.value = false
     projectToEdit.value = null
     await fetchProjects()
+  }
+
+  function handleFormClose() {
+    showFormModal.value = false
+    projectToEdit.value = null
   }
 
   function confirmDelete(project: Project) {
