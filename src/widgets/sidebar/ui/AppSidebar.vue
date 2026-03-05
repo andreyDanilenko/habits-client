@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Mobile Overlay -->
     <Transition name="fade">
       <div
         v-if="isMobile && isOpen"
@@ -9,7 +8,6 @@
       />
     </Transition>
 
-    <!-- Sidebar -->
     <aside
       class="bg-bg-primary border-r border-border-default transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
       :class="sidebarClasses"
@@ -197,7 +195,6 @@
     })
   })
 
-  // Структура данных для роутов модуля
   const moduleRoutesNavItems = computed<SidebarNavItem[]>(() => {
     if (!selectedModule.value) return []
     return getModuleRoutes(selectedModule.value).map((route) => ({
@@ -208,7 +205,6 @@
     }))
   })
 
-  // Структура данных для нижней секции
   const footerNavItems = computed<SidebarNavItem[]>(() => {
     const items: SidebarNavItem[] = []
     const userStore = useUserStore()
@@ -242,11 +238,9 @@
     return items
   })
 
-  // Проверка размера экрана
   const checkMobile = () => {
     const wasMobile = isMobile.value
     isMobile.value = window.innerWidth < 1024
-    // Закрываем sidebar при переходе с мобильного на desktop
     if (wasMobile && !isMobile.value) {
       isOpen.value = false
     }
@@ -255,7 +249,6 @@
   onMounted(() => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    // Загружаем состояние collapsed из localStorage
     const saved = localStorage.getItem('sidebar-collapsed')
     if (saved !== null) {
       isCollapsed.value = saved === 'true'
@@ -266,7 +259,6 @@
     window.removeEventListener('resize', checkMobile)
   })
 
-  // Сохраняем состояние collapsed
   const toggleCollapsed = () => {
     isCollapsed.value = !isCollapsed.value
     localStorage.setItem('sidebar-collapsed', String(isCollapsed.value))
@@ -288,7 +280,6 @@
   }
 
   const handleModuleClick = (item: SidebarNavItem) => {
-    // Обновляем selectedModuleId при клике на модуль
     const module = availableModules.value.find((m) => m.id === item.id)
     if (module) {
       selectedModuleId.value = module.id
