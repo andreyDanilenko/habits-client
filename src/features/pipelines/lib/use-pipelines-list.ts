@@ -31,7 +31,7 @@ export function usePipelinesList() {
     }
   }
 
-  const selectPipeline = (id: string) => {
+  const selectPipeline = (id: string | null) => {
     selectedId.value = id
   }
 
@@ -40,18 +40,17 @@ export function usePipelinesList() {
   }
 
   const updateInList = (updatedPipeline: Pipeline) => {
-    const index = pipelines.value.findIndex(p => p.id === updatedPipeline.id)
-    if (index !== -1) {
-      pipelines.value[index] = updatedPipeline
-    }
+    pipelines.value = pipelines.value.map((p) =>
+      p.id === updatedPipeline.id ? updatedPipeline : p
+    )
   }
 
   const removeFromList = (id: string) => {
-    pipelines.value = pipelines.value.filter(p => p.id !== id)
+    pipelines.value = pipelines.value.filter((p) => p.id !== id)
   }
 
   const addToList = (pipeline: Pipeline) => {
-    pipelines.value.push(pipeline)
+    pipelines.value = [...pipelines.value, pipeline]
   }
 
   return {

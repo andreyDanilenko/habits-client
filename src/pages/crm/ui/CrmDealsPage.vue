@@ -1,109 +1,118 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6 pb-8">
-    <h1 class="text-text-primary">CRM — Сделки</h1>
+  <BasePageLayout
+    title="CRM — Сделки"
+    description="Управляйте сделками. Канбан или табличный вид."
+    :error-message="errorMessage"
+  >
+    <template #content>
+      <div class="space-y-6">
+        <DealsToolbar
+          :pipelines="pipelines"
+          :view-mode="viewMode"
+          :selected-pipeline-id="selectedPipelineId"
+          :date-from="dateFrom"
+          :date-to="dateTo"
+          :status="statusFilter"
+          @create="openCreateModal"
+          @update:view-mode="viewMode = $event"
+          @update:selected-pipeline-id="selectedPipelineId = $event"
+          @update:date-from="dateFrom = $event"
+          @update:date-to="dateTo = $event"
+          @update:status="statusFilter = $event"
+        />
 
-    <DealsToolbar
-      :pipelines="pipelines"
-      :view-mode="viewMode"
-      :selected-pipeline-id="selectedPipelineId"
-      :date-from="dateFrom"
-      :date-to="dateTo"
-      :status="statusFilter"
-      @create="openCreateModal"
-      @update:view-mode="viewMode = $event"
-      @update:selected-pipeline-id="selectedPipelineId = $event"
-      @update:date-from="dateFrom = $event"
-      @update:date-to="dateTo = $event"
-      @update:status="statusFilter = $event"
-    />
+        <DealsKanbanView
+          v-if="viewMode === 'kanban'"
+          :columns="kanbanColumns"
+          @update:columns="setKanbanColumnsFromBoard"
+          :pipelines="pipelines"
+          :is-loading="isLoading"
+          :is-error="isError"
+          :saving-deal-ids="savingDealIds"
+          @move="handleDealMove"
+          @open-deal="openDealCard"
+          @edit="openEditModal"
+          @copy="openEditModal"
+          @delete="confirmDelete"
+        />
 
-    <DealsKanbanView
-      v-if="viewMode === 'kanban'"
-      :columns="kanbanColumns"
-      @update:columns="setKanbanColumnsFromBoard"
-      :pipelines="pipelines"
-      :is-loading="isLoading"
-      :is-error="isError"
-      :saving-deal-ids="savingDealIds"
-      @move="handleDealMove"
-      @open-deal="openDealCard"
-      @edit="openEditModal"
-      @copy="openEditModal"
-      @delete="confirmDelete"
-    />
+        <DealsTableWidget
+          v-else
+          :deals="deals"
+          :pipelines="pipelines"
+          :total="total"
+          :is-loading="isLoading"
+          :is-error="isError"
+          :page="page"
+          :page-size="pageSize"
+          :sort-by="sortBy"
+          :sort-order="sortOrder"
+          :selected-ids="selectedIds"
+          :handle-sort="handleSort"
+          :handle-row-select="handleRowSelect"
+          :handle-select-all="handleSelectAll"
+          :set-page="setPage"
+          :fetch-deals="fetchDeals"
+          @edit="openEditModal"
+          @delete="confirmDelete"
+        />
+      </div>
+    </template>
 
-    <DealsTableWidget
-      v-else
-      :deals="deals"
-      :pipelines="pipelines"
-      :total="total"
-      :is-loading="isLoading"
-      :is-error="isError"
-      :page="page"
-      :page-size="pageSize"
-      :sort-by="sortBy"
-      :sort-order="sortOrder"
-      :selected-ids="selectedIds"
-      :handle-sort="handleSort"
-      :handle-row-select="handleRowSelect"
-      :handle-select-all="handleSelectAll"
-      :set-page="setPage"
-      :fetch-deals="fetchDeals"
-      @edit="openEditModal"
-      @delete="confirmDelete"
-    />
-
-    <DealFormModal
-      :is-open="showFormModal"
-      :deal="dealToEdit"
-      :pipelines="pipelines"
-      :pipeline-id="selectedPipelineId"
-      :default-stage-id="defaultStageId"
-      :workspace-id="workspaceId"
-      :default-owner-id="defaultOwnerId"
-      :preselected-contact="preselectedContactForDeal"
-      @close="closeFormModal"
-      @save="handleCreate"
-      @update="handleUpdate"
-      @create-contact="openCreateContactFromDeal"
-      @preselected-applied="preselectedContactForDeal = null"
-    />
-
-    <ContactFormModal
-      :is-open="showContactModal"
-      :contact="null"
-      :workspace-id="workspaceId"
-      :default-owner-id="defaultOwnerId"
-      :preselected-company="preselectedCompanyForContact"
-      @close="closeContactModal"
-      @save="onContactCreatedFromDeal"
-      @create-company="openCreateCompanyFromContact"
-      @preselected-company-applied="preselectedCompanyForContact = null"
-    />
-
-    <CompanyFormModal
-      :is-open="showCompanyModal"
-      :company="null"
-      @close="showCompanyModal = false"
-      @save="onCompanyCreatedFromContact"
-    />
-
-    <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
-      <ConfirmModal
-        title="Удалить сделку?"
-        message="Сделка будет удалена без возможности восстановления."
-        confirm-text="Удалить"
-        confirm-variant="danger"
-        @close="showDeleteModal = false"
-        @confirm="doDelete"
+    <template #modals>
+      <DealFormModal
+        :is-open="showFormModal"
+        :deal="dealToEdit"
+        :pipelines="pipelines"
+        :pipeline-id="selectedPipelineId"
+        :default-stage-id="defaultStageId"
+        :workspace-id="workspaceId"
+        :default-owner-id="defaultOwnerId"
+        :preselected-contact="preselectedContactForDeal"
+        @close="closeFormModal"
+        @save="handleCreate"
+        @update="handleUpdate"
+        @create-contact="openCreateContactFromDeal"
+        @preselected-applied="preselectedContactForDeal = null"
       />
-    </Modal>
-  </div>
+
+      <ContactFormModal
+        :is-open="showContactModal"
+        :contact="null"
+        :workspace-id="workspaceId"
+        :default-owner-id="defaultOwnerId"
+        :preselected-company="preselectedCompanyForContact"
+        @close="closeContactModal"
+        @save="onContactCreatedFromDeal"
+        @create-company="openCreateCompanyFromContact"
+        @preselected-company-applied="preselectedCompanyForContact = null"
+      />
+
+      <CompanyFormModal
+        :is-open="showCompanyModal"
+        :company="null"
+        @close="showCompanyModal = false"
+        @save="onCompanyCreatedFromContact"
+      />
+
+      <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
+        <ConfirmModal
+          title="Удалить сделку?"
+          message="Сделка будет удалена без возможности восстановления."
+          confirm-text="Удалить"
+          confirm-variant="danger"
+          @close="showDeleteModal = false"
+          @confirm="doDelete"
+        />
+      </Modal>
+    </template>
+  </BasePageLayout>
 </template>
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
+  import { BasePageLayout } from '@/shared/ui/common'
   import { Modal, ConfirmModal } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
   import {
@@ -154,6 +163,8 @@
     deleteDeal,
     defaultStageId,
   } = useDealsPage()
+
+  const errorMessage = computed(() => (isError.value ? 'Не удалось загрузить сделки' : null))
 
   const openDealCard = (deal: Deal) => {
     router.push({ name: 'CrmDealDetail', params: { id: deal.id } })

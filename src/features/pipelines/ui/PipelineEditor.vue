@@ -1,4 +1,3 @@
-<!-- components/pipelines/PipelineEditor.vue -->
 <template>
     <Card class="p-4 space-y-4 min-h-[500px]">
       <div class="flex items-center justify-between gap-2">

@@ -14,8 +14,8 @@ export function usePipelineDelete() {
     pipelineToDelete.value = null
   }
 
-  const deletePipeline = async (workspaceId: string): Promise<void> => {
-    if (!pipelineToDelete.value) return
+  const deletePipeline = async (workspaceId: string): Promise<boolean> => {
+    if (!pipelineToDelete.value) return false
 
     isDeleting.value = true
     error.value = null
@@ -23,9 +23,10 @@ export function usePipelineDelete() {
     try {
       await pipelineService.delete(workspaceId, pipelineToDelete.value.id)
       pipelineToDelete.value = null
+      return true
     } catch (e: any) {
       error.value = e?.response?.data?.message ?? 'Не удалось удалить воронку'
-      throw e
+      return false
     } finally {
       isDeleting.value = false
     }

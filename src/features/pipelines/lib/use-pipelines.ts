@@ -35,56 +35,53 @@ export function usePipelines() {
   }
 
   const startCreate = () => {
-    list.selectPipeline(null) // Исправлено: передаем null вместо ''
+    list.selectPipeline(null)
     form.resetToCreate(list.pipelines.value.length === 0)
   }
 
   const handleSave = async () => {
     if (!list.workspaceId.value || !canManage.value || form.validationMessage.value) return
 
-    try {
-      if (isCreating.value) {
-        const created = await save.createPipeline(list.workspaceId.value, {
+    if (isCreating.value) {
+      const created = await save.createPipeline(list.workspaceId.value, {
+        name: form.form.name,
+        isDefault: form.form.isDefault,
+        stages: form.stages,
+      })
+      if (!created) return
+      list.addToList(created)
+      selectPipeline(created.id)
+    } else if (currentPipeline.value) {
+      const updated = await save.updatePipeline(
+        list.workspaceId.value,
+        currentPipeline.value.id,
+        {
           name: form.form.name,
           isDefault: form.form.isDefault,
           stages: form.stages,
-        })
-        await list.fetchPipelines()
-        selectPipeline(created.id) // Исправлено: используем selectPipeline вместо list.selectPipeline
-      } else if (currentPipeline.value) {
-        const updated = await save.updatePipeline(
-          list.workspaceId.value,
-          currentPipeline.value.id,
-          {
-            name: form.form.name,
-            isDefault: form.form.isDefault,
-            stages: form.stages,
-          }
-        )
-        await list.fetchPipelines()
-        selectPipeline(updated.id) // Исправлено: используем selectPipeline
-      }
-    } catch (e) {
-      // Ошибка уже в save.error
+        }
+      )
+      if (!updated) return
+      list.updateInList(updated)
+      selectPipeline(updated.id)
     }
   }
 
   const handleDelete = async () => {
     if (!list.workspaceId.value || !del.pipelineToDelete.value) return
 
-    try {
-      await del.deletePipeline(list.workspaceId.value)
-      await list.fetchPipelines()
-      
-      if (list.pipelines.value.length > 0) {
-        const def = list.pipelines.value.find(p => p.isDefault) ?? list.pipelines.value[0]
-        selectPipeline(def.id)
-      } else {
-        list.selectPipeline(null)
-        form.loadPipeline(null)
-      }
-    } catch (e) {
-      // Ошибка уже в del.error
+    const deletedId = del.pipelineToDelete.value.id
+    const success = await del.deletePipeline(list.workspaceId.value)
+    if (!success) return
+
+    list.removeFromList(deletedId)
+
+    if (list.pipelines.value.length > 0) {
+      const def = list.pipelines.value.find(p => p.isDefault) ?? list.pipelines.value[0]
+      selectPipeline(def.id)
+    } else {
+      list.selectPipeline(null)
+      form.loadPipeline(null)
     }
   }
 

@@ -5,7 +5,7 @@
     :error-message="listError || saveError || deleteError"
   >
     <template #header-actions>
-      <Button v-if="canManage" size="md" @click="startCreate">
+      <Button v-if="canManage" @click="startCreate">
         Создать воронку
       </Button>
     </template>
@@ -32,6 +32,7 @@
         :is-creating="isCreating"
         :can-manage="canManage"
         :is-saving="isSaving"
+        :show-actions="!isCreating"
         :validation-message="validationMessage"
         @save="handleSave"
         @reset="resetForm"
@@ -52,6 +53,7 @@
           message="Удалить можно только пустую воронку. Если на этапах есть сделки, удаление будет отклонено."
           confirm-text="Удалить"
           confirm-variant="danger"
+          :loading="isDeleting"
           @close="cancelDelete"
           @confirm="handleDelete"
         />
@@ -81,8 +83,8 @@ const {
   validationMessage,
   
   isSaving,
-  saveError,
   isDeleting,
+  saveError,
   deleteError,
   pipelineToDelete,
   

@@ -14,7 +14,7 @@ export function usePipelineSave() {
   const createPipeline = async (
     workspaceId: string,
     data: { name: string; isDefault: boolean; stages: StageForm[] }
-  ): Promise<Pipeline> => {
+  ): Promise<Pipeline | null> => {
     isSaving.value = true
     error.value = null
 
@@ -35,7 +35,7 @@ export function usePipelineSave() {
       return await pipelineService.create(workspaceId, dto)
     } catch (e: any) {
       error.value = e?.response?.data?.message ?? 'Не удалось создать воронку'
-      throw e
+      return null
     } finally {
       isSaving.value = false
     }
@@ -45,7 +45,7 @@ export function usePipelineSave() {
     workspaceId: string,
     pipelineId: string,
     data: { name: string; isDefault: boolean; stages: StageForm[] }
-  ): Promise<Pipeline> => {
+  ): Promise<Pipeline | null> => {
     isSaving.value = true
     error.value = null
 
@@ -67,7 +67,7 @@ export function usePipelineSave() {
       return await pipelineService.update(workspaceId, pipelineId, dto)
     } catch (e: any) {
       error.value = e?.response?.data?.message ?? 'Не удалось обновить воронку'
-      throw e
+      return null
     } finally {
       isSaving.value = false
     }
