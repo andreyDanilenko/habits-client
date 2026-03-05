@@ -1,13 +1,6 @@
 <template>
   <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center flex-wrap">
     <div class="flex gap-2 flex-shrink-0 flex-wrap items-center">
-      <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
-        <Button variant="primary" @click="$emit('create')">
-          <PlusIcon class="size-5 mr-2" />
-          Создать сделку
-        </Button>
-      </PermissionGuard>
-
       <div v-if="pipelines.length > 1" class="min-w-[160px]">
         <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Воронка</span>
         <Select
@@ -52,12 +45,10 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { Button, Select, DatePicker, SegmentedControl } from '@/shared/ui'
-  import { PlusIcon, ListIcon } from '@/shared/ui/icon'
+  import { Select, DatePicker, SegmentedControl } from '@/shared/ui'
+  import { ListIcon } from '@/shared/ui/icon'
   import type { Pipeline } from '@/entities/deal'
   import type { DealsViewMode, DealsStatusFilter } from '../model/use-deals-page'
-  import { PermissionGuard } from '@/features/permissions'
-  import { CRM_PERMISSIONS } from '@/features/permissions/config'
 
   const props = defineProps<{
     pipelines: Pipeline[]
@@ -69,7 +60,6 @@
   }>()
 
   const emit = defineEmits<{
-    create: []
     'update:viewMode': [mode: DealsViewMode]
     'update:selectedPipelineId': [id: string]
     'update:dateFrom': [value: string]

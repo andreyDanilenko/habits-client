@@ -24,14 +24,19 @@
         </div>
       </slot>
   
-      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.8fr)] gap-(--spacing-6)">
-        <div v-if="$slots.sidebar" class="h-full">
+      <div
+        v-if="$slots.sidebar"
+        class="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.8fr)] gap-(--spacing-6)"
+      >
+        <div class="h-full">
           <slot name="sidebar"></slot>
         </div>
-  
         <div class="h-full">
           <slot name="content"></slot>
         </div>
+      </div>
+      <div v-else class="h-full">
+        <slot name="content"></slot>
       </div>
   
       <slot name="modals"></slot>

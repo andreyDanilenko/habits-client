@@ -2,8 +2,17 @@
   <BasePageLayout
     title="CRM — Сделки"
     description="Управляйте сделками. Канбан или табличный вид."
-    :error-message="errorMessage"
+    :error-message="error"
   >
+    <template #header-actions>
+      <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
+        <Button variant="primary" @click="openCreateModal">
+          <PlusIcon class="size-5 mr-2" />
+          Создать сделку
+        </Button>
+      </PermissionGuard>
+    </template>
+
     <template #content>
       <div class="space-y-6">
         <DealsToolbar
@@ -13,7 +22,6 @@
           :date-from="dateFrom"
           :date-to="dateTo"
           :status="statusFilter"
-          @create="openCreateModal"
           @update:view-mode="viewMode = $event"
           @update:selected-pipeline-id="selectedPipelineId = $event"
           @update:date-from="dateFrom = $event"
@@ -113,7 +121,10 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { BasePageLayout } from '@/shared/ui/common'
-  import { Modal, ConfirmModal } from '@/shared/ui'
+  import { Button, Modal, ConfirmModal } from '@/shared/ui'
+  import { PlusIcon } from '@/shared/ui/icon'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
   import { useUserStore } from '@/entities/user'
   import {
     useDealsPage,
@@ -138,6 +149,7 @@
     deals,
     total,
     isLoading,
+    error,
     isError,
     viewMode,
     selectedPipelineId,
@@ -163,8 +175,6 @@
     deleteDeal,
     defaultStageId,
   } = useDealsPage()
-
-  const errorMessage = computed(() => (isError.value ? 'Не удалось загрузить сделки' : null))
 
   const openDealCard = (deal: Deal) => {
     router.push({ name: 'CrmDealDetail', params: { id: deal.id } })
