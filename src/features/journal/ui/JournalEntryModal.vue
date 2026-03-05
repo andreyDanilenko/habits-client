@@ -2,7 +2,7 @@
   <ModalContent :title="entry ? 'Редактировать запись' : 'Запись за день'" @close="handleClose">
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <FormField label="Дата">
-        <Input v-model="form.date" type="date" required />
+        <DatePicker v-model="form.date" required />
       </FormField>
 
       <FormField label="Настроение">
@@ -24,11 +24,11 @@
       </FormField>
 
       <FormField label="Описание за день">
-        <textarea
+        <Textarea
           v-model="form.description"
-          rows="8"
+          :rows="8"
           placeholder="Как прошел ваш день? Что вы чувствуете?"
-          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default resize-none bg-bg-primary text-text-primary placeholder:text-text-muted"
+          resize="none"
         />
       </FormField>
 
@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-  import { ModalContent, FormField, Input, Button, SelectButton, Badge } from '@/shared/ui'
+  import { ModalContent, FormField, Input, Button, SelectButton, Badge, DatePicker, Textarea } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
   import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'
 

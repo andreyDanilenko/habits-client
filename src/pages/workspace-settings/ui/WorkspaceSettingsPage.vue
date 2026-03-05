@@ -27,17 +27,13 @@
           :disabled="!isOwner"
         />
 
-        <div>
-          <label class="block text-sm font-medium text-text-secondary mb-2">Описание</label>
-          <textarea
-            v-model="workspaceData.description"
-            name="description"
-            rows="3"
-            placeholder="Введите описание workspace"
-            :disabled="!isOwner"
-            class="w-full px-3 py-2 border border-border-default rounded-md shadow-sm focus:outline-none focus:ring-primary-default focus:border-primary-default disabled:bg-bg-tertiary disabled:cursor-not-allowed bg-bg-primary text-text-primary placeholder:text-text-muted"
-          ></textarea>
-        </div>
+        <Textarea
+          v-model="workspaceData.description"
+          label="Описание"
+          :rows="3"
+          placeholder="Введите описание workspace"
+          :disabled="!isOwner"
+        />
 
         <div>
           <label class="block text-sm font-medium text-text-secondary mb-2">Цвет</label>
@@ -136,7 +132,7 @@
 
 <script setup lang="ts">
   import { useWorkspaceSettingsPage } from '@/features/workspace/model'
-  import { Card, Button, Input } from '@/shared/ui'
+  import { Card, Button, Input, Textarea } from '@/shared/ui'
 
   const { isSaving, workspaceData, isOwner, saveWorkspace, handleDeleteWorkspace } =
     useWorkspaceSettingsPage()

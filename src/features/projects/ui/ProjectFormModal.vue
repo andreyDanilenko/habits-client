@@ -15,11 +15,10 @@
           />
         </FormField>
         <FormField label="Описание">
-          <textarea
+          <Textarea
             v-model="form.description"
             placeholder="Краткое описание проекта (необязательно)"
-            rows="3"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default"
+            :rows="3"
           />
         </FormField>
         <p v-if="submitError" class="text-sm text-danger-default">{{ submitError }}</p>
@@ -36,7 +35,7 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField } from '@/shared/ui'
+  import { Modal, ModalContent, Button, Input, FormField, Textarea } from '@/shared/ui'
   import type { Project, CreateProjectDto, UpdateProjectDto } from '@/entities/project'
 
   const props = defineProps<{

@@ -27,45 +27,28 @@
           </span>
         </div>
 
-        <div class="space-y-2 max-h-96 overflow-y-auto">
+        <!-- <div class="space-y-2 max-h-96 overflow-y-auto"> -->
           <div v-if="isLoading" class="text-sm text-text-secondary">
             Загрузка воронок...
           </div>
           <div v-else-if="pipelines.length === 0" class="text-sm text-text-secondary">
             Воронок пока нет. Создайте первую, чтобы начать работу со сделками.
           </div>
-          <div v-else class="space-y-2">
-            <button
+          <div v-else class="space-y-(--spacing-2)">
+            <ListOption
               v-for="pipeline in paginatedPipelines"
               :key="pipeline.id"
-              type="button"
-              class="w-full rounded-lg border px-3 py-2.5 text-left transition text-sm"
-              :class="
-                pipeline.id === selectedPipelineId
-                  ? 'border-primary-default bg-primary-light/40'
-                  : 'border-border-light bg-bg-secondary hover:bg-bg-tertiary'
-              "
+              :title="pipeline.name"
+              :selected="pipeline.id === selectedPipelineId"
+              :trailing="`Этапов: ${pipeline.stages.length}`"
               @click="selectPipeline(pipeline.id)"
             >
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2 min-w-0">
-                  <span class="truncate font-medium text-text-primary">
-                    {{ pipeline.name }}
-                  </span>
-                  <span
-                    v-if="pipeline.isDefault"
-                    class="inline-flex items-center rounded-full bg-primary-light px-2 py-0.5 text-[11px] font-medium text-primary-dark"
-                  >
-                    По умолчанию
-                  </span>
-                </div>
-                <span class="text-xs text-text-muted">
-                  Этапов: {{ pipeline.stages.length }}
-                </span>
-              </div>
-            </button>
+              <template #badge>
+                <Badge v-if="pipeline.isDefault" variant="indigo">По умолчанию</Badge>
+              </template>
+            </ListOption>
           </div>
-        </div>
+        <!-- </div> -->
 
         <div
           v-if="pipelines.length > PIPELINES_PAGE_SIZE"
@@ -119,7 +102,7 @@
           class="space-y-4"
           @submit.prevent="handleSave"
         >
-          <div class="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-4">
+          <div class="grid grid-cols-1 items-end md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-4">
             <Input
               v-model="form.name"
               label="Название воронки"
@@ -128,20 +111,12 @@
               required
             />
 
-            <label class="flex items-start gap-2 text-xs text-text-secondary pt-5">
-              <input
-                v-model="form.isDefault"
-                type="checkbox"
-                :disabled="!canManage || isSaving"
-                class="mt-0.5 h-4 w-4 rounded border-border-light text-primary-default focus:ring-primary-default"
-              />
-              <span>
-                Использовать эту воронку по умолчанию
-                <span class="block text-[11px] text-text-muted">
-                  При создании новой сделки выберется эта воронка и её первый этап.
-                </span>
-              </span>
-            </label>
+            <Checkbox
+              v-model="form.isDefault"
+              label="Использовать эту воронку по умолчанию"
+              size="sm"
+              :disabled="!canManage || isSaving"
+            />
           </div>
 
           <!-- Этапы -->
@@ -171,85 +146,24 @@
               v-model="form.stages"
               item-key="id"
               tag="div"
-              class="space-y-2"
+              class="space-y-(--spacing-2)"
               :disabled="!canManage || isSaving"
             >
               <template #item="{ element, index }">
-                <div
-                  class="flex flex-col gap-2 rounded-lg border border-border-light bg-bg-secondary px-3 py-2"
-                >
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="h-6 w-1.5 rounded-full"
-                      :style="{ backgroundColor: (element as any).color || '#94A3B8' }"
-                    />
-
-                    <input
-                      v-model="(element as any).name"
-                      type="text"
-                      class="flex-1 rounded-md border border-border-light bg-bg-primary px-2 py-1 text-xs text-text-primary focus:outline-none focus:ring-1 focus:ring-primary-default"
-                      :placeholder="`Этап ${index + 1}`"
-                      :disabled="!canManage || isSaving"
-                    />
-
-                    <input
-                      v-model.number="(element as any).probability"
-                      type="number"
-                      min="0"
-                      max="100"
-                      class="w-16 rounded-md border border-border-light bg-bg-primary px-1.5 py-1 text-xs text-text-primary text-right focus:outline-none focus:ring-1 focus:ring-primary-default"
-                      :disabled="!canManage || isSaving"
-                    />
-                    <span class="text-xs text-text-muted">%</span>
-
-                    <input
-                      v-model="(element as any).color"
-                      type="color"
-                      class="h-7 w-10 cursor-pointer rounded-md border border-border-light bg-bg-primary"
-                      :disabled="!canManage || isSaving"
-                    />
-                  </div>
-
-                  <div class="flex items-center justify-between gap-3 text-[11px] text-text-muted">
-                    <div class="flex items-center gap-3">
-                      <label class="inline-flex items-center gap-1">
-                        <input
-                          :checked="(element as any).isFinal"
-                          type="checkbox"
-                          :disabled="!canManage || isSaving"
-                          class="h-3.5 w-3.5 rounded border-border-light text-primary-default focus:ring-primary-default"
-                          @change="toggleFinal(index)"
-                        />
-                        <span>Финальный этап (успех)</span>
-                      </label>
-
-                      <label class="inline-flex items-center gap-1">
-                        <input
-                          :checked="(element as any).isLost"
-                          type="checkbox"
-                          :disabled="!canManage || isSaving"
-                          class="h-3.5 w-3.5 rounded border-border-light text-error-default focus:ring-error-default"
-                          @change="toggleLost(index)"
-                        />
-                        <span>Этап проигрыша</span>
-                      </label>
-                    </div>
-
-                    <button
-                      v-if="canManage"
-                      type="button"
-                      class="text-error-default hover:text-error-dark"
-                      :disabled="isSaving || form.stages.length <= 1"
-                      @click="removeStage(index)"
-                    >
-                      Удалить
-                    </button>
-                  </div>
-                </div>
+                <PipelineStageEditor
+                  :stage="normalizeStage(element)"
+                  :index="index"
+                  :disabled="!canManage || isSaving"
+                  :show-remove="canManage"
+                  :remove-disabled="isSaving || form.stages.length <= 1"
+                  @remove="removeStage(index)"
+                  @update:is-final="toggleFinal(index, $event)"
+                  @update:is-lost="toggleLost(index, $event)"
+                />
               </template>
             </DndList>
 
-            <p v-if="validationMessage" class="text-[11px] text-error-default">
+            <p v-if="validationMessage" class="text-(--text-xs) text-error-default">
               {{ validationMessage }}
             </p>
           </div>
@@ -258,14 +172,15 @@
             <Button type="submit" :loading="isSaving" :disabled="!!validationMessage || isSaving">
               Сохранить воронку
             </Button>
-            <button
+            <Button
               type="button"
-              class="text-xs text-text-muted hover:text-text-secondary"
+              variant="ghost"
+              class="text-(--text-xs) text-text-muted hover:text-text-secondary"
               :disabled="isSaving"
               @click="resetForm"
             >
               Отменить изменения
-            </button>
+            </Button>
           </div>
         </form>
       </Card>
@@ -295,7 +210,18 @@
     type CreatePipelineStageDto,
     type UpdatePipelineDto,
   } from '@/entities/deal'
-  import { Card, Button, Input, Modal, ConfirmModal, Pagination } from '@/shared/ui'
+  import {
+    Card,
+    Button,
+    Input,
+    Modal,
+    ConfirmModal,
+    Pagination,
+    ListOption,
+    Badge,
+    PipelineStageEditor,
+    Checkbox,
+  } from '@/shared/ui'
   import { DndList } from '@/shared/ui/Dnd'
 
   const workspaceStore = useWorkspaceStore()
@@ -312,7 +238,7 @@
   const isSaving = ref(false)
   const errorMessage = ref<string | null>(null)
 
-  const PIPELINES_PAGE_SIZE = 10
+  const PIPELINES_PAGE_SIZE = 11
   const pipelinePage = ref(1)
 
   const selectedPipelineId = ref<string | null>(null)
@@ -523,18 +449,26 @@
     form.stages.splice(index, 1)
   }
 
-  function toggleFinal(index: number) {
+  function toggleFinal(index: number, value?: boolean) {
+    const next = value ?? !form.stages[index]?.isFinal
     form.stages = form.stages.map((stage, i) => ({
       ...stage,
-      isFinal: i === index,
+      isFinal: next ? i === index : stage.isFinal && i === index ? false : stage.isFinal,
     }))
   }
 
-  function toggleLost(index: number) {
+  function toggleLost(index: number, value?: boolean) {
+    const next = value ?? !form.stages[index]?.isLost
     form.stages = form.stages.map((stage, i) => ({
       ...stage,
-      isLost: i === index,
+      isLost: next ? i === index : stage.isLost && i === index ? false : stage.isLost,
     }))
+  }
+
+  function normalizeStage(
+    el: unknown,
+  ): { id?: string; name: string; probability: number; color?: string; isFinal: boolean; isLost: boolean } {
+    return el as { id?: string; name: string; probability: number; color?: string; isFinal: boolean; isLost: boolean }
   }
 
   function resetForm() {

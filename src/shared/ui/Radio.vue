@@ -1,6 +1,16 @@
 <template>
   <div :class="['flex', containerClass]">
-    <div class="flex items-start">
+    <label
+      :for="inputId"
+      :class="[
+        'flex items-start flex-1 cursor-pointer select-none font-medium',
+        labelSizeClasses,
+        {
+          'cursor-not-allowed opacity-50': disabled,
+          'text-text-secondary': !disabled,
+        },
+      ]"
+    >
       <!-- Реальный input для форм и доступности -->
       <input
         :id="inputId"
@@ -20,7 +30,7 @@
         role="radio"
         :disabled="disabled"
         :class="[
-          'inline-flex items-center justify-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-0',
+          'inline-flex items-center justify-center rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-0 shrink-0',
           circleSizeClasses,
           radioClasses,
           {
@@ -28,7 +38,7 @@
             'cursor-pointer': !disabled,
           },
         ]"
-        @click="toggle"
+        @click.prevent="toggle"
         @keydown.space.prevent="toggle"
         @keydown.enter.prevent="toggle"
       >
@@ -40,31 +50,19 @@
           ]"
         />
       </button>
-    </div>
 
-    <div v-if="label" class="ml-2 flex-1">
-      <label
-        :for="inputId"
-        :class="[
-          'text-text-secondary select-none font-medium',
-          labelSizeClasses,
-          {
-            'cursor-not-allowed opacity-50': disabled,
-            'cursor-pointer': !disabled,
-          },
-        ]"
-      >
+      <span v-if="label" class="ml-2 flex-1">
         {{ label }}
         <span v-if="required" class="text-error-default ml-1">*</span>
-      </label>
+      </span>
+    </label>
 
-      <p
-        v-if="hint"
-        :class="['mt-1', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
-      >
-        {{ hint }}
-      </p>
-    </div>
+    <p
+      v-if="hint"
+      :class="['mt-1 ml-2 flex-1', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
+    >
+      {{ hint }}
+    </p>
   </div>
 </template>
 

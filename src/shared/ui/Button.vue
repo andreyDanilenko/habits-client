@@ -85,7 +85,7 @@
     const sizes = {
       xs: 'h-(--size-6) w-(--size-6) min-h-(--size-6) min-w-(--size-6) p-0 text-(--text-xs)',
       sm: 'h-(--size-6) w-(--size-6) min-h-(--size-6) min-w-(--size-6) p-0 text-(--text-xs)',
-      md: 'h-(--size-8) w-(--size-8) min-h-(--size-8) min-w-(--size-8) p-0 text-(--text-sm)',
+      md: 'h-(--size-8) w-(--size-8) min-h-(--size-8) min-w-(--size-8) p-0 text-(--text-xs)',
       lg: 'h-(--size-10) w-(--size-10) min-h-(--size-10) min-w-(--size-10) p-0 text-(--text-sm)',
       xl: 'h-(--size-10) w-(--size-10) min-h-(--size-10) min-w-(--size-10) p-0 text-(--text-base)',
       xxl: 'h-(--size-12) w-(--size-12) min-h-(--size-12) min-w-(--size-12) p-0 text-(--text-base)',

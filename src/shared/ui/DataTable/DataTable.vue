@@ -189,7 +189,7 @@
       selectable: false,
       sortOrder: 'asc',
       className: '',
-      checkboxSize: 'md',
+      checkboxSize: 'sm',
       minTableWidth: '800px',
       cellMinWidth: '140px',
       cellMaxWidth: '260px',

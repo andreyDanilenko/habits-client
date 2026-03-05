@@ -6,7 +6,7 @@
         :key="`nav-link-${item.id}`"
         :to="item.to"
         variant="default"
-        size="md"
+        size="sm"
         :left-icon="item.icon"
         :icon-only="collapsed"
         :is-active="item.isActive"
@@ -19,7 +19,7 @@
         v-else
         :key="`nav-button-${item.id}`"
         :variant="item.variant === 'danger' ? 'ghost' : 'ghost'"
-        size="md"
+        size="lg"
         :left-icon="item.icon"
         :icon-only="collapsed"
         :custom-class="`w-full ${collapsed ? 'justify-center' : 'justify-start'} ${item.isActive ? 'bg-primary-light text-primary-default font-medium' : ''} ${item.variant === 'danger' ? 'text-error-default hover:bg-error-light' : ''}`"

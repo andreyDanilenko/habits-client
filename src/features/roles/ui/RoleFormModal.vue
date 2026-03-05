@@ -7,17 +7,12 @@
           label="Название роли"
           placeholder="Например, Менеджер по продажам"
         />
-        <div>
-          <label class="block text-sm font-medium text-text-secondary mb-1">
-            Описание
-          </label>
-          <textarea
-            v-model="descriptionText"
-            rows="2"
-            class="w-full px-3 py-2 border border-border-default rounded-md bg-bg-primary text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-primary-default focus:border-primary-default"
-            placeholder="Кратко опишите назначение роли"
-          />
-        </div>
+        <Textarea
+          v-model="descriptionText"
+          label="Описание"
+          :rows="2"
+          placeholder="Кратко опишите назначение роли"
+        />
 
         <div>
           <div class="flex items-center justify-between mb-2">
@@ -46,7 +41,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { Modal, ModalContent, Button, Input } from '@/shared/ui'
+import { Modal, ModalContent, Button, Input, Textarea } from '@/shared/ui'
 import { useRoleEditor } from '../model/use-role-editor'
 import PermissionTree from '@/features/permissions/ui/PermissionTree.vue'
 import type { Role, PermissionString } from '@/entities/role'

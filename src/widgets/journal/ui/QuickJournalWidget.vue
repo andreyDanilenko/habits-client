@@ -3,10 +3,11 @@
     <h2 class="text-text-primary mb-4">Быстрая запись</h2>
 
     <div class="grid gap-2">
-      <textarea
+      <Textarea
         v-model="description"
         placeholder="Как прошел день?"
-        class="w-full h-24 px-3 py-2 border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-transparent resize-none bg-bg-primary text-text-primary placeholder:text-text-muted"
+        :rows="4"
+        resize="none"
         :disabled="saving"
       />
 
@@ -36,7 +37,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { Button, Card, SelectButton } from '@/shared/ui'
+  import { Button, Card, SelectButton, Textarea } from '@/shared/ui'
   import { journalService } from '@/entities/journal'
   import { useWorkspaceStore } from '@/entities/workspace'
   import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'

@@ -56,10 +56,21 @@ button {
 @theme {
   /* ===== MAIN COLORS ===== */
   /* Рычаги бренда */
-  --brand-h: 239;      /* primary hue (indigo по умолчанию) */
-  --secondary-h: 271;  /* secondary hue (purple по умолчанию) */
-  --gray-h: var(--brand-h); /* серая шкала гармонирует с брендом */
+  /* ===== MAIN COLORS ===== */
+  --brand-h: 239;
+  --brand-s: 84%;
+  --brand-l: 67%; /* Добавляем яркость по умолчанию */
+  --secondary-h: 271; /* secondary hue (purple по умолчанию) */
+  --gray-h: var(--brand-h);
 
+  /* Primary теперь полностью зависит от входных данных */
+  --color-primary-default: hsl(var(--brand-h) var(--brand-s) var(--brand-l));
+  
+  /* Генерируем оттенки через color-mix, чтобы они всегда подходили к default */
+  --color-primary-light: color-mix(in srgb, var(--color-primary-default), white 92%);
+  --color-primary-dark: color-mix(in srgb, var(--color-primary-default), black 15%);
+  --color-primary-darker: color-mix(in srgb, var(--color-primary-default), black 30%);
+  
   /* Neutral gray scale (HSL-based, гармонирует с primary/secondary) */
   --color-gray-50: hsl(var(--gray-h) 20% 98%);
   --color-gray-100: hsl(var(--gray-h) 16% 96%);
@@ -71,12 +82,6 @@ button {
   --color-gray-700: hsl(var(--gray-h) 12% 32%);
   --color-gray-800: hsl(var(--gray-h) 15% 24%);
   --color-gray-900: hsl(var(--gray-h) 20% 15%);
-
-  /* Primary (динамический, вместо жесткого HEX) */
-  --color-primary-light:   hsl(var(--brand-h) 100% 97%); /* ~indigo-50 */
-  --color-primary-default: hsl(var(--brand-h) 84% 67%);  /* ~indigo-500 */
-  --color-primary-dark:    hsl(var(--brand-h) 72% 59%);  /* ~indigo-600/700 */
-  --color-primary-darker:  hsl(var(--brand-h) 54% 41%);  /* ~indigo-800 */
 
   /* Secondary (динамический) */
   --color-secondary-light:   hsl(var(--secondary-h) 100% 95%);
@@ -182,6 +187,9 @@ button {
 
 
   --unit-base: 0.375rem; /* 4px - основа для всего */
+  /* --unit-base: 0.3125rem; /* 5px - основа для всего */
+  /* --unit-base: 0.375rem; 6px - основа для всего  */
+
 
   /* ===== СИСТЕМА ОТСТУПОВ ===== */
   --spacing-1: var(--unit-base);        /* 4px */

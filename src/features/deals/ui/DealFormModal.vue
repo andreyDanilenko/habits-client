@@ -74,11 +74,11 @@
         </FormField>
 
         <FormField label="Описание">
-          <textarea
+          <Textarea
             v-model="form.description"
             placeholder="Описание сделки"
-            rows="3"
-            class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-primary-default resize-y"
+            :rows="3"
+            resize="y"
           />
         </FormField>
 
@@ -105,6 +105,7 @@
     ModalContent,
     Button,
     Input,
+    Textarea,
     DatePicker,
     FormField,
     Select,
@@ -121,7 +122,6 @@
       isOpen: boolean
       deal: Deal | null
       pipelines: Pipeline[]
-      /** Воронка, этапы которой показывать в селекте (если не задана — воронка по умолчанию) */
       pipelineId?: string
       defaultStageId: string | undefined
       workspaceId: string

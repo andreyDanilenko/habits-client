@@ -39,34 +39,26 @@ class ThemeService {
 
   applyWorkspaceTheme(workspace: Pick<Workspace, 'color'> | null) {
     if (typeof document === 'undefined') return
-
     const root = document.documentElement
-
-    // Если пользователь явно НЕ включил использование цвета воркспейса —
-    // всегда откатываемся на системную тему, независимо от workspace.color.
-    if (!this.shouldUseWorkspaceTheme()) {
-      root.style.setProperty('--brand-h', this.defaultTheme.brandH.toString())
-      root.style.setProperty('--brand-s', `${this.defaultTheme.brandS}%`)
-      root.style.setProperty('--secondary-h', this.defaultTheme.secondaryH.toString())
+  
+    const setBaseTheme = (h: number, s: number, l: number) => {
+      root.style.setProperty('--brand-h', h.toString())
+      root.style.setProperty('--brand-s', `${s}%`)
+      root.style.setProperty('--brand-l', `${l}%`) // Передаем яркость!
+      root.style.setProperty('--gray-h', h.toString())
+    }
+  
+    if (!this.shouldUseWorkspaceTheme() || !workspace?.color) {
+      setBaseTheme(this.defaultTheme.brandH, this.defaultTheme.brandS, 67)
       return
     }
-
-    if (workspace?.color) {
-      try {
-        const { h, s } = hexToHsl(workspace.color)
-        root.style.setProperty('--brand-h', h.toString())
-        root.style.setProperty('--brand-s', `${s}%`)
-      } catch (error) {
-        console.error('Failed to apply workspace theme, fallback to default:', error)
-        root.style.setProperty('--brand-h', this.defaultTheme.brandH.toString())
-        root.style.setProperty('--brand-s', `${this.defaultTheme.brandS}%`)
-      }
-    } else {
-      root.style.setProperty('--brand-h', this.defaultTheme.brandH.toString())
-      root.style.setProperty('--brand-s', `${this.defaultTheme.brandS}%`)
+  
+    try {
+      const { h, s, l } = hexToHsl(workspace.color) // Убедись, что hexToHsl возвращает 'l'
+      setBaseTheme(h, s, l)
+    } catch (error) {
+      setBaseTheme(this.defaultTheme.brandH, this.defaultTheme.brandS, 67)
     }
-
-    root.style.setProperty('--secondary-h', this.defaultTheme.secondaryH.toString())
   }
 }
 

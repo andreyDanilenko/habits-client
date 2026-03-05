@@ -2,7 +2,7 @@
   <router-link
     :to="to"
     :class="[
-      'inline-flex flex-row items-center rounded-lg font-medium transition-colors',
+      'inline-flex flex-row items-center rounded-(--radius-md) font-medium transition-colors',
       customClass && customClass.includes('justify-') ? '' : 'justify-start',
       'focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-primary-light',
       sizeClasses,
@@ -63,12 +63,18 @@
   }>()
 
   const sizeClasses = computed(() => {
-    if (props.iconOnly) return 'p-1 rounded'
-    return {
-      sm: 'px-3 py-1.5 text-sm',
-      md: 'px-3 py-2.5 text-sm',
-      lg: 'px-4 py-3 text-base',
-    }[props.size]
+    if (props.iconOnly) {
+      // выравниваем с buttonIconOnlyClasses по токенам
+      return 'h-(--size-8) w-(--size-8) min-h-(--size-8) min-w-(--size-8) p-0 text-(--text-sm)'
+    }
+
+    const sizes: Record<string, string> = {
+      sm: 'px-(--spacing-3) py-(--spacing-2) text-(--text-xs)',
+      md: 'px-(--spacing-3) py-(--spacing-3) text-(--text-sm)',
+      lg: 'px-(--spacing-4) py-(--spacing-3) text-(--text-base)',
+    }
+
+    return sizes[props.size]
   })
 
   const variantClasses = computed(() => {
@@ -122,8 +128,16 @@
   })
 
   const iconSize = computed(() => {
-    if (props.iconOnly) return 'md'
-    return props.size === 'lg' ? 'md' : props.size === 'sm' ? 'xs' : 'sm'
+    // Делаем иконки в ссылках немного крупнее и выравниваем с размерами кнопок
+    if (props.iconOnly) return 'lg'
+
+    const map: Record<string, string> = {
+      sm: 'sm',
+      md: 'md',
+      lg: 'lg',
+    }
+
+    return map[props.size] ?? 'md'
   })
 
   const handleClick = (e: MouseEvent) => {

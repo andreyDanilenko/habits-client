@@ -227,7 +227,7 @@
     if (isOwner.value || isAdmin) {
       items.push({
         id: 'workspace-settings',
-        label: 'Настройки воркспейса',
+        label: 'Воркспейс',
         icon: CogIcon,
         to: '/workspace-settings',
       })

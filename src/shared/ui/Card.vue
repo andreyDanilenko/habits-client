@@ -1,9 +1,9 @@
 <template>
   <div
     :class="[
-      'bg-bg-primary rounded-xl',
+      'bg-bg-primary rounded-(--radius-lg)',
       shadow ? 'shadow-card' : '',
-      padding ? 'p-6' : '',
+      padding ? 'p-(--spacing-6)' : '',
       border ? 'border border-border-default' : '',
     ]"
   >
@@ -20,7 +20,7 @@
 
   withDefaults(defineProps<Props>(), {
     shadow: true,
-    padding: false,
-    border: false,
+    padding: true,
+    border: true,
   })
 </script>

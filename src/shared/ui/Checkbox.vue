@@ -1,6 +1,12 @@
 <template>
   <div :class="['flex', containerClass]">
-    <div class="flex items-start">
+    <label
+      :for="inputId"
+      :class="[
+        'flex items-center cursor-pointer select-none',
+        disabled ? 'cursor-not-allowed opacity-60' : '',
+      ]"
+    >
       <input
         :id="inputId"
         v-model="modelValue"
@@ -10,51 +16,37 @@
         v-bind="$attrs"
       />
 
-      <button
-        type="button"
-        :aria-checked="modelValue"
-        role="checkbox"
-        :disabled="disabled"
+      <span
         :class="[
-          'inline-flex items-center justify-center rounded-md border transition-colors focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-0',
+          'inline-flex items-center justify-center border transition-colors focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-0',
           boxSizeClasses,
+          radiusClass,
           checkboxClasses,
-          {
-            'cursor-not-allowed opacity-60': disabled,
-            'cursor-pointer': !disabled,
-          },
+          disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         ]"
-        @click="toggle"
-        @keydown.space.prevent="toggle"
-        @keydown.enter.prevent="toggle"
       >
         <CheckIcon v-if="modelValue" :size="iconSize" />
-      </button>
-    </div>
+      </span>
 
-    <div v-if="label" class="ml-2 flex-1">
-      <label
-        :for="inputId"
-        :class="[
-          'text-text-secondary select-none font-medium',
-          labelSizeClasses,
-          {
-            'cursor-not-allowed opacity-50': disabled,
-            'cursor-pointer': !disabled,
-          },
-        ]"
-      >
-        {{ label }}
-        <span v-if="required" class="text-error-default ml-1">*</span>
-      </label>
+      <div v-if="label || hint" class="ml-2 flex-1 leading-snug">
+        <span
+          :class="[
+            'text-text-secondary font-medium',
+            labelSizeClasses,
+          ]"
+        >
+          {{ label }}
+          <span v-if="required" class="text-error-default ml-1">*</span>
+        </span>
 
-      <p
-        v-if="hint"
-        :class="['mt-1', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
-      >
-        {{ hint }}
-      </p>
-    </div>
+        <p
+          v-if="hint"
+          :class="['mt-1', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
+        >
+          {{ hint }}
+        </p>
+      </div>
+    </label>
   </div>
 </template>
 
@@ -81,7 +73,7 @@
   const props = withDefaults(defineProps<Props>(), {
     required: false,
     disabled: false,
-    size: 'lg',
+    size: 'sm',
     error: false,
     containerClass: 'items-start',
   })
@@ -103,21 +95,24 @@
     },
   })
 
-  const toggle = () => {
-    if (props.disabled) return
-    modelValue.value = !modelValue.value
-  }
-
   const boxSizeClasses = computed(() => {
-    const sizes = {
-      xs: 'w-3.5 h-3.5',   // 14px
-      sm: 'w-4 h-4',       // 16px
-      md: 'w-5 h-5',       // 20px
-      lg: 'w-6 h-6',       // 24px
-      xl: 'w-7 h-7',       // 28px
-      xxl: 'w-8 h-8',      // 32px
+    // 16 / 20 / 24 / 28 / 32 px в зависимости от размера
+    const sizes: Record<ComponentSize, string> = {
+      xs: 'w-4 h-4',  // 16px
+      sm: 'w-5 h-5',  // 20px
+      md: 'w-6 h-6',  // 24px
+      lg: 'w-7 h-7',  // 28px
+      xl: 'w-8 h-8',  // 32px
+      xxl: 'w-8 h-8', // 32px (крупнее не требуется)
     }
     return sizes[props.size]
+  })
+
+  const radiusClass = computed(() => {
+    // Чуть более скруглённые углы для крупных чекбоксов
+    if (props.size === 'lg' || props.size === 'xl' || props.size === 'xxl')
+      return 'rounded-(--radius-md)'
+    return 'rounded-(--radius-sm)'
   })
 
   const iconSize = computed(() => {

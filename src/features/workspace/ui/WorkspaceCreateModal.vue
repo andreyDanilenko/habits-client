@@ -28,17 +28,12 @@
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium text-text-secondary mb-1">
-          Описание (необязательно)
-        </label>
-        <textarea
-          v-model="form.description"
-          placeholder="Краткое описание workspace"
-          class="w-full px-3 py-2 border border-border-default rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-transparent transition-colors bg-bg-primary text-text-primary placeholder:text-text-muted"
-          rows="3"
-        />
-      </div>
+      <Textarea
+        v-model="form.description"
+        label="Описание (необязательно)"
+        placeholder="Краткое описание workspace"
+        :rows="3"
+      />
     </form>
 
     <template #footer>
@@ -52,7 +47,7 @@
 
 <script setup lang="ts">
   import { ref, reactive } from 'vue'
-  import { Button, Input, ModalContent } from '@/shared/ui'
+  import { Button, Input, ModalContent, Textarea } from '@/shared/ui'
   import { useWorkspaceStore } from '@/entities/workspace'
   import type { CreateWorkspaceDto } from '@/entities/workspace'
 

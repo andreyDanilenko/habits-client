@@ -9,25 +9,29 @@
         <div v-if="loadingList" class="flex justify-center py-8">
           <Spinner />
         </div>
-        <div v-else-if="availableProjects.length === 0" class="text-text-muted text-sm py-6 text-center">
-          Нет проектов для добавления. Все доступные проекты уже привязаны или в воркспейсе пока нет проектов.
+        <div
+          v-else-if="availableProjects.length === 0"
+          class="text-text-muted text-(--text-sm) py-6 text-center"
+        >
+          Нет проектов для добавления. Все доступные проекты уже привязаны или в воркспейсе пока нет
+          проектов.
         </div>
-        <ul v-else class="space-y-2">
-          <li
-            v-for="p in availableProjects"
-            :key="p.id"
-            class="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-bg-tertiary"
-          >
-            <input
-              :id="`project-${p.id}`"
-              type="checkbox"
-              :checked="selectedIds.has(p.id)"
-              class="rounded border-border-default text-primary-default focus:ring-primary-default"
-              @change="toggle(p.id)"
-            />
-            <label :for="`project-${p.id}`" class="flex-1 cursor-pointer text-sm text-text-primary">
-              {{ p.name }}
-            </label>
+        <ul v-else class="space-y-(--spacing-2)">
+          <li v-for="p in availableProjects" :key="p.id">
+            <ListOption
+              :title="p.name"
+              :selected="selectedIds.has(p.id)"
+              @click="toggle(p.id)"
+            >
+              <template #leading>
+                <Checkbox
+                  :model-value="selectedIds.has(p.id)"
+                  size="sm"
+                  container-class="items-center"
+                  @update:model-value="toggle(p.id)"
+                />
+              </template>
+            </ListOption>
           </li>
         </ul>
       </div>
@@ -43,7 +47,7 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue'
-  import { Modal, Button, Spinner } from '@/shared/ui'
+  import { Modal, Button, Spinner, ListOption, Checkbox } from '@/shared/ui'
   import type { Project } from '@/entities/project'
 
   const props = defineProps<{

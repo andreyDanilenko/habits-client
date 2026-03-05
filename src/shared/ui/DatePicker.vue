@@ -127,10 +127,16 @@
     'update:modelValue': [value: string]
   }>()
 
+  /** Парсит "YYYY-MM-DD" как локальную дату (без сдвига по таймзоне). */
+  function parseLocalDate(value: string): Date {
+    const [y, m, d] = value.split('-').map(Number)
+    return new Date(y, m - 1, d)
+  }
+
   const rootRef = ref<HTMLElement | null>(null)
   const pickerRef = ref<HTMLElement | null>(null)
   const showPicker = ref(false)
-  const currentDate = ref(props.modelValue ? new Date(props.modelValue) : new Date())
+  const currentDate = ref(props.modelValue ? parseLocalDate(props.modelValue) : new Date())
   
   // Реактивные переменные для позиционирования
   const pickerTop = ref('100%')
@@ -245,13 +251,13 @@
   watch(
     () => props.modelValue,
     (val) => {
-      currentDate.value = val ? new Date(val) : new Date()
+      currentDate.value = val ? parseLocalDate(val) : new Date()
     },
   )
 
   const displayValue = computed(() => {
     if (!props.modelValue) return ''
-    const date = new Date(props.modelValue)
+    const date = parseLocalDate(props.modelValue)
     return date.toLocaleDateString('ru-RU')
   })
 
@@ -309,8 +315,8 @@
 
   function isSelected(day: CalendarDay): boolean {
     if (!props.modelValue || !day.isCurrentMonth) return false
-    const selected = new Date(props.modelValue)
-    return day.date.toDateString() === selected.toDateString()
+    const selected = parseLocalDate(props.modelValue)
+    return day.date.getTime() === selected.getTime()
   }
 
   function selectDate(day: CalendarDay): void {
