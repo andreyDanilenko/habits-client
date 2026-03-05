@@ -6,6 +6,7 @@
         'flex items-center cursor-pointer select-none',
         disabled ? 'cursor-not-allowed opacity-60' : '',
       ]"
+      @click.prevent="onLabelClick"
     >
       <input
         :id="inputId"
@@ -28,15 +29,15 @@
         <CheckIcon v-if="modelValue" :size="iconSize" />
       </span>
 
-      <div v-if="label || hint" class="ml-2 flex-1 leading-snug">
+      <div v-if="label || hint" class="ml-(--spacing-2) flex-1 min-w-0 leading-snug">
         <span :class="['text-text-secondary font-medium', labelSizeClasses]">
           {{ label }}
-          <span v-if="required" class="text-error-default ml-1">*</span>
+          <span v-if="required" class="text-error-default ml-(--spacing-1)">*</span>
         </span>
 
         <p
           v-if="hint"
-          :class="['mt-1', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
+          :class="['mt-(--spacing-1)', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
         >
           {{ hint }}
         </p>
@@ -49,8 +50,6 @@
   import { computed } from 'vue'
   import { CheckIcon } from './icon'
   import type { ComponentSize } from './Button.vue'
-
-  let checkboxIdCounter = 0
 
   interface Props {
     modelValue: boolean
@@ -73,9 +72,9 @@
     containerClass: 'items-start',
   })
 
-  const localId = `checkbox-${++checkboxIdCounter}`
+  const instanceId = `checkbox-${Math.random().toString(36).slice(2, 11)}`
 
-  const inputId = computed(() => props.id || props.name || localId)
+  const inputId = computed(() => props.id || props.name || instanceId)
 
   const emit = defineEmits<{
     'update:modelValue': [value: boolean]
@@ -90,15 +89,19 @@
     },
   })
 
+  const onLabelClick = () => {
+    if (props.disabled) return
+    modelValue.value = !modelValue.value
+  }
+
   const boxSizeClasses = computed(() => {
-    // 16 / 20 / 24 / 28 / 32 px в зависимости от размера
     const sizes: Record<ComponentSize, string> = {
-      xs: 'w-4 h-4', // 16px
-      sm: 'w-5 h-5', // 20px
-      md: 'w-6 h-6', // 24px
-      lg: 'w-7 h-7', // 28px
-      xl: 'w-8 h-8', // 32px
-      xxl: 'w-8 h-8', // 32px (крупнее не требуется)
+      xs: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
+      sm: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
+      md: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
+      lg: 'w-(--size-8) h-(--size-8) min-w-(--size-8) min-h-(--size-8)',
+      xl: 'w-(--size-8) h-(--size-8) min-w-(--size-8) min-h-(--size-8)',
+      xxl: 'w-(--size-8) h-(--size-8) min-w-(--size-8) min-h-(--size-8)',
     }
     return sizes[props.size]
   })
@@ -141,25 +144,25 @@
   })
 
   const labelSizeClasses = computed(() => {
-    const sizes = {
-      xs: 'text-2xs',
-      sm: 'text-xs',
-      md: 'text-xs',
-      lg: 'text-sm',
-      xl: 'text-sm',
-      xxl: 'text-base',
+    const sizes: Record<ComponentSize, string> = {
+      xs: 'text-(--text-xs)',
+      sm: 'text-(--text-sm)',
+      md: 'text-(--text-sm)',
+      lg: 'text-(--text-sm)',
+      xl: 'text-(--text-base)',
+      xxl: 'text-(--text-base)',
     }
     return sizes[props.size]
   })
 
   const hintSizeClasses = computed(() => {
-    const sizes = {
-      xs: 'text-2xs',
-      sm: 'text-2xs',
-      md: 'text-xs',
-      lg: 'text-xs',
-      xl: 'text-sm',
-      xxl: 'text-sm',
+    const sizes: Record<ComponentSize, string> = {
+      xs: 'text-(--text-xs)',
+      sm: 'text-(--text-xs)',
+      md: 'text-(--text-xs)',
+      lg: 'text-(--text-xs)',
+      xl: 'text-(--text-sm)',
+      xxl: 'text-(--text-sm)',
     }
     return sizes[props.size]
   })

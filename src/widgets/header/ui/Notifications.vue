@@ -2,16 +2,14 @@
   <Button variant="ghost" @click="toggleNotifications" class="relative">
     <BellIcon size="l" :color="iconColor" />
 
-    <!-- Маленькая точка (когда мало уведомлений) -->
     <span
       v-if="unreadCount > 0 && !showMessageBadge"
-      class="absolute top-2 right-4 w-2 h-2 bg-error-default rounded-full"
+      class="absolute top-(--spacing-2) right-(--spacing-4) w-2 h-2 bg-error-default rounded-full"
     />
 
-    <!-- Бейдж с числом (когда много уведомлений) -->
     <span
       v-if="showMessageBadge && unreadCount > 0"
-      class="absolute -top-1 -right-1 min-w-[20px] h-5 px-1 bg-error-default text-white text-xs rounded-full flex items-center justify-center"
+      class="absolute -top-1 -right-1 min-w-5 h-(--size-6) px-(--spacing-1) bg-error-default text-white text-(--text-xs) rounded-full flex items-center justify-center"
     >
       {{ unreadCount > 99 ? '99+' : unreadCount }}
     </span>

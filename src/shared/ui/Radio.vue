@@ -10,6 +10,7 @@
           'text-text-secondary': !disabled,
         },
       ]"
+      @click="onLabelClick"
     >
       <!-- Реальный input для форм и доступности -->
       <input
@@ -111,6 +112,12 @@
   const toggle = () => {
     if (props.disabled) return
     modelValue.value = !modelValue.value
+  }
+
+  const onLabelClick = (e: MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return
+    e.preventDefault()
+    toggle()
   }
 
   // Диаметр внешнего круга: 16 / 20 / 24 / 32 / 40 px

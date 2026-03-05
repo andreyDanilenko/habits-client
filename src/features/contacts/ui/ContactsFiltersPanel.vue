@@ -5,38 +5,43 @@
       <Button variant="ghost" @click="$emit('reset')">Сбросить фильтры</Button>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <FormField label="Компания">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Компания</span>
         <Select
           :model-value="filters.companyId ?? ''"
           :options="companyOptions"
           placeholder="Все компании"
           @update:model-value="setCompanyId($event)"
         />
-      </FormField>
-      <FormField label="Дата создания (с)">
+      </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата создания (с)</span>
         <DatePicker
           :model-value="filters.dateFrom ?? ''"
           @update:model-value="
             $emit('update:filters', { ...filters, dateFrom: $event || undefined })
           "
         />
-      </FormField>
-      <FormField label="Дата создания (по)">
+      </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата создания (по)</span>
         <DatePicker
           :model-value="filters.dateTo ?? ''"
           @update:model-value="$emit('update:filters', { ...filters, dateTo: $event || undefined })"
         />
-      </FormField>
-      <FormField label="Ответственный">
+      </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Ответственный</span>
         <Select
           :model-value="filters.ownerId ?? ''"
           :options="ownerOptions"
           placeholder="Все"
           @update:model-value="setOwnerId($event)"
         />
-      </FormField>
+      </div>
     </div>
-    <FormField v-if="availableTags.length" label="Теги">
+    <div v-if="availableTags.length">
+      <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги</span>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="tag in availableTags"
@@ -50,13 +55,13 @@
           </Badge>
         </button>
       </div>
-    </FormField>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { Button, FormField, Select, DatePicker, Badge } from '@/shared/ui'
+  import { Button, Select, DatePicker, Badge } from '@/shared/ui'
 
   export interface ContactFilters {
     companyId?: string

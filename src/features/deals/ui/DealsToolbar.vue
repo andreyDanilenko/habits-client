@@ -8,13 +8,14 @@
         </Button>
       </PermissionGuard>
 
-      <FormField v-if="pipelines.length > 1" label="Воронка" class="min-w-[160px]">
+      <div v-if="pipelines.length > 1" class="min-w-[160px]">
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Воронка</span>
         <Select
           :model-value="selectedPipelineId"
           :options="pipelineSelectOptions"
           @update:model-value="onPipelineChange"
         />
-      </FormField>
+      </div>
 
       <SegmentedControl
         :model-value="viewMode"
@@ -22,15 +23,17 @@
         @update:model-value="onViewModeChange"
       />
 
-      <FormField v-if="viewMode === 'table'" label="Статус" class="min-w-[140px]">
+      <div v-if="viewMode === 'table'" class="min-w-[140px]">
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Статус</span>
         <Select
           :model-value="status"
           :options="statusOptions"
           @update:model-value="onStatusChange"
         />
-      </FormField>
+      </div>
 
-      <FormField label="Период" class="flex flex-wrap items-end gap-2">
+      <div class="flex flex-wrap items-end gap-2">
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1) shrink-0">Период</span>
         <DatePicker
           :model-value="dateFrom"
           placeholder="ДД.ММ.ГГГГ"
@@ -42,14 +45,14 @@
           placeholder="ДД.ММ.ГГГГ"
           @update:model-value="$emit('update:dateTo', $event)"
         />
-      </FormField>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { Button, Select, FormField, DatePicker, SegmentedControl } from '@/shared/ui'
+  import { Button, Select, DatePicker, SegmentedControl } from '@/shared/ui'
   import { PlusIcon, ListIcon } from '@/shared/ui/icon'
   import type { Pipeline } from '@/entities/deal'
   import type { DealsViewMode, DealsStatusFilter } from '../model/use-deals-page'

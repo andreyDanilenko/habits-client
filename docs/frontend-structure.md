@@ -277,7 +277,7 @@
 ### 7.2. `shared/ui`
 
 - **Общие компоненты**
-  - `FormField.vue` — обёртка над инпутами/лейблами.
+  - ~~`FormField.vue`~~ — удалён (использовались div + span для лейблов).
   - `Drawer/Drawer.vue` + `Drawer/index.ts` — выезжающая панель.
   - `Dnd/DndList.vue` + `Dnd/index.ts` — drag‑and‑drop список.
   - `KanbanBoard/*` — общий канбан:

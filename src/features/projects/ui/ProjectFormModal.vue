@@ -6,21 +6,24 @@
       @close="$emit('close')"
     >
       <form class="space-y-4" @submit.prevent="handleSubmit">
-        <FormField label="Название" required :error="errors.name">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Название <span class="text-error-default">*</span></span>
           <Input
             v-model="form.name"
             placeholder="Например: Клиент ООО Ромашка"
             maxlength="255"
             @blur="validateName"
           />
-        </FormField>
-        <FormField label="Описание">
+          <p v-if="errors.name" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.name }}</p>
+        </div>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание</span>
           <Textarea
             v-model="form.description"
             placeholder="Краткое описание проекта (необязательно)"
             :rows="3"
           />
-        </FormField>
+        </div>
         <p v-if="submitError" class="text-sm text-danger-default">{{ submitError }}</p>
         <div class="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
@@ -35,7 +38,7 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField, Textarea } from '@/shared/ui'
+  import { Modal, ModalContent, Button, Input, Textarea } from '@/shared/ui'
   import type { Project, CreateProjectDto, UpdateProjectDto } from '@/entities/project'
 
   const props = defineProps<{

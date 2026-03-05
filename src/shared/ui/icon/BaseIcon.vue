@@ -16,7 +16,17 @@
 
   interface Props {
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-    color?: 'indigo' | 'blue' | 'green' | 'red' | 'gray' | 'yellow' | 'purple' | 'pink' | 'inherit'
+    color?:
+      | 'indigo'
+      | 'blue'
+      | 'green'
+      | 'red'
+      | 'gray'
+      | 'yellow'
+      | 'purple'
+      | 'pink'
+      | 'inherit'
+      | string
     strokeWidth?: string | number
   }
 
@@ -28,8 +38,9 @@
 
   const iconColor = computed(() => {
     if (props.color === 'inherit') return 'text-current'
+    if (typeof props.color === 'string' && props.color.startsWith('text-')) return props.color
 
-    const colorMap = {
+    const colorMap: Record<string, string> = {
       indigo: 'text-indigo-600',
       blue: 'text-blue-600',
       green: 'text-green-600',
@@ -39,7 +50,7 @@
       purple: 'text-purple-600',
       pink: 'text-pink-600',
     }
-    return colorMap[props.color] || 'text-indigo-600'
+    return colorMap[props.color as string] ?? 'text-text-primary'
   })
 
   const iconSize = computed(() => {

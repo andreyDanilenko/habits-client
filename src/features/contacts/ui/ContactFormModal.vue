@@ -6,20 +6,24 @@
       @close="$emit('close')"
     >
       <form class="space-y-4" @submit.prevent="() => handleSubmit(true)">
-        <FormField label="Имя" required :error="errors.firstName">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Имя <span class="text-error-default">*</span></span>
           <Input
             v-model="form.firstName"
             placeholder="Имя"
             :error="errors.firstName"
             @blur="validateFirstName"
           />
-        </FormField>
+          <p v-if="errors.firstName" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.firstName }}</p>
+        </div>
 
-        <FormField label="Фамилия">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Фамилия</span>
           <Input v-model="form.lastName" placeholder="Фамилия" />
-        </FormField>
+        </div>
 
-        <FormField label="Телефон" :error="errors.phone">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Телефон</span>
           <Input
             v-model="phoneModel"
             type="tel"
@@ -27,9 +31,11 @@
             :error="errors.phone"
             inputClasses="w-full"
           />
-        </FormField>
+          <p v-if="errors.phone" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.phone }}</p>
+        </div>
 
-        <FormField label="Email" :error="errors.email">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Email</span>
           <Input
             v-model="form.email"
             type="email"
@@ -37,9 +43,11 @@
             :error="errors.email"
             @blur="validateEmail"
           />
-        </FormField>
+          <p v-if="errors.email" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.email }}</p>
+        </div>
 
-        <FormField label="Компания">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Компания</span>
           <SearchSelect
             v-model="form.companyId"
             :options="companyOptions"
@@ -52,17 +60,20 @@
             @select="applyCompany"
             @create="emit('create-company')"
           />
-        </FormField>
+        </div>
 
-        <FormField label="Должность">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Должность</span>
           <Input v-model="form.position" placeholder="Должность" />
-        </FormField>
+        </div>
 
-        <FormField label="День рождения">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">День рождения</span>
           <DatePicker v-model="form.birthday" />
-        </FormField>
+        </div>
 
-        <FormField label="Теги">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги</span>
           <div class="space-y-2">
             <div class="flex flex-wrap gap-2">
               <Tag
@@ -83,16 +94,17 @@
               <Button type="button" variant="outline" @click="addTag"> Добавить </Button>
             </div>
           </div>
-        </FormField>
+        </div>
 
-        <FormField label="Ответственный">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Ответственный</span>
           <Select
             v-model="form.ownerId"
             :options="ownerSelectOptions"
             placeholder="Выберите ответственного"
             size="lg"
           />
-        </FormField>
+        </div>
 
         <div class="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" @click="$emit('close')"> Отмена </Button>
@@ -119,7 +131,6 @@
     ModalContent,
     Button,
     Input,
-    FormField,
     Select,
     DatePicker,
     SearchSelect,

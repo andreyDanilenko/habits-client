@@ -198,7 +198,7 @@
       :is-open="showFormModal"
       :contact="contact ?? null"
       @close="
-        showFormModal = false
+        showFormModal = false;
         fetchContact()
       "
       @save="handleSave"

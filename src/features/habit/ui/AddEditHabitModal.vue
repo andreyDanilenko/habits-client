@@ -4,13 +4,8 @@
     @close="$emit('close')"
   >
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <FormField
-        label="Название привычки"
-        required
-        :show-char-count="true"
-        :current-length="form.title.length"
-        :max-length="50"
-      >
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Название привычки <span class="text-error-default">*</span></span>
         <Input
           v-model="form.title"
           type="text"
@@ -18,14 +13,11 @@
           maxlength="50"
           placeholder="Например: Утренняя зарядка"
         />
-      </FormField>
+        <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">{{ form.title.length }} / 50</span>
+      </div>
 
-      <FormField
-        label="Описание (необязательно)"
-        :show-char-count="true"
-        :current-length="form.description?.length || 0"
-        :max-length="200"
-      >
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание (необязательно)</span>
         <Textarea
           v-model="form.description"
           :rows="3"
@@ -33,10 +25,11 @@
           placeholder="Краткое описание вашей привычки..."
           resize="none"
         />
-      </FormField>
+        <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">{{ form.description?.length || 0 }} / 200</span>
+      </div>
 
       <div>
-        <label class="block text-sm font-medium text-text-secondary mb-2"> Цвет </label>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Цвет</span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="color in colors"
@@ -49,7 +42,8 @@
         </div>
       </div>
 
-      <FormField label="Иконка">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Иконка</span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="icon in icons"
@@ -61,9 +55,10 @@
             {{ icon }}
           </SelectButton>
         </div>
-      </FormField>
+      </div>
 
-      <FormField label="Цель на день">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Цель на день</span>
         <div class="flex items-center space-x-2">
           <Input
             :model-value="String(form.dailyGoal)"
@@ -77,9 +72,10 @@
           />
           <span class="text-text-secondary">раз(а) в день</span>
         </div>
-      </FormField>
+      </div>
 
-      <FormField label="Предпочтительное время">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Предпочтительное время</span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="time in timesOfDay"
@@ -89,13 +85,15 @@
             @click="form.preferredTime = time.value"
           />
         </div>
-      </FormField>
+      </div>
 
-      <FormField label="Категория">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Категория</span>
         <Select v-model="form.category" :options="categoryOptions" placeholder="Без категории" />
-      </FormField>
+      </div>
 
-      <FormField label="Тип расписания">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Тип расписания</span>
         <div class="flex gap-2">
           <SelectButton
             :is-selected="form.scheduleType === 'recurring'"
@@ -108,14 +106,10 @@
             @click="form.scheduleType = 'one_time'"
           />
         </div>
-      </FormField>
+      </div>
 
-      <FormField
-        v-if="form.scheduleType === 'recurring'"
-        label="Дни недели"
-        required
-        :error="form.recurringDays.length === 0 ? 'Выберите хотя бы один день недели' : ''"
-      >
+      <div v-if="form.scheduleType === 'recurring'">
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дни недели <span class="text-error-default">*</span></span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="day in weekDays"
@@ -125,12 +119,12 @@
             @click="toggleDay(day.value)"
           />
         </div>
-      </FormField>
+        <p v-if="form.recurringDays.length === 0" class="mt-(--spacing-1) text-(--text-xs) text-error-default">Выберите хотя бы один день недели</p>
+      </div>
 
       <div v-if="form.scheduleType === 'one_time'">
-        <FormField label="Дата выполнения" required>
-          <DatePicker v-model="form.oneTimeDate" />
-        </FormField>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата выполнения <span class="text-error-default">*</span></span>
+        <DatePicker v-model="form.oneTimeDate" />
       </div>
     </form>
 
@@ -150,7 +144,6 @@
   import {
     ModalContent,
     Button,
-    FormField,
     SelectButton,
     Input,
     Select,

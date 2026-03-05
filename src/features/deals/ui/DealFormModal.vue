@@ -6,11 +6,13 @@
       @close="$emit('close')"
     >
       <form class="space-y-4" @submit.prevent="handleSubmit">
-        <FormField label="Название сделки" required>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Название сделки <span class="text-error-default">*</span></span>
           <Input v-model="form.name" placeholder="Название" required />
-        </FormField>
+        </div>
 
-        <FormField label="Контакт">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Контакт</span>
           <SearchSelect
             v-model="form.contactId"
             :query="contactQuery"
@@ -25,9 +27,10 @@
             @select="onSelectContact"
             @create="$emit('create-contact')"
           />
-        </FormField>
+        </div>
 
-        <FormField label="Компания">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Компания</span>
           <input
             :value="form.companyNameDisplay"
             type="text"
@@ -35,9 +38,10 @@
             readonly
             class="w-full px-3 py-2 border border-border-light rounded-lg bg-bg-tertiary text-text-secondary cursor-default"
           />
-        </FormField>
+        </div>
 
-        <FormField label="Бюджет">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Бюджет</span>
           <div class="flex gap-2">
             <Input
               v-model="form.budgetStr"
@@ -49,27 +53,32 @@
             />
             <Select v-model="form.currency" class="min-w-[100px]" :options="currencyOptions" />
           </div>
-        </FormField>
+        </div>
 
-        <FormField label="Воронка">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Воронка</span>
           <Select v-model="form.pipelineId" :options="pipelineOptions" />
-        </FormField>
+        </div>
 
-        <FormField label="Этап">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Этап</span>
           <Select v-model="form.stageId" :options="stageOptions" />
-        </FormField>
+        </div>
 
-        <FormField label="Плановая дата закрытия">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Плановая дата закрытия</span>
           <DatePicker v-model="form.expectedCloseDate" />
-        </FormField>
+        </div>
 
-        <FormField label="Описание">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание</span>
           <Textarea v-model="form.description" placeholder="Описание сделки" :rows="3" resize="y" />
-        </FormField>
+        </div>
 
-        <FormField label="Ответственный">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Ответственный</span>
           <Select v-model="form.ownerId" :options="ownerOptions" />
-        </FormField>
+        </div>
 
         <div class="flex justify-end gap-2 pt-2">
           <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
@@ -89,7 +98,6 @@
     Input,
     Textarea,
     DatePicker,
-    FormField,
     Select,
     SearchSelect,
   } from '@/shared/ui'

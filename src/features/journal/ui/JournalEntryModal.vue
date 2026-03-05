@@ -1,11 +1,13 @@
 <template>
   <ModalContent :title="entry ? 'Редактировать запись' : 'Запись за день'" @close="handleClose">
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <FormField label="Дата">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата</span>
         <DatePicker v-model="form.date" required />
-      </FormField>
+      </div>
 
-      <FormField label="Настроение">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Настроение</span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="mood in moods"
@@ -21,18 +23,20 @@
             Убрать
           </Button>
         </div>
-      </FormField>
+      </div>
 
-      <FormField label="Описание за день">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание за день</span>
         <Textarea
           v-model="form.description"
           :rows="8"
           placeholder="Как прошел ваш день? Что вы чувствуете?"
           resize="none"
         />
-      </FormField>
+      </div>
 
-      <FormField label="Теги (необязательно)">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги (необязательно)</span>
         <div class="flex flex-wrap gap-2 items-center">
           <Badge
             v-for="tag in form.tags || []"
@@ -52,7 +56,7 @@
           />
           <Button type="button" variant="outline" size="md" @click="addTag"> Добавить </Button>
         </div>
-      </FormField>
+      </div>
     </form>
 
     <template #footer>
@@ -68,7 +72,6 @@
   import { computed, ref, watch } from 'vue'
   import {
     ModalContent,
-    FormField,
     Input,
     Button,
     SelectButton,

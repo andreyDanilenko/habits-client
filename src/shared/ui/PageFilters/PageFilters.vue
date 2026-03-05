@@ -10,13 +10,12 @@
 
       <div class="flex flex-wrap gap-3">
         <div v-if="enabledFilters.includes(PageFiltersEnum.DATE)" class="flex-1 min-w-[200px]">
-          <FormField label="Дата">
-            <DatePicker
-              :model-value="selectedDate"
-              :disabled="showAll"
-              @update:model-value="$emit('date-change', $event)"
-            />
-          </FormField>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата</span>
+          <DatePicker
+            :model-value="selectedDate"
+            :disabled="showAll"
+            @update:model-value="$emit('date-change', $event)"
+          />
         </div>
 
         <div v-if="enabledFilters.includes(PageFiltersEnum.MOOD)" class="flex-1 min-w-[200px]">
@@ -192,7 +191,7 @@
 
 <script setup lang="ts">
   import { formatDateRu } from '@/shared/lib'
-  import { Card, Button, Badge, FormField, DatePicker, SearchInput } from '@/shared/ui'
+  import { Card, Button, Badge, DatePicker, SearchInput } from '@/shared/ui'
   import { XMarkIcon, ChevronDownIcon } from '@/shared/ui/icon'
   import { PageFiltersEnum } from './PageFilters.types'
 

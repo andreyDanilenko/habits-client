@@ -1,16 +1,16 @@
 <template>
   <div v-if="visible" class="rounded-lg border border-border-default bg-bg-primary p-4 space-y-4">
     <div class="flex items-center justify-between">
-      <span class="text-sm font-medium text-text-secondary">Фильтр активности</span>
+      <span class="text-(--text-sm) font-medium text-text-secondary">Фильтр активности</span>
       <Button variant="ghost" size="md" @click="$emit('close')">Закрыть</Button>
     </div>
 
-    <FormField label="Тип событий">
-      <div class="flex flex-wrap gap-3">
+    <div class="space-y-(--spacing-2)">
+      <span class="block text-(--text-sm) font-medium text-text-secondary">Тип событий</span>
+      <div class="flex flex-wrap gap-(--spacing-3)">
         <Checkbox
           v-model="localTypesAll"
           label="Все"
-          size="md"
           container-class="items-center"
           @change="onTypesAllChange"
         />
@@ -18,59 +18,62 @@
           v-for="opt in typeOptions"
           :key="opt.value"
           :model-value="localTypes.includes(opt.value)"
-          size="md"
           :label="`${opt.label} ${opt.emoji}`"
           container-class="items-center"
           @change="() => toggleType(opt.value)"
         />
       </div>
-    </FormField>
+    </div>
 
-    <FormField label="Период">
-      <div class="space-y-2">
+    <div class="space-y-(--spacing-2)">
+      <span class="block text-(--text-sm) font-medium text-text-secondary">Период</span>
+      <div class="space-y-(--spacing-2)">
         <Radio
           v-for="p in periodOptions"
           :key="p.value"
           :model-value="localPeriod === p.value"
-          size="md"
+          size="sm"
           :label="p.label"
           container-class="items-center"
           @change="() => (localPeriod = p.value)"
         />
       </div>
-      <div v-if="localPeriod === 'custom'" class="mt-2 grid grid-cols-2 gap-2">
-        <FormField label="С">
+      <div v-if="localPeriod === 'custom'" class="mt-(--spacing-2) grid grid-cols-2 gap-(--spacing-2)">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">С</span>
           <DatePicker v-model="localDateFrom" size="md" placeholder="ДД.ММ.ГГГГ" />
-        </FormField>
-        <FormField label="По">
+        </div>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">По</span>
           <DatePicker v-model="localDateTo" size="md" placeholder="ДД.ММ.ГГГГ" />
-        </FormField>
+        </div>
       </div>
-    </FormField>
+    </div>
 
-    <FormField>
+    <div>
       <Checkbox
         v-model="localImportantOnly"
         label="Только важные"
         size="md"
         container-class="items-center"
       />
-    </FormField>
+    </div>
 
-    <FormField label="Поиск">
+    <div class="space-y-(--spacing-2)">
+      <span class="block text-(--text-sm) font-medium text-text-secondary">Поиск</span>
       <SearchInput v-model="localSearch" size="md" placeholder="Поиск по тексту..." />
-    </FormField>
+    </div>
 
-    <div class="flex gap-2 pt-2">
-      <Button variant="ghost" size="md" @click="handleReset">Сбросить</Button>
-      <Button variant="primary" size="md" @click="handleApply">Применить</Button>
+    <div class="flex gap-(--spacing-2) pt-(--spacing-2)">
+      <Button variant="ghost" @click="handleReset">Сбросить</Button>
+      <Button variant="primary" @click="handleApply">Применить</Button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Button, Checkbox, Radio, FormField, DatePicker, SearchInput } from '@/shared/ui'
+  import { Button, Checkbox, Radio, DatePicker, SearchInput } from '@/shared/ui'
   import type { ActivityFilters as ActivityFiltersType, ActivityType } from '@/entities/activity'
 
   const props = defineProps<{
@@ -85,14 +88,14 @@
   }>()
 
   const typeOptions: { value: string; label: string; emoji: string }[] = [
-    { value: 'note', label: 'Заметки', emoji: '📝' },
-    { value: 'call', label: 'Звонки', emoji: '📞' },
-    { value: 'email', label: 'Письма', emoji: '✉️' },
-    { value: 'deal_stage_changed', label: 'Сделки', emoji: '🔄' },
+    { value: 'note', label: 'Заметки', emoji: '' },
+    { value: 'call', label: 'Звонки', emoji: '' },
+    { value: 'email', label: 'Письма', emoji: '' },
+    { value: 'deal_stage_changed', label: 'Сделки', emoji: '' },
     {
       value: 'system',
       label: 'Системные',
-      emoji: '✨',
+      emoji: '',
     },
   ]
 

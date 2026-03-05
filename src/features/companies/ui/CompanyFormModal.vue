@@ -9,104 +9,118 @@
       <form class="space-y-6 max-h-[85vh] overflow-y-auto pr-1" @submit.prevent="handleSubmit">
         <section class="space-y-4">
           <h3 class="text-sm font-medium text-text-secondary">Реквизиты</h3>
-          <FormField label="Название" required>
-            <Input 
-              v-model="form.name" 
-              placeholder="Название компании" 
-              required 
-              "
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Название <span class="text-error-default">*</span></span>
+            <Input
+              v-model="form.name"
+              placeholder="Название компании"
+              required
             />
-          </FormField>
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <FormField label="ИНН">
-              <Input v-model="form.inn" placeholder="ИНН" " />
-            </FormField>
-            <FormField label="КПП">
-              <Input v-model="form.kpp" placeholder="КПП" " />
-            </FormField>
-            <FormField label="ОГРН">
-              <Input v-model="form.ogrn" placeholder="ОГРН" " />
-            </FormField>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">ИНН</span>
+              <Input v-model="form.inn" placeholder="ИНН" />
+            </div>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">КПП</span>
+              <Input v-model="form.kpp" placeholder="КПП" />
+            </div>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">ОГРН</span>
+              <Input v-model="form.ogrn" placeholder="ОГРН" />
+            </div>
           </div>
         </section>
 
         <section class="space-y-4">
           <h3 class="text-sm font-medium text-text-secondary">Контакты</h3>
-          <FormField label="Телефон">
-            <Input v-model="form.phone" type="tel" placeholder="+7 (495) 000-00-00" " />
-          </FormField>
-          <FormField label="Email">
-            <Input v-model="form.email" type="email" placeholder="email@company.ru" " />
-          </FormField>
-          <FormField label="Сайт">
-            <Input v-model="form.website" type="url" placeholder="https://" " />
-          </FormField>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Телефон</span>
+            <Input v-model="form.phone" type="tel" placeholder="+7 (495) 000-00-00" />
+          </div>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Email</span>
+            <Input v-model="form.email" type="email" placeholder="email@company.ru" />
+          </div>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Сайт</span>
+            <Input v-model="form.website" type="url" placeholder="https://" />
+          </div>
         </section>
 
         <section class="space-y-4">
           <h3 class="text-sm font-medium text-text-secondary">Юридический адрес</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormField label="Страна">
-              <Input v-model="form.legalCountry" placeholder="Россия" " />
-            </FormField>
-            <FormField label="Город">
-              <Input v-model="form.legalCity" placeholder="Москва" " />
-            </FormField>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Страна</span>
+              <Input v-model="form.legalCountry" placeholder="Россия" />
+            </div>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Город</span>
+              <Input v-model="form.legalCity" placeholder="Москва" />
+            </div>
           </div>
-          <FormField label="Улица">
-            <Input v-model="form.legalStreet" placeholder="ул. Примерная" " />
-          </FormField>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Улица</span>
+            <Input v-model="form.legalStreet" placeholder="ул. Примерная" />
+          </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FormField label="Дом">
-              <Input v-model="form.legalBuilding" placeholder="1" " />
-            </FormField>
-            <FormField label="Офис / квартира">
-              <Input v-model="form.legalApartment" placeholder="—" " />
-            </FormField>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дом</span>
+              <Input v-model="form.legalBuilding" placeholder="1" />
+            </div>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Офис / квартира</span>
+              <Input v-model="form.legalApartment" placeholder="—" />
+            </div>
           </div>
         </section>
 
         <section class="space-y-4">
           <h3 class="text-sm font-medium text-text-secondary">Фактический адрес</h3>
           <div class="flex items-center gap-2">
-            <Checkbox
-              v-model="sameAsLegal"
-              " 
-            />
+            <Checkbox v-model="sameAsLegal" />
             <span class="text-sm text-text-secondary">Совпадает с юридическим</span>
           </div>
           <template v-if="!sameAsLegal">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Страна">
-                <Input v-model="form.actualCountry" placeholder="Россия" " />
-              </FormField>
-              <FormField label="Город">
-                <Input v-model="form.actualCity" placeholder="Москва" " />
-              </FormField>
+              <div>
+                <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Страна</span>
+                <Input v-model="form.actualCountry" placeholder="Россия" />
+              </div>
+              <div>
+                <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Город</span>
+                <Input v-model="form.actualCity" placeholder="Москва" />
+              </div>
             </div>
-            <FormField label="Улица">
-              <Input v-model="form.actualStreet" placeholder="ул. Примерная" " />
-            </FormField>
+            <div>
+              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Улица</span>
+              <Input v-model="form.actualStreet" placeholder="ул. Примерная" />
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Дом">
-                <Input v-model="form.actualBuilding" placeholder="1" " />
-              </FormField>
-              <FormField label="Офис / квартира">
-                <Input v-model="form.actualApartment" placeholder="—" " />
-              </FormField>
+              <div>
+                <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дом</span>
+                <Input v-model="form.actualBuilding" placeholder="1" />
+              </div>
+              <div>
+                <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Офис / квартира</span>
+                <Input v-model="form.actualApartment" placeholder="—" />
+              </div>
             </div>
           </template>
         </section>
 
         <section class="space-y-4">
-          <FormField label="Теги (через запятую)">
-            <Input v-model="form.tagsStr" placeholder="важный, партнёр" " />
-          </FormField>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги (через запятую)</span>
+            <Input v-model="form.tagsStr" placeholder="важный, партнёр" />
+          </div>
         </section>
 
         <div class="flex justify-end gap-2 pt-2 sticky bottom-0 bg-bg-primary py-2">
           <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
-          <Button type="submit" :loading="saving" ">Сохранить</Button>
+          <Button type="submit" :loading="saving">Сохранить</Button>
         </div>
       </form>
     </ModalContent>
@@ -115,7 +129,7 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField, Checkbox } from '@/shared/ui'
+  import { Modal, ModalContent, Button, Input, Checkbox } from '@/shared/ui'
   import type { Company, CreateCompanyDto, CompanyAddress } from '@/entities/company'
 
   const props = defineProps<{
