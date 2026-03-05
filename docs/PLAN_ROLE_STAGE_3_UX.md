@@ -63,12 +63,9 @@
       members.value.filter((member) => {
         const q = searchQuery.value.trim().toLowerCase()
         const matchesSearch =
-          !q ||
-          member.name.toLowerCase().includes(q) ||
-          member.email.toLowerCase().includes(q)
+          !q || member.name.toLowerCase().includes(q) || member.email.toLowerCase().includes(q)
 
-        const matchesRole =
-          roleFilter.value === 'all' || member.systemRole === roleFilter.value
+        const matchesRole = roleFilter.value === 'all' || member.systemRole === roleFilter.value
 
         return matchesSearch && matchesRole
       }),
@@ -142,4 +139,3 @@
   - реализован фильтр по системной роли.
 - Для удаления ролей, снятия ролей с пользователя и отзыва индивидуальных прав используются confirm‑модалки.
 - Пустые состояния списков и подсказки оформлены так, что администратору понятно, что происходит.
-

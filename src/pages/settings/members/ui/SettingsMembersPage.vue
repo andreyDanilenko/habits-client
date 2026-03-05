@@ -7,20 +7,12 @@
       </p>
     </div>
 
-    <div v-if="isLoading" class="text-sm text-text-secondary">
-      Загрузка списка участников…
-    </div>
+    <div v-if="isLoading" class="text-sm text-text-secondary">Загрузка списка участников…</div>
 
-    <div v-else-if="isError" class="text-sm text-red-600">
-      Не удалось загрузить участников.
-    </div>
+    <div v-else-if="isError" class="text-sm text-red-600">Не удалось загрузить участников.</div>
 
     <div v-else class="space-y-4">
-      <Card
-        v-for="member in members"
-        :key="member.id"
-        class="p-4"
-      >
+      <Card v-for="member in members" :key="member.id" class="p-4">
         <div class="flex items-start justify-between gap-4">
           <div class="space-y-1">
             <div class="font-medium text-text-primary">
@@ -29,9 +21,7 @@
             <div class="text-xs text-text-secondary">
               {{ member.email }}
             </div>
-            <div class="text-xs text-text-secondary">
-              Системная роль: {{ member.systemRole }}
-            </div>
+            <div class="text-xs text-text-secondary">Системная роль: {{ member.systemRole }}</div>
           </div>
         </div>
 
@@ -48,39 +38,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { Card } from '@/shared/ui'
-import { useWorkspaceStore, workspaceService, type Member } from '@/entities/workspace'
-import { MemberRoleChips } from '@/features/members'
-import { UserPermissionsPanel } from '@/features/user-permissions'
+  import { ref, onMounted } from 'vue'
+  import { Card } from '@/shared/ui'
+  import { useWorkspaceStore, workspaceService, type Member } from '@/entities/workspace'
+  import { MemberRoleChips } from '@/features/members'
+  import { UserPermissionsPanel } from '@/features/user-permissions'
 
-const workspaceStore = useWorkspaceStore()
+  const workspaceStore = useWorkspaceStore()
 
-const members = ref<Member[]>([])
-const isLoading = ref(false)
-const isError = ref(false)
+  const members = ref<Member[]>([])
+  const isLoading = ref(false)
+  const isError = ref(false)
 
-const loadMembers = async () => {
-  const workspaceId = workspaceStore.currentWorkspace?.id
-  if (!workspaceId) {
-    members.value = []
-    return
+  const loadMembers = async () => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) {
+      members.value = []
+      return
+    }
+    isLoading.value = true
+    isError.value = false
+    try {
+      const response = await workspaceService.getWorkspaceMembers(workspaceId)
+      members.value = response as Member[]
+    } catch {
+      isError.value = true
+      members.value = []
+    } finally {
+      isLoading.value = false
+    }
   }
-  isLoading.value = true
-  isError.value = false
-  try {
-    const response = await workspaceService.getWorkspaceMembers(workspaceId)
-    members.value = response as Member[]
-  } catch {
-    isError.value = true
-    members.value = []
-  } finally {
-    isLoading.value = false
-  }
-}
 
-onMounted(() => {
-  void loadMembers()
-})
+  onMounted(() => {
+    void loadMembers()
+  })
 </script>
-

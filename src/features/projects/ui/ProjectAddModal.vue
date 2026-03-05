@@ -1,9 +1,13 @@
 <template>
   <Modal :is-open="isOpen" @close="$emit('close')">
-    <div class="rounded-xl bg-bg-primary border border-border-default shadow-lg max-h-[80vh] flex flex-col">
+    <div
+      class="rounded-xl bg-bg-primary border border-border-default shadow-lg max-h-[80vh] flex flex-col"
+    >
       <div class="p-4 border-b border-border-default">
         <h3 class="text-lg font-medium text-text-primary">Добавить в проекты</h3>
-        <p class="text-sm text-text-secondary mt-0.5">Выберите проекты, в которые добавить сущность.</p>
+        <p class="text-sm text-text-secondary mt-0.5">
+          Выберите проекты, в которые добавить сущность.
+        </p>
       </div>
       <div class="p-4 overflow-y-auto flex-1 min-h-0">
         <div v-if="loadingList" class="flex justify-center py-8">
@@ -18,11 +22,7 @@
         </div>
         <ul v-else class="space-y-(--spacing-2)">
           <li v-for="p in availableProjects" :key="p.id">
-            <ListOption
-              :title="p.name"
-              :selected="selectedIds.has(p.id)"
-              @click="toggle(p.id)"
-            >
+            <ListOption :title="p.name" :selected="selectedIds.has(p.id)" @click="toggle(p.id)">
               <template #leading>
                 <Checkbox
                   :model-value="selectedIds.has(p.id)"

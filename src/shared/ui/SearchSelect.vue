@@ -32,11 +32,11 @@
         {{ getOptionLabel(item) }}
       </button>
       <p v-if="loading" class="px-3 py-2 text-sm text-text-muted">Поиск...</p>
-      <p v-if="query && !loading && options.length === 0" class="px-3 py-2 text-sm text-text-muted">Ничего не найдено</p>
+      <p v-if="query && !loading && options.length === 0" class="px-3 py-2 text-sm text-text-muted">
+        Ничего не найдено
+      </p>
     </div>
-    <p v-if="selectedLabel" class="mt-1 text-xs text-text-muted">
-      Выбран: {{ selectedLabel }}
-    </p>
+    <p v-if="selectedLabel" class="mt-1 text-xs text-text-muted">Выбран: {{ selectedLabel }}</p>
   </div>
 </template>
 
@@ -105,7 +105,9 @@
   }
 
   function onBlur() {
-    setTimeout(() => { showDropdown.value = false }, 150)
+    setTimeout(() => {
+      showDropdown.value = false
+    }, 150)
   }
 
   function onCreate() {

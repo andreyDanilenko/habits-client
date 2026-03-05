@@ -2,11 +2,7 @@
   <div class="relative">
     <Tooltip variant="dropdown" trigger="click" placement="bottom" class="w-full justify-between">
       <template #trigger>
-        <Button
-          variant="ghost"
-          size="md"
-          custom-class="w-full justify-between gap-(--spacing-2)"
-        >
+        <Button variant="ghost" size="md" custom-class="w-full justify-between gap-(--spacing-2)">
           <div
             class="w-6 h-6 rounded-(--radius-md) flex-shrink-0"
             :style="{ backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)' }"
@@ -18,13 +14,13 @@
         </Button>
       </template>
 
-      <div class="w-64 bg-bg-primary rounded-(--radius-lg) shadow-card border border-border-default">
+      <div
+        class="w-64 bg-bg-primary rounded-(--radius-lg) shadow-card border border-border-default"
+      >
         <!-- Заголовок -->
         <div class="px-(--spacing-4) py-(--spacing-3) border-b border-border-light">
           <div class="flex items-center justify-between">
-            <p class="text-(--text-sm) font-semibold text-text-primary">
-              Рабочие пространства
-            </p>
+            <p class="text-(--text-sm) font-semibold text-text-primary">Рабочие пространства</p>
             <Button
               @click.stop="openWorkspaceSettings"
               icon-only

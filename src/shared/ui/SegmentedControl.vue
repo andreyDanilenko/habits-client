@@ -10,11 +10,7 @@
       :title="opt.label"
       @click="select(opt.value)"
     >
-      <component
-        v-if="opt.icon"
-        :is="opt.icon"
-        class="size-4 shrink-0 text-current"
-      />
+      <component v-if="opt.icon" :is="opt.icon" class="size-4 shrink-0 text-current" />
       {{ opt.label }}
     </Button>
   </div>

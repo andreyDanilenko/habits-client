@@ -19,15 +19,15 @@
     </div>
 
     <template v-else-if="project">
-      <header class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary">
+      <header
+        class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary"
+      >
         <div class="min-w-0 flex-1">
           <h1 class="text-xl font-semibold text-text-primary">{{ project.name }}</h1>
           <p v-if="project.description" class="text-text-secondary text-sm mt-0.5">
             {{ project.description }}
           </p>
-          <p class="text-xs text-text-muted mt-2">
-            Обновлён: {{ formatDate(project.updatedAt) }}
-          </p>
+          <p class="text-xs text-text-muted mt-2">Обновлён: {{ formatDate(project.updatedAt) }}</p>
           <div class="flex flex-wrap gap-2 mt-3">
             <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
             <Button size="md" variant="ghost" class="text-danger-default" @click="confirmDelete">
@@ -52,7 +52,8 @@
             </router-link>
           </div>
           <p class="text-xs text-text-muted mt-3">
-            Переход откроет страницу модуля в контексте этого проекта (контакты, компании и сделки проекта).
+            Переход откроет страницу модуля в контексте этого проекта (контакты, компании и сделки
+            проекта).
           </p>
         </div>
       </div>

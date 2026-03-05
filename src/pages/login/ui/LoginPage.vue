@@ -55,7 +55,10 @@
           <div class="text-center">
             <p class="text-sm text-text-secondary">
               Нет аккаунта?
-              <router-link to="/register" class="font-medium text-primary-default hover:text-primary-dark">
+              <router-link
+                to="/register"
+                class="font-medium text-primary-default hover:text-primary-dark"
+              >
                 Зарегистрироваться
               </router-link>
             </p>

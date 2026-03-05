@@ -65,12 +65,7 @@
             class="text-primary-default ml-2 flex-shrink-0"
           />
         </button>
-        <p
-          v-if="!options.length"
-          class="px-3 py-2 text-sm text-text-muted"
-        >
-          Нет вариантов
-        </p>
+        <p v-if="!options.length" class="px-3 py-2 text-sm text-text-muted">Нет вариантов</p>
       </div>
     </div>
 

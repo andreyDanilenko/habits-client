@@ -1,10 +1,6 @@
 <template>
   <div>
-    <label
-      v-if="label"
-      :for="inputId"
-      class="block text-sm font-medium text-text-secondary mb-1"
-    >
+    <label v-if="label" :for="inputId" class="block text-sm font-medium text-text-secondary mb-1">
       {{ label }}
       <span v-if="required" class="text-error-default">*</span>
     </label>

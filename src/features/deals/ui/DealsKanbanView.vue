@@ -12,7 +12,7 @@
     <KanbanBoard
       v-else
       :columns="columnsModel"
-      @update:columns="(v) => (columnsModel = v as KanbanColumnModel<Deal>[])"
+      @update:columns="onColumnsUpdate"
       :item-key="getDealId"
       dnd-group="deals"
       :disabled="false"
@@ -48,14 +48,20 @@
       <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-        @click="emit('edit', contextMenu.deal); contextMenu.deal = null"
+        @click="
+          emit('edit', contextMenu.deal)
+          contextMenu.deal = null
+        "
       >
         Редактировать
       </button>
       <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-        @click="emit('copy', contextMenu.deal); contextMenu.deal = null"
+        @click="
+          emit('copy', contextMenu.deal)
+          contextMenu.deal = null
+        "
       >
         Копировать
       </button>
@@ -63,14 +69,20 @@
         v-if="showRemoveFromProject"
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-        @click="contextMenu.deal && (emit('remove-from-project', contextMenu.deal), contextMenu.deal = null)"
+        @click="
+          contextMenu.deal &&
+          (emit('remove-from-project', contextMenu.deal), (contextMenu.deal = null))
+        "
       >
         Убрать из проекта
       </button>
       <button
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
-        @click="emit('delete', contextMenu.deal); contextMenu.deal = null"
+        @click="
+          emit('delete', contextMenu.deal)
+          contextMenu.deal = null
+        "
       >
         Удалить
       </button>
@@ -122,20 +134,24 @@
     deal: null,
   })
 
+  function onColumnsUpdate(_v: KanbanColumnModel<Deal>[]) {
+    // источник истины для колонок — данные сделок, обновляемые родителем
+  }
+
   function onMove(payload: { item: unknown; toColumnId?: string }) {
     emit('move', payload)
   }
 
   function onCardContextMenu(evt: MouseEvent, deal: Deal) {
-    console.log('env', deal);
-    
+    console.log('env', deal)
+
     contextMenu.x = evt.clientX
     contextMenu.y = evt.clientY
     contextMenu.deal = deal
   }
 
   function getCompanyOrContact(_deal: Deal): string {
-    console.log('env', _deal);
+    console.log('env', _deal)
 
     return '—'
   }
@@ -143,5 +159,4 @@
   function formatSum(sum: number): string {
     return new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(sum) + ' ₽'
   }
-
 </script>

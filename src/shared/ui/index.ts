@@ -35,7 +35,11 @@ export { Pagination } from './Pagination'
 export { Drawer } from './Drawer'
 export { DndList } from './Dnd'
 export { KanbanBoard, KanbanColumn } from './KanbanBoard'
-export type { KanbanColumnModel, KanbanBoardProps, KanbanCardContext } from './KanbanBoard/KanbanBoard.types'
+export type {
+  KanbanColumnModel,
+  KanbanBoardProps,
+  KanbanCardContext,
+} from './KanbanBoard/KanbanBoard.types'
 export { default as SearchInput } from './SearchInput.vue'
 export { default as SearchSelect } from './SearchSelect.vue'
 export type { SearchSelectOption } from './SearchSelect.vue'

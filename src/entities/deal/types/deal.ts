@@ -65,4 +65,7 @@ export interface CreateDealDto {
   ownerId?: string
 }
 
-export type UpdateDealDto = Partial<CreateDealDto> & { stageId?: string; status?: 'open' | 'won' | 'lost' }
+export type UpdateDealDto = Partial<CreateDealDto> & {
+  stageId?: string
+  status?: 'open' | 'won' | 'lost'
+}

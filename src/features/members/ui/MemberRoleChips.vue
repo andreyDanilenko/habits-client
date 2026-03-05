@@ -1,12 +1,8 @@
 <template>
   <div class="space-y-2">
     <div class="flex items-center justify-between">
-      <p class="text-sm text-text-secondary">
-        Роли пользователя
-      </p>
-      <Button size="md" variant="secondary" @click="isAdding = !isAdding">
-        Добавить роль
-      </Button>
+      <p class="text-sm text-text-secondary">Роли пользователя</p>
+      <Button size="md" variant="secondary" @click="isAdding = !isAdding"> Добавить роль </Button>
     </div>
 
     <div class="flex flex-wrap gap-2">
@@ -35,49 +31,42 @@
         class="border border-border-default rounded-md px-2 py-1 text-sm bg-bg-primary text-text-primary"
       >
         <option value="">Выберите роль</option>
-        <option
-          v-for="role in selectableRoles"
-          :key="role.id"
-          :value="role.id"
-        >
+        <option v-for="role in selectableRoles" :key="role.id" :value="role.id">
           {{ role.name }}
         </option>
       </select>
-      <Button size="md" :disabled="!selectedRoleId" @click="onAdd">
-        Назначить
-      </Button>
+      <Button size="md" :disabled="!selectedRoleId" @click="onAdd"> Назначить </Button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { Button } from '@/shared/ui'
-import { useMemberRoles } from '@/features/members/model/use-member-roles'
+  import { computed, ref } from 'vue'
+  import { Button } from '@/shared/ui'
+  import { useMemberRoles } from '@/features/members/model/use-member-roles'
 
-const props = defineProps<{
-  userId: string
-}>()
+  const props = defineProps<{
+    userId: string
+  }>()
 
-const { availableRoles, customRoles, assignRole, revokeRole } = useMemberRoles(props.userId)
+  const { availableRoles, customRoles, assignRole, revokeRole } = useMemberRoles(props.userId)
 
-const isAdding = ref(false)
-const selectedRoleId = ref('')
+  const isAdding = ref(false)
+  const selectedRoleId = ref('')
 
-const selectableRoles = computed(() => {
-  const assignedIds = new Set(customRoles.value.map((r) => r.id))
-  return availableRoles.value.filter((r) => !r.isSystem && !assignedIds.has(r.id))
-})
+  const selectableRoles = computed(() => {
+    const assignedIds = new Set(customRoles.value.map((r) => r.id))
+    return availableRoles.value.filter((r) => !r.isSystem && !assignedIds.has(r.id))
+  })
 
-const onAdd = async () => {
-  if (!selectedRoleId.value) return
-  await assignRole(selectedRoleId.value)
-  selectedRoleId.value = ''
-  isAdding.value = false
-}
+  const onAdd = async () => {
+    if (!selectedRoleId.value) return
+    await assignRole(selectedRoleId.value)
+    selectedRoleId.value = ''
+    isAdding.value = false
+  }
 
-const onRemove = async (roleId: string) => {
-  await revokeRole(roleId)
-}
+  const onRemove = async (roleId: string) => {
+    await revokeRole(roleId)
+  }
 </script>
-

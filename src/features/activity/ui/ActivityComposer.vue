@@ -32,19 +32,8 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-text-muted mb-1">Прикрепить файлы</label>
-        <input
-          ref="fileInputRef"
-          type="file"
-          multiple
-          class="hidden"
-          @change="onFileSelect"
-        />
-        <Button
-          type="button"
-          variant="ghost"
-          size="md"
-          @click="fileInputRef?.click()"
-        >
+        <input ref="fileInputRef" type="file" multiple class="hidden" @change="onFileSelect" />
+        <Button type="button" variant="ghost" size="md" @click="fileInputRef?.click()">
           Выбрать файлы
         </Button>
         <ul v-if="selectedFiles.length" class="mt-2 space-y-1 text-sm text-text-secondary">
@@ -73,9 +62,7 @@
       </div>
       <div class="flex flex-wrap gap-2">
         <Button variant="ghost" size="md" @click="handleCancel">Отмена</Button>
-        <Button variant="outline" size="md" @click="handleSaveAndAdd">
-          Сохранить и еще
-        </Button>
+        <Button variant="outline" size="md" @click="handleSaveAndAdd"> Сохранить и еще </Button>
         <Button variant="primary" size="md" @click="handleSave">Сохранить</Button>
       </div>
     </div>

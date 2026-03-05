@@ -2,7 +2,7 @@
   <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center flex-wrap">
     <div class="flex gap-2 flex-shrink-0 flex-wrap items-center">
       <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
-        <Button variant="primary"  @click="$emit('create')">
+        <Button variant="primary" @click="$emit('create')">
           <PlusIcon class="size-5 mr-2" />
           Создать сделку
         </Button>
@@ -12,7 +12,6 @@
         <Select
           :model-value="selectedPipelineId"
           :options="pipelineSelectOptions"
-          
           @update:model-value="onPipelineChange"
         />
       </FormField>
@@ -20,7 +19,6 @@
       <SegmentedControl
         :model-value="viewMode"
         :options="viewModeOptions"
-        
         @update:model-value="onViewModeChange"
       />
 
@@ -28,7 +26,6 @@
         <Select
           :model-value="status"
           :options="statusOptions"
-          
           @update:model-value="onStatusChange"
         />
       </FormField>
@@ -36,14 +33,12 @@
       <FormField label="Период" class="flex flex-wrap items-end gap-2">
         <DatePicker
           :model-value="dateFrom"
-          
           placeholder="ДД.ММ.ГГГГ"
           @update:model-value="$emit('update:dateFrom', $event)"
         />
         <span class="text-text-muted pb-1">—</span>
         <DatePicker
           :model-value="dateTo"
-          
           placeholder="ДД.ММ.ГГГГ"
           @update:model-value="$emit('update:dateTo', $event)"
         />

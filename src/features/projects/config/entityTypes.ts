@@ -46,6 +46,8 @@ export const PROJECT_ENTITY_TYPE_CONFIGS: ProjectEntityTypeConfig[] = [
   // { entityType: 'hr_employee', tabLabel: 'Сотрудники', addLabel: 'Добавить сотрудников', routeName: 'HrEmployeeDetail', module: 'hr' },
 ]
 
-export function getProjectEntityTypeConfig(entityType: string): ProjectEntityTypeConfig | undefined {
+export function getProjectEntityTypeConfig(
+  entityType: string,
+): ProjectEntityTypeConfig | undefined {
   return PROJECT_ENTITY_TYPE_CONFIGS.find((c) => c.entityType === entityType)
 }

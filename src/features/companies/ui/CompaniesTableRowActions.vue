@@ -1,9 +1,21 @@
 <template>
   <div class="flex items-center justify-center gap-2">
-    <Button variant="icon" size="md" icon-color="info" aria-label="Редактировать" @click="$emit('edit', company)">
+    <Button
+      variant="icon"
+      size="md"
+      icon-color="info"
+      aria-label="Редактировать"
+      @click="$emit('edit', company)"
+    >
       <CogIcon class="size-4" />
     </Button>
-    <Button variant="icon" size="md" icon-color="danger" aria-label="Удалить" @click="$emit('delete', company)">
+    <Button
+      variant="icon"
+      size="md"
+      icon-color="danger"
+      aria-label="Удалить"
+      @click="$emit('delete', company)"
+    >
       <DeleteIcon class="size-4" />
     </Button>
   </div>

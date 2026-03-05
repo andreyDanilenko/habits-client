@@ -32,7 +32,11 @@ export const contactColumns: DataTableColumn<Contact>[] = [
     getValue: (row) => `${row.firstName} ${row.lastName}`.trim() || '—',
     render: (_value, row) => {
       const name = `${row.firstName} ${row.lastName}`.trim() || '—'
-      return h('router-link', { to: `/crm/contacts/${row.id}`, class: 'text-primary-default hover:underline' }, { default: () => name })
+      return h(
+        'router-link',
+        { to: `/crm/contacts/${row.id}`, class: 'text-primary-default hover:underline' },
+        { default: () => name },
+      )
     },
   },
   {

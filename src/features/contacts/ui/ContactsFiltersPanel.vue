@@ -2,14 +2,13 @@
   <div class="rounded-lg border border-border-default bg-bg-primary p-4 space-y-4">
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium text-text-secondary">Расширенные фильтры</span>
-      <Button variant="ghost"  @click="$emit('reset')">Сбросить фильтры</Button>
+      <Button variant="ghost" @click="$emit('reset')">Сбросить фильтры</Button>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <FormField label="Компания">
         <Select
           :model-value="filters.companyId ?? ''"
           :options="companyOptions"
-          
           placeholder="Все компании"
           @update:model-value="setCompanyId($event)"
         />
@@ -17,8 +16,9 @@
       <FormField label="Дата создания (с)">
         <DatePicker
           :model-value="filters.dateFrom ?? ''"
-          
-          @update:model-value="$emit('update:filters', { ...filters, dateFrom: $event || undefined })"
+          @update:model-value="
+            $emit('update:filters', { ...filters, dateFrom: $event || undefined })
+          "
         />
       </FormField>
       <FormField label="Дата создания (по)">
@@ -31,7 +31,6 @@
         <Select
           :model-value="filters.ownerId ?? ''"
           :options="ownerOptions"
-          
           placeholder="Все"
           @update:model-value="setOwnerId($event)"
         />
@@ -108,7 +107,9 @@
 
   function toggleTag(tag: string) {
     const current = props.filters.tags ?? []
-    const next = current.includes(tag) ? current.filter((t: string) => t !== tag) : [...current, tag]
+    const next = current.includes(tag)
+      ? current.filter((t: string) => t !== tag)
+      : [...current, tag]
     emit('update:filters', { ...props.filters, tags: next })
   }
 </script>

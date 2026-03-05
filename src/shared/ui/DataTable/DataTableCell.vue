@@ -12,7 +12,9 @@
     const v = value()
     const content = props.column.render
       ? props.column.render(v, props.row)
-      : (v != null ? String(v) : '')
+      : v != null
+        ? String(v)
+        : ''
     if (typeof content === 'string') {
       return h(
         'span',

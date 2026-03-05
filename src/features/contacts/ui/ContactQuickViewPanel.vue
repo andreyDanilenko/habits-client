@@ -6,13 +6,17 @@
         <template v-if="primaryPhone">
           <dt class="text-text-muted">Телефон</dt>
           <dd>
-            <a :href="`tel:${primaryPhone}`" class="text-primary-default hover:underline">{{ primaryPhone }}</a>
+            <a :href="`tel:${primaryPhone}`" class="text-primary-default hover:underline">{{
+              primaryPhone
+            }}</a>
           </dd>
         </template>
         <template v-if="primaryEmail">
           <dt class="text-text-muted">Email</dt>
           <dd>
-            <a :href="`mailto:${primaryEmail}`" class="text-primary-default hover:underline">{{ primaryEmail }}</a>
+            <a :href="`mailto:${primaryEmail}`" class="text-primary-default hover:underline">{{
+              primaryEmail
+            }}</a>
           </dd>
         </template>
         <dt class="text-text-muted">Компания</dt>
@@ -60,9 +64,23 @@
     'open-card': [contact: Contact]
   }>()
 
-  const fullName = computed(() => `${props.contact.firstName} ${props.contact.lastName}`.trim() || '—')
-  const primaryPhone = computed(() => props.contact.phones?.find((p) => p.isPrimary)?.number ?? props.contact.phones?.[0]?.number ?? '')
-  const primaryEmail = computed(() => props.contact.emails?.find((e) => e.isPrimary)?.address ?? props.contact.emails?.[0]?.address ?? '')
+  const fullName = computed(
+    () => `${props.contact.firstName} ${props.contact.lastName}`.trim() || '—',
+  )
+  const primaryPhone = computed(
+    () =>
+      props.contact.phones?.find((p) => p.isPrimary)?.number ??
+      props.contact.phones?.[0]?.number ??
+      '',
+  )
+  const primaryEmail = computed(
+    () =>
+      props.contact.emails?.find((e) => e.isPrimary)?.address ??
+      props.contact.emails?.[0]?.address ??
+      '',
+  )
   const companyName = computed(() => props.companyName ?? '—')
-  const lastActivity = computed(() => props.contact.updatedAt ? new Date(props.contact.updatedAt).toLocaleString('ru-RU') : '—')
+  const lastActivity = computed(() =>
+    props.contact.updatedAt ? new Date(props.contact.updatedAt).toLocaleString('ru-RU') : '—',
+  )
 </script>

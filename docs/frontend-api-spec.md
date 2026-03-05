@@ -235,7 +235,7 @@
   - Используются в доменных сервисах `entities/contact/api/contact-service.ts`, `entities/company/api/company-service.ts`, `entities/deal/api/deal-service.ts`, `entities/deal/api/pipeline-service.ts`, `entities/activity/api/activity-service.ts`.
 
 - **Контакты (`API_ENDPOINTS.CRM.CONTACTS/CONTACT`)**
-  - `CONTACTS(workspaceId)`: 
+  - `CONTACTS(workspaceId)`:
     - `GET /api/v1/workspaces/:workspaceId/contacts`
       - Query:
         - `search?: string`
@@ -463,4 +463,3 @@
 - **HABITS & JOURNAL & NOTES**: привычки, статистика, календарь, личный журнал и заметки.
 
 Эта спецификация описывает текущую структуру фронтенда и его взаимодействие с готовым REST API. Для новых модулей рекомендуется строго следовать описанным паттернам (слой `API_ENDPOINTS` → доменный сервис → композиционные функции → страницы/виджеты).
-

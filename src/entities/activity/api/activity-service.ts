@@ -28,31 +28,21 @@ export const activityService = {
     return api.get<ActivitiesResponse>(url)
   },
 
-  createNote: async (
-    workspaceId: string,
-    data: CreateNoteDto,
-  ): Promise<Activity> => {
+  createNote: async (workspaceId: string, data: CreateNoteDto): Promise<Activity> => {
     return api.post<Activity>(API_ENDPOINTS.CRM.ACTIVITIES(workspaceId), {
       ...data,
       type: 'note',
     })
   },
 
-  createCall: async (
-    workspaceId: string,
-    data: CreateCallDto,
-  ): Promise<Activity> => {
+  createCall: async (workspaceId: string, data: CreateCallDto): Promise<Activity> => {
     return api.post<Activity>(API_ENDPOINTS.CRM.ACTIVITIES(workspaceId), {
       ...data,
       type: 'call',
     })
   },
 
-  update: async (
-    workspaceId: string,
-    id: string,
-    data: UpdateNoteDto,
-  ): Promise<Activity> => {
+  update: async (workspaceId: string, id: string, data: UpdateNoteDto): Promise<Activity> => {
     return api.put<Activity>(API_ENDPOINTS.CRM.ACTIVITY(workspaceId, id), data)
   },
 
@@ -60,12 +50,7 @@ export const activityService = {
     await api.delete(API_ENDPOINTS.CRM.ACTIVITY(workspaceId, id))
   },
 
-  toggleImportant: async (
-    workspaceId: string,
-    id: string,
-  ): Promise<Activity> => {
-    return api.post<Activity>(
-      API_ENDPOINTS.CRM.ACTIVITY_IMPORTANT(workspaceId, id),
-    )
+  toggleImportant: async (workspaceId: string, id: string): Promise<Activity> => {
+    return api.post<Activity>(API_ENDPOINTS.CRM.ACTIVITY_IMPORTANT(workspaceId, id))
   },
 }

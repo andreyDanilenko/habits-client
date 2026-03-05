@@ -52,8 +52,7 @@ export const API_ENDPOINTS = {
     COMPANY_DETACH_CONTACT: (workspaceId: string, companyId: string, contactId: string) =>
       apiV1 + `/workspaces/${workspaceId}/companies/${companyId}/contacts/${contactId}`,
     DEALS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/deals`,
-    DEAL: (workspaceId: string, id: string) =>
-      apiV1 + `/workspaces/${workspaceId}/deals/${id}`,
+    DEAL: (workspaceId: string, id: string) => apiV1 + `/workspaces/${workspaceId}/deals/${id}`,
     PIPELINES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/pipelines`,
     PIPELINE: (workspaceId: string, pipelineId: string) =>
       apiV1 + `/workspaces/${workspaceId}/pipelines/${pipelineId}`,
@@ -76,14 +75,8 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/projects/${projectId}`,
     ENTITIES: (workspaceId: string, projectId: string) =>
       apiV1 + `/workspaces/${workspaceId}/projects/${projectId}/entities`,
-    DETACH_ENTITY: (
-      workspaceId: string,
-      projectId: string,
-      entityType: string,
-      entityId: string,
-    ) =>
-      apiV1 +
-      `/workspaces/${workspaceId}/projects/${projectId}/entities/${entityType}/${entityId}`,
+    DETACH_ENTITY: (workspaceId: string, projectId: string, entityType: string, entityId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/projects/${projectId}/entities/${entityType}/${entityId}`,
     BY_ENTITY: (workspaceId: string, entityType: string, entityId: string) =>
       apiV1 + `/workspaces/${workspaceId}/entities/${entityType}/${entityId}/projects`,
   },
@@ -103,8 +96,7 @@ export const API_ENDPOINTS = {
   },
 
   PERMISSIONS: {
-    CATALOG: (workspaceId: string) =>
-      apiV1 + `/workspaces/${workspaceId}/permissions/catalog`,
+    CATALOG: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/permissions/catalog`,
   },
 
   ROLES: {
@@ -129,7 +121,6 @@ export const API_ENDPOINTS = {
   },
 
   ME: {
-    PERMISSIONS: (workspaceId: string) =>
-      apiV1 + `/me/permissions?workspaceId=${workspaceId}`,
+    PERMISSIONS: (workspaceId: string) => apiV1 + `/me/permissions?workspaceId=${workspaceId}`,
   },
 } as const

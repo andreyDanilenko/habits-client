@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type {
-  RouteRecordRaw,
-  RouteLocationNormalized,
-  NavigationGuardNext,
-} from 'vue-router'
+import type { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 import { authGuard, requireAdmin } from '@/features/auth'
 import { requireOwnerOrAdmin, requirePermission, requireModuleEnabled } from '@/entities/workspace'
 import { modules, getAvailableModules } from '@/app/modules/config'
@@ -131,7 +127,11 @@ modules.forEach((module) => {
         module: module.id,
         ...route.meta,
       },
-      beforeEnter: (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
+      beforeEnter: (
+        to: RouteLocationNormalized,
+        _from: RouteLocationNormalized,
+        next: NavigationGuardNext,
+      ) => {
         const moduleGuard = requireModuleEnabled(getAvailableModules)
         const moduleResult = moduleGuard(to)
         if (moduleResult !== true) {

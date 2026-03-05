@@ -47,26 +47,16 @@
               placeholder="0"
               class="flex-1"
             />
-            <Select
-              v-model="form.currency"
-              class="min-w-[100px]"
-              :options="currencyOptions"
-            />
+            <Select v-model="form.currency" class="min-w-[100px]" :options="currencyOptions" />
           </div>
         </FormField>
 
         <FormField label="Воронка">
-          <Select
-            v-model="form.pipelineId"
-            :options="pipelineOptions"
-          />
+          <Select v-model="form.pipelineId" :options="pipelineOptions" />
         </FormField>
 
         <FormField label="Этап">
-          <Select
-            v-model="form.stageId"
-            :options="stageOptions"
-          />
+          <Select v-model="form.stageId" :options="stageOptions" />
         </FormField>
 
         <FormField label="Плановая дата закрытия">
@@ -74,19 +64,11 @@
         </FormField>
 
         <FormField label="Описание">
-          <Textarea
-            v-model="form.description"
-            placeholder="Описание сделки"
-            :rows="3"
-            resize="y"
-          />
+          <Textarea v-model="form.description" placeholder="Описание сделки" :rows="3" resize="y" />
         </FormField>
 
         <FormField label="Ответственный">
-          <Select
-            v-model="form.ownerId"
-            :options="ownerOptions"
-          />
+          <Select v-model="form.ownerId" :options="ownerOptions" />
         </FormField>
 
         <div class="flex justify-end gap-2 pt-2">
@@ -148,8 +130,6 @@
   const contactSearching = ref(false)
   const selectedContactDisplay = ref('')
 
-  
-
   const form = ref({
     name: '',
     contactId: '',
@@ -167,8 +147,7 @@
   const stages = computed(() => {
     const explicitPipelineId = form.value.pipelineId || props.pipelineId
     const pipeline =
-      (explicitPipelineId &&
-        props.pipelines.find((p) => p.id === explicitPipelineId)) ||
+      (explicitPipelineId && props.pipelines.find((p) => p.id === explicitPipelineId)) ||
       props.pipelines.find((p) => p.isDefault) ||
       props.pipelines[0]
     return pipeline?.stages ?? []
@@ -256,12 +235,9 @@
       if (open) {
         const explicitPipelineId = props.deal?.pipelineId ?? props.pipelineId
         const fallbackPipeline =
-          explicitPipelineId &&
-          props.pipelines.find((p) => p.id === explicitPipelineId)
+          explicitPipelineId && props.pipelines.find((p) => p.id === explicitPipelineId)
         const defaultPipeline =
-          fallbackPipeline ||
-          props.pipelines.find((p) => p.isDefault) ||
-          props.pipelines[0]
+          fallbackPipeline || props.pipelines.find((p) => p.isDefault) || props.pipelines[0]
         const initialPipelineId = defaultPipeline?.id ?? ''
         const firstStageId = defaultPipeline?.stages?.[0]?.id ?? stages.value[0]?.id ?? ''
         form.value = {
@@ -330,9 +306,7 @@
       const pipelineId =
         form.value.pipelineId ||
         props.pipelineId ||
-        props.pipelines.find((p) =>
-          p.stages?.some((s) => s.id === form.value.stageId),
-        )?.id ||
+        props.pipelines.find((p) => p.stages?.some((s) => s.id === form.value.stageId))?.id ||
         props.pipelines[0]?.id ||
         ''
       const data: CreateDealDto = {

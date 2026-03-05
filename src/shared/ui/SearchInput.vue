@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-    import { computed, ref } from 'vue'
+  import { computed, ref } from 'vue'
   import Input from './Input.vue'
   import { SearchIcon } from './icon'
   import Spinner from './Spinner.vue'

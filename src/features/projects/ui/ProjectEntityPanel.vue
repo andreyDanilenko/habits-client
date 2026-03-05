@@ -29,7 +29,11 @@
         class="rounded-lg border border-border-light border-dashed bg-bg-tertiary/50 p-6 text-center"
       >
         <p class="text-text-muted text-sm mb-3">
-          {{ entityName ? `${entityName} не добавлен ни в один проект.` : 'Сущность не добавлена ни в один проект.' }}
+          {{
+            entityName
+              ? `${entityName} не добавлен ни в один проект.`
+              : 'Сущность не добавлена ни в один проект.'
+          }}
         </p>
         <Button v-if="canEdit" size="md" variant="primary" @click="showAddModal = true">
           <PlusIcon class="size-4 mr-1 inline" />
@@ -82,7 +86,11 @@
     <Modal :is-open="!!projectToRemove" @close="projectToRemove = null">
       <ConfirmModal
         :title="`Удалить ${entityName || 'сущность'} из проекта?`"
-        :message="projectToRemove ? `Будет отвязан от проекта «${projectToRemove.name}». Сущность не удаляется из системы.` : ''"
+        :message="
+          projectToRemove
+            ? `Будет отвязан от проекта «${projectToRemove.name}». Сущность не удаляется из системы.`
+            : ''
+        "
         confirm-text="Удалить из проекта"
         confirm-variant="danger"
         @close="projectToRemove = null"

@@ -42,13 +42,7 @@
         @keydown.space.prevent="toggle"
         @keydown.enter.prevent="toggle"
       >
-        <span
-          v-if="modelValue"
-          :class="[
-            'rounded-full bg-white',
-            dotSizeClasses,
-          ]"
-        />
+        <span v-if="modelValue" :class="['rounded-full bg-white', dotSizeClasses]" />
       </button>
 
       <span v-if="label" class="ml-2 flex-1">
@@ -59,7 +53,11 @@
 
     <p
       v-if="hint"
-      :class="['mt-1 ml-2 flex-1', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
+      :class="[
+        'mt-1 ml-2 flex-1',
+        hintSizeClasses,
+        error ? 'text-error-default' : 'text-text-muted',
+      ]"
     >
       {{ hint }}
     </p>
@@ -195,4 +193,3 @@
     }
   })
 </script>
-

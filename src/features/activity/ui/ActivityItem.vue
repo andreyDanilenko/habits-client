@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="rounded-xl border border-border-default bg-bg-primary p-4 space-y-2"
-  >
+  <div class="rounded-xl border border-border-default bg-bg-primary p-4 space-y-2">
     <div class="flex items-start gap-3">
       <span
         class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-bg-tertiary text-lg"
@@ -39,7 +37,10 @@
               <button
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                @click="menuOpen = false; $emit('toggleImportant')"
+                @click="
+                  menuOpen = false
+                  $emit('toggleImportant')
+                "
               >
                 {{ activity.isImportant ? 'Снять важность' : 'Пометить важным' }}
               </button>
@@ -47,7 +48,10 @@
                 v-if="activity.isEditable"
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                @click="menuOpen = false; $emit('edit')"
+                @click="
+                  menuOpen = false
+                  $emit('edit')
+                "
               >
                 Редактировать
               </button>
@@ -55,7 +59,10 @@
                 v-if="activity.isDeletable"
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
-                @click="menuOpen = false; $emit('delete')"
+                @click="
+                  menuOpen = false
+                  $emit('delete')
+                "
               >
                 Удалить
               </button>
@@ -85,19 +92,19 @@
           v-if="activity.type === 'email' && activity.metadata"
           class="mt-2 space-y-1 text-sm text-text-muted"
         >
-          <p v-if="activity.metadata.emailSubject">
-            Тема: {{ activity.metadata.emailSubject }}
-          </p>
-          <p v-if="activity.metadata.emailFrom">
-            От: {{ activity.metadata.emailFrom }}
-          </p>
+          <p v-if="activity.metadata.emailSubject">Тема: {{ activity.metadata.emailSubject }}</p>
+          <p v-if="activity.metadata.emailFrom">От: {{ activity.metadata.emailFrom }}</p>
           <p v-if="activity.metadata.emailTo?.length">
             Кому: {{ activity.metadata.emailTo.join(', ') }}
           </p>
         </div>
         <!-- Deal stage changed -->
         <div
-          v-if="activity.type === 'deal_stage_changed' && activity.metadata?.fromStage && activity.metadata?.toStage"
+          v-if="
+            activity.type === 'deal_stage_changed' &&
+            activity.metadata?.fromStage &&
+            activity.metadata?.toStage
+          "
           class="mt-2 text-sm text-text-muted"
         >
           {{ activity.metadata.fromStage.name }} → {{ activity.metadata.toStage.name }}
@@ -113,22 +120,13 @@
           v-if="activity.metadata?.changedFields?.length"
           class="mt-2 space-y-1 text-sm text-text-muted"
         >
-          <li
-            v-for="(cf, i) in activity.metadata.changedFields"
-            :key="i"
-          >
+          <li v-for="(cf, i) in activity.metadata.changedFields" :key="i">
             {{ cf.fieldLabel }}: {{ String(cf.oldValue) || '—' }} → {{ String(cf.newValue) || '—' }}
           </li>
         </ul>
         <!-- Files -->
-        <ul
-          v-if="activity.metadata?.files?.length"
-          class="mt-2 space-y-1 text-sm"
-        >
-          <li
-            v-for="(f, i) in activity.metadata.files"
-            :key="i"
-          >
+        <ul v-if="activity.metadata?.files?.length" class="mt-2 space-y-1 text-sm">
+          <li v-for="(f, i) in activity.metadata.files" :key="i">
             <a
               :href="f.url"
               target="_blank"
@@ -242,15 +240,21 @@
   }
 
   function formatMoney(value: number): string {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'decimal',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value) + ' ₽'
+    return (
+      new Intl.NumberFormat('ru-RU', {
+        style: 'decimal',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(value) + ' ₽'
+    )
   }
 
   function handleClickOutside(e: MouseEvent) {
-    if (menuOpen.value && menuContainerRef.value && !menuContainerRef.value.contains(e.target as Node)) {
+    if (
+      menuOpen.value &&
+      menuContainerRef.value &&
+      !menuContainerRef.value.contains(e.target as Node)
+    ) {
       menuOpen.value = false
     }
   }

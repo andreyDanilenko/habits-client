@@ -9,8 +9,7 @@ export const PROJECT_ENTITY_TYPES = {
   CRM_DEAL: 'crm_deal',
 } as const
 
-export type ProjectEntityType =
-  (typeof PROJECT_ENTITY_TYPES)[keyof typeof PROJECT_ENTITY_TYPES]
+export type ProjectEntityType = (typeof PROJECT_ENTITY_TYPES)[keyof typeof PROJECT_ENTITY_TYPES]
 
 /** Для API можно передавать и будущие типы (task, hr_employee и т.д.). */
 export type ProjectEntityTypeAny = string

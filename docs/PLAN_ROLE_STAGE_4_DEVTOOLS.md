@@ -3,6 +3,7 @@
 ### Цель этапа
 
 Сделать систему прав прозрачной и безопасной для разработки:
+
 - иметь возможность быстро посмотреть текущие права пользователя в UI (devtools),
 - жёстко согласовать `PermissionString` между бэкендом и фронтендом через генерацию типов,
 - предотвратить появление “магических” строк прав в коде линтерами.
@@ -14,7 +15,6 @@
 **Задача:** показать в интерфейсе (в dev-режиме), какие права/роли есть у текущего пользователя и дать возможность проверить конкретное право.
 
 - **Реализовать компонент `features/devtools/PermissionDebugger.vue`:**
-
   - Структура:
 
   ```vue
@@ -32,11 +32,7 @@
 
           <h4>Все права ({{ permissions.length }}):</h4>
           <div class="permissions-list">
-            <span
-              v-for="perm in permissions"
-              :key="perm"
-              class="permission-tag"
-            >
+            <span v-for="perm in permissions" :key="perm" class="permission-tag">
               {{ perm }}
             </span>
           </div>
@@ -54,18 +50,18 @@
   </template>
 
   <script setup lang="ts">
-  import { ref } from 'vue'
-  import { usePermissions } from '@/features/permissions'
+    import { ref } from 'vue'
+    import { usePermissions } from '@/features/permissions'
 
-  const isDev = import.meta.env.DEV
-  const { permissions, roles, systemRole, can } = usePermissions()
+    const isDev = import.meta.env.DEV
+    const { permissions, roles, systemRole, can } = usePermissions()
 
-  const testPermission = ref('')
-  const testResult = ref<boolean | null>(null)
+    const testPermission = ref('')
+    const testResult = ref<boolean | null>(null)
 
-  const test = () => {
-    testResult.value = can(testPermission.value as any)
-  }
+    const test = () => {
+      testResult.value = can(testPermission.value as any)
+    }
   </script>
   ```
 
@@ -136,4 +132,3 @@
 - На фронте тип `PermissionString` импортируется из сгенерированного файла (когда внедрится бекенд-скрипт).
 - ESLint-правило, запрещающее прямые строки прав, настроено и не конфликтует с существующим кодом.
 - Конфиги прав (`CRM_PERMISSIONS`, `HABITS_PERMISSIONS`, `PROJECTS_PERMISSIONS`) и весь остальной код используют только типизированные константы.
-

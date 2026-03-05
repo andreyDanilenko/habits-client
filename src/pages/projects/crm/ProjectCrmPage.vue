@@ -1,7 +1,9 @@
 <template>
   <div class="max-w-5xl mx-auto space-y-6 pb-8">
     <nav class="flex items-center gap-2 text-sm text-text-secondary">
-      <router-link :to="{ name: 'ProjectsList' }" class="hover:text-primary-default">Проекты</router-link>
+      <router-link :to="{ name: 'ProjectsList' }" class="hover:text-primary-default"
+        >Проекты</router-link
+      >
       <span class="text-text-muted">/</span>
       <router-link
         v-if="project"
@@ -47,7 +49,9 @@
               placeholder="Поиск по имени..."
               class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-default"
             />
-            <Button size="md" variant="primary" @click="openAddModal('crm_contact')">Добавить контакты</Button>
+            <Button size="md" variant="primary" @click="openAddModal('crm_contact')"
+              >Добавить контакты</Button
+            >
           </div>
         </div>
         <div v-if="contactsLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -56,7 +60,13 @@
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
         >
           {{ contactsSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет контактов.' }}
-          <Button v-if="!contactsSearch" size="md" variant="primary" class="mt-2" @click="openAddModal('crm_contact')">
+          <Button
+            v-if="!contactsSearch"
+            size="md"
+            variant="primary"
+            class="mt-2"
+            @click="openAddModal('crm_contact')"
+          >
             Добавить контакты
           </Button>
         </div>
@@ -66,10 +76,15 @@
             :key="c.id"
             class="flex items-center justify-between gap-3 py-2 px-3 rounded-lg border border-border-light"
           >
-            <router-link :to="{ name: 'CrmContactDetail', params: { id: c.id } }" class="text-primary-default hover:underline truncate">
+            <router-link
+              :to="{ name: 'CrmContactDetail', params: { id: c.id } }"
+              class="text-primary-default hover:underline truncate"
+            >
               {{ contactLabel(c) }}
             </router-link>
-            <span class="text-xs text-text-muted shrink-0">{{ c.emails?.[0]?.address ?? c.phones?.[0]?.number ?? '—' }}</span>
+            <span class="text-xs text-text-muted shrink-0">{{
+              c.emails?.[0]?.address ?? c.phones?.[0]?.number ?? '—'
+            }}</span>
             <button
               type="button"
               class="p-1.5 rounded text-text-muted hover:bg-bg-tertiary hover:text-danger-default"
@@ -92,7 +107,9 @@
               placeholder="Поиск по названию..."
               class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-default"
             />
-            <Button size="md" variant="primary" @click="openAddModal('crm_company')">Добавить компании</Button>
+            <Button size="md" variant="primary" @click="openAddModal('crm_company')"
+              >Добавить компании</Button
+            >
           </div>
         </div>
         <div v-if="companiesLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -101,7 +118,13 @@
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
         >
           {{ companiesSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет компаний.' }}
-          <Button v-if="!companiesSearch" size="md" variant="primary" class="mt-2" @click="openAddModal('crm_company')">
+          <Button
+            v-if="!companiesSearch"
+            size="md"
+            variant="primary"
+            class="mt-2"
+            @click="openAddModal('crm_company')"
+          >
             Добавить компании
           </Button>
         </div>
@@ -111,7 +134,10 @@
             :key="c.id"
             class="flex items-center justify-between gap-3 py-2 px-3 rounded-lg border border-border-light"
           >
-            <router-link :to="{ name: 'CrmCompanyDetail', params: { id: c.id } }" class="text-primary-default hover:underline truncate">
+            <router-link
+              :to="{ name: 'CrmCompanyDetail', params: { id: c.id } }"
+              class="text-primary-default hover:underline truncate"
+            >
               {{ c.name }}
             </router-link>
             <span class="text-xs text-text-muted shrink-0">{{ c.inn ?? '—' }}</span>
@@ -142,11 +168,17 @@
               </select>
             </template>
             <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
-            <Button size="md" variant="outline" @click="openAddModal('crm_deal')">Добавить сделки</Button>
+            <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
+              >Добавить сделки</Button
+            >
           </div>
         </div>
-        <div v-if="dealsLoading && pipelines.length === 0" class="text-text-muted text-sm py-4">Загрузка…</div>
-        <div v-else-if="pipelines.length === 0" class="text-text-muted text-sm py-4">Нет воронок. Создайте воронку в CRM.</div>
+        <div v-if="dealsLoading && pipelines.length === 0" class="text-text-muted text-sm py-4">
+          Загрузка…
+        </div>
+        <div v-else-if="pipelines.length === 0" class="text-text-muted text-sm py-4">
+          Нет воронок. Создайте воронку в CRM.
+        </div>
         <div
           v-else-if="deals.length === 0"
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
@@ -154,7 +186,9 @@
           В этом проекте пока нет сделок.
           <div class="flex gap-2 justify-center mt-2">
             <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
-            <Button size="md" variant="outline" @click="openAddModal('crm_deal')">Добавить сделки</Button>
+            <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
+              >Добавить сделки</Button
+            >
           </div>
         </div>
         <DealsKanbanView
@@ -293,39 +327,56 @@
   const filteredCompanies = computed(() => {
     const q = companiesSearch.value.trim().toLowerCase()
     if (!q) return companies.value
-    return companies.value.filter((c) => (c.name ?? '').toLowerCase().includes(q) || (c.inn ?? '').includes(q))
+    return companies.value.filter(
+      (c) => (c.name ?? '').toLowerCase().includes(q) || (c.inn ?? '').includes(q),
+    )
   })
 
   const selectedPipelineId = ref('')
   const selectedPipeline = computed(
-    () => pipelines.value.find((p) => p.id === selectedPipelineId.value) ?? pipelines.value.find((p) => p.isDefault) ?? pipelines.value[0],
+    () =>
+      pipelines.value.find((p) => p.id === selectedPipelineId.value) ??
+      pipelines.value.find((p) => p.isDefault) ??
+      pipelines.value[0],
   )
   const defaultStageId = computed(() => selectedPipeline.value?.stages?.[0]?.id ?? '')
 
   const kanbanColumns = ref<KanbanColumnModel<Deal>[]>([])
 
   function buildKanbanColumns(): KanbanColumnModel<Deal>[] {
+    const uniqueDeals: Deal[] = []
+    const seenIds = new Set<string>()
+
+    for (const d of deals.value) {
+      if (seenIds.has(d.id)) continue
+      seenIds.add(d.id)
+      uniqueDeals.push(d)
+    }
+
     const pipeline = selectedPipeline.value
     const pipelineId = pipeline?.id
     const dealsInOtherPipelines = pipelineId
-      ? deals.value.filter((d) => d.pipelineId !== pipelineId)
-      : deals.value
+      ? uniqueDeals.filter((d) => d.pipelineId !== pipelineId)
+      : uniqueDeals
 
     if (!pipeline?.stages?.length) {
-      if (deals.value.length === 0) return []
+      if (uniqueDeals.length === 0) return []
       return [
         {
           id: FALLBACK_STAGE_ID,
           title: 'Сделки',
-          items: [...deals.value],
-          meta: { sum: deals.value.reduce((acc, d) => acc + (d.budget ?? 0), 0), count: deals.value.length },
+          items: [...uniqueDeals],
+          meta: {
+            sum: uniqueDeals.reduce((acc, d) => acc + (d.budget ?? 0), 0),
+            count: uniqueDeals.length,
+          },
         },
       ]
     }
 
     const sortedStages = [...pipeline.stages].sort((a, b) => a.order - b.order)
     const columns: KanbanColumnModel<Deal>[] = sortedStages.map((stage) => {
-      const stageDeals = deals.value.filter((d) => d.stageId === stage.id)
+      const stageDeals = uniqueDeals.filter((d) => d.stageId === stage.id)
       const sum = stageDeals.reduce((acc, d) => acc + (d.budget ?? 0), 0)
       return {
         id: stage.id,
@@ -394,7 +445,11 @@
     if (!workspaceId.value || !projectId.value) return
     contactsLoading.value = true
     try {
-      const ids = await projectService.listEntityIds(workspaceId.value, projectId.value, 'crm_contact')
+      const ids = await projectService.listEntityIds(
+        workspaceId.value,
+        projectId.value,
+        'crm_contact',
+      )
       contacts.value = ids.length
         ? await Promise.all(ids.map((id) => contactService.getById(workspaceId.value, id)))
         : []
@@ -409,7 +464,11 @@
     if (!workspaceId.value || !projectId.value) return
     companiesLoading.value = true
     try {
-      const ids = await projectService.listEntityIds(workspaceId.value, projectId.value, 'crm_company')
+      const ids = await projectService.listEntityIds(
+        workspaceId.value,
+        projectId.value,
+        'crm_company',
+      )
       companies.value = ids.length
         ? await Promise.all(ids.map((id) => companyService.getById(workspaceId.value, id)))
         : []
@@ -492,21 +551,28 @@
   async function handleDealMove(payload: { item: unknown; toColumnId?: string }) {
     const deal = payload.item as Deal
     const toId = payload.toColumnId
-    if (!toId || !deal?.id || !workspaceId.value || toId === FALLBACK_STAGE_ID) return
+    const targetPipelineId = selectedPipeline.value?.id
+
+    if (!toId || !deal?.id || !workspaceId.value || toId === FALLBACK_STAGE_ID || !targetPipelineId)
+      return
+
     savingDealIds.value = new Set(savingDealIds.value).add(deal.id)
-    const prevDeals = deals.value.map((d) => (d.id === deal.id ? { ...d } : d))
-    const prevIdx = deals.value.findIndex((d) => d.id === deal.id)
-    if (prevIdx >= 0) {
-      deals.value = deals.value.map((d, i) => (i === prevIdx ? { ...d, stageId: toId } : d))
-      kanbanColumns.value = buildKanbanColumns()
-    }
+
+    const prevDeals = deals.value.map((d) => ({ ...d }))
+
+    deals.value = deals.value.map((d) =>
+      d.id === deal.id ? { ...d, stageId: toId, pipelineId: targetPipelineId } : d,
+    )
+    kanbanColumns.value = buildKanbanColumns()
+
     try {
-      await dealService.update(workspaceId.value, deal.id, { stageId: toId })
+      await dealService.update(workspaceId.value, deal.id, {
+        stageId: toId,
+        pipelineId: targetPipelineId,
+      })
     } catch {
-      if (prevIdx >= 0) {
-        deals.value = prevDeals
-        kanbanColumns.value = buildKanbanColumns()
-      }
+      deals.value = prevDeals
+      kanbanColumns.value = buildKanbanColumns()
     } finally {
       const next = new Set(savingDealIds.value)
       next.delete(deal.id)

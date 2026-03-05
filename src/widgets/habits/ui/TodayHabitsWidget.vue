@@ -49,7 +49,9 @@
                 <span
                   class="text-xs"
                   :class="
-                    getProgress(habit.id) >= 1 ? 'text-success-default font-medium' : 'text-text-muted'
+                    getProgress(habit.id) >= 1
+                      ? 'text-success-default font-medium'
+                      : 'text-text-muted'
                   "
                 >
                   {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}

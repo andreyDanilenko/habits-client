@@ -7,4 +7,3 @@ export type {
   PermissionTreeModuleEntityAction,
 } from './types'
 export { permissionService } from './api/permission-service'
-

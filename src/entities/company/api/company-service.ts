@@ -38,11 +38,7 @@ export const companyService = {
     return api.post<Company>(API_ENDPOINTS.CRM.COMPANIES(workspaceId), data)
   },
 
-  update: async (
-    workspaceId: string,
-    id: string,
-    data: UpdateCompanyDto,
-  ): Promise<Company> => {
+  update: async (workspaceId: string, id: string, data: UpdateCompanyDto): Promise<Company> => {
     return api.put<Company>(API_ENDPOINTS.CRM.COMPANY(workspaceId, id), data)
   },
 
@@ -67,8 +63,6 @@ export const companyService = {
     companyId: string,
     contactId: string,
   ): Promise<void> => {
-    await api.delete(
-      API_ENDPOINTS.CRM.COMPANY_DETACH_CONTACT(workspaceId, companyId, contactId),
-    )
+    await api.delete(API_ENDPOINTS.CRM.COMPANY_DETACH_CONTACT(workspaceId, companyId, contactId))
   },
 }

@@ -18,12 +18,7 @@
   >
     <Spinner v-if="loading" class="mr-2" :class="[spinnerColor, spinnerSize]" />
 
-    <component
-      v-if="leftIcon"
-      :is="leftIcon"
-      :size="iconSize"
-      :class="iconOnly ? '' : 'mr-2'"
-    />
+    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
 
     <template v-if="!iconOnly">
       <slot />

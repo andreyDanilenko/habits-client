@@ -71,23 +71,16 @@ export const pipelineService = {
     }
   },
 
-  async update(
-    workspaceId: string,
-    id: string,
-    data: UpdatePipelineDto,
-  ): Promise<Pipeline> {
+  async update(workspaceId: string, id: string, data: UpdatePipelineDto): Promise<Pipeline> {
     const stages = data.stages?.map((stage, index) => ({
       ...stage,
       order: index + 1,
     }))
 
-    const updated = await api.put<Pipeline>(
-      `${API_ENDPOINTS.CRM.PIPELINES(workspaceId)}/${id}`,
-      {
-        ...data,
-        stages,
-      },
-    )
+    const updated = await api.put<Pipeline>(`${API_ENDPOINTS.CRM.PIPELINES(workspaceId)}/${id}`, {
+      ...data,
+      stages,
+    })
 
     return {
       ...updated,
@@ -99,4 +92,3 @@ export const pipelineService = {
     await api.delete<void>(`${API_ENDPOINTS.CRM.PIPELINES(workspaceId)}/${id}`)
   },
 }
-

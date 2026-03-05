@@ -1,19 +1,15 @@
 <template>
-  <div
-    class="flex flex-wrap items-center justify-between gap-4 w-full min-h-12"
-  >
+  <div class="flex flex-wrap items-center justify-between gap-4 w-full min-h-12">
     <span class="text-sm text-text-secondary">
       Показано
-      <span class="font-medium text-text-primary">{{ start }}</span>–
+      <span class="font-medium text-text-primary">{{ start }}</span
+      >–
       <span class="font-medium text-text-primary">{{ end }}</span>
       из
       <span class="font-medium text-text-primary">{{ total }}</span>
     </span>
 
-    <nav
-      class="flex items-center gap-2"
-      aria-label="Пагинация"
-    >
+    <nav class="flex items-center gap-2" aria-label="Пагинация">
       <button
         type="button"
         class="inline-flex items-center justify-center w-8 h-8 rounded-full text-text-muted hover:text-primary-default disabled:opacity-50 disabled:cursor-not-allowed"
@@ -83,9 +79,7 @@
 
   const totalPages = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
   const page = computed(() => Math.max(1, Math.min(props.currentPage, totalPages.value)))
-  const start = computed(() =>
-    props.total === 0 ? 0 : (page.value - 1) * props.pageSize + 1,
-  )
+  const start = computed(() => (props.total === 0 ? 0 : (page.value - 1) * props.pageSize + 1))
   const end = computed(() => Math.min(page.value * props.pageSize, props.total))
 
   function getPageNumbers(current: number, total: number): (number | 'ellipsis')[] {

@@ -26,4 +26,3 @@ export interface UserRole extends Role {
   assignedAt: string
   assignedBy?: string
 }
-

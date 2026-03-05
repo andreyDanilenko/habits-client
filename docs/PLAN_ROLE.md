@@ -1,4 +1,5 @@
 # ОБНОВЛЕННАЯ SPEC ERP: Завершение управления ролями и правами
+
 ## На основе текущей реализации (Отчёт PERMISSION_REPORT_CURRENT)
 
 **Версия 5.0** | Март 2026
@@ -19,38 +20,38 @@
 
 ### 1.1. Бэкенд (100% готово)
 
-| Компонент | Статус | Описание |
-|-----------|--------|----------|
-| **База данных** | ✅ | Все таблицы созданы, данные перенесены |
-| **permission_catalog** | ✅ | Заполнен для всех модулей |
-| **workspace_roles** | ✅ | Системные и кастомные роли |
-| **user_role_assignments** | ✅ | Назначения ролей пользователям |
-| **user_permissions** | ✅ | Индивидуальные права |
-| **role_inheritance** | ✅ | Таблица для наследования |
-| **Casbin** | ✅ | Интегрирован, политики работают |
-| **Middleware** | ✅ | Workspace, Module, Permission — всё работает |
-| **API для ролей** | ✅ | CRUD ролей, назначение, права |
-| **API для пользователей** | ✅ | Назначение ролей, индивидуальные права |
-| **API /me/permissions** | ✅ | Возвращает права текущего пользователя |
-| **API наследования** | ✅ | POST/DELETE /inherit готовы |
+| Компонент                 | Статус | Описание                                     |
+| ------------------------- | ------ | -------------------------------------------- |
+| **База данных**           | ✅     | Все таблицы созданы, данные перенесены       |
+| **permission_catalog**    | ✅     | Заполнен для всех модулей                    |
+| **workspace_roles**       | ✅     | Системные и кастомные роли                   |
+| **user_role_assignments** | ✅     | Назначения ролей пользователям               |
+| **user_permissions**      | ✅     | Индивидуальные права                         |
+| **role_inheritance**      | ✅     | Таблица для наследования                     |
+| **Casbin**                | ✅     | Интегрирован, политики работают              |
+| **Middleware**            | ✅     | Workspace, Module, Permission — всё работает |
+| **API для ролей**         | ✅     | CRUD ролей, назначение, права                |
+| **API для пользователей** | ✅     | Назначение ролей, индивидуальные права       |
+| **API /me/permissions**   | ✅     | Возвращает права текущего пользователя       |
+| **API наследования**      | ✅     | POST/DELETE /inherit готовы                  |
 
 ### 1.2. Фронтенд (что уже работает)
 
-| Компонент | Статус | Описание |
-|-----------|--------|----------|
-| **Типы данных** | ✅ | `Permission`, `Role`, `PermissionString` определены |
-| **API эндпоинты** | ✅ | Централизованы в `shared/api/endpoints.ts` |
-| **authStore** | ✅ | Загружает права через `/me/permissions` |
-| **usePermissions хук** | ✅ | Методы `can()`, `canAny()`, `canAll()` |
-| **PermissionGuard** | ✅ | Компонент для защиты UI |
-| **PermissionTree** | ✅ | Динамическое дерево прав из каталога |
-| **Управление ролями** | ✅ | `RolesList`, `RoleFormModal`, создание/редактирование |
-| **Страница ролей** | ✅ | `/workspace-settings/roles` с защитой |
-| **Управление участниками** | ✅ | `/settings/members` с ролями и правами |
-| **MemberRoleChips** | ✅ | Назначение ролей пользователям |
-| **UserPermissionsPanel** | ✅ | Выдача индивидуальных прав |
-| **Интеграция в CRM** | ✅ | Кнопки защищены через `PermissionGuard` |
-| **Конфиг прав для CRM** | ✅ | `CRM_PERMISSIONS` в `config.ts` |
+| Компонент                  | Статус | Описание                                              |
+| -------------------------- | ------ | ----------------------------------------------------- |
+| **Типы данных**            | ✅     | `Permission`, `Role`, `PermissionString` определены   |
+| **API эндпоинты**          | ✅     | Централизованы в `shared/api/endpoints.ts`            |
+| **authStore**              | ✅     | Загружает права через `/me/permissions`               |
+| **usePermissions хук**     | ✅     | Методы `can()`, `canAny()`, `canAll()`                |
+| **PermissionGuard**        | ✅     | Компонент для защиты UI                               |
+| **PermissionTree**         | ✅     | Динамическое дерево прав из каталога                  |
+| **Управление ролями**      | ✅     | `RolesList`, `RoleFormModal`, создание/редактирование |
+| **Страница ролей**         | ✅     | `/workspace-settings/roles` с защитой                 |
+| **Управление участниками** | ✅     | `/settings/members` с ролями и правами                |
+| **MemberRoleChips**        | ✅     | Назначение ролей пользователям                        |
+| **UserPermissionsPanel**   | ✅     | Выдача индивидуальных прав                            |
+| **Интеграция в CRM**       | ✅     | Кнопки защищены через `PermissionGuard`               |
+| **Конфиг прав для CRM**    | ✅     | `CRM_PERMISSIONS` в `config.ts`                       |
 
 ---
 
@@ -58,21 +59,21 @@
 
 ### 2.1. Критически важное (без этого функционал неполный)
 
-| Задача | Почему важно | Где используется |
-|--------|--------------|------------------|
-| **Наследование ролей в UI** | API готово, но нет интерфейса | При создании/редактировании роли |
-| **Конфиги прав для Habits** | Habits не защищён правами | Модуль Habits |
-| **Конфиги прав для Projects** | Projects не защищён правами | Модуль Projects |
-| **DevTools для отладки прав** | Сложно проверить, что видит пользователь | Разработка и поддержка |
+| Задача                        | Почему важно                             | Где используется                 |
+| ----------------------------- | ---------------------------------------- | -------------------------------- |
+| **Наследование ролей в UI**   | API готово, но нет интерфейса            | При создании/редактировании роли |
+| **Конфиги прав для Habits**   | Habits не защищён правами                | Модуль Habits                    |
+| **Конфиги прав для Projects** | Projects не защищён правами              | Модуль Projects                  |
+| **DevTools для отладки прав** | Сложно проверить, что видит пользователь | Разработка и поддержка           |
 
 ### 2.2. Важные улучшения (UX)
 
-| Задача | Почему важно | Где используется |
-|--------|--------------|------------------|
-| **Поиск в дереве прав** | У админов много прав, трудно ориентироваться | RoleFormModal |
-| **Поиск по участникам** | В компании может быть 100+ сотрудников | Members page |
-| **Фильтр по системным ролям** | Быстро найти всех GUEST или ADMIN | Members page |
-| **Confirm модалки** | Случайно не удалить роль/право | Везде, где есть delete |
+| Задача                        | Почему важно                                 | Где используется       |
+| ----------------------------- | -------------------------------------------- | ---------------------- |
+| **Поиск в дереве прав**       | У админов много прав, трудно ориентироваться | RoleFormModal          |
+| **Поиск по участникам**       | В компании может быть 100+ сотрудников       | Members page           |
+| **Фильтр по системным ролям** | Быстро найти всех GUEST или ADMIN            | Members page           |
+| **Confirm модалки**           | Случайно не удалить роль/право               | Везде, где есть delete |
 
 ---
 
@@ -93,11 +94,7 @@
       <label>Наследование от роли</label>
       <select v-model="form.inherits">
         <option :value="null">Не наследует</option>
-        <option 
-          v-for="role in availableParentRoles" 
-          :key="role.id" 
-          :value="role.id"
-        >
+        <option v-for="role in availableParentRoles" :key="role.id" :value="role.id">
           {{ role.name }}
         </option>
       </select>
@@ -112,15 +109,16 @@
 ```typescript
 // В useRoleEditor добавить
 const inheritedPermissions = computed(() => {
-  if (!form.inherits) return [];
-  const parentRole = roles.value.find(r => r.id === form.inherits);
-  return parentRole?.permissions || [];
-});
+  if (!form.inherits) return []
+  const parentRole = roles.value.find((r) => r.id === form.inherits)
+  return parentRole?.permissions || []
+})
 
 // В PermissionTree передавать inheritedPermissions для серой подсветки
 ```
 
 3. **API интеграция**
+
 - При сохранении роли: если `inherits` выбран, вызвать `roleService.addInheritance`
 - При загрузке роли: получить список родителей через `roleService.getInheritance`
 
@@ -137,16 +135,17 @@ export const HABITS_PERMISSIONS = {
   habitUpdate: 'habits:habit:update' as PermissionString,
   habitDelete: 'habits:habit:delete' as PermissionString,
   habitComplete: 'habits:habit:complete' as PermissionString,
-  
+
   // Дневник
   journalCreate: 'habits:journal:create' as PermissionString,
   journalRead: 'habits:journal:read' as PermissionString,
   journalUpdate: 'habits:journal:update' as PermissionString,
   journalDelete: 'habits:journal:delete' as PermissionString,
-} as const;
+} as const
 ```
 
 **Где использовать:**
+
 - `HabitsList.vue` — кнопка "Создать привычку" → `HABITS_PERMISSIONS.habitCreate`
 - `HabitCard.vue` — кнопки "Редактировать"/"Удалить" → соответствующие права
 - `JournalList.vue` — кнопка "Создать запись" → `HABITS_PERMISSIONS.journalCreate`
@@ -162,10 +161,11 @@ export const PROJECTS_PERMISSIONS = {
   projectDelete: 'projects:project:delete' as PermissionString,
   entityAttach: 'projects:entity:attach' as PermissionString,
   entityDetach: 'projects:entity:detach' as PermissionString,
-} as const;
+} as const
 ```
 
 **Где использовать:**
+
 - `ProjectsList.vue` — кнопка "Создать проект" → `PROJECTS_PERMISSIONS.projectCreate`
 - `ProjectCard.vue` — кнопки действий → соответствующие права
 - `ProjectEntities.vue` — кнопки привязки/отвязки → соответствующие права
@@ -177,37 +177,44 @@ export const PROJECTS_PERMISSIONS = {
 ```typescript
 // features/permissions/model/use-permission-tree.ts
 export function usePermissionTree(workspaceId: string) {
-  const searchQuery = ref('');
-  
+  const searchQuery = ref('')
+
   const filteredTree = computed(() => {
-    if (!searchQuery.value) return tree.value;
-    
-    return tree.value.filter(module => {
-      // Фильтруем модули, где есть сущности с подходящими правами
-      const hasMatchingEntities = Object.entries(module.entities).some(([_, entity]) => {
-        return entity.actions.some(action => 
-          action.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-        );
-      });
-      return hasMatchingEntities;
-    }).map(module => ({
-      ...module,
-      entities: Object.fromEntries(
-        Object.entries(module.entities).filter(([_, entity]) => {
-          return entity.actions.some(action => 
-            action.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-          );
-        }).map(([key, entity]) => [key, {
-          ...entity,
-          actions: entity.actions.filter(action =>
-            action.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    if (!searchQuery.value) return tree.value
+
+    return tree.value
+      .filter((module) => {
+        // Фильтруем модули, где есть сущности с подходящими правами
+        const hasMatchingEntities = Object.entries(module.entities).some(([_, entity]) => {
+          return entity.actions.some((action) =>
+            action.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
           )
-        }])
-      )
-    }));
-  });
-  
-  return { tree: filteredTree, searchQuery };
+        })
+        return hasMatchingEntities
+      })
+      .map((module) => ({
+        ...module,
+        entities: Object.fromEntries(
+          Object.entries(module.entities)
+            .filter(([_, entity]) => {
+              return entity.actions.some((action) =>
+                action.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+              )
+            })
+            .map(([key, entity]) => [
+              key,
+              {
+                ...entity,
+                actions: entity.actions.filter((action) =>
+                  action.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+                ),
+              },
+            ]),
+        ),
+      }))
+  })
+
+  return { tree: filteredTree, searchQuery }
 }
 ```
 
@@ -216,25 +223,25 @@ export function usePermissionTree(workspaceId: string) {
 ```typescript
 // features/members/model/use-member-filters.ts
 export function useMemberFilters(members: Ref<Member[]>) {
-  const searchQuery = ref('');
-  const roleFilter = ref<'all' | 'MEMBER' | 'GUEST' | 'ADMIN' | 'OWNER'>('all');
-  
+  const searchQuery = ref('')
+  const roleFilter = ref<'all' | 'MEMBER' | 'GUEST' | 'ADMIN' | 'OWNER'>('all')
+
   const filteredMembers = computed(() => {
-    return members.value.filter(member => {
+    return members.value.filter((member) => {
       // Поиск по имени/email
-      const matchesSearch = !searchQuery.value ||
+      const matchesSearch =
+        !searchQuery.value ||
         member.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        member.email.toLowerCase().includes(searchQuery.value.toLowerCase());
-      
+        member.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+
       // Фильтр по системной роли
-      const matchesRole = roleFilter.value === 'all' ||
-        member.systemRole === roleFilter.value;
-      
-      return matchesSearch && matchesRole;
-    });
-  });
-  
-  return { searchQuery, roleFilter, filteredMembers };
+      const matchesRole = roleFilter.value === 'all' || member.systemRole === roleFilter.value
+
+      return matchesSearch && matchesRole
+    })
+  })
+
+  return { searchQuery, roleFilter, filteredMembers }
 }
 ```
 
@@ -254,6 +261,7 @@ export function useMemberFilters(members: Ref<Member[]>) {
 ```
 
 **Где использовать:**
+
 - При удалении роли
 - При снятии роли с пользователя
 - При отзыве индивидуального права
@@ -274,17 +282,13 @@ export function useMemberFilters(members: Ref<Member[]>) {
         </ul>
         <h4>Все права ({{ permissions.length }}):</h4>
         <div class="permissions-list">
-          <span 
-            v-for="perm in permissions" 
-            :key="perm"
-            class="permission-tag"
-          >
+          <span v-for="perm in permissions" :key="perm" class="permission-tag">
             {{ perm }}
           </span>
         </div>
         <h4>Проверка права:</h4>
         <div class="permission-check">
-          <input v-model="testPermission" placeholder="crm:deal:create">
+          <input v-model="testPermission" placeholder="crm:deal:create" />
           <button @click="test">Проверить</button>
           <span v-if="testResult === true" class="allowed">✅ Разрешено</span>
           <span v-else-if="testResult === false" class="denied">❌ Запрещено</span>
@@ -295,18 +299,18 @@ export function useMemberFilters(members: Ref<Member[]>) {
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { usePermissions } from '@/features/permissions';
+  import { ref } from 'vue'
+  import { usePermissions } from '@/features/permissions'
 
-const isDev = import.meta.env.DEV;
-const { permissions, roles, systemRole, can } = usePermissions();
+  const isDev = import.meta.env.DEV
+  const { permissions, roles, systemRole, can } = usePermissions()
 
-const testPermission = ref('');
-const testResult = ref<boolean | null>(null);
+  const testPermission = ref('')
+  const testResult = ref<boolean | null>(null)
 
-const test = () => {
-  testResult.value = can(testPermission.value as any);
-};
+  const test = () => {
+    testResult.value = can(testPermission.value as any)
+  }
 </script>
 ```
 
@@ -319,12 +323,13 @@ const test = () => {
 ### 4.1. Текущая ситуация
 
 Сейчас на фронтенде есть ручной конфиг `CRM_PERMISSIONS`:
+
 ```typescript
 export const CRM_PERMISSIONS = {
   contactCreate: 'crm:contact:create' as PermissionString,
   companyCreate: 'crm:company:create' as PermissionString,
   dealCreate: 'crm:deal:create' as PermissionString,
-} as const;
+} as const
 ```
 
 **Проблема:** При добавлении нового права на бэкенде, фронтенд узнает об этом только когда разработчик вручную добавит строку в конфиг.
@@ -348,26 +353,26 @@ import (
 func main() {
     db, _ := sql.Open("postgres", os.Getenv("DATABASE_URL"))
     defer db.Close()
-    
+
     rows, _ := db.Query(`
-        SELECT module_code, entity_type, action 
-        FROM permission_catalog 
+        SELECT module_code, entity_type, action
+        FROM permission_catalog
         ORDER BY module_code, entity_type, action
     `)
     defer rows.Close()
-    
+
     var permissions []string
     for rows.Next() {
         var module, entity, action string
         rows.Scan(&module, &entity, &action)
         permissions = append(permissions, fmt.Sprintf("    | '%s:%s:%s'", module, entity, action))
     }
-    
+
     output := fmt.Sprintf(`// generated/permission.types.ts
 // Автоматически сгенерировано %s
 // НЕ РЕДАКТИРОВАТЬ ВРУЧНУЮ
 
-export type PermissionString = 
+export type PermissionString =
 %s;
 
 export const ALL_PERMISSIONS: PermissionString[] = [
@@ -377,10 +382,10 @@ export const ALL_PERMISSIONS: PermissionString[] = [
 export function isValidPermission(perm: string): perm is PermissionString {
     return ALL_PERMISSIONS.includes(perm as PermissionString);
 }
-`, time.Now().Format("2006-01-02"), 
+`, time.Now().Format("2006-01-02"),
    strings.Join(permissions, "\n"),
    strings.Join(permissions, ",\n"))
-    
+
     os.WriteFile("../frontend/src/generated/permission.types.ts", []byte(output), 0644)
 }
 ```
@@ -423,14 +428,14 @@ jobs:
 
 ```typescript
 // features/permissions/config.ts
-import { PermissionString } from '@/generated/permission.types';
+import { PermissionString } from '@/generated/permission.types'
 
 // Теперь тип PermissionString гарантированно соответствует бэкенду
 export const CRM_PERMISSIONS = {
   contactCreate: 'crm:contact:create' as PermissionString,
   companyCreate: 'crm:company:create' as PermissionString,
   dealCreate: 'crm:deal:create' as PermissionString,
-} as const;
+} as const
 
 // TypeScript не даст добавить несуществующее право
 // ❌ Ошибка: 'crm:deal:creat' не входит в PermissionString
@@ -446,11 +451,11 @@ module.exports = {
       'error',
       {
         selector: 'Literal[value=/^[a-z]+:[a-z]+:[a-z]+$/]',
-        message: 'Используйте импортированные константы из config.ts вместо строк'
-      }
-    ]
-  }
-};
+        message: 'Используйте импортированные константы из config.ts вместо строк',
+      },
+    ],
+  },
+}
 ```
 
 ---
@@ -495,13 +500,13 @@ module.exports = {
 
 ## 6. Итоговый план по времени
 
-| Этап | Задачи | Время | Кто |
-|------|--------|-------|-----|
-| **Этап 1** | Наследование ролей | 1 неделя | Фронтенд |
-| **Этап 2** | Конфиги Habits и Projects | 1 неделя | Фронтенд |
-| **Этап 3** | Улучшения UX (поиск, фильтры) | 1.5 недели | Фронтенд |
-| **Этап 4** | DevTools | 0.5 недели | Фронтенд |
-| **Параллельно** | Генерация типов | 1 день | Бэкенд + DevOps |
+| Этап            | Задачи                        | Время      | Кто             |
+| --------------- | ----------------------------- | ---------- | --------------- |
+| **Этап 1**      | Наследование ролей            | 1 неделя   | Фронтенд        |
+| **Этап 2**      | Конфиги Habits и Projects     | 1 неделя   | Фронтенд        |
+| **Этап 3**      | Улучшения UX (поиск, фильтры) | 1.5 недели | Фронтенд        |
+| **Этап 4**      | DevTools                      | 0.5 недели | Фронтенд        |
+| **Параллельно** | Генерация типов               | 1 день     | Бэкенд + DevOps |
 
 **Итого:** ~4 недели до полного завершения управления ролями
 
@@ -510,11 +515,13 @@ module.exports = {
 ## 7. Чек-лист для передачи в разработку
 
 ### Бэкенд
+
 - [ ] API наследования работает (POST/DELETE)
 - [ ] Скрипт генерации типов готов
 - [ ] CI/CD настроен
 
 ### Фронтенд
+
 - [ ] Наследование реализовано в UI
 - [ ] Habits защищён правами
 - [ ] Projects защищён правами
@@ -525,6 +532,7 @@ module.exports = {
 - [ ] ESLint правило настроено
 
 ### DevOps
+
 - [ ] GitHub Actions workflow для генерации типов
 - [ ] Автоматическое создание PR при изменениях
 

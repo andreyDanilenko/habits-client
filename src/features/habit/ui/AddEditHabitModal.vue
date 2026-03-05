@@ -71,7 +71,9 @@
             min="1"
             max="10"
             class="w-20"
-            @update:model-value="(v) => (form.dailyGoal = Math.max(1, Math.min(10, Number(v) || 1)))"
+            @update:model-value="
+              (v) => (form.dailyGoal = Math.max(1, Math.min(10, Number(v) || 1)))
+            "
           />
           <span class="text-text-secondary">раз(а) в день</span>
         </div>
@@ -145,7 +147,16 @@
 
 <script setup lang="ts">
   import { reactive, computed, ref } from 'vue'
-  import { ModalContent, Button, FormField, SelectButton, Input, Select, DatePicker, Textarea } from '@/shared/ui'
+  import {
+    ModalContent,
+    Button,
+    FormField,
+    SelectButton,
+    Input,
+    Select,
+    DatePicker,
+    Textarea,
+  } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   interface Props {

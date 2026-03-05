@@ -11,4 +11,3 @@ export interface Role {
 export type PermissionString = `${string}:${string}:${string}`
 
 export type RolePermissionsResponse = PermissionString[]
-

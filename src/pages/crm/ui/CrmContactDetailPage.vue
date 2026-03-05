@@ -12,7 +12,9 @@
     </div>
     <template v-else-if="contact">
       <!-- Блок 1.2.1: Шапка профиля -->
-      <header class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary">
+      <header
+        class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary"
+      >
         <div
           class="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary-default/10 text-primary-default text-xl font-semibold"
         >
@@ -27,7 +29,12 @@
           </p>
           <div class="flex flex-wrap items-center gap-2 mt-2">
             <span
-              :class="['text-xs px-2 py-0.5 rounded', contactActive ? 'bg-success-light text-success-default' : 'bg-bg-tertiary text-text-muted']"
+              :class="[
+                'text-xs px-2 py-0.5 rounded',
+                contactActive
+                  ? 'bg-success-light text-success-default'
+                  : 'bg-bg-tertiary text-text-muted',
+              ]"
             >
               {{ contactActive ? 'Активный' : 'Неактивный' }}
             </span>
@@ -67,13 +74,25 @@
                   <template v-for="(p, i) in contact.phones" :key="`p-${i}`">
                     <div class="flex gap-2">
                       <dt class="text-text-muted w-28">{{ phoneTypeLabel(p.type) }}:</dt>
-                      <dd><a :href="`tel:${p.number}`" class="text-primary-default hover:underline">{{ p.number }}</a></dd>
+                      <dd>
+                        <a :href="`tel:${p.number}`" class="text-primary-default hover:underline">{{
+                          p.number
+                        }}</a>
+                      </dd>
                     </div>
                   </template>
                   <template v-for="(e, i) in contact.emails" :key="`e-${i}`">
                     <div class="flex gap-2">
-                      <dt class="text-text-muted w-28">{{ e.type === 'work' ? 'Рабочий' : 'Личный' }} email:</dt>
-                      <dd><a :href="`mailto:${e.address}`" class="text-primary-default hover:underline">{{ e.address }}</a></dd>
+                      <dt class="text-text-muted w-28">
+                        {{ e.type === 'work' ? 'Рабочий' : 'Личный' }} email:
+                      </dt>
+                      <dd>
+                        <a
+                          :href="`mailto:${e.address}`"
+                          class="text-primary-default hover:underline"
+                          >{{ e.address }}</a
+                        >
+                      </dd>
                     </div>
                   </template>
                   <div v-if="contact.birthday" class="flex gap-2">
@@ -84,7 +103,9 @@
                     <dt class="text-text-muted w-28">Соцсети:</dt>
                     <dd class="text-text-muted">Telegram, WhatsApp, VK — (скоро)</dd>
                   </div>
-                  <template v-if="!contact.phones?.length && !contact.emails?.length && !contact.birthday">
+                  <template
+                    v-if="!contact.phones?.length && !contact.emails?.length && !contact.birthday"
+                  >
                     <dd class="text-text-muted">—</dd>
                   </template>
                 </dl>
@@ -94,7 +115,9 @@
                 <p class="text-sm text-text-muted">Страна, город, улица — (скоро)</p>
               </div>
               <div>
-                <h3 class="text-sm font-medium text-text-secondary mb-2">Дополнительная информация</h3>
+                <h3 class="text-sm font-medium text-text-secondary mb-2">
+                  Дополнительная информация
+                </h3>
                 <div v-if="contact.tags?.length" class="flex flex-wrap gap-2">
                   <span
                     v-for="tag in contact.tags"
@@ -104,7 +127,9 @@
                     {{ tag }}
                   </span>
                 </div>
-                <p v-else class="text-sm text-text-muted">Теги не указаны. Комментарий — (скоро).</p>
+                <p v-else class="text-sm text-text-muted">
+                  Теги не указаны. Комментарий — (скоро).
+                </p>
               </div>
             </section>
           </template>
@@ -121,9 +146,7 @@
                 Добавить в сделку
               </Button>
             </div>
-            <div v-if="contactDealsLoading" class="text-text-muted text-sm py-4">
-              Загрузка…
-            </div>
+            <div v-if="contactDealsLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
             <div v-else-if="!contactDeals.length" class="text-text-muted text-sm py-4">
               Пока нет сделок, связанных с этим контактом.
             </div>
@@ -147,11 +170,7 @@
           </template>
           <!-- Вкладка 3: Активность -->
           <template v-else-if="activeTab === 'activity'">
-            <ActivityFeed
-              entity-type="contact"
-              :entity-id="contactId"
-              :can-create="canCreateCrm"
-            />
+            <ActivityFeed entity-type="contact" :entity-id="contactId" :can-create="canCreateCrm" />
           </template>
           <!-- Вкладка 4: Проекты -->
           <template v-else-if="activeTab === 'projects'">
@@ -166,19 +185,22 @@
           </template>
           <!-- Вкладка 5: Задачи -->
           <template v-else>
-            <p class="text-text-muted text-sm">Список задач по контакту. Создать задачу (тема, срок, ответственный) — (скоро).</p>
+            <p class="text-text-muted text-sm">
+              Список задач по контакту. Создать задачу (тема, срок, ответственный) — (скоро).
+            </p>
           </template>
         </div>
       </div>
     </template>
-    <div v-else class="text-center py-12 text-text-muted">
-      Контакт не найден.
-    </div>
+    <div v-else class="text-center py-12 text-text-muted">Контакт не найден.</div>
 
     <ContactFormModal
       :is-open="showFormModal"
       :contact="contact ?? null"
-      @close="showFormModal = false; fetchContact()"
+      @close="
+        showFormModal = false
+        fetchContact()
+      "
       @save="handleSave"
       @update="handleUpdate"
     />
@@ -250,7 +272,7 @@
     const l = contact.value.lastName?.slice(0, 1) ?? ''
     return (f + l).toUpperCase() || '?'
   })
-  const companyName = computed(() => contact.value?.companyId ? 'Компания' : '')
+  const companyName = computed(() => (contact.value?.companyId ? 'Компания' : ''))
 
   function phoneTypeLabel(type: string) {
     return { mobile: 'Мобильный', work: 'Рабочий', home: 'Домашний' }[type] ?? type

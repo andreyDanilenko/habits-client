@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import { Card } from '@/shared/ui'
-import { RolesList } from '@/features/roles'
+  import { Card } from '@/shared/ui'
+  import { RolesList } from '@/features/roles'
 </script>
-

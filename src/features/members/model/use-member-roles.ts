@@ -82,13 +82,9 @@ export function useMemberRoles(userIdSource: MaybeRef<string>) {
     await loadAssignments()
   }
 
-  const customRoles = computed(() =>
-    userRoles.value.filter((r) => !r.isSystem),
-  )
+  const customRoles = computed(() => userRoles.value.filter((r) => !r.isSystem))
 
-  const systemRole = computed(() =>
-    userRoles.value.find((r) => r.isSystem)?.name ?? null,
-  )
+  const systemRole = computed(() => userRoles.value.find((r) => r.isSystem)?.name ?? null)
 
   watch(
     [workspaceId, userId],
@@ -116,4 +112,3 @@ export function useMemberRoles(userIdSource: MaybeRef<string>) {
     revokePermission,
   }
 }
-

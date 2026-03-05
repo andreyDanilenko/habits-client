@@ -40,14 +40,16 @@ export function useActivityFeed(
   const filters = ref<ActivityFilters>({})
 
   const hasMore = computed(() => activities.value.length < total.value)
-  const isEmpty = computed(() => !loading.value && activities.value && activities.value.length === 0)
+  const isEmpty = computed(
+    () => !loading.value && activities.value && activities.value.length === 0,
+  )
   const hasFilters = computed(
     () =>
       (filters.value.types?.length ?? 0) > 0 ||
       !!filters.value.dateFrom ||
       !!filters.value.dateTo ||
       !!filters.value.importantOnly ||
-      !!(filters.value.search?.trim()),
+      !!filters.value.search?.trim(),
   )
 
   const grouped = computed((): ActivityGroup[] => {
@@ -91,9 +93,10 @@ export function useActivityFeed(
       total.value = res.total
       page.value = res.page
     } catch (e: unknown) {
-      const message = e && typeof e === 'object' && 'response' in e
-        ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
-        : null
+      const message =
+        e && typeof e === 'object' && 'response' in e
+          ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null
       error.value = message ?? 'Не удалось загрузить активность.'
     } finally {
       loading.value = false
@@ -127,9 +130,10 @@ export function useActivityFeed(
       activities.value = [created, ...activities.value]
       total.value += 1
     } catch (e: unknown) {
-      const message = e && typeof e === 'object' && 'response' in e
-        ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
-        : null
+      const message =
+        e && typeof e === 'object' && 'response' in e
+          ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null
       error.value = message ?? 'Не удалось создать заметку.'
       throw e
     }
@@ -144,9 +148,10 @@ export function useActivityFeed(
       activities.value = [created, ...activities.value]
       total.value += 1
     } catch (e: unknown) {
-      const message = e && typeof e === 'object' && 'response' in e
-        ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
-        : null
+      const message =
+        e && typeof e === 'object' && 'response' in e
+          ? (e as { response?: { data?: { message?: string } } }).response?.data?.message
+          : null
       error.value = message ?? 'Не удалось записать звонок.'
       throw e
     }

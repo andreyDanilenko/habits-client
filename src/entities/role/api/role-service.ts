@@ -55,4 +55,3 @@ export const roleService = {
     await api.delete(API_ENDPOINTS.ROLES.INHERIT(workspaceId, roleId, parentRoleId))
   },
 }
-

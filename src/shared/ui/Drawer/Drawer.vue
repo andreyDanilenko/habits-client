@@ -14,10 +14,16 @@
           @click="closeOnOverlay && $emit('close')"
         />
         <aside
-          :class="['Drawer relative z-10 flex flex-col bg-bg-primary border-l border-border-default shadow-xl', widthClass]"
+          :class="[
+            'Drawer relative z-10 flex flex-col bg-bg-primary border-l border-border-default shadow-xl',
+            widthClass,
+          ]"
           @click.stop
         >
-          <header v-if="title || $slots.header || showCloseButton" class="Drawer__Header flex shrink-0 items-center justify-between gap-2 p-4 border-b border-border-light">
+          <header
+            v-if="title || $slots.header || showCloseButton"
+            class="Drawer__Header flex shrink-0 items-center justify-between gap-2 p-4 border-b border-border-light"
+          >
             <slot name="header">
               <h2 v-if="title" class="Drawer__Title text-lg font-semibold text-text-primary m-0">
                 {{ title }}
@@ -36,7 +42,10 @@
           <div class="Drawer__Body flex-1 overflow-auto p-4">
             <slot />
           </div>
-          <footer v-if="$slots.footer" class="Drawer__Footer shrink-0 p-4 border-t border-border-light">
+          <footer
+            v-if="$slots.footer"
+            class="Drawer__Footer shrink-0 p-4 border-t border-border-light"
+          >
             <slot name="footer" />
           </footer>
         </aside>

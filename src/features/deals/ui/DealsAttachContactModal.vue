@@ -14,9 +14,7 @@
           .
         </p>
 
-        <div v-if="isLoading" class="py-4 text-sm text-text-muted">
-          Загрузка списка сделок…
-        </div>
+        <div v-if="isLoading" class="py-4 text-sm text-text-muted">Загрузка списка сделок…</div>
         <div v-else-if="isError" class="py-4 text-sm text-error-default">
           Не удалось загрузить сделки. Попробуйте позже.
         </div>
@@ -28,10 +26,7 @@
           v-else
           class="max-h-80 overflow-auto divide-y divide-border-light rounded-lg border border-border-light"
         >
-          <li
-            v-for="deal in deals"
-            :key="deal.id"
-          >
+          <li v-for="deal in deals" :key="deal.id">
             <button
               type="button"
               class="w-full px-3 py-2 text-left hover:bg-bg-tertiary flex items-center justify-between gap-3"
@@ -46,10 +41,11 @@
                   <span>
                     {{ statusLabel(deal.status) }}
                   </span>
-                  <span v-if="deal.pipelineId" class="inline-block w-1 h-1 rounded-full bg-border-default" />
-                  <span>
-                    Воронка: {{ deal.pipelineId.slice(0, 8) }}…
-                  </span>
+                  <span
+                    v-if="deal.pipelineId"
+                    class="inline-block w-1 h-1 rounded-full bg-border-default"
+                  />
+                  <span> Воронка: {{ deal.pipelineId.slice(0, 8) }}… </span>
                 </div>
               </div>
               <div class="text-xs text-text-secondary whitespace-nowrap">
@@ -60,9 +56,7 @@
         </ul>
 
         <div class="flex justify-end pt-2">
-          <Button type="button" variant="ghost" @click="$emit('close')">
-            Отмена
-          </Button>
+          <Button type="button" variant="ghost" @click="$emit('close')"> Отмена </Button>
         </div>
       </div>
     </ModalContent>
@@ -156,4 +150,3 @@
     },
   )
 </script>
-

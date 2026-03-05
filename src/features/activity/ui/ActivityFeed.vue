@@ -1,10 +1,24 @@
 <template>
   <div class="space-y-4">
     <div v-if="canCreate" class="flex flex-wrap items-center gap-2">
-      <Button size="md" variant="outline" @click="showComposer = true; showCallModal = false">
+      <Button
+        size="md"
+        variant="outline"
+        @click="
+          showComposer = true
+          showCallModal = false
+        "
+      >
         Заметка
       </Button>
-      <Button size="md" variant="outline" @click="showCallModal = true; showComposer = false">
+      <Button
+        size="md"
+        variant="outline"
+        @click="
+          showCallModal = true
+          showComposer = false
+        "
+      >
         Звонок
       </Button>
       <div class="relative">
@@ -54,7 +68,10 @@
       </div>
     </div>
 
-    <div v-else-if="feed.error" class="rounded-xl border border-border-default bg-bg-primary p-6 text-center">
+    <div
+      v-else-if="feed.error"
+      class="rounded-xl border border-border-default bg-bg-primary p-6 text-center"
+    >
       <p class="text-text-secondary mb-2">Не удалось загрузить активность</p>
       <Button size="md" variant="outline" @click="feed.refetch()">Повторить</Button>
     </div>
@@ -77,11 +94,7 @@
 
     <template v-else>
       <div class="space-y-6">
-        <section
-          v-for="group in feed.grouped"
-          :key="group.key"
-          class="space-y-3"
-        >
+        <section v-for="group in feed.grouped" :key="group.key" class="space-y-3">
           <h3 class="text-sm font-medium text-text-muted">{{ group.label }}</h3>
           <div class="space-y-3">
             <ActivityItem
@@ -97,12 +110,7 @@
         </section>
       </div>
       <div v-if="feed.hasMore" class="pt-4 flex justify-center">
-        <Button
-          size="md"
-          variant="ghost"
-          :disabled="feed.loading"
-          @click="feed.loadMore()"
-        >
+        <Button size="md" variant="ghost" :disabled="feed.loading" @click="feed.loadMore()">
           {{ feed.loading ? 'Загрузка...' : 'Загрузить еще' }}
         </Button>
       </div>
@@ -162,7 +170,12 @@
   import ActivityFilters from './ActivityFilters.vue'
   import ActivityComposer from './ActivityComposer.vue'
   import ActivityCallModal from './ActivityCallModal.vue'
-  import type { Activity, CreateNoteDto, CreateCallDto, ActivityEntityType } from '@/entities/activity'
+  import type {
+    Activity,
+    CreateNoteDto,
+    CreateCallDto,
+    ActivityEntityType,
+  } from '@/entities/activity'
 
   const props = withDefaults(
     defineProps<{

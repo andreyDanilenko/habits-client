@@ -32,9 +32,11 @@ export function useRolesPage() {
     }
   }
 
-  const createRole = async (
-    payload: { name: string; description?: string | null; permissions: PermissionString[] },
-  ): Promise<Role> => {
+  const createRole = async (payload: {
+    name: string
+    description?: string | null
+    permissions: PermissionString[]
+  }): Promise<Role> => {
     if (!workspaceId.value) {
       throw new Error('Workspace not selected')
     }
@@ -85,4 +87,3 @@ export function useRolesPage() {
     deleteRole,
   }
 }
-

@@ -61,7 +61,11 @@
       </div>
       <div v-if="status === 'no_answer'">
         <label class="inline-flex items-center gap-2 cursor-pointer">
-          <input v-model="createTask" type="checkbox" class="rounded border-border-default text-primary-default" />
+          <input
+            v-model="createTask"
+            type="checkbox"
+            class="rounded border-border-default text-primary-default"
+          />
           <span class="text-sm text-text-muted">Создать задачу (напоминание)</span>
         </label>
         <input
@@ -83,7 +87,11 @@
       </div>
       <div>
         <label class="inline-flex items-center gap-2 cursor-pointer">
-          <input v-model="isImportant" type="checkbox" class="rounded border-border-default text-primary-default" />
+          <input
+            v-model="isImportant"
+            type="checkbox"
+            class="rounded border-border-default text-primary-default"
+          />
           <span class="text-sm text-text-muted">Важное</span>
         </label>
       </div>

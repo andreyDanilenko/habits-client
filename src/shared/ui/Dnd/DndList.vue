@@ -62,7 +62,13 @@
 
   const emit = defineEmits<{
     'update:modelValue': [value: unknown[]]
-    change: [event: { added?: { element: unknown }; removed?: { element: unknown }; moved?: { element: unknown } }]
+    change: [
+      event: {
+        added?: { element: unknown }
+        removed?: { element: unknown }
+        moved?: { element: unknown }
+      },
+    ]
   }>()
 
   const model = computed({
@@ -77,7 +83,11 @@
     return String(obj?.[props.itemKey] ?? index)
   }
 
-  function onChange(evt: { added?: { element: unknown }; removed?: { element: unknown }; moved?: { element: unknown } }) {
+  function onChange(evt: {
+    added?: { element: unknown }
+    removed?: { element: unknown }
+    moved?: { element: unknown }
+  }) {
     emit('change', evt)
   }
 

@@ -92,4 +92,3 @@ export function useUserPermissions(userIdSource: MaybeRef<string>) {
     revokePermission,
   }
 }
-

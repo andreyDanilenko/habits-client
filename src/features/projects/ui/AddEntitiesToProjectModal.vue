@@ -1,6 +1,8 @@
 <template>
   <Modal :is-open="isOpen" @close="$emit('close')">
-    <div class="rounded-xl bg-bg-primary border border-border-default shadow-lg max-h-[80vh] flex flex-col w-full max-w-lg">
+    <div
+      class="rounded-xl bg-bg-primary border border-border-default shadow-lg max-h-[80vh] flex flex-col w-full max-w-lg"
+    >
       <div class="p-4 border-b border-border-default">
         <h3 class="text-lg font-medium text-text-primary">{{ title }}</h3>
         <p class="text-sm text-text-secondary mt-0.5">Выберите сущности для добавления в проект.</p>
@@ -15,7 +17,10 @@
         <div v-if="loading" class="flex justify-center py-8">
           <Spinner />
         </div>
-        <div v-else-if="filteredItems.length === 0" class="text-text-muted text-sm py-6 text-center">
+        <div
+          v-else-if="filteredItems.length === 0"
+          class="text-text-muted text-sm py-6 text-center"
+        >
           {{ search ? 'Ничего не найдено.' : 'Нет доступных сущностей для добавления.' }}
         </div>
         <ul v-else class="space-y-1">
@@ -31,7 +36,10 @@
               class="rounded border-border-default text-primary-default focus:ring-primary-default"
               @change="toggle(item.id)"
             />
-            <label :for="`entity-${item.id}`" class="flex-1 cursor-pointer text-sm text-text-primary truncate">
+            <label
+              :for="`entity-${item.id}`"
+              class="flex-1 cursor-pointer text-sm text-text-primary truncate"
+            >
               {{ item.label }}
             </label>
           </li>
@@ -74,7 +82,11 @@
   const loading = ref(false)
 
   const title = computed(() => {
-    const t = { crm_contact: 'Добавить контакты в проект', crm_company: 'Добавить компании в проект', crm_deal: 'Добавить сделки в проект' }
+    const t = {
+      crm_contact: 'Добавить контакты в проект',
+      crm_company: 'Добавить компании в проект',
+      crm_deal: 'Добавить сделки в проект',
+    }
     return t[props.entityType] ?? 'Добавить в проект'
   })
 
@@ -105,7 +117,10 @@
             .filter((c) => !props.alreadyAttachedIds.includes(c.id))
             .map((c) => ({
               id: c.id,
-              label: [c.firstName, c.lastName].filter(Boolean).join(' ') || c.emails?.[0]?.address || c.id,
+              label:
+                [c.firstName, c.lastName].filter(Boolean).join(' ') ||
+                c.emails?.[0]?.address ||
+                c.id,
             }))
         } else if (props.entityType === 'crm_company') {
           const res = await companyService.getList({

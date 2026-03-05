@@ -54,4 +54,3 @@ export function useRoleEditor(options: RoleEditorOptions = {}) {
     save,
   }
 }
-

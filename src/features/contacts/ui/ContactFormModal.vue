@@ -80,9 +80,7 @@
                 placeholder="Добавить тег..."
                 @keydown.enter.prevent="addTag"
               />
-              <Button type="button" variant="outline"  @click="addTag">
-                Добавить
-              </Button>
+              <Button type="button" variant="outline" @click="addTag"> Добавить </Button>
             </div>
           </div>
         </FormField>
@@ -97,9 +95,7 @@
         </FormField>
 
         <div class="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="ghost" @click="$emit('close')">
-            Отмена
-          </Button>
+          <Button type="button" variant="ghost" @click="$emit('close')"> Отмена </Button>
           <Button
             v-if="!contact"
             type="button"
@@ -109,9 +105,7 @@
           >
             Сохранить и создать
           </Button>
-          <Button type="submit" :loading="saving">
-            Сохранить
-          </Button>
+          <Button type="submit" :loading="saving"> Сохранить </Button>
         </div>
       </form>
     </ModalContent>
@@ -120,7 +114,17 @@
 
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
-  import { Modal, ModalContent, Button, Input, FormField, Select, DatePicker, SearchSelect, Tag } from '@/shared/ui'
+  import {
+    Modal,
+    ModalContent,
+    Button,
+    Input,
+    FormField,
+    Select,
+    DatePicker,
+    SearchSelect,
+    Tag,
+  } from '@/shared/ui'
   import { companyService } from '@/entities/company'
   import type { Contact, CreateContactDto } from '@/entities/contact'
   import type { Company } from '@/entities/company'
@@ -221,7 +225,7 @@
     set: (value: string) => {
       form.value.phone = formatPhoneMask(value)
       errors.value.phone = ''
-    }
+    },
   })
 
   interface OwnerOption {
@@ -240,7 +244,7 @@
   }
 
   const ownerSelectOptions = computed<SelectOption[]>(() => {
-    return ownerOptions.value.map(o => ({ value: o.id, label: o.label }))
+    return ownerOptions.value.map((o) => ({ value: o.id, label: o.label }))
   })
 
   function validateFirstName(): void {
@@ -303,9 +307,16 @@
     return {
       firstName: form.value.firstName.trim(),
       lastName: form.value.lastName.trim() || undefined,
-      phones: digits.length >= 10
-        ? [{ type: 'mobile', number: digits.length === 11 ? digits : '7' + digits, isPrimary: true }]
-        : undefined,
+      phones:
+        digits.length >= 10
+          ? [
+              {
+                type: 'mobile',
+                number: digits.length === 11 ? digits : '7' + digits,
+                isPrimary: true,
+              },
+            ]
+          : undefined,
       emails: form.value.email.trim()
         ? [{ type: 'work', address: form.value.email.trim(), isPrimary: true }]
         : undefined,
@@ -339,9 +350,7 @@
     ([open, contact, preselected]) => {
       if (open) {
         const rawPhone =
-            contact?.phones?.find((p) => p.isPrimary)?.number ??
-            contact?.phones?.[0]?.number ??
-            ''
+          contact?.phones?.find((p) => p.isPrimary)?.number ?? contact?.phones?.[0]?.number ?? ''
         form.value = {
           firstName: contact?.firstName ?? '',
           lastName: contact?.lastName ?? '',

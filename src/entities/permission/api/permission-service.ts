@@ -26,4 +26,3 @@ export const permissionService = {
     return [] as Permission[]
   },
 }
-

@@ -14,11 +14,10 @@ export const assignmentService = {
     await api.delete(API_ENDPOINTS.ASSIGNMENTS.USER_ROLE(workspaceId, userId, roleId))
   },
 
-  getUserPermissions: async (
-    workspaceId: string,
-    userId: string,
-  ): Promise<UserPermission[]> => {
-    return api.get<UserPermission[]>(API_ENDPOINTS.ASSIGNMENTS.USER_PERMISSIONS(workspaceId, userId))
+  getUserPermissions: async (workspaceId: string, userId: string): Promise<UserPermission[]> => {
+    return api.get<UserPermission[]>(
+      API_ENDPOINTS.ASSIGNMENTS.USER_PERMISSIONS(workspaceId, userId),
+    )
   },
 
   grantPermission: async (
@@ -34,9 +33,6 @@ export const assignmentService = {
     userId: string,
     permissionId: string,
   ): Promise<void> => {
-    await api.delete(
-      API_ENDPOINTS.ASSIGNMENTS.USER_PERMISSION(workspaceId, userId, permissionId),
-    )
+    await api.delete(API_ENDPOINTS.ASSIGNMENTS.USER_PERMISSION(workspaceId, userId, permissionId))
   },
 }
-

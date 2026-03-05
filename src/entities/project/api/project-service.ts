@@ -21,29 +21,16 @@ export interface EntityProjectIdsResponse {
 
 export const projectService = {
   getList: async (workspaceId: string): Promise<Project[]> => {
-    const data = await api.get<ProjectsListResponse>(
-      API_ENDPOINTS.PROJECTS.LIST(workspaceId),
-    )
+    const data = await api.get<ProjectsListResponse>(API_ENDPOINTS.PROJECTS.LIST(workspaceId))
     return data.projects ?? []
   },
 
-  getById: async (
-    workspaceId: string,
-    projectId: string,
-  ): Promise<Project> => {
-    return api.get<Project>(
-      API_ENDPOINTS.PROJECTS.DETAIL(workspaceId, projectId),
-    )
+  getById: async (workspaceId: string, projectId: string): Promise<Project> => {
+    return api.get<Project>(API_ENDPOINTS.PROJECTS.DETAIL(workspaceId, projectId))
   },
 
-  create: async (
-    workspaceId: string,
-    data: CreateProjectDto,
-  ): Promise<Project> => {
-    return api.post<Project>(
-      API_ENDPOINTS.PROJECTS.LIST(workspaceId),
-      data,
-    )
+  create: async (workspaceId: string, data: CreateProjectDto): Promise<Project> => {
+    return api.post<Project>(API_ENDPOINTS.PROJECTS.LIST(workspaceId), data)
   },
 
   update: async (
@@ -51,19 +38,11 @@ export const projectService = {
     projectId: string,
     data: UpdateProjectDto,
   ): Promise<Project> => {
-    return api.put<Project>(
-      API_ENDPOINTS.PROJECTS.DETAIL(workspaceId, projectId),
-      data,
-    )
+    return api.put<Project>(API_ENDPOINTS.PROJECTS.DETAIL(workspaceId, projectId), data)
   },
 
-  delete: async (
-    workspaceId: string,
-    projectId: string,
-  ): Promise<void> => {
-    await api.delete(
-      API_ENDPOINTS.PROJECTS.DETAIL(workspaceId, projectId),
-    )
+  delete: async (workspaceId: string, projectId: string): Promise<void> => {
+    await api.delete(API_ENDPOINTS.PROJECTS.DETAIL(workspaceId, projectId))
   },
 
   /**
@@ -87,10 +66,7 @@ export const projectService = {
     projectId: string,
     dto: AttachEntityToProjectDto,
   ): Promise<void> => {
-    await api.post(
-      API_ENDPOINTS.PROJECTS.ENTITIES(workspaceId, projectId),
-      dto,
-    )
+    await api.post(API_ENDPOINTS.PROJECTS.ENTITIES(workspaceId, projectId), dto)
   },
 
   /** Привязать несколько сущностей к проекту (несколько вызовов attach). */
@@ -99,11 +75,7 @@ export const projectService = {
     projectId: string,
     dtos: AttachEntityToProjectDto[],
   ): Promise<void> => {
-    await Promise.all(
-      dtos.map((dto) =>
-        projectService.attachEntity(workspaceId, projectId, dto),
-      ),
-    )
+    await Promise.all(dtos.map((dto) => projectService.attachEntity(workspaceId, projectId, dto)))
   },
 
   /** Отвязать сущность от проекта. */
@@ -114,12 +86,7 @@ export const projectService = {
     entityId: string,
   ): Promise<void> => {
     await api.delete(
-      API_ENDPOINTS.PROJECTS.DETACH_ENTITY(
-        workspaceId,
-        projectId,
-        entityType,
-        entityId,
-      ),
+      API_ENDPOINTS.PROJECTS.DETACH_ENTITY(workspaceId, projectId, entityType, entityId),
     )
   },
 

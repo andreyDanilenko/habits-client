@@ -132,6 +132,7 @@
     - Гард `beforeEnter: requireOwnerOrAdmin()` — доступ только владельцу или админу воркспейса.
 
 При этом:
+
 - API‑слой и доменные сервисы по‑прежнему живут в `entities/*/api`.
 - `features/roles` не знает о деталях API и работает через `roleService`.
 - Страница `WorkspaceRolesPage` использует только публичный интерфейс `features/roles`.
@@ -141,6 +142,7 @@
 ### 8. Этапы реализации: выполнено / осталось
 
 **Выполнено:**
+
 - Спринт 1:
   - Добавлены все необходимые эндпоинты для прав, ролей и назначений.
   - Реализованы доменные сущности и сервисы: `permission`, `role`, `assignment`.
@@ -155,13 +157,14 @@
   - Реализованы `features/members` (`use-member-roles`, `MemberRoleChips`) на базе `assignmentService` и `roleService`.
   - Реализованы `features/user-permissions` (`use-user-permissions`, `UserPermissionsPanel`) на базе `assignmentService` и `permissionService`.
   - Создана страница `/settings/members`, отображающая участников текущего workspace и позволяющая управлять их кастомными ролями и индивидуальными правами.
- - Спринт 5 (частично):
-   - Начата интеграция `PermissionGuard` в ключевые CRM‑фичи:
-     - кнопка создания контакта (`features/contacts/ui/ContactsToolbar.vue`) защищена правом `crm:contact:create`;
-     - кнопка создания компании (`features/companies/ui/CompaniesToolbar.vue`) защищена правом `crm:company:create`;
-     - кнопка создания сделки (`features/deals/ui/DealsToolbar.vue`) защищена правом `crm:deal:create`.
+- Спринт 5 (частично):
+  - Начата интеграция `PermissionGuard` в ключевые CRM‑фичи:
+    - кнопка создания контакта (`features/contacts/ui/ContactsToolbar.vue`) защищена правом `crm:contact:create`;
+    - кнопка создания компании (`features/companies/ui/CompaniesToolbar.vue`) защищена правом `crm:company:create`;
+    - кнопка создания сделки (`features/deals/ui/DealsToolbar.vue`) защищена правом `crm:deal:create`.
 
 **Остаётся реализовать в следующих шагах:**
+
 - Спринт 2:
   - Тесты и доп. сценарии для `PermissionTree` (включая UX‑улучшения, поиск по правам и т.п., если потребуется).
 - Спринт 3:
@@ -172,4 +175,3 @@
 - Спринт 5:
   - Точечная интеграция `PermissionGuard` и `use-permissions` во все ключевые модули (CRM, Habits, Projects и др.).
   - Опциональные devtools для отладки прав (отображение эффективных прав текущего пользователя, активных ролей и т.п.).
-

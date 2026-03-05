@@ -12,11 +12,15 @@ function formatDate(iso: string | undefined): string {
 }
 
 function formatMoney(value: number, currency: string): string {
-  return new Intl.NumberFormat('ru-RU', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(value) + ' ' + (currency === 'RUB' ? '₽' : currency)
+  return (
+    new Intl.NumberFormat('ru-RU', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value) +
+    ' ' +
+    (currency === 'RUB' ? '₽' : currency)
+  )
 }
 
 export function getDealColumns(stageName: (stageId: string) => string): DataTableColumn<Deal>[] {

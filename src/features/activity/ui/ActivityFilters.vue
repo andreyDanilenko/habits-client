@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="visible"
-    class="rounded-lg border border-border-default bg-bg-primary p-4 space-y-4"
-  >
+  <div v-if="visible" class="rounded-lg border border-border-default bg-bg-primary p-4 space-y-4">
     <div class="flex items-center justify-between">
       <span class="text-sm font-medium text-text-secondary">Фильтр активности</span>
       <Button variant="ghost" size="md" @click="$emit('close')">Закрыть</Button>
@@ -43,18 +40,10 @@
       </div>
       <div v-if="localPeriod === 'custom'" class="mt-2 grid grid-cols-2 gap-2">
         <FormField label="С">
-          <DatePicker
-            v-model="localDateFrom"
-            size="md"
-            placeholder="ДД.ММ.ГГГГ"
-          />
+          <DatePicker v-model="localDateFrom" size="md" placeholder="ДД.ММ.ГГГГ" />
         </FormField>
         <FormField label="По">
-          <DatePicker
-            v-model="localDateTo"
-            size="md"
-            placeholder="ДД.ММ.ГГГГ"
-          />
+          <DatePicker v-model="localDateTo" size="md" placeholder="ДД.ММ.ГГГГ" />
         </FormField>
       </div>
     </FormField>
@@ -69,11 +58,7 @@
     </FormField>
 
     <FormField label="Поиск">
-      <SearchInput
-        v-model="localSearch"
-        size="md"
-        placeholder="Поиск по тексту..."
-      />
+      <SearchInput v-model="localSearch" size="md" placeholder="Поиск по тексту..." />
     </FormField>
 
     <div class="flex gap-2 pt-2">

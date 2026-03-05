@@ -55,7 +55,7 @@
 
   const emit = defineEmits<{
     'update:column': [column: KanbanColumnModel]
-    'move': [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
+    move: [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
   }>()
 
   const columnColorStyle = computed(() => {
@@ -71,7 +71,11 @@
     emit('update:column', { ...props.column, items: newItems })
   }
 
-  function onDndChange(evt: { added?: { element: unknown }; removed?: { element: unknown }; moved?: { element: unknown } }) {
+  function onDndChange(evt: {
+    added?: { element: unknown }
+    removed?: { element: unknown }
+    moved?: { element: unknown }
+  }) {
     if (evt.added) {
       emit('move', { item: evt.added.element, toColumnId: props.column.id })
     }

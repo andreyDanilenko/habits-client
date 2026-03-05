@@ -45,7 +45,10 @@
           <XMarkIcon :size="iconSizeValue" />
         </button>
 
-        <div v-if="slots?.rightIcon || rightIcon" class="text-text-muted flex items-center justify-center h-full min-w-[2rem] pointer-events-auto">
+        <div
+          v-if="slots?.rightIcon || rightIcon"
+          class="text-text-muted flex items-center justify-center h-full min-w-[2rem] pointer-events-auto"
+        >
           <slot name="rightIcon">
             <component v-if="rightIcon" :is="rightIcon" :size="iconSizeValue" />
           </slot>
@@ -228,18 +231,18 @@
 </script>
 
 <style scoped>
-/* Скрываем нативную иконку календаря */
-.date-input::-webkit-calendar-picker-indicator {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
-}
+  /* Скрываем нативную иконку календаря */
+  .date-input::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
 
-/* Для Firefox */
-.date-input::-moz-calendar-picker-indicator {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+  /* Для Firefox */
+  .date-input::-moz-calendar-picker-indicator {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
 </style>

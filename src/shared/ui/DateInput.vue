@@ -26,7 +26,8 @@
               !error && !disabled,
             'border-error-light focus:ring-error-default focus:border-error-default':
               error && !disabled,
-            'bg-bg-tertiary cursor-not-allowed border border-border-light text-text-secondary': disabled,
+            'bg-bg-tertiary cursor-not-allowed border border-border-light text-text-secondary':
+              disabled,
           },
         ]"
         v-bind="$attrs"
@@ -100,4 +101,3 @@
     return sizes[props.size]
   })
 </script>
-

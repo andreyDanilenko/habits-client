@@ -24,17 +24,14 @@
   import KanbanColumn from './KanbanColumn.vue'
   import type { KanbanColumnModel, KanbanBoardProps } from './KanbanBoard.types'
 
-  const props = withDefaults(
-    defineProps<KanbanBoardProps>(),
-    {
-      dndGroup: 'kanban',
-      disabled: false,
-    },
-  )
+  const props = withDefaults(defineProps<KanbanBoardProps>(), {
+    dndGroup: 'kanban',
+    disabled: false,
+  })
 
   const emit = defineEmits<{
     'update:columns': [columns: KanbanColumnModel[]]
-    'move': [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
+    move: [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
   }>()
 
   const columns = defineModel<KanbanColumnModel[]>('columns', { required: true })

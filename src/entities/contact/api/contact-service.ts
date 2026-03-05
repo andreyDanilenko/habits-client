@@ -41,11 +41,7 @@ export const contactService = {
     return api.post<Contact>(API_ENDPOINTS.CRM.CONTACTS(workspaceId), data)
   },
 
-  update: async (
-    workspaceId: string,
-    id: string,
-    data: UpdateContactDto,
-  ): Promise<Contact> => {
+  update: async (workspaceId: string, id: string, data: UpdateContactDto): Promise<Contact> => {
     return api.put<Contact>(API_ENDPOINTS.CRM.CONTACT(workspaceId, id), data)
   },
 

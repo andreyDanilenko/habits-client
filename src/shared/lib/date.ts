@@ -103,12 +103,7 @@ export function getGreeting(): string {
 }
 
 /** Ключ группы для ленты активности: сегодня, вчера, на этой неделе, в прошлом месяце, старше */
-export type ActivityDateGroupKey =
-  | 'today'
-  | 'yesterday'
-  | 'this_week'
-  | 'last_month'
-  | 'older'
+export type ActivityDateGroupKey = 'today' | 'yesterday' | 'this_week' | 'last_month' | 'older'
 
 const ACTIVITY_GROUP_ORDER: ActivityDateGroupKey[] = [
   'today',

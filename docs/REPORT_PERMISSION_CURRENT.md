@@ -110,7 +110,6 @@
 ### 6. Конфиги прав и best practice вместо “магических” строк
 
 - **`features/permissions/config.ts`:**
-
   - Определён конфиг для CRM:
 
   ```5:9:frontend/src/features/permissions/config.ts
@@ -213,4 +212,3 @@
 - **Спринт 5:**
   - Продолжить интеграцию `PermissionGuard`/`use-permissions` в остальные модули (Habits, Projects).
   - Добавить devtools для отладки прав (просмотр `EffectivePermissions` в UI).
-

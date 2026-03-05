@@ -3,12 +3,12 @@
 ## Единая система размеров (в px):
 
 | Размер | Высота | Кнопка | Инпут | Селект | SearchInput | Чекбокс | Текст |
-|--------|--------|--------|-------|--------|-------------|---------|-------|
-| **xs** | 24px | 24px | 24px | 24px | 24px | 16px | 12px |
-| **sm** | 28px | 28px | 28px | 28px | 28px | 18px | 13px |
-| **md** | 32px | 32px | 32px | 32px | 32px | 20px | 14px |
-| **lg** | 36px | 36px | 36px | 36px | 36px | 22px | 15px |
-| **xl** | 40px | 40px | 40px | 40px | 40px | 24px | 16px |
+| ------ | ------ | ------ | ----- | ------ | ----------- | ------- | ----- |
+| **xs** | 24px   | 24px   | 24px  | 24px   | 24px        | 16px    | 12px  |
+| **sm** | 28px   | 28px   | 28px  | 28px   | 28px        | 18px    | 13px  |
+| **md** | 32px   | 32px   | 32px  | 32px   | 32px        | 20px    | 14px  |
+| **lg** | 36px   | 36px   | 36px  | 36px   | 36px        | 22px    | 15px  |
+| **xl** | 40px   | 40px   | 40px  | 40px   | 40px        | 24px    | 16px  |
 
 ## 1. Button.vue (исправленный)
 
@@ -28,12 +28,7 @@
   >
     <Spinner v-if="loading" class="w-4 h-4 mr-2" :class="spinnerColor" />
 
-    <component
-      v-if="leftIcon"
-      :is="leftIcon"
-      :size="iconSize"
-      :class="iconOnly ? '' : 'mr-2'"
-    />
+    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
 
     <template v-if="!iconOnly">
       <slot />
@@ -78,11 +73,11 @@
 
   const buttonSizeClasses = computed(() => {
     const sizes = {
-      xs: 'px-2.5 py-1 text-xs',      // 24px
-      sm: 'px-3 py-1.5 text-xs',      // 28px
-      md: 'px-4 py-2 text-sm',        // 32px
-      lg: 'px-5 py-2.5 text-sm',      // 36px
-      xl: 'px-6 py-3 text-base',      // 40px
+      xs: 'px-2.5 py-1 text-xs', // 24px
+      sm: 'px-3 py-1.5 text-xs', // 28px
+      md: 'px-4 py-2 text-sm', // 32px
+      lg: 'px-5 py-2.5 text-sm', // 36px
+      xl: 'px-6 py-3 text-base', // 40px
     }
     return sizes[props.size]
   })
@@ -102,7 +97,8 @@
     const variants = {
       primary: 'bg-primary-default text-white hover:bg-primary-dark active:bg-primary-darker',
       secondary: 'bg-bg-tertiary text-text-primary hover:bg-border-light active:bg-border-default',
-      outline: 'border border-border-default text-text-primary hover:bg-bg-tertiary active:bg-border-light',
+      outline:
+        'border border-border-default text-text-primary hover:bg-bg-tertiary active:bg-border-light',
       ghost: 'text-text-primary hover:bg-bg-tertiary active:bg-border-light',
       danger: 'bg-error-default text-white hover:bg-error-dark active:bg-error-darker',
       link: 'bg-transparent text-primary-default hover:text-primary-dark',
@@ -110,8 +106,8 @@
     return variants[props.variant]
   })
 
-  const spinnerColor = computed(() => 
-    ['primary', 'danger'].includes(props.variant) ? 'text-white' : 'text-current'
+  const spinnerColor = computed(() =>
+    ['primary', 'danger'].includes(props.variant) ? 'text-white' : 'text-current',
   )
 
   const handleClick = (e: MouseEvent) => {
@@ -183,8 +179,7 @@
           inputSizeClasses,
           inputClasses,
           {
-            'border focus:ring-primary-default focus:border-primary-default':
-              !error && !disabled,
+            'border focus:ring-primary-default focus:border-primary-default': !error && !disabled,
             'border border-error-light focus:ring-error-default focus:border-error-default':
               error && !disabled,
             'bg-bg-tertiary cursor-not-allowed border-border-light': disabled,
@@ -244,7 +239,7 @@
 
   const emit = defineEmits<{
     'update:modelValue': [value: string]
-    'clear': []
+    clear: []
   }>()
 
   // Размеры иконок
@@ -262,11 +257,11 @@
   // Размеры инпута (ВЫСОТА)
   const inputSizeClasses = computed(() => {
     const sizes = {
-      xs: 'px-2 py-1 text-xs',        // 24px
-      sm: 'px-2.5 py-1.5 text-xs',    // 28px
-      md: 'px-3 py-2 text-sm',        // 32px
-      lg: 'px-3.5 py-2.5 text-sm',    // 36px
-      xl: 'px-4 py-3 text-base',      // 40px
+      xs: 'px-2 py-1 text-xs', // 24px
+      sm: 'px-2.5 py-1.5 text-xs', // 28px
+      md: 'px-3 py-2 text-sm', // 32px
+      lg: 'px-3.5 py-2.5 text-sm', // 36px
+      xl: 'px-4 py-3 text-base', // 40px
     }
     return sizes[props.size]
   })
@@ -287,7 +282,7 @@
   const leftPaddingClass = computed(() => {
     if (!$slots.leftIcon && !props.leftIcon) return 'pl-3'
     const sizes = {
-      xs: 'pl-7',  // 3(левый отступ) + 4(иконка)
+      xs: 'pl-7', // 3(левый отступ) + 4(иконка)
       sm: 'pl-8',
       md: 'pl-9',
       lg: 'pl-10',
@@ -299,7 +294,7 @@
   const rightPaddingClass = computed(() => {
     const hasRightContent = props.showClear || $slots.rightIcon || props.rightIcon
     if (!hasRightContent) return 'pr-3'
-    
+
     const sizes = {
       xs: 'pr-7',
       sm: 'pr-8',
@@ -393,9 +388,7 @@
             class="text-primary-default ml-2 flex-shrink-0"
           />
         </button>
-        <p v-if="!options.length" class="px-3 py-2 text-sm text-text-muted">
-          Нет вариантов
-        </p>
+        <p v-if="!options.length" class="px-3 py-2 text-sm text-text-muted">Нет вариантов</p>
       </div>
     </div>
 
@@ -453,11 +446,11 @@
   // РАЗМЕРЫ СЕЛЕКТА (ВЫСОТА)
   const selectSizeClasses = computed(() => {
     const sizes = {
-      xs: 'px-2 py-1 text-xs',        // 24px
-      sm: 'px-2.5 py-1.5 text-xs',    // 28px
-      md: 'px-3 py-2 text-sm',        // 32px
-      lg: 'px-3.5 py-2.5 text-sm',    // 36px
-      xl: 'px-4 py-3 text-base',      // 40px
+      xs: 'px-2 py-1 text-xs', // 24px
+      sm: 'px-2.5 py-1.5 text-xs', // 28px
+      md: 'px-3 py-2 text-sm', // 32px
+      lg: 'px-3.5 py-2.5 text-sm', // 36px
+      xl: 'px-4 py-3 text-base', // 40px
     }
     return sizes[props.size]
   })
@@ -588,8 +581,8 @@
 
   const emit = defineEmits<{
     'update:modelValue': [value: string]
-    'clear': []
-    'search': [value: string]
+    clear: []
+    search: [value: string]
     'keydown.esc': []
   }>()
 

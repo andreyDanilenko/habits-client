@@ -70,7 +70,9 @@
           />
         </div>
 
-        <div class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer">
+        <div
+          class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer"
+        >
           <SidebarNavigation
             :items="footerNavItems"
             :collapsed="isCollapsedEffective"

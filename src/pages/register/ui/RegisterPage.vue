@@ -60,7 +60,10 @@
           <div class="text-center">
             <p class="text-sm text-text-secondary">
               Уже есть аккаунт?
-              <router-link to="/login" class="font-medium text-primary-default hover:text-primary-dark">
+              <router-link
+                to="/login"
+                class="font-medium text-primary-default hover:text-primary-dark"
+              >
                 Войти
               </router-link>
             </p>

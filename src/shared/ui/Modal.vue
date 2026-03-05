@@ -14,7 +14,7 @@
           <Transition name="slide-up">
             <div
               v-if="isOpen"
-              class="relative z-10 w-full min-w-0  max-w-[min(30rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-x-auto overflow-y-auto mx-auto"
+              class="relative z-10 w-full min-w-0 max-w-[min(30rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-x-auto overflow-y-auto mx-auto"
               :class="contentClass"
             >
               <slot />

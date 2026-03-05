@@ -11,8 +11,8 @@
       <h1 class="text-text-primary">Активация модуля: {{ moduleLabel }}</h1>
       <p class="mt-2 text-text-secondary">
         Оформите подписку или вечную лицензию на странице
-        <router-link to="/billing" class="text-primary-default hover:underline">Биллинг</router-link>,
-        либо свяжитесь с владельцем приложения для подключения модуля.
+        <router-link to="/billing" class="text-primary-default hover:underline">Биллинг</router-link
+        >, либо свяжитесь с владельцем приложения для подключения модуля.
       </p>
     </div>
 

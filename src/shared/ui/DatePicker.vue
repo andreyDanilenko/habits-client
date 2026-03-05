@@ -79,21 +79,8 @@
       </div>
 
       <div class="flex justify-between mt-4 gap-2">
-        <Button
-          type="button"
-          size="md"
-          variant="ghost"
-          @click="clearDate"
-        >
-          Очистить
-        </Button>
-        <Button
-          type="button"
-          size="md"
-          @click="showPicker = false"
-        >
-          Закрыть
-        </Button>
+        <Button type="button" size="md" variant="ghost" @click="clearDate"> Очистить </Button>
+        <Button type="button" size="md" @click="showPicker = false"> Закрыть </Button>
       </div>
     </div>
   </div>
@@ -137,7 +124,7 @@
   const pickerRef = ref<HTMLElement | null>(null)
   const showPicker = ref(false)
   const currentDate = ref(props.modelValue ? parseLocalDate(props.modelValue) : new Date())
-  
+
   // Реактивные переменные для позиционирования
   const pickerTop = ref('100%')
   const pickerLeft = ref('0')
@@ -160,7 +147,7 @@
   const pickerStyles = computed(() => ({
     top: pickerTop.value,
     left: pickerLeft.value,
-    margin: pickerMargin.value
+    margin: pickerMargin.value,
   }))
 
   // Функция для определения оптимальной позиции пикера
@@ -168,7 +155,7 @@
     if (!showPicker.value || !rootRef.value || !pickerRef.value) return
 
     await nextTick()
-    
+
     const inputRect = rootRef.value.getBoundingClientRect()
     const pickerRect = pickerRef.value.getBoundingClientRect()
     const viewportWidth = window.innerWidth
@@ -229,11 +216,15 @@
         updatePickerPosition()
       }
     })
-    window.addEventListener('scroll', () => {
-      if (showPicker.value) {
-        updatePickerPosition()
-      }
-    }, true)
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (showPicker.value) {
+          updatePickerPosition()
+        }
+      },
+      true,
+    )
   })
 
   onBeforeUnmount(() => {

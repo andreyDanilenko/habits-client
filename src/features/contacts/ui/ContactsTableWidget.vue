@@ -9,7 +9,6 @@
     empty-message="Нет контактов для отображения."
     error-message="Ошибка загрузки контактов. Обновите страницу."
     :selectable="true"
-
     :selected-ids="selectedIds"
     :sort-by="sortBy"
     :sort-order="sortOrder"

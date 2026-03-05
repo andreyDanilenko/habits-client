@@ -4,10 +4,7 @@
   >
     <div class="flex items-center gap-(--spacing-2) cursor-grab">
       <div class="flex items-center gap-(--spacing-2) shrink-0">
-        <MenuIcon
-          size="md"
-          class="text-text-muted hover:text-text-secondary transition-colors"
-        />
+        <MenuIcon size="md" class="text-text-muted hover:text-text-secondary transition-colors" />
         <div
           class="h-(--size-6) w-1.5 shrink-0 rounded-(--radius-full)"
           :style="{ backgroundColor: stage.color || '#94A3B8' }"
@@ -47,29 +44,47 @@
       class="flex items-center justify-between gap-(--spacing-3) text-(--text-xs) text-text-muted"
     >
       <div class="flex items-center gap-(--spacing-3)">
-        <Radio
-          :key="checkboxId('final')"
-          :id="checkboxId('final')"
-          :model-value="stage.isFinal"
-          :value="true"
-          label="Финальный этап (успех)"
-          size="xs"
-          container-class="items-center"
+        <button
+          type="button"
+          class="flex items-center gap-1 text-left text-(--text-xs)"
+          :class="[disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer']"
           :disabled="disabled"
-          @update:model-value="$emit('update:isFinal', $event)"
-        />
-        <Radio
-          :key="checkboxId('lost')"
-          :id="checkboxId('lost')"
-          :model-value="stage.isLost"
-          :value="true"
-          label="Этап проигрыша"
-          size="xs"
-          error
-          container-class="items-center"
+          @click="toggleFinal"
+        >
+          <span
+            :class="[
+              'inline-flex items-center justify-center rounded-full border shrink-0',
+              'w-4 h-4',
+              stage.isFinal
+                ? 'bg-primary-default border-primary-default'
+                : 'bg-bg-primary border-border-default',
+            ]"
+          >
+            <span v-if="stage.isFinal" class="w-2 h-2 rounded-full bg-white" />
+          </span>
+          <span>Финальный этап (успех)</span>
+        </button>
+
+        <button
+          type="button"
+          class="flex items-center gap-1 text-left text-(--text-xs)"
+          :class="[disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer']"
           :disabled="disabled"
-          @update:model-value="$emit('update:isLost', $event)"
-        />
+          @click="toggleLost"
+        >
+          <span
+            :class="[
+              'inline-flex items-center justify-center rounded-full border shrink-0',
+              'w-4 h-4',
+              stage.isLost
+                ? 'bg-error-default border-error-default'
+                : 'bg-bg-primary border-error-default',
+            ]"
+          >
+            <span v-if="stage.isLost" class="w-2 h-2 rounded-full bg-white" />
+          </span>
+          <span>Этап проигрыша</span>
+        </button>
       </div>
 
       <Button
@@ -90,7 +105,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import Input from './Input.vue'
-  import Radio from './Radio.vue'
   import Button from './Button.vue'
   import { MenuIcon } from './icon'
 
@@ -126,14 +140,24 @@
 
   const placeholder = computed(() => `Этап ${props.index + 1}`)
 
-  function checkboxId(suffix: string) {
-    return `pipeline-stage-${props.index}-${suffix}`
-  }
-
   function onProbabilityInput(value: string) {
     const n = Number(value)
     if (!Number.isNaN(n)) {
       props.stage.probability = Math.min(100, Math.max(0, Math.round(n)))
     }
+  }
+
+  function toggleFinal() {
+    if (props.disabled) return
+    const next = !props.stage.isFinal
+    ;(props.stage as PipelineStage).isFinal = next
+    ;(props.stage as PipelineStage).isLost = next ? false : props.stage.isLost
+  }
+
+  function toggleLost() {
+    if (props.disabled) return
+    const next = !props.stage.isLost
+    ;(props.stage as PipelineStage).isLost = next
+    ;(props.stage as PipelineStage).isFinal = next ? false : props.stage.isFinal
   }
 </script>

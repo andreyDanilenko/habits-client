@@ -33,4 +33,3 @@ export interface PermissionTree {
   modules: Record<string, PermissionTreeModule>
   flat: Permission[]
 }
-

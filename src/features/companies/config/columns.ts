@@ -31,7 +31,8 @@ export function getCompanyColumns(context?: CompanyColumnContext): DataTableColu
             'button',
             {
               type: 'button',
-              class: 'text-primary-default hover:underline text-left bg-transparent border-none cursor-pointer p-0 font-inherit',
+              class:
+                'text-primary-default hover:underline text-left bg-transparent border-none cursor-pointer p-0 font-inherit',
               onClick: (e: Event) => {
                 e.preventDefault()
                 e.stopPropagation()

@@ -281,11 +281,51 @@ const MOCK_PIPELINES: MockPipeline[] = [
     name: 'Основные продажи',
     isDefault: true,
     stages: [
-      { id: 'st1', name: 'Лиды', order: 1, probability: 10, isFinal: false, isLost: false, color: '#94A3B8' },
-      { id: 'st2', name: 'Переговоры', order: 2, probability: 50, isFinal: false, isLost: false, color: '#3B82F6' },
-      { id: 'st3', name: 'Согласование', order: 3, probability: 80, isFinal: false, isLost: false, color: '#8B5CF6' },
-      { id: 'st4', name: 'Выигрыш', order: 4, probability: 100, isFinal: true, isLost: false, color: '#22C55E' },
-      { id: 'st5', name: 'Проигрыш', order: 5, probability: 0, isFinal: false, isLost: true, color: '#EF4444' },
+      {
+        id: 'st1',
+        name: 'Лиды',
+        order: 1,
+        probability: 10,
+        isFinal: false,
+        isLost: false,
+        color: '#94A3B8',
+      },
+      {
+        id: 'st2',
+        name: 'Переговоры',
+        order: 2,
+        probability: 50,
+        isFinal: false,
+        isLost: false,
+        color: '#3B82F6',
+      },
+      {
+        id: 'st3',
+        name: 'Согласование',
+        order: 3,
+        probability: 80,
+        isFinal: false,
+        isLost: false,
+        color: '#8B5CF6',
+      },
+      {
+        id: 'st4',
+        name: 'Выигрыш',
+        order: 4,
+        probability: 100,
+        isFinal: true,
+        isLost: false,
+        color: '#22C55E',
+      },
+      {
+        id: 'st5',
+        name: 'Проигрыш',
+        order: 5,
+        probability: 0,
+        isFinal: false,
+        isLost: true,
+        color: '#EF4444',
+      },
     ],
   },
   {
@@ -293,9 +333,33 @@ const MOCK_PIPELINES: MockPipeline[] = [
     name: 'Воронка B2B',
     isDefault: false,
     stages: [
-      { id: 'stb1', name: 'Квалификация', order: 1, probability: 5, isFinal: false, isLost: false, color: '#F59E0B' },
-      { id: 'stb2', name: 'Демо', order: 2, probability: 40, isFinal: false, isLost: false, color: '#06B6D4' },
-      { id: 'stb3', name: 'Оффер', order: 3, probability: 90, isFinal: false, isLost: false, color: '#10B981' },
+      {
+        id: 'stb1',
+        name: 'Квалификация',
+        order: 1,
+        probability: 5,
+        isFinal: false,
+        isLost: false,
+        color: '#F59E0B',
+      },
+      {
+        id: 'stb2',
+        name: 'Демо',
+        order: 2,
+        probability: 40,
+        isFinal: false,
+        isLost: false,
+        color: '#06B6D4',
+      },
+      {
+        id: 'stb3',
+        name: 'Оффер',
+        order: 3,
+        probability: 90,
+        isFinal: false,
+        isLost: false,
+        color: '#10B981',
+      },
     ],
   },
 ]
@@ -550,8 +614,7 @@ interface MockActivity {
   isDeletable?: boolean
 }
 
-const mockActivityKey = (entityType: string, entityId: string) =>
-  `${entityType}_${entityId}`
+const mockActivityKey = (entityType: string, entityId: string) => `${entityType}_${entityId}`
 
 function buildMockActivitiesSeed(): Record<string, MockActivity[]> {
   const today = new Date()
@@ -575,7 +638,9 @@ function buildMockActivitiesSeed(): Record<string, MockActivity[]> {
           callStatus: 'answered',
         },
         createdBy,
-        createdAt: new Date(todayStart.getTime() + 10 * 60 * 60 * 1000 + 23 * 60 * 1000).toISOString(),
+        createdAt: new Date(
+          todayStart.getTime() + 10 * 60 * 60 * 1000 + 23 * 60 * 1000,
+        ).toISOString(),
         isImportant: true,
       },
       {
@@ -730,7 +795,10 @@ class MockApiClient {
       const search = parsed.searchParams.get('search')?.toLowerCase() ?? ''
       const companyId = parsed.searchParams.get('companyId') ?? ''
       const page = Math.max(1, parseInt(parsed.searchParams.get('page') ?? '1', 10))
-      const limit = Math.min(100, Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)))
+      const limit = Math.min(
+        100,
+        Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)),
+      )
       const sortBy = parsed.searchParams.get('sortBy') ?? 'createdAt'
       const sortOrder = parsed.searchParams.get('sortOrder') ?? 'desc'
       let list = [...MOCK_CONTACTS]
@@ -773,7 +841,10 @@ class MockApiClient {
       const parsed = new URL(url, 'http://_')
       const search = parsed.searchParams.get('search')?.toLowerCase() ?? ''
       const page = Math.max(1, parseInt(parsed.searchParams.get('page') ?? '1', 10))
-      const limit = Math.min(100, Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)))
+      const limit = Math.min(
+        100,
+        Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)),
+      )
       const sortBy = parsed.searchParams.get('sortBy') ?? 'createdAt'
       const sortOrder = parsed.searchParams.get('sortOrder') ?? 'desc'
       let list = [...MOCK_COMPANIES]
@@ -781,8 +852,8 @@ class MockApiClient {
         list = list.filter(
           (c) =>
             c.name.toLowerCase().includes(search) ||
-            (c.email?.toLowerCase().includes(search)) ||
-            (c.inn?.includes(search)),
+            c.email?.toLowerCase().includes(search) ||
+            c.inn?.includes(search),
         )
       }
       const total = list.length
@@ -799,7 +870,9 @@ class MockApiClient {
     }
 
     // GET /workspaces/:id/companies/:id
-    const companyDetailMatch = url.match(new RegExp(`^${apiV1}/workspaces/[^/]+/companies/([^/]+)$`))
+    const companyDetailMatch = url.match(
+      new RegExp(`^${apiV1}/workspaces/[^/]+/companies/([^/]+)$`),
+    )
     if (companyDetailMatch) {
       const id = companyDetailMatch[1]
       const company = MOCK_COMPANIES.find((c) => c.id === id)
@@ -817,7 +890,10 @@ class MockApiClient {
     if (dealsListMatch) {
       const parsed = new URL(url, 'http://_')
       const page = Math.max(1, parseInt(parsed.searchParams.get('page') ?? '1', 10))
-      const limit = Math.min(500, Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)))
+      const limit = Math.min(
+        500,
+        Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)),
+      )
       const sortBy = parsed.searchParams.get('sortBy') ?? 'createdAt'
       const sortOrder = parsed.searchParams.get('sortOrder') ?? 'desc'
       const pipelineId = parsed.searchParams.get('pipelineId') ?? ''
@@ -863,13 +939,18 @@ class MockApiClient {
     }
 
     // GET /workspaces/:id/activities?entityType=...&entityId=...&page=...&limit=...&types=...&dateFrom=...&dateTo=...&importantOnly=...&search=...
-    const activitiesListMatch = url.match(new RegExp(`^${apiV1}/workspaces/[^/]+/activities(\\?|$)`))
+    const activitiesListMatch = url.match(
+      new RegExp(`^${apiV1}/workspaces/[^/]+/activities(\\?|$)`),
+    )
     if (activitiesListMatch) {
       const parsed = new URL(url, 'http://_')
       const entityType = parsed.searchParams.get('entityType') ?? ''
       const entityId = parsed.searchParams.get('entityId') ?? ''
       const page = Math.max(1, parseInt(parsed.searchParams.get('page') ?? '1', 10))
-      const limit = Math.min(100, Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)))
+      const limit = Math.min(
+        100,
+        Math.max(1, parseInt(parsed.searchParams.get('limit') ?? '20', 10)),
+      )
       const typesStr = parsed.searchParams.get('types') ?? ''
       const types = typesStr ? typesStr.split(',') : []
       const dateFrom = parsed.searchParams.get('dateFrom') ?? ''
@@ -1103,8 +1184,7 @@ class MockApiClient {
       for (const key of Object.keys(MOCK_ACTIVITIES_STORE)) {
         const idx = MOCK_ACTIVITIES_STORE[key].findIndex((a) => a.id === id)
         if (idx !== -1) {
-          MOCK_ACTIVITIES_STORE[key][idx].isImportant =
-            !MOCK_ACTIVITIES_STORE[key][idx].isImportant
+          MOCK_ACTIVITIES_STORE[key][idx].isImportant = !MOCK_ACTIVITIES_STORE[key][idx].isImportant
           return MOCK_ACTIVITIES_STORE[key][idx] as T
         }
       }
@@ -1127,7 +1207,9 @@ class MockApiClient {
         return MOCK_CONTACTS[idx] as T
       }
     }
-    const companyUpdateMatch = url.match(new RegExp(`^${apiV1}/workspaces/[^/]+/companies/([^/]+)$`))
+    const companyUpdateMatch = url.match(
+      new RegExp(`^${apiV1}/workspaces/[^/]+/companies/([^/]+)$`),
+    )
     if (companyUpdateMatch) {
       const id = companyUpdateMatch[1]
       const idx = MOCK_COMPANIES.findIndex((c) => c.id === id)
@@ -1175,7 +1257,9 @@ class MockApiClient {
       const idx = MOCK_CONTACTS.findIndex((c) => c.id === id)
       if (idx !== -1) MOCK_CONTACTS.splice(idx, 1)
     }
-    const companyDeleteMatch = url.match(new RegExp(`^${apiV1}/workspaces/[^/]+/companies/([^/]+)$`))
+    const companyDeleteMatch = url.match(
+      new RegExp(`^${apiV1}/workspaces/[^/]+/companies/([^/]+)$`),
+    )
     if (companyDeleteMatch) {
       const id = companyDeleteMatch[1]
       const idx = MOCK_COMPANIES.findIndex((c) => c.id === id)

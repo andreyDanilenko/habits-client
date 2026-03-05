@@ -25,6 +25,7 @@ node --version
 ## **#2: Обновляем все пакеты в проекте**
 
 ### **1. Очистка и переустановка**
+
 ```bash
 # Удалить node_modules и lock-файл
 rm -rf node_modules package-lock.json
@@ -34,6 +35,7 @@ npm cache clean --force
 ```
 
 ### **2. Обновить package.json до последних версий**
+
 ```bash
 # Установить npm-check-updates
 npm install -g npm-check-updates
@@ -57,6 +59,7 @@ npm error peer eslint@"^9.10.0" from @vue/eslint-config-typescript@14.6.0
 ```
 
 ### **Вариант А: ESLint 9 (рекомендуется для стабильности)**
+
 ```bash
 # Понизить ESLint до версии 9
 npm install eslint@9.26.0 --save-dev --legacy-peer-deps
@@ -66,6 +69,7 @@ npm install --legacy-peer-deps
 ```
 
 ### **Вариант Б: Принудительная установка с ESLint 10**
+
 ```bash
 # Если нужно использовать ESLint 10
 npm install --force
@@ -87,9 +91,9 @@ npm install --force
 ```
 
 Затем:
+
 ```bash
 npm install --legacy-peer-deps
 ```
 
 ---
-

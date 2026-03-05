@@ -26,11 +26,13 @@
       class="rounded-xl border border-border-default border-dashed bg-bg-tertiary/50 p-8 text-center"
     >
       <p class="text-text-muted mb-4">
-        {{ searchQuery ? 'По запросу проектов не найдено.' : 'У вас пока нет проектов. Создайте первый проект, чтобы группировать контакты, компании и сделки CRM.' }}
+        {{
+          searchQuery
+            ? 'По запросу проектов не найдено.'
+            : 'У вас пока нет проектов. Создайте первый проект, чтобы группировать контакты, компании и сделки CRM.'
+        }}
       </p>
-      <Button v-if="!searchQuery" variant="primary" @click="openCreate">
-        Создать проект
-      </Button>
+      <Button v-if="!searchQuery" variant="primary" @click="openCreate"> Создать проект </Button>
     </div>
 
     <ul v-else class="space-y-3">
@@ -43,10 +45,7 @@
           <div class="flex items-start justify-between gap-4">
             <div class="min-w-0 flex-1">
               <h2 class="font-medium text-text-primary">{{ project.name }}</h2>
-              <p
-                v-if="project.description"
-                class="text-sm text-text-muted mt-0.5 line-clamp-2"
-              >
+              <p v-if="project.description" class="text-sm text-text-muted mt-0.5 line-clamp-2">
                 {{ project.description }}
               </p>
               <p class="text-xs text-text-muted mt-2">
@@ -59,12 +58,7 @@
               </div>
             </div>
             <div class="flex items-center gap-1 shrink-0" @click.prevent>
-              <Button
-                size="md"
-                variant="ghost"
-                title="Редактировать"
-                @click="openEdit(project)"
-              >
+              <Button size="md" variant="ghost" title="Редактировать" @click="openEdit(project)">
                 Редактировать
               </Button>
               <Button
@@ -85,7 +79,10 @@
     <ProjectFormModal
       :is-open="showFormModal"
       :project="projectToEdit"
-      @close="showFormModal = false; projectToEdit = null"
+      @close="
+        showFormModal = false
+        projectToEdit = null
+      "
       @create="handleCreate"
       @update="handleUpdate"
     />

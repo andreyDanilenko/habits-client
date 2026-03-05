@@ -12,7 +12,9 @@
       <Spinner />
     </div>
     <template v-else-if="company">
-      <header class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary">
+      <header
+        class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary"
+      >
         <div class="min-w-0 flex-1">
           <h1 class="text-text-primary text-xl font-semibold">{{ company.name }}</h1>
           <p v-if="company.inn" class="text-text-secondary text-sm mt-0.5">ИНН {{ company.inn }}</p>
@@ -69,15 +71,35 @@
                 <dl class="space-y-2 text-sm">
                   <div v-if="company.phone" class="flex gap-2">
                     <dt class="text-text-muted w-24">Телефон:</dt>
-                    <dd><a :href="`tel:${company.phone}`" class="text-primary-default hover:underline">{{ company.phone }}</a></dd>
+                    <dd>
+                      <a
+                        :href="`tel:${company.phone}`"
+                        class="text-primary-default hover:underline"
+                        >{{ company.phone }}</a
+                      >
+                    </dd>
                   </div>
                   <div v-if="company.email" class="flex gap-2">
                     <dt class="text-text-muted w-24">Email:</dt>
-                    <dd><a :href="`mailto:${company.email}`" class="text-primary-default hover:underline">{{ company.email }}</a></dd>
+                    <dd>
+                      <a
+                        :href="`mailto:${company.email}`"
+                        class="text-primary-default hover:underline"
+                        >{{ company.email }}</a
+                      >
+                    </dd>
                   </div>
                   <div v-if="company.website" class="flex gap-2">
                     <dt class="text-text-muted w-24">Сайт:</dt>
-                    <dd><a :href="company.website" target="_blank" rel="noopener" class="text-primary-default hover:underline">{{ company.website }}</a></dd>
+                    <dd>
+                      <a
+                        :href="company.website"
+                        target="_blank"
+                        rel="noopener"
+                        class="text-primary-default hover:underline"
+                        >{{ company.website }}</a
+                      >
+                    </dd>
                   </div>
                   <template v-if="!company.phone && !company.email && !company.website">
                     <dd class="text-text-muted">—</dd>
@@ -111,7 +133,9 @@
               </div>
               <div>
                 <h3 class="text-sm font-medium text-text-secondary mb-1">Ответственный</h3>
-                <p class="text-sm text-text-muted">{{ company.ownerId ? 'ID ' + company.ownerId : '—' }}</p>
+                <p class="text-sm text-text-muted">
+                  {{ company.ownerId ? 'ID ' + company.ownerId : '—' }}
+                </p>
               </div>
             </section>
           </template>
@@ -121,8 +145,12 @@
             <div class="flex items-center justify-between gap-4 mb-4">
               <h3 class="text-sm font-medium text-text-secondary">Сотрудники компании</h3>
               <div class="flex gap-2">
-                <Button size="md" variant="ghost" @click="openAttachContact">Привязать контакт</Button>
-                <Button size="md" variant="outline" @click="openCreateContact">Создать контакт</Button>
+                <Button size="md" variant="ghost" @click="openAttachContact"
+                  >Привязать контакт</Button
+                >
+                <Button size="md" variant="outline" @click="openCreateContact"
+                  >Создать контакт</Button
+                >
               </div>
             </div>
             <div v-if="companyContacts.length === 0" class="text-text-muted text-sm py-4">
@@ -139,11 +167,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="c in companyContacts"
-                    :key="c.id"
-                    class="border-b border-border-light"
-                  >
+                  <tr v-for="c in companyContacts" :key="c.id" class="border-b border-border-light">
                     <td class="py-2 pr-4">
                       <router-link
                         :to="{ name: 'CrmContactDetail', params: { id: c.id } }"
@@ -153,7 +177,9 @@
                       </router-link>
                     </td>
                     <td class="py-2 pr-4">{{ c.position ?? '—' }}</td>
-                    <td class="py-2 pr-4">{{ c.emails?.[0]?.address ?? c.phones?.[0]?.number ?? '—' }}</td>
+                    <td class="py-2 pr-4">
+                      {{ c.emails?.[0]?.address ?? c.phones?.[0]?.number ?? '—' }}
+                    </td>
                     <td class="py-2" />
                   </tr>
                 </tbody>
@@ -166,13 +192,19 @@
             <div class="flex items-center justify-between gap-4 mb-4">
               <h3 class="text-sm font-medium text-text-secondary">
                 Сделки компании
-                <span v-if="companyDeals && companyDeals.length" class="ml-2 font-normal text-text-primary">
+                <span
+                  v-if="companyDeals && companyDeals.length"
+                  class="ml-2 font-normal text-text-primary"
+                >
                   — общая сумма: {{ formatSum(companyDealsSum) }}
                 </span>
               </h3>
             </div>
             <div v-if="companyDealsLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
-            <div v-else-if="companyDeals && companyDeals.length === 0" class="text-text-muted text-sm py-4">
+            <div
+              v-else-if="companyDeals && companyDeals.length === 0"
+              class="text-text-muted text-sm py-4"
+            >
               Нет сделок по этой компании.
             </div>
             <ul v-else class="space-y-2">
@@ -187,17 +219,16 @@
                 >
                   {{ deal.name }}
                 </router-link>
-                <span class="text-sm font-medium text-primary-default">{{ formatMoney(deal.budget, deal.currency) }}</span>
+                <span class="text-sm font-medium text-primary-default">{{
+                  formatMoney(deal.budget, deal.currency)
+                }}</span>
               </li>
             </ul>
           </template>
 
           <!-- Вкладка 4: Активность -->
           <template v-else-if="activeTab === 'activity'">
-            <ActivityFeed
-              entity-type="company"
-              :entity-id="companyId"
-            />
+            <ActivityFeed entity-type="company" :entity-id="companyId" />
           </template>
 
           <!-- Вкладка 5: Проекты -->
@@ -219,7 +250,10 @@
     <CompanyFormModal
       :is-open="showFormModal"
       :company="company ?? null"
-      @close="showFormModal = false; fetchCompany()"
+      @close="
+        showFormModal = false
+        fetchCompany()
+      "
       @update="handleUpdate"
     />
     <Modal :is-open="showAttachContactModal" @close="closeAttachContactModal">
@@ -402,7 +436,9 @@
   }
 
   function formatAddress(addr: CompanyAddress): string {
-    const parts = [addr.country, addr.city, addr.street, addr.building, addr.apartment].filter(Boolean)
+    const parts = [addr.country, addr.city, addr.street, addr.building, addr.apartment].filter(
+      Boolean,
+    )
     return parts.join(', ') || '—'
   }
 

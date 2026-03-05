@@ -13,25 +13,15 @@
           @keydown.esc="handleEsc"
         />
       </div>
-      
+
       <div class="flex gap-2 flex-shrink-0">
-        <Button
-          variant="outline"
-          aria-label="Импорт"
-          title="Импорт"
-          @click="$emit('import')"
-        >
+        <Button variant="outline" aria-label="Импорт" title="Импорт" @click="$emit('import')">
           Импорт
         </Button>
-        <Button
-          variant="outline"
-          aria-label="Экспорт"
-          title="Экспорт"
-          @click="$emit('export')"
-        >
+        <Button variant="outline" aria-label="Экспорт" title="Экспорт" @click="$emit('export')">
           Экспорт
         </Button>
-        
+
         <Button
           variant="outline"
           aria-label="Фильтры"
@@ -39,16 +29,16 @@
         >
           Фильтры
         </Button>
-        
+
         <PermissionGuard :permission="CRM_PERMISSIONS.contactCreate">
-          <Button variant="primary"  @click="$emit('create')">
+          <Button variant="primary" @click="$emit('create')">
             <PlusIcon :size="iconSize" class="mr-2" />
             Создать контакт
           </Button>
         </PermissionGuard>
       </div>
     </div>
-    
+
     <Transition name="filters-slide">
       <ContactsFiltersPanel
         v-if="showFilters"
@@ -100,7 +90,7 @@
 
   // Обработка Escape
   const handleEsc = () => {
-    (document.activeElement as HTMLElement)?.blur()
+    ;(document.activeElement as HTMLElement)?.blur()
   }
 </script>
 
@@ -114,5 +104,4 @@
     opacity: 0;
     transform: translateY(-8px);
   }
-
 </style>

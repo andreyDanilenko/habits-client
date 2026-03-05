@@ -17,7 +17,9 @@ declare module '*.vue' {
 declare module 'vue-router' {
   export function useRoute(): import('vue-router').RouteLocationNormalizedLoaded
   export function useRouter(): import('vue-router').Router
-  export function createRouter(options: import('vue-router').RouterOptions): import('vue-router').Router
+  export function createRouter(
+    options: import('vue-router').RouterOptions,
+  ): import('vue-router').Router
   export function createWebHistory(base?: string): import('vue-router').RouterHistory
 
   export type RouteRecordRaw = import('vue-router').RouteRecordRaw

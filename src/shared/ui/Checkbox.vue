@@ -29,12 +29,7 @@
       </span>
 
       <div v-if="label || hint" class="ml-2 flex-1 leading-snug">
-        <span
-          :class="[
-            'text-text-secondary font-medium',
-            labelSizeClasses,
-          ]"
-        >
+        <span :class="['text-text-secondary font-medium', labelSizeClasses]">
           {{ label }}
           <span v-if="required" class="text-error-default ml-1">*</span>
         </span>
@@ -98,11 +93,11 @@
   const boxSizeClasses = computed(() => {
     // 16 / 20 / 24 / 28 / 32 px в зависимости от размера
     const sizes: Record<ComponentSize, string> = {
-      xs: 'w-4 h-4',  // 16px
-      sm: 'w-5 h-5',  // 20px
-      md: 'w-6 h-6',  // 24px
-      lg: 'w-7 h-7',  // 28px
-      xl: 'w-8 h-8',  // 32px
+      xs: 'w-4 h-4', // 16px
+      sm: 'w-5 h-5', // 20px
+      md: 'w-6 h-6', // 24px
+      lg: 'w-7 h-7', // 28px
+      xl: 'w-8 h-8', // 32px
       xxl: 'w-8 h-8', // 32px (крупнее не требуется)
     }
     return sizes[props.size]

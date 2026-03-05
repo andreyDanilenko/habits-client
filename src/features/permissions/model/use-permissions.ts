@@ -35,4 +35,3 @@ export function usePermissions() {
     systemRole,
   }
 }
-

@@ -1,11 +1,6 @@
 <template>
   <label class="flex items-center gap-2 px-4 py-2.5 text-sm cursor-pointer">
-    <Checkbox
-      v-model="enabled"
-      size="sm"
-      container-class="items-center"
-      @change="onToggle"
-    />
+    <Checkbox v-model="enabled" size="sm" container-class="items-center" @change="onToggle" />
     <span class="text-text-primary flex-1 min-w-0">Цвет воркспейса</span>
   </label>
 </template>
@@ -38,4 +33,3 @@
     applyTheme(value)
   }
 </script>
-

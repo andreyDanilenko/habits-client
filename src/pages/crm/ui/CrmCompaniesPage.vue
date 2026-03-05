@@ -2,10 +2,7 @@
   <div class="max-w-7xl mx-auto space-y-6 pb-8">
     <h1 class="text-text-primary">CRM — Компании</h1>
 
-    <CompaniesToolbar
-      v-model:search-query="searchQuery"
-      @create="openCreateModal"
-    />
+    <CompaniesToolbar v-model:search-query="searchQuery" @create="openCreateModal" />
 
     <CompaniesTableWidget
       :companies="companies"

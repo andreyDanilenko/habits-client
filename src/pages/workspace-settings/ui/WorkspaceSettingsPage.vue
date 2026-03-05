@@ -1,7 +1,10 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
     <!-- Баннер для не-владельцев -->
-    <div v-if="!isOwner" class="p-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+    <div
+      v-if="!isOwner"
+      class="p-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg"
+    >
       <p class="text-sm text-yellow-800 dark:text-yellow-300">
         У вас нет прав для редактирования этого workspace. Доступ только для просмотра.
       </p>
@@ -64,7 +67,9 @@
     <Card v-if="isOwner" class="p-6">
       <h2 class="text-text-primary mb-4">Участники</h2>
       <div class="space-y-4">
-        <div class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div
+          class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg"
+        >
           <p class="text-sm text-blue-800 dark:text-blue-300">
             <span class="font-semibold">Soon:</span> Управление участниками workspace, назначение
             ролей и прав доступа.
@@ -91,7 +96,8 @@
     <Card class="p-6">
       <h2 class="text-text-primary mb-4">Приложение</h2>
       <p class="text-sm text-text-secondary">
-        Чтобы открывать HabitFlow как приложение с главного экрана: на телефоне в меню браузера выберите
+        Чтобы открывать HabitFlow как приложение с главного экрана: на телефоне в меню браузера
+        выберите
         <strong>«Добавить на главный экран»</strong> или <strong>«Установить приложение»</strong>;
         на компьютере — пункт <strong>«Установить HabitFlow»</strong> в меню браузера.
       </p>
@@ -101,9 +107,7 @@
     <Card v-if="isOwner" class="p-6">
       <h2 class="text-text-primary mb-4">Права доступа</h2>
       <div class="space-y-4">
-        <p class="text-sm text-text-secondary">
-          Управляйте ролями workspace и их правами доступа.
-        </p>
+        <p class="text-sm text-text-secondary">Управляйте ролями workspace и их правами доступа.</p>
         <router-link
           to="/workspace-settings/roles"
           class="inline-flex items-center text-primary-default hover:text-primary-dark font-medium"

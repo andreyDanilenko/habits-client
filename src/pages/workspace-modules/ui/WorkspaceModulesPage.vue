@@ -76,9 +76,7 @@
               <p v-else class="text-sm text-text-muted mb-1">
                 Включить модуль может владелец workspace или админ (при наличии лицензии).
               </p>
-              <Button variant="secondary" disabled>
-                Перейти к покупке / связь с владельцем
-              </Button>
+              <Button variant="secondary" disabled> Перейти к покупке / связь с владельцем </Button>
             </template>
           </div>
         </div>
@@ -141,12 +139,7 @@
    * Данные берём из API /workspace-modules (workspaceStore.modules), без хардкода id на фронте.
    */
   const coreModuleCodes = computed(
-    () =>
-      new Set(
-        workspaceStore.modules
-          .filter((m) => m.isCore)
-          .map((m) => m.moduleName),
-      ),
+    () => new Set(workspaceStore.modules.filter((m) => m.isCore).map((m) => m.moduleName)),
   )
 
   /** Может ли пользователь включить этот модуль: админ — всегда; владелец — при лицензии или если модуль core. */

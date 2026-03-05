@@ -5,4 +5,3 @@ export const CRM_PERMISSIONS = {
   companyCreate: 'crm:company:create' as PermissionString,
   dealCreate: 'crm:deal:create' as PermissionString,
 } as const
-

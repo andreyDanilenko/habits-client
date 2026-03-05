@@ -1,9 +1,11 @@
 <template>
   <section
-    :class="[
-      'flex flex-col items-start p-6 gap-6 w-full bg-bg-primary rounded-lg border border-border-default',
-      props.className,
-    ].filter(Boolean)"
+    :class="
+      [
+        'flex flex-col items-start p-6 gap-6 w-full bg-bg-primary rounded-lg border border-border-default',
+        props.className,
+      ].filter(Boolean)
+    "
   >
     <header class="flex flex-row justify-between items-center w-full min-h-8">
       <h2 class="font-semibold text-xl leading-normal text-text-primary m-0">{{ title }}</h2>
@@ -55,9 +57,7 @@
               v-for="col in columns"
               :key="col.id"
               class="py-3 px-2 border-b border-border-light font-semibold text-sm text-text-secondary align-middle"
-              :class="[
-                col.align === 'left' ? 'text-left pl-0' : 'text-center',
-              ]"
+              :class="[col.align === 'left' ? 'text-left pl-0' : 'text-center']"
               :style="{
                 minWidth: props.cellMinWidth,
                 maxWidth: props.cellMaxWidth,
@@ -205,8 +205,7 @@
       safeData.value.length > 0 &&
       safeData.value.every((row) => selectedIdsSet.value.has(props.getRowId(row))),
   )
-  const colCount =
-    (props.selectable ? 1 : 0) + props.columns.length + (props.rowActions ? 1 : 0)
+  const colCount = (props.selectable ? 1 : 0) + props.columns.length + (props.rowActions ? 1 : 0)
 
   function handleRowClick(row: T, e: MouseEvent) {
     const target = e.target as HTMLElement

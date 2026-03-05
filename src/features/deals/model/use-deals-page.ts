@@ -47,12 +47,11 @@ export function useDealsPage() {
     isError.value = false
     try {
       const isKanban = viewMode.value === 'kanban'
-      const statusParam =
-        isKanban
-          ? 'open'
-          : statusFilter.value === 'all'
-            ? undefined
-            : statusFilter.value
+      const statusParam = isKanban
+        ? 'open'
+        : statusFilter.value === 'all'
+          ? undefined
+          : statusFilter.value
       const res = await dealService.getList({
         workspaceId: workspaceId.value,
         page: isKanban ? 1 : tableState.page.value,
@@ -75,10 +74,14 @@ export function useDealsPage() {
     }
   }
 
-  watch(workspaceId, async () => {
-    await fetchPipelines()
-    await fetchDeals()
-  }, { immediate: true })
+  watch(
+    workspaceId,
+    async () => {
+      await fetchPipelines()
+      await fetchDeals()
+    },
+    { immediate: true },
+  )
 
   watch(
     [
@@ -128,24 +131,37 @@ export function useDealsPage() {
     await fetchDeals()
   }
 
-  const defaultPipeline = computed(() => pipelines.value.find((p) => p.isDefault) ?? pipelines.value[0])
+  const defaultPipeline = computed(
+    () => pipelines.value.find((p) => p.isDefault) ?? pipelines.value[0],
+  )
   /** Первый этап выбранной воронки — для формы создания сделки (сделка попадает в выбранную воронку) */
-  const defaultStageId = computed(() => currentPipeline.value?.stages?.[0]?.id ?? defaultPipeline.value?.stages?.[0]?.id)
+  const defaultStageId = computed(
+    () => currentPipeline.value?.stages?.[0]?.id ?? defaultPipeline.value?.stages?.[0]?.id,
+  )
 
-  const currentPipeline = computed(() =>
-    pipelines.value.find((p) => p.id === selectedPipelineId.value) ?? defaultPipeline.value,
+  const currentPipeline = computed(
+    () => pipelines.value.find((p) => p.id === selectedPipelineId.value) ?? defaultPipeline.value,
   )
 
   const kanbanColumns = ref<KanbanColumnModel<Deal>[]>([])
 
   function buildKanbanColumns(): KanbanColumnModel<Deal>[] {
+    const uniqueDeals: Deal[] = []
+    const seenIds = new Set<string>()
+
+    for (const d of deals.value) {
+      if (seenIds.has(d.id)) continue
+      seenIds.add(d.id)
+      uniqueDeals.push(d)
+    }
+
     const pipeline = currentPipeline.value
     if (!pipeline) return []
     const stages = pipeline.stages ?? []
     return stages
       .sort((a, b) => a.order - b.order)
       .map((stage) => {
-        const stageDeals = deals.value.filter((d) => d.stageId === stage.id)
+        const stageDeals = uniqueDeals.filter((d) => d.stageId === stage.id)
         const sum = stageDeals.reduce((acc, d) => acc + (d.budget ?? 0), 0)
         return {
           id: stage.id,
@@ -159,6 +175,15 @@ export function useDealsPage() {
 
   /** Обновляет колонки на месте, без замены массива — меньше дёргания при смене фильтра */
   function syncKanbanColumnsInPlace() {
+    const uniqueDeals: Deal[] = []
+    const seenIds = new Set<string>()
+
+    for (const d of deals.value) {
+      if (seenIds.has(d.id)) continue
+      seenIds.add(d.id)
+      uniqueDeals.push(d)
+    }
+
     const pipeline = currentPipeline.value
     if (!pipeline) {
       kanbanColumns.value = []
@@ -168,13 +193,10 @@ export function useDealsPage() {
     const current = kanbanColumns.value
     const stageIds = stages.map((s) => s.id)
 
-    if (
-      current.length === stageIds.length &&
-      current.every((col, i) => col.id === stageIds[i])
-    ) {
+    if (current.length === stageIds.length && current.every((col, i) => col.id === stageIds[i])) {
       for (let i = 0; i < stages.length; i++) {
         const stage = stages[i]
-        const stageDeals = deals.value.filter((d) => d.stageId === stage.id)
+        const stageDeals = uniqueDeals.filter((d) => d.stageId === stage.id)
         const sum = stageDeals.reduce((acc, d) => acc + (d.budget ?? 0), 0)
         current[i].title = stage.name
         current[i].color = stage.color
@@ -206,19 +228,15 @@ export function useDealsPage() {
     const toId = payload.toColumnId
     if (!toId || !deal?.id) return
     savingDealIds.value = new Set(savingDealIds.value).add(deal.id)
-    const prevDeals = deals.value.map((d) => (d.id === deal.id ? { ...d } : d))
-    const prevIdx = deals.value.findIndex((d) => d.id === deal.id)
-    if (prevIdx >= 0) {
-      deals.value = deals.value.map((d, i) => (i === prevIdx ? { ...d, stageId: toId } : d))
-      kanbanColumns.value = buildKanbanColumns()
-    }
+    const prevDeals = deals.value.map((d) => ({ ...d }))
+
+    deals.value = deals.value.map((d) => (d.id === deal.id ? { ...d, stageId: toId } : d))
+    kanbanColumns.value = buildKanbanColumns()
     try {
       await dealService.update(workspaceId.value, deal.id, { stageId: toId })
     } catch {
-      if (prevIdx >= 0) {
-        deals.value = prevDeals
-        kanbanColumns.value = buildKanbanColumns()
-      }
+      deals.value = prevDeals
+      kanbanColumns.value = buildKanbanColumns()
     } finally {
       const next = new Set(savingDealIds.value)
       next.delete(deal.id)

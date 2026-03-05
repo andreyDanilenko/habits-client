@@ -16,7 +16,9 @@
     </div>
     <template v-else-if="deal">
       <!-- Блок 3.3.1: Шапка сделки -->
-      <header class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary">
+      <header
+        class="flex flex-wrap items-start gap-4 p-4 rounded-xl border border-border-default bg-bg-primary"
+      >
         <div class="min-w-0 flex-1">
           <h1 class="text-text-primary text-xl font-semibold">
             <input
@@ -28,10 +30,14 @@
               @blur="saveName"
               @keydown.enter="saveName"
             />
-            <span v-else class="cursor-pointer hover:underline" @click="editingName = true">{{ deal.name }}</span>
+            <span v-else class="cursor-pointer hover:underline" @click="editingName = true">{{
+              deal.name
+            }}</span>
           </h1>
           <div class="flex flex-wrap items-center gap-3 mt-2 text-sm">
-            <span class="font-medium text-primary-default">{{ formatMoney(deal.budget, deal.currency) }}</span>
+            <span class="font-medium text-primary-default">{{
+              formatMoney(deal.budget, deal.currency)
+            }}</span>
 
             <select
               v-model="selectedPipelineId"
@@ -96,7 +102,9 @@
           </div>
           <div class="sm:col-span-2">
             <dt class="text-sm text-text-muted">Описание</dt>
-            <dd class="mt-0.5 text-text-primary whitespace-pre-wrap">{{ deal.description || '—' }}</dd>
+            <dd class="mt-0.5 text-text-primary whitespace-pre-wrap">
+              {{ deal.description || '—' }}
+            </dd>
           </div>
           <div>
             <dt class="text-sm text-text-muted">Плановая дата закрытия</dt>
@@ -139,11 +147,7 @@
           </button>
         </nav>
         <div class="p-6">
-          <ActivityFeed
-            v-if="activeTab === 'activity'"
-            entity-type="deal"
-            :entity-id="dealId"
-          />
+          <ActivityFeed v-if="activeTab === 'activity'" entity-type="deal" :entity-id="dealId" />
           <ProjectEntityPanel
             v-else-if="activeTab === 'projects'"
             :workspace-id="workspaceId"
@@ -257,9 +261,7 @@
       pipelines.value = await dealService.getPipelines(workspaceId.value)
       const initialPipelineId =
         deal.value?.pipelineId ||
-        pipelines.value.find((p) =>
-          p.stages.some((s) => s.id === deal.value?.stageId),
-        )?.id ||
+        pipelines.value.find((p) => p.stages.some((s) => s.id === deal.value?.stageId))?.id ||
         pipelines.value[0]?.id ||
         ''
       selectedPipelineId.value = initialPipelineId
@@ -292,11 +294,7 @@
     }
   }
 
-  watch(
-    () => route.params.id,
-    fetchDeal,
-    { immediate: true },
-  )
+  watch(() => route.params.id, fetchDeal, { immediate: true })
 
   watch(workspaceId, fetchDeal)
 

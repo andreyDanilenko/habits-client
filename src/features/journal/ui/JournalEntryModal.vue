@@ -66,7 +66,16 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-  import { ModalContent, FormField, Input, Button, SelectButton, Badge, DatePicker, Textarea } from '@/shared/ui'
+  import {
+    ModalContent,
+    FormField,
+    Input,
+    Button,
+    SelectButton,
+    Badge,
+    DatePicker,
+    Textarea,
+  } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
   import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'
 
