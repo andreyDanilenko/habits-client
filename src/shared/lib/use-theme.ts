@@ -1,5 +1,6 @@
 import { computed, watch } from 'vue'
 import { useLocalStorage } from '@/shared/lib/storage/storage'
+import { updateFavicon } from '@/shared/lib/use-favicon'
 
 const STORAGE_KEY = 'habitflow-theme'
 export type ThemeMode = 'light' | 'dark'
@@ -23,6 +24,8 @@ function applyTheme(mode: ThemeMode, palette: ThemePalette) {
   if (palette !== 'default') {
     root.classList.add(PALETTE_CLASSES[palette])
   }
+
+  requestAnimationFrame(() => updateFavicon())
 }
 
 type StoredTheme = { mode: ThemeMode; palette: ThemePalette }

@@ -42,7 +42,6 @@
               class="py-3 px-2 border-b border-border-light font-semibold text-sm text-text-secondary text-left pl-4 align-middle bg-bg-primary"
               :class="[
                 props.stickySelection && 'sticky left-0 z-20',
-                // небольшая тень, чтобы не было просвета между фиксированной и скроллимой частью
                 props.stickySelection && 'shadow-[2px_0_0_0_rgba(0,0,0,0.04)]',
               ]"
             >

@@ -1,6 +1,7 @@
 export type { ModalConfig, ModalInstance } from './modal'
 export { modalManager, useModal } from './modal'
 export { useTheme, initTheme } from './use-theme'
+export { updateFavicon } from './use-favicon'
 export { useDebounce, useDebounceFn } from './use-debounce'
 export type { ThemeMode } from './use-theme'
 export {

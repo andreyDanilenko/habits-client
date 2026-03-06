@@ -1,5 +1,6 @@
 import type { Workspace } from '@/entities/workspace'
 import { hexToHsl } from './color-converter'
+import { updateFavicon } from './use-favicon'
 
 class ThemeService {
   private readonly workspaceThemeFlagKey = 'habitflow-use-workspace-theme'
@@ -50,14 +51,17 @@ class ThemeService {
 
     if (!this.shouldUseWorkspaceTheme() || !workspace?.color) {
       clearWorkspaceOverrides()
+      requestAnimationFrame(() => updateFavicon())
       return
     }
 
     try {
       const { h, s, l } = hexToHsl(workspace.color)
       setBaseTheme(h, s, l)
+      requestAnimationFrame(() => updateFavicon())
     } catch {
       clearWorkspaceOverrides()
+      requestAnimationFrame(() => updateFavicon())
     }
   }
 }
