@@ -14,7 +14,7 @@
     </div>
     <div class="font-semibold text-text-primary truncate">{{ deal.name }}</div>
     <div class="mt-1 text-sm font-medium text-primary-default">
-      {{ formatMoney(deal.budget, deal.currency) }}
+      {{ formatDealMoney(deal.budget, deal.currency) }}
     </div>
     <div class="mt-1 text-xs text-text-muted truncate">
       {{ companyOrContact }}
@@ -33,7 +33,7 @@
         v-if="deal.expectedCloseDate"
         :class="['text-xs', isOverdue ? 'text-danger-default font-medium' : 'text-text-muted']"
       >
-        {{ formatDate(deal.expectedCloseDate) }}
+        {{ formatDealDate(deal.expectedCloseDate) }}
       </span>
     </div>
     <div v-if="deal.tags?.length" class="mt-2 flex flex-wrap gap-1">
@@ -51,6 +51,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import type { Deal } from '@/entities/deal'
+  import { formatDealDate, formatDealMoney } from '../lib/format'
 
   const props = defineProps<{
     deal: Deal
@@ -75,23 +76,6 @@
     if (!d) return false
     return new Date(d) < new Date() && props.deal.status === 'open'
   })
-
-  function formatMoney(value: number, currency: string): string {
-    return (
-      new Intl.NumberFormat('ru-RU', {
-        style: 'decimal',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(value) + (currency === 'RUB' ? ' ₽' : ` ${currency}`)
-    )
-  }
-
-  function formatDate(iso: string): string {
-    const d = new Date(iso)
-    const day = d.getDate()
-    const months = 'янв фев мар апр май июн июл авг сен окт ноя дек'.split(' ')
-    return `${day} ${months[d.getMonth()]}`
-  }
 
   function onContextMenu(evt: MouseEvent) {
     emit('context-menu', evt, props.deal)

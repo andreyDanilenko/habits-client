@@ -7,12 +7,16 @@
     >
       <form class="space-y-4" @submit.prevent="handleSubmit">
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Название сделки <span class="text-error-default">*</span></span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Название сделки <span class="text-error-default">*</span>
+          </span>
           <Input v-model="form.name" placeholder="Название" required />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Контакт</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Контакт
+          </span>
           <SearchSelect
             v-model="form.contactId"
             :query="contactQuery"
@@ -24,25 +28,29 @@
             :get-option-label="getContactOptionLabel"
             @update:query="contactQuery = $event"
             @search="onContactSearch"
-            @select="onSelectContact"
+            @select="(c) => selectContact(c as unknown as Contact)"
             @create="$emit('create-contact')"
           />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Компания</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Компания
+          </span>
           <input
             :value="form.companyNameDisplay"
             type="text"
             placeholder="Заполняется автоматически при выборе контакта"
             readonly
-            class="w-full px-3 py-2 border border-border-light rounded-lg bg-bg-tertiary text-text-secondary cursor-default"
+            class="w-full px-(--spacing-3) py-(--spacing-2) rounded-(--radius-md) border border-border-light bg-bg-tertiary text-text-secondary cursor-default"
           />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Бюджет</span>
-          <div class="flex gap-2">
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Бюджет
+          </span>
+          <div class="flex gap-(--spacing-2)">
             <Input
               v-model="form.budgetStr"
               type="number"
@@ -56,31 +64,41 @@
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Воронка</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Воронка
+          </span>
           <Select v-model="form.pipelineId" :options="pipelineOptions" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Этап</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Этап
+          </span>
           <Select v-model="form.stageId" :options="stageOptions" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Плановая дата закрытия</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Плановая дата закрытия
+          </span>
           <DatePicker v-model="form.expectedCloseDate" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Описание
+          </span>
           <Textarea v-model="form.description" placeholder="Описание сделки" :rows="3" resize="y" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Ответственный</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+            Ответственный
+          </span>
           <Select v-model="form.ownerId" :options="ownerOptions" />
         </div>
 
-        <div class="flex justify-end gap-2 pt-2">
+        <div class="flex justify-end gap-(--spacing-2) pt-(--spacing-2)">
           <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
           <Button type="submit" :loading="saving">Сохранить</Button>
         </div>
@@ -90,253 +108,77 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
-  import {
-    Modal,
-    ModalContent,
-    Button,
-    Input,
-    Textarea,
-    DatePicker,
-    Select,
-    SearchSelect,
-  } from '@/shared/ui'
-  import type { SearchSelectOption } from '@/shared/ui'
-  import { contactService } from '@/entities/contact'
-  import { companyService } from '@/entities/company'
-  import type { Deal, CreateDealDto, Pipeline } from '@/entities/deal'
-  import type { Contact } from '@/entities/contact'
+import {
+  Modal,
+  ModalContent,
+  Button,
+  Input,
+  Textarea,
+  DatePicker,
+  Select,
+  SearchSelect,
+} from '@/shared/ui'
+import type { Contact } from '@/entities/contact'
+import type { Deal, CreateDealDto } from '@/entities/deal'
+import { useDealForm } from '../model/use-deal-form'
 
-  const props = withDefaults(
-    defineProps<{
-      isOpen: boolean
-      deal: Deal | null
-      pipelines: Pipeline[]
-      pipelineId?: string
-      defaultStageId: string | undefined
-      workspaceId: string
-      defaultOwnerId: string
-      preselectedContact?: Contact | null
-    }>(),
-    {
-      pipelineId: undefined,
-      preselectedContact: null,
-    },
-  )
+const props = withDefaults(
+  defineProps<{
+    isOpen: boolean
+    deal: Deal | null
+    pipelines: import('@/entities/deal').Pipeline[]
+    pipelineId?: string
+    defaultStageId: string | undefined
+    workspaceId: string
+    defaultOwnerId: string
+    preselectedContact?: Contact | null
+  }>(),
+  { pipelineId: undefined, preselectedContact: null },
+)
 
-  const emit = defineEmits<{
-    close: []
-    save: [data: CreateDealDto]
-    update: [id: string, data: CreateDealDto]
-    'create-contact': []
-    'preselected-applied': []
-  }>()
+const emit = defineEmits<{
+  close: []
+  confirm: [result: { id?: string; data: CreateDealDto }]
+  save: [data: CreateDealDto]
+  update: [id: string, data: CreateDealDto]
+  'create-contact': []
+  'preselected-applied': []
+}>()
 
-  const saving = ref(false)
-  const contactQuery = ref('')
-  const contactOptions = ref<Contact[]>([])
-  const contactSearching = ref(false)
-  const selectedContactDisplay = ref('')
+const {
+  form,
+  saving,
+  contactQuery,
+  contactOptions,
+  contactSearching,
+  selectedContactDisplay,
+  pipelineOptions,
+  stageOptions,
+  ownerOptions,
+  currencyOptions,
+  getContactOptionLabel,
+  selectContact,
+  onContactSearch,
+  buildSubmitData,
+} = useDealForm(props, {
+  onPreselectedApplied: () => emit('preselected-applied'),
+})
 
-  const form = ref({
-    name: '',
-    contactId: '',
-    companyId: '',
-    companyNameDisplay: '',
-    budgetStr: '',
-    currency: 'RUB' as 'RUB' | 'USD' | 'EUR',
-    pipelineId: '',
-    stageId: '',
-    expectedCloseDate: '',
-    description: '',
-    ownerId: '',
-  })
-
-  const stages = computed(() => {
-    const explicitPipelineId = form.value.pipelineId || props.pipelineId
-    const pipeline =
-      (explicitPipelineId && props.pipelines.find((p) => p.id === explicitPipelineId)) ||
-      props.pipelines.find((p) => p.isDefault) ||
-      props.pipelines[0]
-    return pipeline?.stages ?? []
-  })
-
-  const currencyOptions = [
-    { value: 'RUB', label: 'RUB' },
-    { value: 'USD', label: 'USD' },
-    { value: 'EUR', label: 'EUR' },
-  ]
-
-  const pipelineOptions = computed(() =>
-    props.pipelines.map((p) => ({
-      value: p.id,
-      label: p.name,
-    })),
-  )
-
-  const stageOptions = computed(() =>
-    stages.value.map((s) => ({
-      value: s.id,
-      label: s.name,
-    })),
-  )
-
-  const ownerOptions = computed(() => {
-    const id = props.defaultOwnerId || '1'
-    return [{ value: id, label: 'Текущий пользователь' }]
-  })
-
-  function contactDisplayName(c: Contact) {
-    const n = [c.firstName, c.lastName].filter(Boolean).join(' ')
-    return n || c.emails?.[0]?.address || c.id
-  }
-
-  function getContactOptionLabel(c: SearchSelectOption) {
-    return contactDisplayName(c as unknown as Contact)
-  }
-
-  async function onContactSearch(q: string) {
-    if (!q || !props.workspaceId) {
-      contactOptions.value = []
-      return
-    }
-    contactSearching.value = true
-    try {
-      const res = await contactService.getList({
-        workspaceId: props.workspaceId,
-        search: q,
-        limit: 10,
-      })
-      contactOptions.value = res.contacts ?? []
-    } catch {
-      contactOptions.value = []
-    } finally {
-      contactSearching.value = false
-    }
-  }
-
-  async function selectContact(c: Contact) {
-    form.value.contactId = c.id
-    form.value.companyId = c.companyId ?? ''
-    selectedContactDisplay.value = contactDisplayName(c)
-    contactQuery.value = ''
-    contactOptions.value = []
-    if (c.companyId && props.workspaceId) {
-      try {
-        const company = await companyService.getById(props.workspaceId, c.companyId)
-        form.value.companyNameDisplay = company.name
-      } catch {
-        form.value.companyNameDisplay = ''
-      }
+async function handleSubmit() {
+  if (!form.value.name.trim()) return
+  saving.value = true
+  try {
+    const data = buildSubmitData()
+    if (props.deal) {
+      emit('confirm', { id: props.deal.id, data })
+      emit('update', props.deal.id, data)
     } else {
-      form.value.companyNameDisplay = ''
+      emit('confirm', { data })
+      emit('save', data)
     }
+    emit('close')
+  } finally {
+    saving.value = false
   }
-
-  function onSelectContact(c: SearchSelectOption) {
-    selectContact(c as unknown as Contact)
-  }
-
-  watch(
-    () => [props.isOpen, props.deal, props.defaultStageId, props.preselectedContact] as const,
-    async ([open, deal, defaultStageId, preselected]) => {
-      if (open) {
-        const explicitPipelineId = props.deal?.pipelineId ?? props.pipelineId
-        const fallbackPipeline =
-          explicitPipelineId && props.pipelines.find((p) => p.id === explicitPipelineId)
-        const defaultPipeline =
-          fallbackPipeline || props.pipelines.find((p) => p.isDefault) || props.pipelines[0]
-        const initialPipelineId = defaultPipeline?.id ?? ''
-        const firstStageId = defaultPipeline?.stages?.[0]?.id ?? stages.value[0]?.id ?? ''
-        form.value = {
-          name: deal?.name ?? '',
-          contactId: deal?.contactId ?? '',
-          companyId: deal?.companyId ?? '',
-          companyNameDisplay: '',
-          budgetStr: deal?.budget != null ? String(deal.budget) : '',
-          currency: deal?.currency ?? 'RUB',
-          pipelineId: deal?.pipelineId ?? initialPipelineId,
-          stageId: deal?.stageId ?? defaultStageId ?? firstStageId,
-          expectedCloseDate: deal?.expectedCloseDate?.slice(0, 10) ?? '',
-          description: deal?.description ?? '',
-          ownerId: deal?.ownerId ?? (props.defaultOwnerId || '1'),
-        }
-        contactQuery.value = ''
-        selectedContactDisplay.value = ''
-        contactOptions.value = []
-
-        if (preselected) {
-          await selectContact(preselected)
-          emit('preselected-applied')
-        } else if (deal?.contactId && props.workspaceId) {
-          try {
-            const contact = await contactService.getById(props.workspaceId, deal.contactId)
-            selectedContactDisplay.value = contactDisplayName(contact)
-            if (contact.companyId) {
-              form.value.companyId = contact.companyId
-              const company = await companyService.getById(props.workspaceId, contact.companyId)
-              form.value.companyNameDisplay = company.name
-            }
-          } catch {
-            // ignore
-          }
-        } else if (deal?.companyId && props.workspaceId) {
-          try {
-            const company = await companyService.getById(props.workspaceId, deal.companyId)
-            form.value.companyNameDisplay = company.name
-          } catch {
-            // ignore
-          }
-        }
-      }
-    },
-    { immediate: true },
-  )
-
-  watch(
-    () => form.value.pipelineId,
-    (newPipelineId) => {
-      if (!newPipelineId) return
-      const pipeline = props.pipelines.find((p) => p.id === newPipelineId)
-      const firstStageId = pipeline?.stages?.[0]?.id
-      if (!firstStageId) return
-      const stageInPipeline = pipeline.stages.some((s) => s.id === form.value.stageId)
-      if (!stageInPipeline) {
-        form.value.stageId = firstStageId
-      }
-    },
-  )
-
-  const handleSubmit = async () => {
-    if (!form.value.name.trim()) return
-    saving.value = true
-    try {
-      const pipelineId =
-        form.value.pipelineId ||
-        props.pipelineId ||
-        props.pipelines.find((p) => p.stages?.some((s) => s.id === form.value.stageId))?.id ||
-        props.pipelines[0]?.id ||
-        ''
-      const data: CreateDealDto = {
-        name: form.value.name.trim(),
-        contactId: form.value.contactId || undefined,
-        companyId: form.value.companyId || undefined,
-        budget: form.value.budgetStr ? Number(form.value.budgetStr) : 0,
-        currency: form.value.currency,
-        pipelineId,
-        stageId: form.value.stageId || (stages.value[0]?.id ?? ''),
-        expectedCloseDate: form.value.expectedCloseDate || undefined,
-        description: form.value.description?.trim() || undefined,
-        ownerId: form.value.ownerId || undefined,
-      }
-      if (props.deal) {
-        emit('update', props.deal.id, data)
-      } else {
-        emit('save', data)
-      }
-      emit('close')
-    } finally {
-      saving.value = false
-    }
-  }
+}
 </script>

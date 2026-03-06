@@ -1,4 +1,4 @@
-export { useDealsPage, useDealsTableState } from './model'
+export { useDealsPage, useDealsTableState, useDealDetail, useDealActions } from './model'
 export type { DealsViewMode } from './model/use-deals-page'
 export {
   DealsToolbar,

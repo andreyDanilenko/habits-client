@@ -49,7 +49,7 @@
                 </div>
               </div>
               <div class="text-xs text-text-secondary whitespace-nowrap">
-                {{ formatMoney(deal.budget, deal.currency) }}
+                {{ formatDealMoney(deal.budget, deal.currency) }}
               </div>
             </button>
           </li>
@@ -67,6 +67,7 @@
   import { ref, watch, computed } from 'vue'
   import { Modal, ModalContent, Button } from '@/shared/ui'
   import { dealService } from '@/entities/deal'
+  import { formatDealMoney } from '../lib/format'
   import type { Deal } from '@/entities/deal'
   import type { Contact } from '@/entities/contact'
 
@@ -129,14 +130,6 @@
     if (status === 'won') return 'Выиграна'
     if (status === 'lost') return 'Проиграна'
     return 'Открыта'
-  }
-
-  function formatMoney(value: number, currency: string): string {
-    if (!value) return currency === 'RUB' ? '0 ₽' : `0 ${currency}`
-    return (
-      new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value) +
-      (currency === 'RUB' ? ' ₽' : ` ${currency}`)
-    )
   }
 
   watch(
