@@ -15,4 +15,7 @@ export {
   CompanyAddresses,
   CompanyTags,
   CompanyResponsible,
+  CompanyMainInfo,
+  CompanyContactsSection,
+  CompanyDealsSection,
 } from './ui'

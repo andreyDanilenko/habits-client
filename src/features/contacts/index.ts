@@ -12,5 +12,8 @@ export {
   ContactQuickViewPanel,
   ContactsFiltersPanel,
   ContactsTableSection,
+  ContactMainInfo,
+  ContactDealsSection,
+  ContactTasksPlaceholder,
   type ContactFilters,
 } from './ui'

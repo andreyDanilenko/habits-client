@@ -79,99 +79,12 @@
             </div>
           </header>
 
-          <DetailTabsPanel v-model="activeTab" :tabs="tabs">
-            <template #main>
-              <section class="space-y-(--spacing-6)">
-                <h2 class="text-(--text-lg) font-medium text-text-primary">
-                  Основная информация
-                </h2>
-                <dl class="grid gap-(--spacing-4) sm:grid-cols-2">
-                  <div>
-                    <dt class="text-(--text-sm) text-text-muted">Контакт</dt>
-                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                      <router-link
-                        v-if="deal.contactId"
-                        :to="{ name: 'CrmContactDetail', params: { id: deal.contactId } }"
-                        class="text-primary-default hover:underline"
-                      >
-                        {{ contactName || 'Контакт' }}
-                      </router-link>
-                      <span v-else class="text-text-muted">Не привязан</span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt class="text-(--text-sm) text-text-muted">Компания</dt>
-                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                      <router-link
-                        v-if="deal.companyId"
-                        :to="{ name: 'CrmCompanyDetail', params: { id: deal.companyId } }"
-                        class="text-primary-default hover:underline"
-                      >
-                        {{ companyName || 'Компания' }}
-                      </router-link>
-                      <span v-else class="text-text-muted">Не привязана</span>
-                    </dd>
-                  </div>
-                  <div class="sm:col-span-2">
-                    <dt class="text-(--text-sm) text-text-muted">Описание</dt>
-                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary whitespace-pre-wrap">
-                      {{ deal.description || '—' }}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt class="text-(--text-sm) text-text-muted">Плановая дата закрытия</dt>
-                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                      {{ formatDealDate(deal.expectedCloseDate) }}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt class="text-(--text-sm) text-text-muted">Источник</dt>
-                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                      {{ deal.source || '—' }}
-                    </dd>
-                  </div>
-                  <div v-if="deal.tags?.length" class="sm:col-span-2">
-                    <dt class="text-(--text-sm) text-text-muted mb-(--spacing-1)">Теги</dt>
-                    <dd class="flex flex-wrap gap-(--spacing-1)">
-                      <span
-                        v-for="tag in deal.tags"
-                        :key="tag"
-                        class="inline-block px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-sm) bg-bg-tertiary text-text-secondary"
-                      >
-                        {{ tag }}
-                      </span>
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-            </template>
-            <template #activity>
-              <ActivityFeed
-                entity-type="deal"
-                :entity-id="dealId"
-              />
-            </template>
-            <template #projects>
-              <ProjectEntityPanel
-                :workspace-id="workspaceId"
-                entity-type="crm_deal"
-                :entity-id="dealId"
-                :entity-name="deal?.name"
-                :can-edit="canEditCrm"
-                projects-base-path="/projects"
-              />
-            </template>
-            <template #tasks>
-              <p class="text-text-muted text-(--text-sm)">
-                Связанные задачи (в разработке).
-              </p>
-            </template>
-            <template #products>
-              <p class="text-text-muted text-(--text-sm)">
-                Товары/услуги (для будущего расширения).
-              </p>
-            </template>
-          </DetailTabsPanel>
+          <DetailTabsPanel
+            v-model="activeTab"
+            :tabs="tabs"
+            :tab-components="tabComponents"
+            :tab-props="tabProps"
+          />
         </div>
       </template>
     </template>
@@ -186,9 +99,14 @@ import { Button, Spinner, Select, EditableTitle, DetailTabsPanel } from '@/share
 import { ArrowLeftIcon } from '@/shared/ui/icon'
 import { usePermissions, WorkspacePermission } from '@/entities/workspace'
 import { dealService } from '@/entities/deal'
-import { useDealDetail, useDealActions } from '@/features/deals'
+import {
+  useDealDetail,
+  useDealActions,
+  DealMainInfo,
+  DealPlaceholderTab,
+} from '@/features/deals'
 import type { CreateDealDto } from '@/entities/deal'
-import { formatDealDate, formatDealMoney } from '@/features/deals/lib/format'
+import { formatDealMoney } from '@/features/deals/lib/format'
 import { ActivityFeed } from '@/features/activity'
 import { ProjectEntityPanel } from '@/features/projects'
 
@@ -253,4 +171,31 @@ const tabs = [
   { id: 'tasks', label: 'Задачи' },
   { id: 'products', label: 'Товары/Услуги' },
 ]
+
+const tabComponents = {
+  main: DealMainInfo,
+  activity: ActivityFeed,
+  projects: ProjectEntityPanel,
+  tasks: DealPlaceholderTab,
+  products: DealPlaceholderTab,
+}
+
+const tabProps = computed(() => ({
+  main: {
+    deal: deal.value!,
+    contactName: contactName.value,
+    companyName: companyName.value,
+  },
+  activity: { entityType: 'deal' as const, entityId: dealId.value },
+  projects: {
+    workspaceId: workspaceId.value,
+    entityType: 'crm_deal',
+    entityId: dealId.value,
+    entityName: deal.value?.name,
+    canEdit: canEditCrm.value,
+    projectsBasePath: '/projects',
+  },
+  tasks: { text: 'Связанные задачи (в разработке).' },
+  products: { text: 'Товары/услуги (для будущего расширения).' },
+}))
 </script>

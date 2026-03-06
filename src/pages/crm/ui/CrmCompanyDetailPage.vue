@@ -39,100 +39,12 @@
         <Spinner class="size-8 text-primary-default" />
       </div>
       <template v-else-if="company">
-        <DetailTabsPanel v-model="activeTab" :tabs="tabs">
-          <template #main>
-            <section class="space-y-(--spacing-6)">
-              <CompanyRequisites
-                :name="company.name"
-                :inn="company.inn"
-                :kpp="company.kpp"
-                :ogrn="company.ogrn"
-              />
-              <CompanyContactInfo
-                :phone="company.phone"
-                :email="company.email"
-                :website="company.website"
-              />
-              <CompanyAddresses
-                :legal-address="company.legalAddress"
-                :actual-address="company.actualAddress"
-              />
-              <CompanyTags :tags="company.tags" />
-              <CompanyResponsible :owner-id="company.ownerId" />
-            </section>
-          </template>
-          <template #contacts>
-            <ContactsTableSection
-              title="Сотрудники компании"
-              :contacts="companyContacts"
-              empty-text="Нет привязанных контактов."
-            >
-              <template #actions>
-                <Button size="md" variant="ghost" @click="openAttachContact">
-                  Привязать контакт
-                </Button>
-                <Button size="md" variant="outline" @click="openCreateContact">
-                  Создать контакт
-                </Button>
-              </template>
-            </ContactsTableSection>
-          </template>
-          <template #deals>
-            <div class="flex items-center justify-between gap-(--spacing-4) mb-(--spacing-4)">
-              <h3 class="text-(--text-sm) font-medium text-text-secondary">
-                Сделки компании
-                <span
-                  v-if="companyDeals && companyDeals.length"
-                  class="ml-(--spacing-2) font-normal text-text-primary"
-                >
-                  — общая сумма: {{ formatDealMoney(companyDealsSum, 'RUB') }}
-                </span>
-              </h3>
-            </div>
-            <div
-              v-if="companyDealsLoading"
-              class="text-text-muted text-(--text-sm) py-(--spacing-4)"
-            >
-              Загрузка…
-            </div>
-            <div
-              v-else-if="companyDeals && companyDeals.length === 0"
-              class="text-text-muted text-(--text-sm) py-(--spacing-4)"
-            >
-              Нет сделок по этой компании.
-            </div>
-            <ul v-else class="space-y-(--spacing-2)">
-              <li
-                v-for="deal in companyDeals"
-                :key="deal.id"
-                class="flex items-center justify-between gap-(--spacing-4) py-(--spacing-2) border-b border-border-light"
-              >
-                <router-link
-                  :to="{ name: 'CrmDealDetail', params: { id: deal.id } }"
-                  class="text-primary-default hover:underline"
-                >
-                  {{ deal.name }}
-                </router-link>
-                <span class="text-(--text-sm) font-medium text-primary-default">
-                  {{ formatDealMoney(deal.budget, deal.currency) }}
-                </span>
-              </li>
-            </ul>
-          </template>
-          <template #activity>
-            <ActivityFeed entity-type="company" :entity-id="companyId" />
-          </template>
-          <template #projects>
-            <ProjectEntityPanel
-              :workspace-id="workspaceId"
-              entity-type="crm_company"
-              :entity-id="companyId"
-              :entity-name="company?.name"
-              :can-edit="canEditCrm"
-              projects-base-path="/projects"
-            />
-          </template>
-        </DetailTabsPanel>
+        <DetailTabsPanel
+          v-model="activeTab"
+          :tabs="tabs"
+          :tab-components="tabComponents"
+          :tab-props="tabProps"
+        />
       </template>
       <div v-else class="text-center py-12 text-text-muted">Компания не найдена.</div>
     </template>
@@ -178,15 +90,11 @@
   import {
     CompanyFormModal,
     CompanyAttachContactForm,
-    CompanyRequisites,
-    CompanyContactInfo,
-    CompanyAddresses,
-    CompanyTags,
-    CompanyResponsible,
+    CompanyMainInfo,
+    CompanyContactsSection,
+    CompanyDealsSection,
     useCompanyDetail,
   } from '@/features/companies'
-  import { ContactsTableSection } from '@/features/contacts'
-  import { formatDealMoney } from '@/features/deals/lib/format'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
   import { companyService } from '@/entities/company'
@@ -220,6 +128,37 @@
     { id: 'activity', label: 'Активность' },
     { id: 'projects', label: 'Проекты' },
   ]
+
+  const tabComponents = {
+    main: CompanyMainInfo,
+    contacts: CompanyContactsSection,
+    deals: CompanyDealsSection,
+    activity: ActivityFeed,
+    projects: ProjectEntityPanel,
+  }
+
+  const tabProps = computed(() => ({
+    main: { company: company.value! },
+    contacts: {
+      contacts: companyContacts.value,
+      onAttachContact: openAttachContact,
+      onCreateContact: openCreateContact,
+    },
+    deals: {
+      deals: companyDeals.value,
+      loading: companyDealsLoading.value,
+      dealsSum: companyDealsSum.value,
+    },
+    activity: { entityType: 'company' as const, entityId: companyId.value },
+    projects: {
+      workspaceId: workspaceId.value,
+      entityType: 'crm_company',
+      entityId: companyId.value,
+      entityName: company.value?.name,
+      canEdit: canEditCrm.value,
+      projectsBasePath: '/projects',
+    },
+  }))
 
   const { hasPermission } = usePermissions()
   const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))

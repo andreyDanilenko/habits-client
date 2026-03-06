@@ -52,160 +52,12 @@
         <Spinner class="size-8 text-primary-default" />
       </div>
       <template v-else-if="contact">
-        <DetailTabsPanel v-model="activeTab" :tabs="tabs">
-          <template #main>
-            <section class="space-y-(--spacing-6)">
-              <div>
-                <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
-                  Контактные данные
-                </h3>
-                <dl class="space-y-(--spacing-2) text-(--text-sm)">
-                  <div
-                    v-for="(p, i) in contact.phones"
-                    :key="`p-${i}`"
-                    class="flex gap-(--spacing-2)"
-                  >
-                    <dt class="text-text-muted w-28">{{ phoneTypeLabel(p.type) }}:</dt>
-                    <dd class="text-(--text-sm) text-text-primary">
-                      <a
-                        :href="`tel:${p.number}`"
-                        class="text-primary-default hover:underline"
-                      >
-                        {{ p.number }}
-                      </a>
-                    </dd>
-                  </div>
-                  <div
-                    v-for="(e, i) in contact.emails"
-                    :key="`e-${i}`"
-                    class="flex gap-(--spacing-2)"
-                  >
-                    <dt class="text-text-muted w-28">
-                      {{ e.type === 'work' ? 'Рабочий' : 'Личный' }} email:
-                    </dt>
-                    <dd class="text-(--text-sm) text-text-primary">
-                      <a
-                        :href="`mailto:${e.address}`"
-                        class="text-primary-default hover:underline"
-                      >
-                        {{ e.address }}
-                      </a>
-                    </dd>
-                  </div>
-                  <div v-if="contact.birthday" class="flex gap-(--spacing-2)">
-                    <dt class="text-text-muted w-28">День рождения:</dt>
-                    <dd class="text-(--text-sm) text-text-primary">
-                      {{ formatContactDate(contact.birthday) }}
-                    </dd>
-                  </div>
-                  <div class="flex gap-(--spacing-2)">
-                    <dt class="text-text-muted w-28">Соцсети:</dt>
-                    <dd class="text-(--text-sm) text-text-primary text-text-muted">
-                      Telegram, WhatsApp, VK — (скоро)
-                    </dd>
-                  </div>
-                  <template
-                    v-if="!contact.phones?.length && !contact.emails?.length && !contact.birthday"
-                  >
-                    <dd class="text-(--text-sm) text-text-primary text-text-muted">—</dd>
-                  </template>
-                </dl>
-              </div>
-              <div>
-                <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
-                  Адрес
-                </h3>
-                <p class="text-(--text-sm) text-text-muted">
-                  Страна, город, улица — (скоро)
-                </p>
-              </div>
-              <div>
-                <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
-                  Дополнительная информация
-                </h3>
-                <div v-if="contact.tags?.length" class="flex flex-wrap gap-(--spacing-2)">
-                  <span
-                    v-for="tag in contact.tags"
-                    :key="tag"
-                    class="px-(--spacing-2) py-(--spacing-0-5) rounded bg-bg-tertiary text-text-secondary text-(--text-sm)"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
-                <p v-else class="text-(--text-sm) text-text-muted">
-                  Теги не указаны. Комментарий — (скоро).
-                </p>
-              </div>
-            </section>
-          </template>
-          <template #deals>
-            <div class="flex items-center justify-between gap-(--spacing-4) mb-(--spacing-4)">
-              <h3 class="text-(--text-sm) font-medium text-text-secondary">
-                Сделки по контакту
-                <span
-                  v-if="contactDeals.length"
-                  class="ml-(--spacing-2) font-normal text-text-primary"
-                >
-                  — всего: {{ contactDeals.length }}
-                </span>
-              </h3>
-              <Button size="md" variant="primary" @click="openAttachToDeal">
-                Добавить в сделку
-              </Button>
-            </div>
-            <div
-              v-if="contactDealsLoading"
-              class="text-text-muted text-(--text-sm) py-(--spacing-4)"
-            >
-              Загрузка…
-            </div>
-            <div
-              v-else-if="!contactDeals.length"
-              class="text-text-muted text-(--text-sm) py-(--spacing-4)"
-            >
-              Пока нет сделок, связанных с этим контактом.
-            </div>
-            <ul v-else class="space-y-(--spacing-2)">
-              <li
-                v-for="deal in contactDeals"
-                :key="deal.id"
-                class="flex items-center justify-between gap-(--spacing-4) py-(--spacing-2) border-b border-border-light"
-              >
-                <router-link
-                  :to="{ name: 'CrmDealDetail', params: { id: deal.id } }"
-                  class="text-primary-default hover:underline text-(--text-sm)"
-                >
-                  {{ deal.name }}
-                </router-link>
-                <span class="text-(--text-sm) font-medium text-primary-default">
-                  {{ formatDealMoney(deal.budget, deal.currency) }}
-                </span>
-              </li>
-            </ul>
-          </template>
-          <template #activity>
-            <ActivityFeed
-              entity-type="contact"
-              :entity-id="contactId"
-              :can-create="canCreateCrm"
-            />
-          </template>
-          <template #projects>
-            <ProjectEntityPanel
-              :workspace-id="workspaceId"
-              entity-type="crm_contact"
-              :entity-id="contactId"
-              :entity-name="contact ? `${contact.firstName} ${contact.lastName}`.trim() : undefined"
-              :can-edit="canCreateCrm"
-              projects-base-path="/projects"
-            />
-          </template>
-          <template #tasks>
-            <p class="text-text-muted text-(--text-sm)">
-              Список задач по контакту. Создать задачу (тема, срок, ответственный) — (скоро).
-            </p>
-          </template>
-        </DetailTabsPanel>
+        <DetailTabsPanel
+          v-model="activeTab"
+          :tabs="tabs"
+          :tab-components="tabComponents"
+          :tab-props="tabProps"
+        />
       </template>
       <div v-else class="text-center py-12 text-text-muted">Контакт не найден.</div>
     </template>
@@ -248,9 +100,13 @@
   import { Modal, ConfirmModal, Button, Spinner, DetailTabsPanel } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { BasePageLayout } from '@/shared/ui/common'
-  import { ContactFormModal, useContactDetail } from '@/features/contacts'
-  import { phoneTypeLabel, formatContactDate } from '@/features/contacts/lib/format'
-  import { formatDealMoney } from '@/features/deals/lib/format'
+  import {
+    ContactFormModal,
+    ContactMainInfo,
+    ContactDealsSection,
+    ContactTasksPlaceholder,
+    useContactDetail,
+  } from '@/features/contacts'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
   import { usePermissions, WorkspacePermission } from '@/entities/workspace'
@@ -286,6 +142,39 @@
     { id: 'projects', label: 'Проекты' },
     { id: 'tasks', label: 'Задачи' },
   ]
+
+  const tabComponents = {
+    main: ContactMainInfo,
+    deals: ContactDealsSection,
+    activity: ActivityFeed,
+    projects: ProjectEntityPanel,
+    tasks: ContactTasksPlaceholder,
+  }
+
+  const tabProps = computed(() => ({
+    main: { contact: contact.value! },
+    deals: {
+      deals: contactDeals.value,
+      loading: contactDealsLoading.value,
+      onAttachToDeal: openAttachToDeal,
+    },
+    activity: {
+      entityType: 'contact' as const,
+      entityId: contactId.value,
+      canCreate: canCreateCrm.value,
+    },
+    projects: {
+      workspaceId: workspaceId.value,
+      entityType: 'crm_contact',
+      entityId: contactId.value,
+      entityName: contact.value ? `${contact.value.firstName} ${contact.value.lastName}`.trim() : undefined,
+      canEdit: canCreateCrm.value,
+      projectsBasePath: '/projects',
+    },
+    tasks: {
+      text: 'Список задач по контакту. Создать задачу (тема, срок, ответственный) — (скоро).',
+    },
+  }))
 
   const { hasPermission } = usePermissions()
   const canCreateCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))

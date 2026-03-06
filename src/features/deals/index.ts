@@ -13,4 +13,6 @@ export {
   DealsKanbanView,
   DealFormModal,
   DealsAttachContactModal,
+  DealMainInfo,
+  DealPlaceholderTab,
 } from './ui'

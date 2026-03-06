@@ -16,17 +16,28 @@
       </button>
     </nav>
     <div class="p-(--spacing-6)">
-      <template v-for="tab in tabs" :key="tab.id">
-        <slot v-if="modelValue === tab.id" :name="tab.id" />
+      <component
+        v-if="tabComponents?.[modelValue]"
+        :is="tabComponents[modelValue]"
+        v-bind="(tabProps ?? {})[modelValue] ?? {}"
+      />
+      <template v-else>
+        <template v-for="tab in tabs" :key="tab.id">
+          <slot v-if="modelValue === tab.id" :name="tab.id" />
+        </template>
       </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+  import type { Component } from 'vue'
+
   defineProps<{
     modelValue: string
     tabs: { id: string; label: string }[]
+    tabComponents?: Record<string, Component>
+    tabProps?: Record<string, Record<string, unknown>>
   }>()
 
   defineEmits<{
