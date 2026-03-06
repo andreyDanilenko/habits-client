@@ -9,6 +9,7 @@ export function useCompaniesPage() {
   const workspaceStore = useWorkspaceStore()
   const tableState = useCompaniesTableState()
 
+  const searchInput = ref('')
   const searchQuery = ref('')
   const companies = ref<Company[]>([])
   const total = ref(0)
@@ -64,14 +65,20 @@ export function useCompaniesPage() {
     { immediate: true },
   )
 
-  const setSearchQuery = (value: string) => {
+  const setSearchInput = (value: string) => {
+    searchInput.value = value
+  }
+
+  const onSearch = (value: string) => {
     searchQuery.value = value
   }
 
   return {
     ...tableState,
+    searchInput,
     searchQuery,
-    setSearchQuery,
+    setSearchInput,
+    onSearch,
     companies,
     total,
     isLoading,

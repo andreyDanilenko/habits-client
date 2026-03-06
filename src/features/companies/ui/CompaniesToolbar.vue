@@ -1,11 +1,16 @@
 <template>
-  <div class="flex flex-col sm:flex-row gap-(--spacing-4) items-stretch sm:items-center">
-    <div class="flex-1 min-w-0">
+  <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+    <div class="relative flex-1 min-w-0">
       <SearchInput
-        :model-value="searchQuery"
+        :model-value="searchInput"
         placeholder="Поиск по названию, ИНН, email..."
         size="lg"
-        @update:model-value="$emit('update:searchQuery', $event)"
+        clear-button-label="Очистить поиск"
+        :debounce="300"
+        @update:model-value="$emit('update:searchInput', $event)"
+        @search="$emit('search', $event)"
+        @clear="handleClearSearch"
+        @keydown.esc="handleEsc"
       />
     </div>
   </div>
@@ -14,6 +19,18 @@
 <script setup lang="ts">
   import { SearchInput } from '@/shared/ui'
 
-  defineProps<{ searchQuery: string }>()
-  defineEmits<{ 'update:searchQuery': [value: string] }>()
+  defineProps<{ searchInput: string }>()
+  const emit = defineEmits<{
+    'update:searchInput': [value: string]
+    search: [value: string]
+  }>()
+
+  const handleClearSearch = () => {
+    emit('update:searchInput', '')
+    emit('search', '')
+  }
+
+  const handleEsc = () => {
+    ;(document.activeElement as HTMLElement)?.blur()
+  }
 </script>

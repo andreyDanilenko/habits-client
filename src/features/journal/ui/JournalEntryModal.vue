@@ -28,7 +28,7 @@
       <div>
         <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание за день</span>
         <Textarea
-          v-model="form.description"
+          v-model="descriptionModel"
           :rows="8"
           placeholder="Как прошел ваш день? Что вы чувствуете?"
           resize="none"
@@ -105,6 +105,11 @@
   })
 
   const newTag = ref('')
+
+  const descriptionModel = computed({
+    get: () => form.value.description ?? '',
+    set: (v: string) => { form.value.description = v },
+  })
 
   const applyEntryToForm = (value: JournalEntry | null) => {
     if (value) {

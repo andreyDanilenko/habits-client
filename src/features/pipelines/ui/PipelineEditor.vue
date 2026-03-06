@@ -14,7 +14,7 @@
             size="md"
             class="text-error-default hover:bg-error-light"
             :disabled="isSaving"
-            @click="$emit('delete', currentPipeline)"
+            @click="emitDelete"
           >
             Удалить
           </Button>
@@ -151,17 +151,21 @@
     stagesHint?: string
   }>()
   
-  defineEmits<{
-    (e: 'save'): void
-    (e: 'reset'): void
-    (e: 'create-new'): void
-    (e: 'delete', pipeline: Pipeline): void
-    (e: 'add-stage'): void
-    (e: 'remove-stage', index: number): void
-    (e: 'toggle-final', index: number, value?: boolean): void
-    (e: 'toggle-lost', index: number, value?: boolean): void
-    (e: 'update-stages', stages: any[]): void
+  const emit = defineEmits<{
+    save: []
+    reset: []
+    'create-new': []
+    'delete': [pipeline: Pipeline]
+    'add-stage': []
+    'remove-stage': [index: number]
+    'toggle-final': [index: number, value?: boolean]
+    'toggle-lost': [index: number, value?: boolean]
+    'update-stages': [stages: any[]]
   }>()
+
+  function emitDelete() {
+    if (props.currentPipeline) emit('delete', props.currentPipeline)
+  }
   
   function normalizeStage(el: unknown): any {
     return el

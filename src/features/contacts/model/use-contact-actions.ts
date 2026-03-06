@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useModal } from '@/shared/lib/modal'
+import { useOpenCompanyForm } from '@/features/companies'
 import { ConfirmModal } from '@/shared/ui'
 import ContactFormModal from '../ui/ContactFormModal.vue'
 import ContactQuickViewModal from '../ui/ContactQuickViewModal.vue'
-import { CompanyFormModal } from '@/features/companies'
 import DealsAttachContactModal from '@/features/deals/ui/DealsAttachContactModal.vue'
 import type { Contact, CreateContactDto } from '@/entities/contact'
 import type { Company, CreateCompanyDto } from '@/entities/company'
@@ -30,36 +30,28 @@ export function useContactActions({
 }: UseContactActionsParams) {
   const router = useRouter()
   const { openModal } = useModal()
+  const openCompanyForm = useOpenCompanyForm()
   const preselectedCompanyRef = ref<Company | null>(null)
+
+  const getContactFormProps = (contact: Contact | null) => ({
+    isOpen: true,
+    contact,
+    workspaceId: workspaceId(),
+    defaultOwnerId: defaultOwnerId(),
+    preselectedCompany: preselectedCompanyRef,
+    onCreateCompany: () =>
+      openCompanyForm({
+        workspaceId: workspaceId(),
+        createCompany,
+        preselectedCompanyRef,
+      }),
+  })
 
   const openAddContact = () => {
     preselectedCompanyRef.value = null
     return openModal<{ id?: string; data: CreateContactDto }>({
       component: ContactFormModal,
-      props: {
-        isOpen: true,
-        contact: null,
-        workspaceId: workspaceId(),
-        defaultOwnerId: defaultOwnerId(),
-        preselectedCompany: preselectedCompanyRef,
-        onCreateCompany: () =>
-          new Promise<Company | null>((resolve) => {
-            openModal<{ id?: string; data: CreateCompanyDto }>({
-              component: CompanyFormModal,
-              props: { isOpen: true, company: null },
-              onConfirm: async (result) => {
-                if (result?.data && workspaceId()) {
-                  const company = await createCompany(result.data)
-                  preselectedCompanyRef.value = company
-                  resolve(company)
-                } else {
-                  resolve(null)
-                }
-              },
-              onClose: () => resolve(null),
-            })
-          }),
-      },
+      props: getContactFormProps(null),
       onConfirm: async (result) => {
         if (result?.data) {
           if (result.id) {
@@ -77,30 +69,7 @@ export function useContactActions({
     preselectedCompanyRef.value = null
     return openModal<{ id?: string; data: CreateContactDto }>({
       component: ContactFormModal,
-      props: {
-        isOpen: true,
-        contact,
-        workspaceId: workspaceId(),
-        defaultOwnerId: defaultOwnerId(),
-        preselectedCompany: preselectedCompanyRef,
-        onCreateCompany: () =>
-          new Promise<Company | null>((resolve) => {
-            openModal<{ id?: string; data: CreateCompanyDto }>({
-              component: CompanyFormModal,
-              props: { isOpen: true, company: null },
-              onConfirm: async (result) => {
-                if (result?.data && workspaceId()) {
-                  const company = await createCompany(result.data)
-                  preselectedCompanyRef.value = company
-                  resolve(company)
-                } else {
-                  resolve(null)
-                }
-              },
-              onClose: () => resolve(null),
-            })
-          }),
-      },
+      props: getContactFormProps(contact),
       onConfirm: async (result) => {
         if (result?.id && result?.data) {
           await updateContact(result.id, result.data)

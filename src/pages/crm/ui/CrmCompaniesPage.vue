@@ -15,8 +15,9 @@
     <template #content>
       <div class="space-y-(--spacing-6)">
         <CompaniesToolbar
-          :search-query="actions.searchQuery.value"
-          @update:search-query="actions.setSearchQuery"
+          :search-input="actions.searchInput.value"
+          @update:search-input="actions.setSearchInput"
+          @search="actions.onSearch"
         />
 
         <CompaniesTableWidget

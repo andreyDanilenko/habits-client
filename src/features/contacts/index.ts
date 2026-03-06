@@ -4,6 +4,7 @@ export {
   useContactDetail,
   useContactsCrud,
   useContactsPageActions,
+  useOpenContactForm,
 } from './model'
 export {
   ContactsToolbar,

@@ -1,5 +1,5 @@
 <template>
-  <div ref="rootRef" class="relative">
+  <div class="relative">
     <Input
       :model-value="query"
       :placeholder="placeholder"
@@ -72,7 +72,7 @@
       createLabel: '',
       size: 'lg',
       disabled: false,
-      getItemId: (item) => item.id,
+      getItemId: (item: SearchSelectOption) => item.id,
     },
   )
 
@@ -84,7 +84,6 @@
     create: []
   }>()
 
-  const rootRef = ref<HTMLElement | null>(null)
   const internalQuery = ref('')
   const showDropdown = ref(false)
 

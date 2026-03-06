@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue'
+import { ref, computed, type Ref } from 'vue'
 
-export function usePagination<T>(items: ref<T[]>, pageSize: number) {
+export function usePagination<T>(items: Ref<T[]>, pageSize: number) {
   const currentPage = ref(1)
 
   const totalItems = computed(() => items.value.length)

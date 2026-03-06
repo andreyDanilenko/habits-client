@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, watch } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { themeService } from '@/shared/lib/theme.service'
   import { useWorkspaceStore } from '@/entities/workspace'
   import { Checkbox } from '@/shared/ui'

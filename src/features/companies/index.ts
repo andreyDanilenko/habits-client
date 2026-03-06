@@ -4,6 +4,7 @@ export {
   useCompaniesCrud,
   useCompaniesPageActions,
   useCompanyDetail,
+  useOpenCompanyForm,
 } from './model'
 export {
   CompaniesToolbar,

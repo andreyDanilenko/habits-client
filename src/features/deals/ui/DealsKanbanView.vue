@@ -12,7 +12,7 @@
     <KanbanBoard
       v-else
       :columns="columnsModel"
-      @update:columns="onColumnsUpdate"
+      @update:columns="(v) => onColumnsUpdate(v as KanbanColumnModel<Deal>[])"
       :item-key="getDealId"
       dnd-group="deals"
       :disabled="false"

@@ -29,7 +29,7 @@
       </div>
 
       <Textarea
-        v-model="form.description"
+        v-model="descriptionModel"
         label="Описание (необязательно)"
         placeholder="Краткое описание workspace"
         :rows="3"
@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, computed } from 'vue'
   import { Button, Input, ModalContent, Textarea } from '@/shared/ui'
   import { useWorkspaceStore } from '@/entities/workspace'
   import type { CreateWorkspaceDto } from '@/entities/workspace'
@@ -75,6 +75,11 @@
     name: '',
     color: colors[0],
     description: '',
+  })
+
+  const descriptionModel = computed({
+    get: () => form.description ?? '',
+    set: (v: string) => { form.description = v },
   })
 
   const handleSubmit = async () => {

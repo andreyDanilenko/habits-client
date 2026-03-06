@@ -4,13 +4,13 @@ import { useUserStore } from '@/entities/user'
 import { useModal } from '@/shared/lib/modal'
 import { useCompaniesCrud } from '@/features/companies'
 import { useContactsCrud } from '@/features/contacts'
+import { useOpenCompanyForm } from '@/features/companies'
+import { useOpenContactForm } from '@/features/contacts'
 import { ConfirmModal } from '@/shared/ui'
 import DealFormModal from '../ui/DealFormModal.vue'
-import { ContactFormModal } from '@/features/contacts'
-import { CompanyFormModal } from '@/features/companies'
 import type { Deal, CreateDealDto, Pipeline } from '@/entities/deal'
-import type { Contact, CreateContactDto } from '@/entities/contact'
-import type { Company, CreateCompanyDto } from '@/entities/company'
+import type { Contact } from '@/entities/contact'
+import type { Company } from '@/entities/company'
 
 interface UseDealActionsParams {
   workspaceId: () => string
@@ -42,67 +42,48 @@ export function useDealActions({
     () => Promise.resolve(),
   )
 
+  const openCompanyForm = useOpenCompanyForm()
+  const openContactFormForCreate = useOpenContactForm({
+    workspaceId,
+    defaultOwnerId: () => userStore.currentUser?.id ?? '1',
+    createContact,
+    createCompany,
+    openCompanyForm,
+  })
+
   const preselectedContactRef = ref<Contact | null>(null)
   const preselectedCompanyRef = ref<Company | null>(null)
 
   const defaultOwnerId = () => userStore.currentUser?.id ?? '1'
+
+  const getDealFormProps = (deal: Deal | null) => ({
+    isOpen: true,
+    deal,
+    pipelines: pipelines(),
+    pipelineId: deal
+      ? deal.pipelineId
+      : pipelines().find((p) => p.isDefault)?.id,
+    defaultStageId: deal
+      ? pipelines().find((p) => p.id === deal.pipelineId)?.stages?.[0]?.id
+      : pipelines().find((p) => p.isDefault)?.stages?.[0]?.id,
+    workspaceId: workspaceId(),
+    defaultOwnerId: defaultOwnerId(),
+    preselectedContact: preselectedContactRef,
+    onCreateContact: () =>
+      openContactFormForCreate({
+        preselectedCompanyRef,
+        onContactCreated: (contact: Contact | null) => {
+          preselectedContactRef.value = contact
+        },
+      }),
+  })
 
   const openAddDeal = () => {
     preselectedContactRef.value = null
     preselectedCompanyRef.value = null
     return openModal<{ id?: string; data: CreateDealDto }>({
       component: DealFormModal,
-      props: {
-        isOpen: true,
-        deal: null,
-        pipelines: pipelines(),
-        pipelineId: pipelines().find((p) => p.isDefault)?.id,
-        defaultStageId: pipelines().find((p) => p.isDefault)?.stages?.[0]?.id,
-        workspaceId: workspaceId(),
-        defaultOwnerId: defaultOwnerId(),
-        preselectedContact: preselectedContactRef,
-        onCreateContact: () =>
-          new Promise<Contact | null>((resolve) => {
-            preselectedCompanyRef.value = null
-            openModal<{ id?: string; data: CreateContactDto }>({
-              component: ContactFormModal,
-              props: {
-                isOpen: true,
-                contact: null,
-                workspaceId: workspaceId(),
-                defaultOwnerId: defaultOwnerId(),
-                preselectedCompany: preselectedCompanyRef,
-                onCreateCompany: () =>
-                  new Promise<Company | null>((resolveCompany) => {
-                    openModal<{ id?: string; data: CreateCompanyDto }>({
-                      component: CompanyFormModal,
-                      props: { isOpen: true, company: null },
-                      onConfirm: async (result) => {
-                        if (result?.data && workspaceId()) {
-                          const company = await createCompany(result.data)
-                          preselectedCompanyRef.value = company
-                          resolveCompany(company)
-                        } else {
-                          resolveCompany(null)
-                        }
-                      },
-                      onClose: () => resolveCompany(null),
-                    })
-                  }),
-              },
-              onConfirm: async (result) => {
-                if (result?.data && workspaceId()) {
-                  const contact = await createContact(result.data)
-                  preselectedContactRef.value = contact
-                  resolve(contact)
-                } else {
-                  resolve(null)
-                }
-              },
-              onClose: () => resolve(null),
-            })
-          }),
-      },
+      props: getDealFormProps(null),
       onConfirm: async (result) => {
         if (result?.data) {
           if (result.id) {
@@ -121,57 +102,7 @@ export function useDealActions({
     preselectedCompanyRef.value = null
     return openModal<{ id?: string; data: CreateDealDto }>({
       component: DealFormModal,
-      props: {
-        isOpen: true,
-        deal,
-        pipelines: pipelines(),
-        pipelineId: deal.pipelineId,
-        defaultStageId: pipelines().find((p) => p.id === deal.pipelineId)?.stages?.[0]?.id,
-        workspaceId: workspaceId(),
-        defaultOwnerId: defaultOwnerId(),
-        preselectedContact: preselectedContactRef,
-        onCreateContact: () =>
-          new Promise<Contact | null>((resolve) => {
-            preselectedCompanyRef.value = null
-            openModal<{ id?: string; data: CreateContactDto }>({
-              component: ContactFormModal,
-              props: {
-                isOpen: true,
-                contact: null,
-                workspaceId: workspaceId(),
-                defaultOwnerId: defaultOwnerId(),
-                preselectedCompany: preselectedCompanyRef,
-                onCreateCompany: () =>
-                  new Promise<Company | null>((resolveCompany) => {
-                    openModal<{ id?: string; data: CreateCompanyDto }>({
-                      component: CompanyFormModal,
-                      props: { isOpen: true, company: null },
-                      onConfirm: async (result) => {
-                        if (result?.data && workspaceId()) {
-                          const company = await createCompany(result.data)
-                          preselectedCompanyRef.value = company
-                          resolveCompany(company)
-                        } else {
-                          resolveCompany(null)
-                        }
-                      },
-                      onClose: () => resolveCompany(null),
-                    })
-                  }),
-              },
-              onConfirm: async (result) => {
-                if (result?.data && workspaceId()) {
-                  const contact = await createContact(result.data)
-                  preselectedContactRef.value = contact
-                  resolve(contact)
-                } else {
-                  resolve(null)
-                }
-              },
-              onClose: () => resolve(null),
-            })
-          }),
-      },
+      props: getDealFormProps(deal),
       onConfirm: async (result) => {
         if (result?.id && result?.data) {
           await updateDeal(result.id, result.data)

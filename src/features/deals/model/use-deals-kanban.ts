@@ -42,7 +42,7 @@ export function useDealsKanban(
   }
 
   function syncKanbanColumnsInPlace() {
-    const list = deals.value
+    const list = deals.value || []
     const uniqueDeals: Deal[] = []
     const seenIds = new Set<string>()
     for (const d of list) {
