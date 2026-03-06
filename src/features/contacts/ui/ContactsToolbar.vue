@@ -29,13 +29,6 @@
         >
           Фильтры
         </Button>
-
-        <PermissionGuard :permission="CRM_PERMISSIONS.contactCreate">
-          <Button variant="primary" @click="$emit('create')">
-            <PlusIcon :size="iconSize" class="mr-2" />
-            Создать контакт
-          </Button>
-        </PermissionGuard>
       </div>
     </div>
 
@@ -53,13 +46,9 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
   import { Button, SearchInput } from '@/shared/ui'
-  import { PlusIcon } from '@/shared/ui/icon'
   import ContactsFiltersPanel from './ContactsFiltersPanel.vue'
   import type { ContactFilters } from './ContactsFiltersPanel.vue'
-  import { PermissionGuard } from '@/features/permissions'
-  import { CRM_PERMISSIONS } from '@/features/permissions/config'
 
   const props = defineProps<{
     searchInput: string
@@ -73,14 +62,11 @@
     'update:searchInput': [value: string]
     'update:showFilters': [value: boolean]
     'update:filters': [value: ContactFilters]
-    create: []
     import: []
     export: []
     resetFilters: []
     search: [value: string]
   }>()
-
-  const iconSize = computed(() => 20) // для PlusIcon в кнопке «Создать контакт»
 
   // Очистка поиска
   const handleClearSearch = () => {

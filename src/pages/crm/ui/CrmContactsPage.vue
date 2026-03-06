@@ -1,281 +1,85 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6 pb-8">
-    <h1 class="text-text-primary">CRM — Контакты</h1>
+  <BasePageLayout
+    title="CRM — Контакты"
+    description="Управляйте контактами. Поиск, фильтры и табличный вид."
+  >
+    <template #header-actions>
+      <PermissionGuard :permission="CRM_PERMISSIONS.contactCreate">
+        <Button variant="primary" @click="actions.openCreateModal">
+          <PlusIcon class="size-5 mr-2" />
+          Создать контакт
+        </Button>
+      </PermissionGuard>
+    </template>
 
-    <ContactsToolbar
-      v-model:search-input="searchInput"
-      v-model:show-filters="showFilters"
-      @search="onSearch"
-      :filters="contactFilters"
-      :companies="filterCompanies"
-      :available-tags="availableTags"
-      @create="openCreateModal"
-      @import="onImport"
-      @export="onExport"
-      @reset-filters="resetFilters"
-    />
+    <template #content>
+      <div class="space-y-(--spacing-6)">
+        <ContactsToolbar
+          :search-input="actions.searchInput.value"
+          :show-filters="actions.showFilters.value"
+          :filters="actions.contactFilters.value"
+          :companies="actions.filterCompanies.value"
+          :available-tags="actions.availableTags.value"
+          @update:search-input="actions.setSearchInput"
+          @update:show-filters="actions.setShowFilters"
+          @search="actions.onSearch"
+          @update:filters="actions.updateContactFilters"
+          @import="actions.onImport"
+          @export="actions.onExport"
+          @reset-filters="actions.resetFilters"
+        />
 
-    <div
-      v-if="selectedIds && selectedIds.size > 0"
-      class="flex items-center gap-4 py-2 px-4 rounded-lg bg-bg-tertiary border border-border-light"
-    >
-      <span class="text-sm text-text-secondary">Выбрано: {{ selectedIds.size }}</span>
-      <Button variant="outline" size="md" @click="bulkDelete">Удалить</Button>
-      <Button variant="ghost" size="md" disabled>Изменить ответственного</Button>
-      <Button variant="ghost" size="md" disabled>Добавить тег</Button>
-    </div>
+        <div
+          v-if="actions.selectedIds.value?.size > 0"
+          class="flex items-center gap-(--spacing-4) py-(--spacing-2) px-(--spacing-4) rounded-(--radius-lg) bg-bg-tertiary border border-border-light"
+        >
+          <span class="text-(--text-sm) text-text-secondary">
+            Выбрано: {{ actions.selectedIds.value.size }}
+          </span>
+          <Button variant="outline" size="md" @click="actions.bulkDelete">Удалить</Button>
+          <Button variant="ghost" size="md" disabled>Изменить ответственного</Button>
+          <Button variant="ghost" size="md" disabled>Добавить тег</Button>
+        </div>
 
-    <ContactsTableWidget
-      :contacts="contacts"
-      :total="total"
-      :is-loading="isLoading"
-      :is-error="isError"
-      :page="page"
-      :page-size="pageSize"
-      :page-size-options="PAGE_SIZE_OPTIONS"
-      :sort-by="sortBy"
-      :sort-order="sortOrder"
-      :selected-ids="selectedIds"
-      :handle-sort="handleSort"
-      :handle-row-select="handleRowSelect"
-      :handle-select-all="handleSelectAll"
-      :set-page="setPage"
-      :set-page-size="setPageSize"
-      :fetch-contacts="fetchContacts"
-      @edit="openEditModal"
-      @delete="confirmDelete"
-      @add-to-deal="openAttachToDeal"
-      @row-click="openQuickView"
-    />
+        <ContactsTableWidget
+          :contacts="actions.contacts.value"
+          :total="actions.total.value"
+          :is-loading="actions.isLoading.value"
+          :is-error="actions.isError.value"
+          :page="actions.page.value"
+          :page-size="actions.pageSize.value"
+          :page-size-options="actions.PAGE_SIZE_OPTIONS"
+          :sort-by="actions.sortBy.value"
+          :sort-order="actions.sortOrder.value"
+          :selected-ids="actions.selectedIds.value"
+          :handle-sort="actions.handleSort"
+          :handle-row-select="actions.handleRowSelect"
+          :handle-select-all="actions.handleSelectAll"
+          :set-page="actions.setPage"
+          :set-page-size="actions.setPageSize"
+          :fetch-contacts="actions.fetchContacts"
+          @edit="actions.openEditModal"
+          @delete="actions.confirmDelete"
+          @add-to-deal="actions.openAttachToDeal"
+          @row-click="actions.openQuickView"
+        />
+      </div>
+    </template>
 
-    <ContactFormModal
-      :is-open="showFormModal"
-      :contact="contactToEdit"
-      :workspace-id="workspaceId"
-      :default-owner-id="defaultOwnerId"
-      :preselected-company="preselectedCompanyForContact"
-      @close="closeFormModal"
-      @save="handleCreate"
-      @update="handleUpdate"
-      @create-company="openCreateCompanyFromContact"
-      @preselected-company-applied="preselectedCompanyForContact = null"
-    />
-
-    <CompanyFormModal
-      :is-open="showCompanyModal"
-      :company="null"
-      @close="showCompanyModal = false"
-      @save="onCompanyCreatedFromContact"
-    />
-
-    <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
-      <ConfirmModal
-        title="Удалить контакт?"
-        message="Контакт будет удалён без возможности восстановления."
-        confirm-text="Удалить"
-        confirm-variant="danger"
-        @close="showDeleteModal = false"
-        @confirm="doDelete"
-      />
-    </Modal>
-
-    <Drawer
-      :is-open="!!contactQuickView"
-      title="Быстрый просмотр"
-      width="md"
-      @close="contactQuickView = null"
-    >
-      <ContactQuickViewPanel
-        v-if="contactQuickView"
-        :contact="contactQuickView"
-        @close="contactQuickView = null"
-        @edit="openEditFromQuickView"
-        @open-card="goToContactCard"
-        @create-deal="openAttachToDeal"
-      />
-    </Drawer>
-
-    <DealsAttachContactModal
-      :is-open="showAttachToDealModal"
-      :workspace-id="workspaceId"
-      :contact="contactForDeal"
-      @close="closeAttachToDeal"
-      @attached="closeAttachToDeal"
-    />
-  </div>
+  </BasePageLayout>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import { Modal, ConfirmModal, Drawer } from '@/shared/ui'
-  import { useUserStore } from '@/entities/user'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Button } from '@/shared/ui'
+  import { PlusIcon } from '@/shared/ui/icon'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
   import {
-    useContactsPage,
+    useContactsPageActions,
     ContactsToolbar,
     ContactsTableWidget,
-    ContactFormModal,
-    ContactQuickViewPanel,
   } from '@/features/contacts'
-  import { DealsAttachContactModal } from '@/features/deals'
-  import { CompanyFormModal } from '@/features/companies'
-  import { companyService } from '@/entities/company'
-  import type { Contact, CreateContactDto } from '@/entities/contact'
-  import type { ContactFilters } from '@/features/contacts'
-  import type { Company, CreateCompanyDto } from '@/entities/company'
 
-  const route = useRoute()
-  const router = useRouter()
-  const userStore = useUserStore()
-  const {
-    workspaceId,
-    searchInput,
-    searchQuery,
-    companyIdFilter,
-    contacts,
-    total,
-    isLoading,
-    isError,
-    page,
-    pageSize,
-    PAGE_SIZE_OPTIONS,
-    sortBy,
-    sortOrder,
-    selectedIds,
-    handleSort,
-    handleRowSelect,
-    handleSelectAll,
-    setPage,
-    setPageSize,
-    fetchContacts,
-    createContact,
-    updateContact,
-    deleteContact,
-  } = useContactsPage()
-
-  watch(
-    () => route.query.companyId,
-    (id) => {
-      companyIdFilter.value = (id as string) ?? ''
-    },
-    { immediate: true },
-  )
-
-  function onSearch(value: string) {
-    searchQuery.value = value
-  }
-
-  const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
-
-  const showFormModal = ref(false)
-  const contactToEdit = ref<Contact | null>(null)
-  const showDeleteModal = ref(false)
-  const contactToDelete = ref<Contact | null>(null)
-  const contactQuickView = ref<Contact | null>(null)
-  const showAttachToDealModal = ref(false)
-  const contactForDeal = ref<Contact | null>(null)
-  const showFilters = ref(false)
-  const showCompanyModal = ref(false)
-  const preselectedCompanyForContact = ref<Company | null>(null)
-  const contactFilters = ref<ContactFilters>({})
-  const filterCompanies = ref<{ id: string; name: string }[]>([])
-  const availableTags = ref<string[]>([])
-
-  function openEditFromQuickView(contact: Contact) {
-    contactQuickView.value = null
-    contactToEdit.value = contact
-    showFormModal.value = true
-  }
-
-  function resetFilters() {
-    contactFilters.value = {}
-  }
-
-  function onImport() {
-    // Заглушка MVP
-  }
-
-  function onExport() {
-    // Заглушка MVP
-  }
-
-  function openQuickView(contact: Contact) {
-    contactQuickView.value = contact
-  }
-
-  function goToContactCard(contact: Contact) {
-    contactQuickView.value = null
-    router.push(`/crm/contacts/${contact.id}`)
-  }
-
-  function openAttachToDeal(contact: Contact) {
-    contactQuickView.value = null
-    contactForDeal.value = contact
-    showAttachToDealModal.value = true
-  }
-
-  function closeAttachToDeal() {
-    showAttachToDealModal.value = false
-    contactForDeal.value = null
-  }
-
-  async function bulkDelete() {
-    const ids = Array.from(selectedIds.value)
-    if (ids.length === 0) return
-    for (const id of ids) {
-      await deleteContact(String(id))
-    }
-  }
-
-  const openCreateModal = () => {
-    contactToEdit.value = null
-    showFormModal.value = true
-  }
-
-  const openEditModal = (contact: Contact) => {
-    contactToEdit.value = contact
-    showFormModal.value = true
-  }
-
-  const closeFormModal = () => {
-    showFormModal.value = false
-    contactToEdit.value = null
-  }
-
-  const openCreateCompanyFromContact = () => {
-    showCompanyModal.value = true
-  }
-
-  const onCompanyCreatedFromContact = async (data: CreateCompanyDto) => {
-    if (!workspaceId.value) return
-    try {
-      const created = await companyService.create(workspaceId.value, data)
-      preselectedCompanyForContact.value = created
-    } finally {
-      showCompanyModal.value = false
-    }
-  }
-
-  const handleCreate = async (data: CreateContactDto) => {
-    await createContact(data)
-    closeFormModal()
-  }
-
-  const handleUpdate = async (id: string, data: CreateContactDto) => {
-    await updateContact(id, data)
-    closeFormModal()
-  }
-
-  const confirmDelete = (contact: Contact) => {
-    contactToDelete.value = contact
-    showDeleteModal.value = true
-  }
-
-  const doDelete = async () => {
-    if (contactToDelete.value) {
-      await deleteContact(contactToDelete.value.id)
-      contactToDelete.value = null
-      showDeleteModal.value = false
-    }
-  }
+  const actions = useContactsPageActions()
 </script>

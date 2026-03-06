@@ -1,4 +1,4 @@
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, unref } from 'vue'
 import { contactService } from '@/entities/contact'
 import { companyService } from '@/entities/company'
 import type { Deal, CreateDealDto, Pipeline } from '@/entities/deal'
@@ -248,9 +248,9 @@ export function useDealForm(
 
   // Применение контакта, созданного из модалки (пока форма открыта)
   watch(
-    () => props.preselectedContact,
-    async (preselected) => {
-      if (preselected && props.isOpen) {
+    () => [props.isOpen, unref(props.preselectedContact as Contact | null)] as const,
+    async ([isOpen, preselected]) => {
+      if (preselected && isOpen) {
         await selectContact(preselected)
         callbacks.onPreselectedApplied()
       }

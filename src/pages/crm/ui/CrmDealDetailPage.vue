@@ -53,10 +53,10 @@
                 </div>
               </div>
               <div class="flex flex-wrap gap-(--spacing-2) mt-(--spacing-3)">
-                <Button size="md" variant="outline" @click="actions.editDeal(deal)">
+                <Button size="md" variant="outline" @click="actions.openEditDeal(deal)">
                   Редактировать
                 </Button>
-                <Button size="md" variant="ghost" @click="actions.deleteDeal(deal)">
+                <Button size="md" variant="ghost" @click="actions.openDeleteConfirm(deal)">
                   Удалить
                 </Button>
                 <Button
@@ -79,98 +79,80 @@
             </div>
           </header>
 
-          <section
-            class="rounded-(--radius-lg) border border-border-default bg-bg-primary p-(--spacing-6) space-y-(--spacing-6)"
-          >
-            <h2 class="text-(--text-lg) font-medium text-text-primary">
-              Основная информация
-            </h2>
-            <dl class="grid gap-(--spacing-4) sm:grid-cols-2">
-              <div>
-                <dt class="text-(--text-sm) text-text-muted">Контакт</dt>
-                <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                  <router-link
-                    v-if="deal.contactId"
-                    :to="{ name: 'CrmContactDetail', params: { id: deal.contactId } }"
-                    class="text-primary-default hover:underline"
-                  >
-                    {{ contactName || 'Контакт' }}
-                  </router-link>
-                  <span v-else class="text-text-muted">Не привязан</span>
-                </dd>
-              </div>
-              <div>
-                <dt class="text-(--text-sm) text-text-muted">Компания</dt>
-                <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                  <router-link
-                    v-if="deal.companyId"
-                    :to="{ name: 'CrmCompanyDetail', params: { id: deal.companyId } }"
-                    class="text-primary-default hover:underline"
-                  >
-                    {{ companyName || 'Компания' }}
-                  </router-link>
-                  <span v-else class="text-text-muted">Не привязана</span>
-                </dd>
-              </div>
-              <div class="sm:col-span-2">
-                <dt class="text-(--text-sm) text-text-muted">Описание</dt>
-                <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary whitespace-pre-wrap">
-                  {{ deal.description || '—' }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-(--text-sm) text-text-muted">Плановая дата закрытия</dt>
-                <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                  {{ formatDealDate(deal.expectedCloseDate) }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-(--text-sm) text-text-muted">Источник</dt>
-                <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
-                  {{ deal.source || '—' }}
-                </dd>
-              </div>
-              <div v-if="deal.tags?.length" class="sm:col-span-2">
-                <dt class="text-(--text-sm) text-text-muted mb-(--spacing-1)">Теги</dt>
-                <dd class="flex flex-wrap gap-(--spacing-1)">
-                  <span
-                    v-for="tag in deal.tags"
-                    :key="tag"
-                    class="inline-block px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-sm) bg-bg-tertiary text-text-secondary"
-                  >
-                    {{ tag }}
-                  </span>
-                </dd>
-              </div>
-            </dl>
-          </section>
-
-          <div
-            class="rounded-(--radius-lg) border border-border-default bg-bg-primary overflow-hidden"
-          >
-            <nav class="flex border-b border-border-default">
-              <button
-                v-for="tab in tabs"
-                :key="tab.id"
-                :class="[
-                  'px-(--spacing-4) py-(--spacing-3) text-(--text-sm) font-medium border-b-2 -mb-px transition-colors',
-                  activeTab === tab.id
-                    ? 'border-primary-default text-primary-default'
-                    : 'border-transparent text-text-secondary hover:text-text-primary',
-                ]"
-                @click="activeTab = tab.id"
-              >
-                {{ tab.label }}
-              </button>
-            </nav>
-            <div class="p-(--spacing-6)">
+          <DetailTabsPanel v-model="activeTab" :tabs="tabs">
+            <template #main>
+              <section class="space-y-(--spacing-6)">
+                <h2 class="text-(--text-lg) font-medium text-text-primary">
+                  Основная информация
+                </h2>
+                <dl class="grid gap-(--spacing-4) sm:grid-cols-2">
+                  <div>
+                    <dt class="text-(--text-sm) text-text-muted">Контакт</dt>
+                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
+                      <router-link
+                        v-if="deal.contactId"
+                        :to="{ name: 'CrmContactDetail', params: { id: deal.contactId } }"
+                        class="text-primary-default hover:underline"
+                      >
+                        {{ contactName || 'Контакт' }}
+                      </router-link>
+                      <span v-else class="text-text-muted">Не привязан</span>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-(--text-sm) text-text-muted">Компания</dt>
+                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
+                      <router-link
+                        v-if="deal.companyId"
+                        :to="{ name: 'CrmCompanyDetail', params: { id: deal.companyId } }"
+                        class="text-primary-default hover:underline"
+                      >
+                        {{ companyName || 'Компания' }}
+                      </router-link>
+                      <span v-else class="text-text-muted">Не привязана</span>
+                    </dd>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <dt class="text-(--text-sm) text-text-muted">Описание</dt>
+                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary whitespace-pre-wrap">
+                      {{ deal.description || '—' }}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-(--text-sm) text-text-muted">Плановая дата закрытия</dt>
+                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
+                      {{ formatDealDate(deal.expectedCloseDate) }}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-(--text-sm) text-text-muted">Источник</dt>
+                    <dd class="mt-(--spacing-1) text-(--text-sm) text-text-primary">
+                      {{ deal.source || '—' }}
+                    </dd>
+                  </div>
+                  <div v-if="deal.tags?.length" class="sm:col-span-2">
+                    <dt class="text-(--text-sm) text-text-muted mb-(--spacing-1)">Теги</dt>
+                    <dd class="flex flex-wrap gap-(--spacing-1)">
+                      <span
+                        v-for="tag in deal.tags"
+                        :key="tag"
+                        class="inline-block px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-sm) bg-bg-tertiary text-text-secondary"
+                      >
+                        {{ tag }}
+                      </span>
+                    </dd>
+                  </div>
+                </dl>
+              </section>
+            </template>
+            <template #activity>
               <ActivityFeed
-                v-if="activeTab === 'activity'"
                 entity-type="deal"
                 :entity-id="dealId"
               />
+            </template>
+            <template #projects>
               <ProjectEntityPanel
-                v-else-if="activeTab === 'projects'"
                 :workspace-id="workspaceId"
                 entity-type="crm_deal"
                 :entity-id="dealId"
@@ -178,20 +160,18 @@
                 :can-edit="canEditCrm"
                 projects-base-path="/projects"
               />
-              <div
-                v-else-if="activeTab === 'tasks'"
-                class="text-text-muted text-(--text-sm)"
-              >
+            </template>
+            <template #tasks>
+              <p class="text-text-muted text-(--text-sm)">
                 Связанные задачи (в разработке).
-              </div>
-              <div
-                v-else-if="activeTab === 'products'"
-                class="text-text-muted text-(--text-sm)"
-              >
+              </p>
+            </template>
+            <template #products>
+              <p class="text-text-muted text-(--text-sm)">
                 Товары/услуги (для будущего расширения).
-              </div>
-            </div>
-          </div>
+              </p>
+            </template>
+          </DetailTabsPanel>
         </div>
       </template>
     </template>
@@ -202,17 +182,17 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { BasePageLayout } from '@/shared/ui/common'
-import { Button, Spinner, Select, EditableTitle } from '@/shared/ui'
+import { Button, Spinner, Select, EditableTitle, DetailTabsPanel } from '@/shared/ui'
 import { ArrowLeftIcon } from '@/shared/ui/icon'
 import { usePermissions, WorkspacePermission } from '@/entities/workspace'
-import { useUserStore } from '@/entities/user'
+import { dealService } from '@/entities/deal'
 import { useDealDetail, useDealActions } from '@/features/deals'
+import type { CreateDealDto } from '@/entities/deal'
 import { formatDealDate, formatDealMoney } from '@/features/deals/lib/format'
 import { ActivityFeed } from '@/features/activity'
 import { ProjectEntityPanel } from '@/features/projects'
 
 const router = useRouter()
-const userStore = useUserStore()
 
 const detail = useDealDetail()
 const {
@@ -241,20 +221,33 @@ const stageOptions = computed(() =>
   stages.value.map((s) => ({ value: s.id, label: s.name })),
 )
 
-const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
 const { hasPermission } = usePermissions()
 const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
+const updateDealForDetail = async (id: string, data: CreateDealDto) => {
+  const d = await dealService.update(workspaceId.value, id, data)
+  await fetchDeal()
+  return d
+}
+const deleteDealForDetail = async (id: string) => {
+  await dealService.delete(workspaceId.value, id)
+  router.push({ name: 'CrmDeals' })
+}
+
 const actions = useDealActions({
   workspaceId: () => workspaceId.value,
-  defaultOwnerId: () => defaultOwnerId.value,
   pipelines: () => pipelines.value,
-  onEditSuccess: fetchDeal,
-  onDeleteSuccess: () => router.push({ name: 'CrmDeals' }),
+  createDeal: async () => {
+    throw new Error('Create not available on detail page')
+  },
+  updateDeal: updateDealForDetail,
+  deleteDeal: deleteDealForDetail,
+  onSuccess: fetchDeal,
 })
 
-const activeTab = ref('activity')
+const activeTab = ref('main')
 const tabs = [
+  { id: 'main', label: 'Основная информация' },
   { id: 'activity', label: 'Активность' },
   { id: 'projects', label: 'Проекты' },
   { id: 'tasks', label: 'Задачи' },

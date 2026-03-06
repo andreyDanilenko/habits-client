@@ -139,6 +139,7 @@
 
   const emit = defineEmits<{
     close: []
+    confirm: [payload: { id?: string; data: CreateCompanyDto }]
     save: [data: CreateCompanyDto]
     update: [id: string, data: CreateCompanyDto]
   }>()
@@ -275,8 +276,10 @@
         tags: tags.length ? tags : undefined,
       }
       if (props.company) {
+        emit('confirm', { id: props.company.id, data })
         emit('update', props.company.id, data)
       } else {
+        emit('confirm', { data })
         emit('save', data)
       }
       emit('close')

@@ -58,7 +58,7 @@
             create-label="+ Создать новую компанию"
             @search="handleCompanySearch"
             @select="applyCompany"
-            @create="emit('create-company')"
+            @create="handleCreateCompany"
           />
         </div>
 
@@ -125,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
+  import { ref, watch, computed, unref } from 'vue'
   import {
     Modal,
     ModalContent,
@@ -170,6 +170,8 @@
     defaultOwnerId?: string
     preselectedCompany?: Company | null
     size?: ComponentSize
+    /** При использовании с useModal: создаёт компанию и возвращает её (для подстановки в форму) */
+    onCreateCompany?: () => Promise<Company | null>
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -181,6 +183,7 @@
 
   const emit = defineEmits<{
     close: []
+    confirm: [payload: { id?: string; data: CreateContactDto }]
     save: [data: CreateContactDto]
     update: [id: string, data: CreateContactDto]
     'create-company': []
@@ -281,6 +284,18 @@
     form.value.companyNameDisplay = getCompanyLabel(co)
   }
 
+  async function handleCreateCompany(): Promise<void> {
+    if (props.onCreateCompany) {
+      const company = await props.onCreateCompany()
+      if (company) {
+        form.value.companyId = company.id
+        form.value.companyNameDisplay = company.name
+      }
+    } else {
+      emit('create-company')
+    }
+  }
+
   async function handleCompanySearch(query: string): Promise<void> {
     const q = query.trim()
     if (!props.workspaceId) {
@@ -357,7 +372,7 @@
   }
 
   watch(
-    () => [props.isOpen, props.contact, props.preselectedCompany] as const,
+    () => [props.isOpen, props.contact, unref(props.preselectedCompany as Company | null)] as const,
     ([open, contact, preselected]) => {
       if (open) {
         const rawPhone =
@@ -414,8 +429,10 @@
     try {
       const data = buildPayload()
       if (props.contact) {
+        emit('confirm', { id: props.contact.id, data })
         emit('update', props.contact.id, data)
       } else {
+        emit('confirm', { data })
         emit('save', data)
       }
       if (closeAfter) {

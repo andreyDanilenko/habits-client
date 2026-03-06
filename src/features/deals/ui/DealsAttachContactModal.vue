@@ -66,7 +66,7 @@
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
   import { Modal, ModalContent, Button } from '@/shared/ui'
-  import { dealService } from '@/entities/deal'
+  import { useDealsCrud } from '../model/use-deals-crud'
   import { formatDealMoney } from '../lib/format'
   import type { Deal } from '@/entities/deal'
   import type { Contact } from '@/entities/contact'
@@ -79,8 +79,11 @@
 
   const emit = defineEmits<{
     close: []
+    confirm: []
     attached: []
   }>()
+
+  const crud = useDealsCrud(() => props.workspaceId)
 
   const deals = ref<Deal[]>([])
   const isLoading = ref(false)
@@ -89,7 +92,9 @@
 
   const contactLabel = computed(() => {
     if (!props.contact) return ''
-    const full = [props.contact.firstName, props.contact.lastName].filter(Boolean).join(' ')
+    const full = [props.contact.firstName, props.contact.lastName]
+      .filter(Boolean)
+      .join(' ')
     return full || props.contact.id
   })
 
@@ -98,12 +103,10 @@
     isLoading.value = true
     isError.value = false
     try {
-      const res = await dealService.getList({
-        workspaceId: props.workspaceId,
+      deals.value = await crud.getDealsList(props.workspaceId, {
         page: 1,
         limit: 50,
       })
-      deals.value = res.deals ?? []
     } catch {
       isError.value = true
       deals.value = []
@@ -116,9 +119,10 @@
     if (!props.workspaceId || !props.contact) return
     attachLoadingId.value = deal.id
     try {
-      await dealService.update(props.workspaceId, deal.id, {
-        contactId: props.contact.id,
+      await crud.updateDeal(deal.id, { contactId: props.contact.id }, {
+        skipRefetch: true,
       })
+      emit('confirm')
       emit('attached')
       emit('close')
     } finally {

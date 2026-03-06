@@ -29,7 +29,7 @@
             @update:query="contactQuery = $event"
             @search="onContactSearch"
             @select="(c) => selectContact(c as unknown as Contact)"
-            @create="$emit('create-contact')"
+            @create="handleCreateContact"
           />
         </div>
 
@@ -132,8 +132,10 @@ const props = withDefaults(
     workspaceId: string
     defaultOwnerId: string
     preselectedContact?: Contact | null
+    /** При использовании с useModal: создаёт контакт и возвращает его (для подстановки в форму) */
+    onCreateContact?: () => Promise<Contact | null>
   }>(),
-  { pipelineId: undefined, preselectedContact: null },
+  { pipelineId: undefined, preselectedContact: null, onCreateContact: undefined },
 )
 
 const emit = defineEmits<{
@@ -163,6 +165,14 @@ const {
 } = useDealForm(props, {
   onPreselectedApplied: () => emit('preselected-applied'),
 })
+
+async function handleCreateContact() {
+  if (props.onCreateContact) {
+    await props.onCreateContact()
+  } else {
+    emit('create-contact')
+  }
+}
 
 async function handleSubmit() {
   if (!form.value.name.trim()) return

@@ -1,134 +1,61 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6 pb-8">
-    <h1 class="text-text-primary">CRM — Компании</h1>
+  <BasePageLayout
+    title="CRM — Компании"
+    description="Управляйте компаниями. Поиск и табличный вид."
+  >
+    <template #header-actions>
+      <PermissionGuard :permission="CRM_PERMISSIONS.companyCreate">
+        <Button variant="primary" @click="actions.openCreateModal">
+          <PlusIcon class="size-5 mr-2" />
+          Создать компанию
+        </Button>
+      </PermissionGuard>
+    </template>
 
-    <CompaniesToolbar v-model:search-query="searchQuery" @create="openCreateModal" />
+    <template #content>
+      <div class="space-y-(--spacing-6)">
+        <CompaniesToolbar
+          :search-query="actions.searchQuery.value"
+          @update:search-query="actions.setSearchQuery"
+        />
 
-    <CompaniesTableWidget
-      :companies="companies"
-      :total="total"
-      :is-loading="isLoading"
-      :is-error="isError"
-      :page="page"
-      :page-size="pageSize"
-      :sort-by="sortBy"
-      :sort-order="sortOrder"
-      :selected-ids="selectedIds"
-      :handle-sort="handleSort"
-      :handle-row-select="handleRowSelect"
-      :handle-select-all="handleSelectAll"
-      :set-page="setPage"
-      :fetch-companies="fetchCompanies"
-      @edit="openEditModal"
-      @delete="confirmDelete"
-      @company-click="goToCompany"
-      @contacts-click="goToContactsByCompany"
-    />
+        <CompaniesTableWidget
+          :companies="actions.companies.value"
+          :total="actions.total.value"
+          :is-loading="actions.isLoading.value"
+          :is-error="actions.isError.value"
+          :page="actions.page.value"
+          :page-size="actions.pageSize.value"
+          :sort-by="actions.sortBy.value"
+          :sort-order="actions.sortOrder.value"
+          :selected-ids="actions.selectedIds.value"
+          :handle-sort="actions.handleSort"
+          :handle-row-select="actions.handleRowSelect"
+          :handle-select-all="actions.handleSelectAll"
+          :set-page="actions.setPage"
+          :fetch-companies="actions.fetchCompanies"
+          @edit="actions.openEditModal"
+          @delete="actions.confirmDelete"
+          @company-click="actions.goToCompany"
+          @contacts-click="actions.goToContactsByCompany"
+        />
+      </div>
+    </template>
 
-    <CompanyFormModal
-      :is-open="showFormModal"
-      :company="companyToEdit"
-      @close="closeFormModal"
-      @save="handleCreate"
-      @update="handleUpdate"
-    />
-
-    <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
-      <ConfirmModal
-        title="Удалить компанию?"
-        message="Компания будет удалена без возможности восстановления."
-        confirm-text="Удалить"
-        confirm-variant="danger"
-        @close="showDeleteModal = false"
-        @confirm="doDelete"
-      />
-    </Modal>
-  </div>
+  </BasePageLayout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { Modal, ConfirmModal } from '@/shared/ui'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Button } from '@/shared/ui'
+  import { PlusIcon } from '@/shared/ui/icon'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
   import {
-    useCompaniesPage,
+    useCompaniesPageActions,
     CompaniesToolbar,
     CompaniesTableWidget,
-    CompanyFormModal,
   } from '@/features/companies'
-  import type { Company, CreateCompanyDto } from '@/entities/company'
 
-  const router = useRouter()
-
-  const {
-    searchQuery,
-    companies,
-    total,
-    isLoading,
-    isError,
-    page,
-    pageSize,
-    sortBy,
-    sortOrder,
-    selectedIds,
-    handleSort,
-    handleRowSelect,
-    handleSelectAll,
-    setPage,
-    fetchCompanies,
-    createCompany,
-    updateCompany,
-    deleteCompany,
-  } = useCompaniesPage()
-
-  const showFormModal = ref(false)
-  const companyToEdit = ref<Company | null>(null)
-  const showDeleteModal = ref(false)
-  const companyToDelete = ref<Company | null>(null)
-
-  const openCreateModal = () => {
-    companyToEdit.value = null
-    showFormModal.value = true
-  }
-
-  const openEditModal = (company: Company) => {
-    companyToEdit.value = company
-    showFormModal.value = true
-  }
-
-  const closeFormModal = () => {
-    showFormModal.value = false
-    companyToEdit.value = null
-  }
-
-  const handleCreate = async (data: CreateCompanyDto) => {
-    await createCompany(data)
-    closeFormModal()
-  }
-
-  const handleUpdate = async (id: string, data: CreateCompanyDto) => {
-    await updateCompany(id, data)
-    closeFormModal()
-  }
-
-  const confirmDelete = (company: Company) => {
-    companyToDelete.value = company
-    showDeleteModal.value = true
-  }
-
-  function goToCompany(company: Company) {
-    router.push({ name: 'CrmCompanyDetail', params: { id: company.id } })
-  }
-
-  function goToContactsByCompany(company: Company) {
-    router.push({ path: '/crm/contacts', query: { companyId: company.id } })
-  }
-
-  const doDelete = async () => {
-    if (companyToDelete.value) {
-      await deleteCompany(companyToDelete.value.id)
-      companyToDelete.value = null
-      showDeleteModal.value = false
-    }
-  }
+  const actions = useCompaniesPageActions()
 </script>

@@ -1,15 +1,16 @@
 import { ref, computed, watch } from 'vue'
 import { useWorkspaceStore } from '@/entities/workspace'
 import { contactService } from '@/entities/contact'
-import type { Contact, CreateContactDto, UpdateContactDto } from '@/entities/contact'
+import type { Contact } from '@/entities/contact'
 import { useContactsTableState } from './use-contacts-table-state'
+import { useContactsCrud } from './use-contacts-crud'
 
 export function useContactsPage() {
   const workspaceStore = useWorkspaceStore()
   const tableState = useContactsTableState()
 
-  const searchInput = ref('') // значение в инпуте (без задержки)
-  const searchQuery = ref('') // запрос для API (с debounce)
+  const searchInput = ref('')
+  const searchQuery = ref('')
   const companyIdFilter = ref('')
   const contacts = ref<Contact[]>([])
   const total = ref(0)
@@ -47,6 +48,12 @@ export function useContactsPage() {
     }
   }
 
+  const { createContact, updateContact, deleteContact } = useContactsCrud(
+    () => workspaceId.value,
+    fetchContacts,
+    tableState.clearSelection,
+  )
+
   watch(
     [
       () => workspaceId.value,
@@ -60,27 +67,6 @@ export function useContactsPage() {
     fetchContacts,
     { immediate: true },
   )
-
-  const createContact = async (data: CreateContactDto): Promise<Contact> => {
-    if (!workspaceId.value) throw new Error('Workspace not selected')
-    const contact = await contactService.create(workspaceId.value, data)
-    await fetchContacts()
-    return contact
-  }
-
-  const updateContact = async (id: string, data: UpdateContactDto): Promise<Contact> => {
-    if (!workspaceId.value) throw new Error('Workspace not selected')
-    const contact = await contactService.update(workspaceId.value, id, data)
-    await fetchContacts()
-    return contact
-  }
-
-  const deleteContact = async (id: string): Promise<void> => {
-    if (!workspaceId.value) throw new Error('Workspace not selected')
-    await contactService.delete(workspaceId.value, id)
-    tableState.clearSelection()
-    await fetchContacts()
-  }
 
   return {
     ...tableState,

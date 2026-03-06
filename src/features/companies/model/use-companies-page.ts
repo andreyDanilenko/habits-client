@@ -1,8 +1,9 @@
 import { ref, watch, computed } from 'vue'
 import { useWorkspaceStore } from '@/entities/workspace'
 import { companyService } from '@/entities/company'
-import type { Company, CreateCompanyDto, UpdateCompanyDto } from '@/entities/company'
+import type { Company } from '@/entities/company'
 import { useCompaniesTableState } from './use-companies-table-state'
+import { useCompaniesCrud } from './use-companies-crud'
 
 export function useCompaniesPage() {
   const workspaceStore = useWorkspaceStore()
@@ -44,6 +45,12 @@ export function useCompaniesPage() {
     }
   }
 
+  const { createCompany, updateCompany, deleteCompany } = useCompaniesCrud(
+    () => workspaceId.value,
+    fetchCompanies,
+    tableState.clearSelection,
+  )
+
   watch(
     [
       () => workspaceId.value,
@@ -57,30 +64,14 @@ export function useCompaniesPage() {
     { immediate: true },
   )
 
-  const createCompany = async (data: CreateCompanyDto): Promise<Company> => {
-    if (!workspaceId.value) throw new Error('Workspace not selected')
-    const company = await companyService.create(workspaceId.value, data)
-    await fetchCompanies()
-    return company
-  }
-
-  const updateCompany = async (id: string, data: UpdateCompanyDto): Promise<Company> => {
-    if (!workspaceId.value) throw new Error('Workspace not selected')
-    const company = await companyService.update(workspaceId.value, id, data)
-    await fetchCompanies()
-    return company
-  }
-
-  const deleteCompany = async (id: string): Promise<void> => {
-    if (!workspaceId.value) throw new Error('Workspace not selected')
-    await companyService.delete(workspaceId.value, id)
-    tableState.clearSelection()
-    await fetchCompanies()
+  const setSearchQuery = (value: string) => {
+    searchQuery.value = value
   }
 
   return {
     ...tableState,
     searchQuery,
+    setSearchQuery,
     companies,
     total,
     isLoading,

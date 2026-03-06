@@ -1,10 +1,14 @@
 import { dealService } from '@/entities/deal'
 import type { CreateDealDto, UpdateDealDto } from '@/entities/deal'
+import type { Deal } from '@/entities/deal'
+
+const noop = () => {}
+const noopAsync = async () => {}
 
 export function useDealsCrud(
   getWorkspaceId: () => string,
-  fetchDeals: () => Promise<void>,
-  clearSelection: () => void,
+  fetchDeals: () => Promise<void> = noopAsync,
+  clearSelection: () => void = noop,
 ) {
   const createDeal = async (data: CreateDealDto) => {
     const workspaceId = getWorkspaceId()
@@ -36,9 +40,23 @@ export function useDealsCrud(
     await fetchDeals()
   }
 
+  const getDealsList = async (
+    workspaceId: string,
+    params?: { page?: number; limit?: number; contactId?: string },
+  ): Promise<Deal[]> => {
+    const res = await dealService.getList({
+      workspaceId,
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 50,
+      contactId: params?.contactId,
+    })
+    return res.deals ?? []
+  }
+
   return {
     createDeal,
     updateDeal,
     deleteDeal,
+    getDealsList,
   }
 }
