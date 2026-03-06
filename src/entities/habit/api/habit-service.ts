@@ -10,6 +10,14 @@ import type {
   HabitCompletion,
 } from '@/entities/habit'
 
+export interface HabitActivity {
+  id: string
+  emoji?: string
+  title: string
+  createdAt: string
+  userName?: string
+}
+
 interface HabitsDataResponse {
   habits: Habit[]
 }
@@ -102,6 +110,26 @@ export const habitService = {
       `${API_ENDPOINTS.HABITS.COMPLETIONS(workspaceId)}?${params.toString()}`,
     )
     return response.completions || []
+  },
+
+  getActivities: async (
+    workspaceId: string,
+    options?: { limit?: number; offset?: number },
+  ): Promise<{ activities: HabitActivity[]; total: number }> => {
+    const params = new URLSearchParams()
+    if (options?.limit) params.append('limit', String(options.limit))
+    if (options?.offset) params.append('offset', String(options.offset))
+    const url = params.toString()
+      ? `${API_ENDPOINTS.HABITS.ACTIVITIES(workspaceId)}?${params.toString()}`
+      : API_ENDPOINTS.HABITS.ACTIVITIES(workspaceId)
+    const response = await api.get<{
+      activities: HabitActivity[]
+      total: number
+    }>(url)
+    return {
+      activities: response.activities ?? [],
+      total: response.total ?? 0,
+    }
   },
 
   createCompletion: async (

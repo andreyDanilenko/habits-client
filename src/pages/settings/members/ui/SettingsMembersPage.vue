@@ -24,17 +24,24 @@
           </div>
           <div class="flex items-center gap-3 flex-shrink-0">
             <div class="flex flex-col items-end gap-1">
-              <label class="text-xs text-text-secondary">Системная роль</label>
+              <label class="text-xs text-text-secondary">Роль</label>
               <select
-                :value="member.systemRole"
+                :value="getRoleSelectValue(member)"
                 :disabled="!canChangeRole(member) || roleChangingMemberId === member.id"
                 class="border border-border-default rounded-md px-2 py-1.5 text-sm bg-bg-primary text-text-primary disabled:opacity-60 disabled:cursor-not-allowed"
                 @change="onRoleChange(member, $event)"
               >
-                <option value="OWNER">OWNER</option>
-                <option value="ADMIN">ADMIN</option>
-                <option value="MEMBER">MEMBER</option>
-                <option value="GUEST">GUEST</option>
+                <optgroup label="Системные">
+                  <option value="OWNER">OWNER</option>
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="MEMBER">MEMBER</option>
+                  <option value="GUEST">GUEST</option>
+                </optgroup>
+                <optgroup v-if="customRoles.length" label="Кастомные">
+                  <option v-for="r in customRoles" :key="r.id" :value="r.id">
+                    {{ r.name }}
+                  </option>
+                </optgroup>
               </select>
             </div>
             <Button
@@ -79,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed, onMounted, watch } from 'vue'
   import { Card, Button, Modal, ConfirmModal } from '@/shared/ui'
   import {
     useWorkspaceStore,
@@ -91,18 +98,25 @@
   import { useUserStore } from '@/entities/user'
   import { MemberRoleChips } from '@/features/members'
   import { UserPermissionsPanel } from '@/features/user-permissions'
+  import { roleService } from '@/entities/role'
+  import type { Role } from '@/entities/role'
+
+  const SYSTEM_ROLES = ['OWNER', 'ADMIN', 'MEMBER', 'GUEST'] as const
 
   const workspaceStore = useWorkspaceStore()
   const userStore = useUserStore()
   const { hasPermission } = usePermissions()
 
   const members = ref<Member[]>([])
+  const availableRoles = ref<Role[]>([])
   const isLoading = ref(false)
   const isError = ref(false)
   const removingMemberId = ref<string | null>(null)
   const showRemoveModal = ref(false)
   const memberToRemove = ref<Member | null>(null)
   const roleChangingMemberId = ref<string | null>(null)
+
+  const customRoles = computed(() => availableRoles.value.filter((r) => !r.isSystem))
 
   const canManageMembers = computed(
     () =>
@@ -111,7 +125,7 @@
   )
 
   const ownerCount = computed(
-    () => members.value.filter((m) => m.systemRole === 'OWNER').length,
+    () => members.value.filter((m) => String(m.systemRole).toUpperCase() === 'OWNER').length,
   )
 
   const currentUserId = computed(() => userStore.currentUser?.id ?? '')
@@ -119,15 +133,35 @@
   const canChangeRole = (member: Member) => {
     if (!canManageMembers.value) return false
     if (member.id === currentUserId.value) return false
-    if (member.systemRole === 'OWNER' && ownerCount.value <= 1) return false
+    if (String(member.systemRole).toUpperCase() === 'OWNER' && ownerCount.value <= 1) return false
     return true
   }
 
   const canRemoveMember = (member: Member) => {
     if (!hasPermission(WorkspacePermission.MEMBERS_REMOVE)) return false
     if (member.id === currentUserId.value) return false
-    if (member.systemRole === 'OWNER' && ownerCount.value <= 1) return false
+    if (String(member.systemRole).toUpperCase() === 'OWNER' && ownerCount.value <= 1) return false
     return true
+  }
+
+  const getRoleSelectValue = (member: Member): string => {
+    const sr = member.systemRole
+    if (SYSTEM_ROLES.includes(sr as (typeof SYSTEM_ROLES)[number])) return sr
+    const r = availableRoles.value.find((x) => x.name === sr)
+    return r?.id ?? sr
+  }
+
+  const loadRoles = async () => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) {
+      availableRoles.value = []
+      return
+    }
+    try {
+      availableRoles.value = await roleService.list(workspaceId)
+    } catch {
+      availableRoles.value = []
+    }
   }
 
   const loadMembers = async () => {
@@ -149,19 +183,21 @@
   }
 
   const onRoleChange = async (member: Member, ev: Event) => {
-    const newRole = (ev.target && 'value' in ev.target ? (ev.target as HTMLSelectElement).value : '') as string
+    const value = (ev.target && 'value' in ev.target ? (ev.target as HTMLSelectElement).value : '') as string
     const workspaceId = workspaceStore.currentWorkspace?.id
-    if (!workspaceId || !['OWNER', 'ADMIN', 'MEMBER', 'GUEST'].includes(newRole)) return
-    if (newRole === member.systemRole) return
+    if (!workspaceId || !value) return
+    if (value === getRoleSelectValue(member)) return
 
     roleChangingMemberId.value = member.id
     try {
-      await workspaceService.updateMemberRole(
-        workspaceId,
-        member.id,
-        newRole as 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST',
-      )
-      member.systemRole = newRole as Member['systemRole']
+      const payload =
+        SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
+          ? { role: value as (typeof SYSTEM_ROLES)[number] }
+          : { roleId: value }
+      await workspaceService.updateMemberRole(workspaceId, member.id, payload)
+      member.systemRole = SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
+        ? (value as Member['systemRole'])
+        : (availableRoles.value.find((r) => r.id === value)?.name ?? value)
     } catch (err) {
       console.error('Failed to update role:', err)
       await loadMembers()
@@ -201,6 +237,15 @@
   }
 
   onMounted(() => {
+    void loadRoles()
     void loadMembers()
   })
+
+  watch(
+    () => workspaceStore.currentWorkspace?.id,
+    () => {
+      void loadRoles()
+      void loadMembers()
+    },
+  )
 </script>

@@ -81,6 +81,7 @@
       title="Пока нет активности"
       description="Добавьте заметку или запишите звонок, чтобы начать"
       action-button-text="Добавить заметку"
+      :show-action-button="canCreate"
       :show-icon="true"
       @action="showComposer = true"
     />
@@ -102,6 +103,8 @@
               :key="activity.id"
               :activity="activity"
               :show-actions="true"
+              :can-edit="props.canEdit"
+              :can-delete="props.canDelete"
               @toggle-important="feed.toggleImportant(activity.id)"
               @edit="openEditNote(activity)"
               @delete="confirmDeleteNote(activity)"
@@ -182,8 +185,10 @@
       entityType: ActivityEntityType
       entityId: string
       canCreate?: boolean
+      canEdit?: boolean
+      canDelete?: boolean
     }>(),
-    { canCreate: true },
+    { canCreate: true, canEdit: true, canDelete: true },
   )
 
   const emit = defineEmits<{
@@ -208,6 +213,7 @@
   const editDescription = ref('')
 
   const hasFilters = computed(() => feed.hasFilters)
+  const canCreate = computed(() => props.canCreate)
 
   onMounted(() => {
     feed.load()

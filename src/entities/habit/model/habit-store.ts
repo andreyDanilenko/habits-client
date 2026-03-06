@@ -11,6 +11,7 @@ export const useHabitStore = defineStore('habit', () => {
   const completions = ref<HabitCompletion[]>([])
   const isLoading = ref(false)
   const selectedDate = ref<Date>(new Date())
+  const activityRefreshTrigger = ref(0)
   const workspaceStore = useWorkspaceStore()
 
   // Getters
@@ -133,6 +134,7 @@ export const useHabitStore = defineStore('habit', () => {
 
       const habit = await habitService.createHabit(workspaceId, habitData)
       habits.value.push(habit)
+      activityRefreshTrigger.value++
       return habit
     } catch (error) {
       console.error('Failed to create habit:', error)
@@ -153,6 +155,7 @@ export const useHabitStore = defineStore('habit', () => {
 
       const index = habits.value.findIndex((h) => h.id === id)
       if (index !== -1) habits.value[index] = updatedHabit
+      activityRefreshTrigger.value++
 
       return updatedHabit
     } catch (error) {
@@ -171,6 +174,7 @@ export const useHabitStore = defineStore('habit', () => {
       await habitService.deleteHabit(workspaceId, id)
       habits.value = habits.value.filter((h) => h.id !== id)
       completions.value = completions.value.filter((c) => c.habitId !== id)
+      activityRefreshTrigger.value++
     } catch (error) {
       console.error('Failed to delete habit:', error)
       throw error
@@ -196,6 +200,7 @@ export const useHabitStore = defineStore('habit', () => {
         time: data.time,
       })
       completions.value.push(completion)
+      activityRefreshTrigger.value++
 
       await fetchCompletions()
     } catch (error) {
@@ -216,6 +221,7 @@ export const useHabitStore = defineStore('habit', () => {
 
       if (response.completed && response.completion) {
         completions.value.push(response.completion)
+        activityRefreshTrigger.value++
       } else {
         completions.value = completions.value.filter(
           (c) => !(c.habitId === habitId && c.date === today),
@@ -237,6 +243,7 @@ export const useHabitStore = defineStore('habit', () => {
     completions,
     isLoading,
     selectedDate,
+    activityRefreshTrigger,
 
     // Getters
     todayHabits,

@@ -5,18 +5,24 @@
     empty-text="Нет привязанных контактов."
   >
     <template #actions>
-      <Button size="md" variant="ghost" @click="onAttachContact">
-        Привязать контакт
-      </Button>
-      <Button size="md" variant="outline" @click="onCreateContact">
-        Создать контакт
-      </Button>
+      <PermissionGuard :permission="CRM_PERMISSIONS.companyUpdate">
+        <Button size="md" variant="ghost" @click="onAttachContact">
+          Привязать контакт
+        </Button>
+      </PermissionGuard>
+      <PermissionGuard :permission="CRM_PERMISSIONS.contactCreate">
+        <Button size="md" variant="outline" @click="onCreateContact">
+          Создать контакт
+        </Button>
+      </PermissionGuard>
     </template>
   </ContactsTableSection>
 </template>
 
 <script setup lang="ts">
   import { Button } from '@/shared/ui'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
   import { ContactsTableSection } from '@/features/contacts'
   import type { Contact } from '@/entities/contact'
 

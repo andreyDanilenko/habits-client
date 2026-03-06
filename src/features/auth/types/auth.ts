@@ -24,5 +24,5 @@ import type { PermissionString } from '@/entities/role'
 export interface EffectivePermissions {
   permissions: PermissionString[]
   roles: string[]
-  systemRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST'
+  systemRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST' | (string & {})
 }

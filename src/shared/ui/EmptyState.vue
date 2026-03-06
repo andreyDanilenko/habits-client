@@ -23,7 +23,7 @@
           <Button v-if="showClearFilters" variant="outline" @click="$emit('clear-filters')">
             Сбросить фильтры
           </Button>
-          <Button @click="$emit('action')">{{ actionButtonText }}</Button>
+          <Button v-if="showActionButton" @click="$emit('action')">{{ actionButtonText }}</Button>
         </slot>
       </div>
     </Card>
@@ -39,6 +39,7 @@
       title?: string
       description?: string
       actionButtonText?: string
+      showActionButton?: boolean
       showClearFilters?: boolean
       showIcon?: boolean
     }>(),
@@ -46,6 +47,7 @@
       title: 'Нет данных',
       description: '',
       actionButtonText: 'Создать',
+      showActionButton: true,
       showClearFilters: false,
       showIcon: true,
     },

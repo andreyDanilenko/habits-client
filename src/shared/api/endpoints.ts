@@ -95,10 +95,14 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}/stats`,
     COMPLETIONS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/completions`,
     CALENDAR: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/calendar`,
+    ACTIVITIES: (workspaceId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/habits/activities`,
   },
 
   PERMISSIONS: {
     CATALOG: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/permissions/catalog`,
+    SYSTEM_ROLES: (workspaceId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/permissions/system-roles`,
   },
 
   ROLES: {
