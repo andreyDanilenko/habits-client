@@ -14,23 +14,28 @@
   </svg>
 </template>
 
-<script setup lang="ts">
-  import { computed } from 'vue'
+<script lang="ts">
+  import { computed, defineComponent } from 'vue'
 
-  interface Props {
-    size?: 'sm' | 'md' | 'lg'
-  }
+  export default defineComponent({
+    name: 'Spinner',
+    props: {
+      size: {
+        type: String as () => 'sm' | 'md' | 'lg',
+        default: 'md',
+      },
+    },
+    setup(props) {
+      const sizeClasses = computed(
+        () =>
+          ({
+            sm: 'w-3 h-3',
+            md: 'w-4 h-4',
+            lg: 'w-6 h-6',
+          })[props.size],
+      )
 
-  const props = withDefaults(defineProps<Props>(), {
-    size: 'md',
+      return { sizeClasses }
+    },
   })
-
-  const sizeClasses = computed(
-    () =>
-      ({
-        sm: 'w-3 h-3',
-        md: 'w-4 h-4',
-        lg: 'w-6 h-6',
-      })[props.size],
-  )
 </script>

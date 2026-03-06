@@ -1,16 +1,20 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-bg-secondary py-12 px-4">
-    <div class="max-w-md w-full space-y-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-bg-secondary py-(--spacing-12) px-(--spacing-4)"
+  >
+    <div class="max-w-md w-full space-y-(--spacing-8)">
       <div class="text-center">
         <div class="mx-auto flex justify-center">
           <Logo :size="48" />
         </div>
-        <h1 class="text-text-primary mt-6">Вход в HabitFlow</h1>
-        <p class="mt-2 text-text-secondary">Начните отслеживать свои привычки сегодня</p>
+        <h1 class="text-text-primary mt-(--spacing-6)">Вход в HabitFlow</h1>
+        <p class="mt-(--spacing-2) text-(--text-sm) text-text-secondary">
+          Начните отслеживать свои привычки сегодня
+        </p>
       </div>
 
-      <Card class="p-8">
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+      <Card class="p-(--spacing-8)">
+        <form @submit.prevent="handleSubmit" class="space-y-(--spacing-6)">
           <Input
             v-model="form.email"
             label="Email"
@@ -36,13 +40,12 @@
               v-model="form.remember"
               label="Запомнить меня"
               name="remember"
-              size="md"
               container-class="items-center"
             />
 
             <router-link
               to="/forgot-password"
-              class="text-sm font-medium text-primary-default hover:text-primary-dark"
+              class="text-(--text-sm) font-medium text-primary-default hover:text-primary-dark"
             >
               Забыли пароль?
             </router-link>
@@ -53,9 +56,12 @@
           </div>
 
           <div class="text-center">
-            <p class="text-sm text-text-secondary">
+            <p class="text-(--text-sm) text-text-secondary">
               Нет аккаунта?
-              <router-link to="/register" class="font-medium text-primary-default hover:text-primary-dark">
+              <router-link
+                to="/register"
+                class="font-medium text-primary-default hover:text-primary-dark"
+              >
                 Зарегистрироваться
               </router-link>
             </p>

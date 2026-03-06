@@ -18,3 +18,11 @@ export interface AuthResponse {
     name?: string
   }
 }
+
+import type { PermissionString } from '@/entities/role'
+
+export interface EffectivePermissions {
+  permissions: PermissionString[]
+  roles: string[]
+  systemRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST'
+}

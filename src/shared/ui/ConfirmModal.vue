@@ -10,6 +10,7 @@
         <Button
           type="button"
           :variant="confirmVariant === 'danger' ? 'danger' : 'primary'"
+          :loading="loading"
           @click="$emit('confirm', true)"
         >
           {{ confirmText }}
@@ -29,6 +30,7 @@
     message?: string
     confirmText?: string
     confirmVariant?: 'primary' | 'danger'
+    loading?: boolean
   }
 
   withDefaults(defineProps<Props>(), {
@@ -36,6 +38,7 @@
     message: 'Вы уверены, что хотите выполнить это действие?',
     confirmText: 'Подтвердить',
     confirmVariant: 'primary',
+    loading: false,
   })
 
   defineEmits<{

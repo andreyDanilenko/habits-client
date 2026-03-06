@@ -39,7 +39,7 @@
         v-for="tag in entry.tags"
         :key="tag"
         variant="outline"
-        size="sm"
+        size="md"
         class="bg-primary-light text-primary-dark border-primary-light hover:bg-primary-light/80 transition-colors"
       >
         {{ tag }}

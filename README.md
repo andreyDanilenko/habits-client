@@ -7,9 +7,9 @@ ERP with first module: Habits (habit tracker). **Live:** [https://habits.lifedre
 
 ## Stack
 
-| Layer | Tech |
-|------|------|
-| Frontend | Vue 3, TypeScript, Vite, Vue Router, Pinia, FSD |
+| Layer         | Tech                                                                              |
+| ------------- | --------------------------------------------------------------------------------- |
+| Frontend      | Vue 3, TypeScript, Vite, Vue Router, Pinia, FSD                                   |
 | Backend (API) | Go, Gin, PostgreSQL ([habits-api](https://github.com/andreyDanilenko/habits-api)) |
 
 This repo is only the Habits SPA. The API is a separate repo (REST, JWT, workspaces).

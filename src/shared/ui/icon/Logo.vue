@@ -8,10 +8,8 @@
   >
     <defs>
       <linearGradient :id="gradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#6366f1" />
-        <!-- indigo-500 -->
-        <stop offset="100%" stop-color="#9333ea" />
-        <!-- purple-600 -->
+        <stop offset="0%" stop-color="var(--color-primary-default)" />
+        <stop offset="100%" stop-color="var(--color-secondary-default)" />
       </linearGradient>
     </defs>
     <rect width="32" height="32" :rx="borderRadius" :fill="`url(#${gradientId})`" />

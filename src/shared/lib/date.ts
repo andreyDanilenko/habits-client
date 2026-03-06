@@ -101,3 +101,45 @@ export function getGreeting(): string {
   if (hour >= 18 && hour < 22) return 'Добрый вечер'
   return 'Доброй ночи'
 }
+
+/** Ключ группы для ленты активности: сегодня, вчера, на этой неделе, в прошлом месяце, старше */
+export type ActivityDateGroupKey = 'today' | 'yesterday' | 'this_week' | 'last_month' | 'older'
+
+const ACTIVITY_GROUP_ORDER: ActivityDateGroupKey[] = [
+  'today',
+  'yesterday',
+  'this_week',
+  'last_month',
+  'older',
+]
+
+export function getActivityDateGroupKey(date: Date | string): ActivityDateGroupKey {
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (!dateObj || isNaN(dateObj.getTime())) return 'older'
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const dateOnly = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate())
+  const dayDiff = Math.floor((today.getTime() - dateOnly.getTime()) / (24 * 60 * 60 * 1000))
+  if (dayDiff === 0) return 'today'
+  if (dayDiff === 1) return 'yesterday'
+  if (dayDiff <= 7) return 'this_week'
+  if (dayDiff <= 31) return 'last_month'
+  return 'older'
+}
+
+export function getActivityDateGroupLabel(key: ActivityDateGroupKey): string {
+  const labels: Record<ActivityDateGroupKey, string> = {
+    today: 'Сегодня',
+    yesterday: 'Вчера',
+    this_week: 'На этой неделе',
+    last_month: 'В прошлом месяце',
+    older: 'Старше',
+  }
+  return labels[key]
+}
+
+export function getActivityDateGroupOrder(): ActivityDateGroupKey[] {
+  return [...ACTIVITY_GROUP_ORDER]
+}

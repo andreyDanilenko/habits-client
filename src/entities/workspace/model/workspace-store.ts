@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api } from '@/shared/api'
 import { workspaceService } from '@/entities/workspace'
+import { themeService } from '@/shared/lib/theme.service'
 import type {
   Workspace,
   CreateWorkspaceDto,
@@ -48,7 +49,15 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       if (current) {
         currentWorkspace.value = current
         applyWorkspaceHeader(current)
+        themeService.applyWorkspaceTheme(current)
         await loadModules(current.id)
+        try {
+          const { useAuthStore } = await import('@/features/auth')
+          const authStore = useAuthStore()
+          await authStore.loadEffectivePermissions()
+        } catch (error) {
+          console.error('Failed to load permissions for current workspace:', error)
+        }
         return
       }
       if (list.length > 0) {
@@ -67,6 +76,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     if (!currentWorkspace.value) {
       currentWorkspace.value = workspace
       applyWorkspaceHeader(workspace)
+      themeService.applyWorkspaceTheme(workspace)
       await loadModules(workspace.id)
     }
     return workspace
@@ -83,6 +93,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
     if (currentWorkspace.value?.id === workspaceId) {
       currentWorkspace.value = workspace
+      themeService.applyWorkspaceTheme(workspace)
     }
     return workspace
   }
@@ -96,6 +107,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       } else {
         currentWorkspace.value = null
         applyWorkspaceHeader(null)
+        themeService.applyWorkspaceTheme(null)
       }
     }
   }
@@ -103,6 +115,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const setCurrentWorkspace = (workspace: Workspace) => {
     currentWorkspace.value = workspace
     applyWorkspaceHeader(workspace)
+    themeService.applyWorkspaceTheme(workspace)
   }
 
   const loadModules = async (workspaceId: string) => {
@@ -131,8 +144,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     if (workspace) {
       currentWorkspace.value = workspace
       applyWorkspaceHeader(workspace)
+      themeService.applyWorkspaceTheme(workspace)
 
       await loadModules(workspaceId)
+      try {
+        const { useAuthStore } = await import('@/features/auth')
+        const authStore = useAuthStore()
+        await authStore.loadEffectivePermissions()
+      } catch (error) {
+        console.error('Failed to reload permissions after workspace switch:', error)
+      }
       const { useHabitStore } = await import('@/entities/habit')
       const habitStore = useHabitStore()
       await habitStore.fetchHabits(new Date())
@@ -149,6 +170,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     workspaces.value = []
     currentWorkspace.value = null
     applyWorkspaceHeader(null)
+    themeService.applyWorkspaceTheme(null)
   }
 
   return {

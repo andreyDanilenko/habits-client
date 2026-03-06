@@ -40,6 +40,47 @@ export const API_ENDPOINTS = {
     USER_LICENSES: (userId: string) => apiV1 + `/admin/users/${userId}/licenses`,
   },
 
+  CRM: {
+    CONTACTS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/contacts`,
+    CONTACT: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/contacts/${id}`,
+    COMPANIES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/companies`,
+    COMPANY: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/companies/${id}`,
+    COMPANY_ATTACH_CONTACT: (workspaceId: string, companyId: string, contactId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/companies/${companyId}/contacts/${contactId}`,
+    COMPANY_DETACH_CONTACT: (workspaceId: string, companyId: string, contactId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/companies/${companyId}/contacts/${contactId}`,
+    DEALS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/deals`,
+    DEAL: (workspaceId: string, id: string) => apiV1 + `/workspaces/${workspaceId}/deals/${id}`,
+    PIPELINES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/pipelines`,
+    PIPELINE: (workspaceId: string, pipelineId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/pipelines/${pipelineId}`,
+    PIPELINE_STAGES: (workspaceId: string, pipelineId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/pipelines/${pipelineId}/stages`,
+    PIPELINE_STAGE: (workspaceId: string, pipelineId: string, stageId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/pipelines/${pipelineId}/stages/${stageId}`,
+    PIPELINE_STAGES_REORDER: (workspaceId: string, pipelineId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/pipelines/${pipelineId}/stages/reorder`,
+    ACTIVITIES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/activities`,
+    ACTIVITY: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/activities/${id}`,
+    ACTIVITY_IMPORTANT: (workspaceId: string, id: string) =>
+      apiV1 + `/workspaces/${workspaceId}/activities/${id}/important`,
+  },
+
+  PROJECTS: {
+    LIST: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/projects`,
+    DETAIL: (workspaceId: string, projectId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/projects/${projectId}`,
+    ENTITIES: (workspaceId: string, projectId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/projects/${projectId}/entities`,
+    DETACH_ENTITY: (workspaceId: string, projectId: string, entityType: string, entityId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/projects/${projectId}/entities/${entityType}/${entityId}`,
+    BY_ENTITY: (workspaceId: string, entityType: string, entityId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/entities/${entityType}/${entityId}/projects`,
+  },
+
   HABITS: {
     BASE: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits`,
     DETAIL: (workspaceId: string, habitsId: string) =>
@@ -52,5 +93,34 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}/stats`,
     COMPLETIONS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/completions`,
     CALENDAR: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/calendar`,
+  },
+
+  PERMISSIONS: {
+    CATALOG: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/permissions/catalog`,
+  },
+
+  ROLES: {
+    LIST: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/roles`,
+    DETAIL: (workspaceId: string, roleId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/roles/${roleId}`,
+    PERMISSIONS: (workspaceId: string, roleId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/roles/${roleId}/permissions`,
+    INHERIT: (workspaceId: string, roleId: string, parentRoleId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/roles/${roleId}/inherit/${parentRoleId}`,
+  },
+
+  ASSIGNMENTS: {
+    USER_ROLES: (workspaceId: string, userId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/users/${userId}/roles`,
+    USER_ROLE: (workspaceId: string, userId: string, roleId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/users/${userId}/roles/${roleId}`,
+    USER_PERMISSIONS: (workspaceId: string, userId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/users/${userId}/permissions`,
+    USER_PERMISSION: (workspaceId: string, userId: string, permissionId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/users/${userId}/permissions/${permissionId}`,
+  },
+
+  ME: {
+    PERMISSIONS: (workspaceId: string) => apiV1 + `/me/permissions?workspaceId=${workspaceId}`,
   },
 } as const

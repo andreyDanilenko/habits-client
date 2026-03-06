@@ -4,6 +4,8 @@ import { mockApi } from './mock-client'
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
+/** Ранее CRM шёл на моки; теперь бэкенд отдаёт /contacts, /companies, /deals, /pipelines */
+
 type UnauthorizedHandler = () => void | Promise<void>
 
 class ApiClient {

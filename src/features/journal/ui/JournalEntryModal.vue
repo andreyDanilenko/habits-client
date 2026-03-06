@@ -1,11 +1,13 @@
 <template>
   <ModalContent :title="entry ? 'Редактировать запись' : 'Запись за день'" @close="handleClose">
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <FormField label="Дата">
-        <Input v-model="form.date" type="date" required />
-      </FormField>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата</span>
+        <DatePicker v-model="form.date" required />
+      </div>
 
-      <FormField label="Настроение">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Настроение</span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="mood in moods"
@@ -17,22 +19,24 @@
           >
             <span class="text-2xl">{{ mood.emoji }}</span>
           </SelectButton>
-          <Button v-if="form.mood" variant="ghost" size="sm" @click="form.mood = undefined">
+          <Button v-if="form.mood" variant="ghost" size="md" @click="form.mood = undefined">
             Убрать
           </Button>
         </div>
-      </FormField>
+      </div>
 
-      <FormField label="Описание за день">
-        <textarea
-          v-model="form.description"
-          rows="8"
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание за день</span>
+        <Textarea
+          v-model="descriptionModel"
+          :rows="8"
           placeholder="Как прошел ваш день? Что вы чувствуете?"
-          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default resize-none bg-bg-primary text-text-primary placeholder:text-text-muted"
+          resize="none"
         />
-      </FormField>
+      </div>
 
-      <FormField label="Теги (необязательно)">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги (необязательно)</span>
         <div class="flex flex-wrap gap-2 items-center">
           <Badge
             v-for="tag in form.tags || []"
@@ -50,9 +54,9 @@
             class="inline-block w-auto min-w-[140px]"
             @keydown.enter.prevent="addTag"
           />
-          <Button type="button" variant="outline" size="sm" @click="addTag"> Добавить </Button>
+          <Button type="button" variant="outline" size="md" @click="addTag"> Добавить </Button>
         </div>
-      </FormField>
+      </div>
     </form>
 
     <template #footer>
@@ -66,7 +70,15 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
-  import { ModalContent, FormField, Input, Button, SelectButton, Badge } from '@/shared/ui'
+  import {
+    ModalContent,
+    Input,
+    Button,
+    SelectButton,
+    Badge,
+    DatePicker,
+    Textarea,
+  } from '@/shared/ui'
   import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
   import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'
 
@@ -93,6 +105,11 @@
   })
 
   const newTag = ref('')
+
+  const descriptionModel = computed({
+    get: () => form.value.description ?? '',
+    set: (v: string) => { form.value.description = v },
+  })
 
   const applyEntryToForm = (value: JournalEntry | null) => {
     if (value) {

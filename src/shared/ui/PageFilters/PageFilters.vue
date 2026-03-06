@@ -1,43 +1,21 @@
 <template>
   <Card :border="true" :padding="true" class="bg-bg-primary">
     <div class="flex flex-col gap-4">
-      <div v-if="enabledFilters.includes(PageFiltersEnum.SEARCH)" class="relative">
-        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
-          <SearchIcon class="w-5 h-5" />
-        </div>
-
-        <input
-          :value="searchQuery"
-          @input="handleSearchInput"
-          type="text"
-          :placeholder="searchPlaceholder"
-          class="w-full pl-12 pr-12 py-3 border border-border-default rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary transition-all duration-200 shadow-sm hover:shadow-card"
-        />
-
-        <div class="absolute right-3 top-1/2 -translate-y-1/2">
-          <Button
-            v-if="searchQuery"
-            @click="$emit('update:search-query', '')"
-            icon-only
-            variant="icon"
-            size="sm"
-            class="hover:bg-bg-tertiary rounded-lg transition-colors"
-          >
-            <XMarkIcon class="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+      <SearchInput
+        v-if="enabledFilters.includes(PageFiltersEnum.SEARCH)"
+        :model-value="searchQuery"
+        :placeholder="searchPlaceholder"
+        @update:model-value="$emit('update:search-query', $event)"
+      />
 
       <div class="flex flex-wrap gap-3">
         <div v-if="enabledFilters.includes(PageFiltersEnum.DATE)" class="flex-1 min-w-[200px]">
-          <FormField label="Дата">
-            <Input
-              :model-value="selectedDate"
-              type="date"
-              :disabled="showAll"
-              @update:model-value="$emit('date-change', $event)"
-            />
-          </FormField>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата</span>
+          <DatePicker
+            :model-value="selectedDate"
+            :disabled="showAll"
+            @update:model-value="$emit('date-change', $event)"
+          />
         </div>
 
         <div v-if="enabledFilters.includes(PageFiltersEnum.MOOD)" class="flex-1 min-w-[200px]">
@@ -46,7 +24,7 @@
             <select
               :value="selectedMood ?? ''"
               @change="handleMoodChange"
-              class="w-full px-4 py-2.5 pr-10 border border-border-default rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
+              class="w-full px-(--spacing-4) py-(--spacing-3) pr-(--spacing-10) border border-border-default rounded-(--radius-xl) focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
             >
               <option value="" class="text-text-muted">Все настроения</option>
               <option
@@ -59,7 +37,7 @@
               </option>
             </select>
             <div
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              class="absolute right-(--spacing-3) top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
             >
               <ChevronDownIcon class="w-5 h-5" />
             </div>
@@ -72,7 +50,7 @@
             <select
               :value="selectedPeriod ?? ''"
               @change="handlePeriodChange"
-              class="w-full px-4 py-2.5 pr-10 border border-border-default rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
+              class="w-full px-(--spacing-4) py-(--spacing-3) pr-(--spacing-10) border border-border-default rounded-(--radius-xl) focus:outline-none focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary transition-all duration-200 shadow-sm hover:shadow-card appearance-none cursor-pointer text-text-primary"
             >
               <option value="" class="text-text-muted">Все даты</option>
               <option
@@ -85,7 +63,7 @@
               </option>
             </select>
             <div
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              class="absolute right-(--spacing-3) top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
             >
               <ChevronDownIcon class="w-5 h-5" />
             </div>
@@ -95,7 +73,7 @@
         <div v-if="enabledFilters.includes(PageFiltersEnum.SHOW_ALL)" class="flex items-end">
           <Button
             :variant="showAll ? 'secondary' : 'outline'"
-            size="sm"
+            size="md"
             @click="$emit('show-all')"
             class="whitespace-nowrap"
           >
@@ -107,7 +85,7 @@
           <Button
             v-if="hasActiveFilters"
             variant="outline"
-            size="sm"
+            size="md"
             @click="$emit('clear-filters')"
             class="whitespace-nowrap"
           >
@@ -127,7 +105,7 @@
             @click.stop="$emit('update:search-query', '')"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -145,7 +123,7 @@
             @click.stop="$emit('update:selected-mood', null)"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -163,7 +141,7 @@
             @click.stop="handleClearDate"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -181,7 +159,7 @@
             @click.stop="$emit('update:selected-period', null)"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -199,7 +177,7 @@
             @click.stop="$emit('reset-filter')"
             icon-only
             variant="icon"
-            size="sm"
+            size="md"
             icon-color="default"
             class="!p-0 !h-auto !w-auto ml-1"
           >
@@ -213,8 +191,8 @@
 
 <script setup lang="ts">
   import { formatDateRu } from '@/shared/lib'
-  import { Card, Button, Badge, FormField, Input } from '@/shared/ui'
-  import { XMarkIcon, ChevronDownIcon, SearchIcon } from '@/shared/ui/icon'
+  import { Card, Button, Badge, DatePicker, SearchInput } from '@/shared/ui'
+  import { XMarkIcon, ChevronDownIcon } from '@/shared/ui/icon'
   import { PageFiltersEnum } from './PageFilters.types'
 
   const props = withDefaults(
@@ -251,11 +229,6 @@
     'reset-filter': []
     'clear-filters': []
   }>()
-
-  const handleSearchInput = (event: Event) => {
-    const target = event.target as HTMLInputElement
-    emit('update:search-query', target.value)
-  }
 
   const handleMoodChange = (event: Event) => {
     const target = event.target as HTMLSelectElement

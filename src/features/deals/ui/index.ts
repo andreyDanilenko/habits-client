@@ -1,0 +1,7 @@
+export { default as DealsToolbar } from './DealsToolbar.vue'
+export { default as DealsTableWidget } from './DealsTableWidget.vue'
+export { default as DealsKanbanView } from './DealsKanbanView.vue'
+export { default as DealFormModal } from './DealFormModal.vue'
+export { default as DealsAttachContactModal } from './DealsAttachContactModal.vue'
+export { default as DealMainInfo } from './DealMainInfo.vue'
+export { default as DealPlaceholderTab } from './DealPlaceholderTab.vue'

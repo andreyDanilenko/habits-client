@@ -18,7 +18,7 @@
           'fixed z-50 pointer-events-auto',
           variant === 'dropdown'
             ? 'min-w-0'
-            : 'bg-bg-primary border border-border-default rounded-lg shadow-card min-w-[150px]',
+            : 'bg-bg-primary border border-border-default rounded-(--radius-md) shadow-card min-w-[150px]',
         ]"
         :style="tooltipStyle"
         @mouseenter="keepOpen = true"
@@ -28,7 +28,7 @@
         <template v-if="variant === 'dropdown'">
           <slot>{{ text }}</slot>
         </template>
-        <div v-else class="p-3 text-text-primary">
+        <div v-else class="p-(--spacing-3) text-(--text-sm) text-text-primary">
           <slot>{{ text }}</slot>
         </div>
       </div>

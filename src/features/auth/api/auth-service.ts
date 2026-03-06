@@ -1,5 +1,5 @@
 import { api, API_ENDPOINTS } from '@/shared/api'
-import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
+import type { LoginDto, RegisterDto, AuthResponse, EffectivePermissions } from '@/features/auth'
 import type { User } from '@/entities/user'
 
 interface AuthDataResponse {
@@ -35,5 +35,9 @@ export const authService = {
       refreshToken: 'cookie-based',
       user: response.user,
     }
+  },
+
+  getEffectivePermissions: async (workspaceId: string): Promise<EffectivePermissions> => {
+    return api.get<EffectivePermissions>(API_ENDPOINTS.ME.PERMISSIONS(workspaceId))
   },
 }

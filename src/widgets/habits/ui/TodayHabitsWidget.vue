@@ -10,7 +10,7 @@
 
     <div v-else-if="habits.length === 0" class="text-center py-8">
       <p class="text-text-secondary mb-4">Нет привычек на сегодня</p>
-      <Button variant="link" size="sm" @click="$emit('add-habit')">
+      <Button variant="link" size="md" @click="$emit('add-habit')">
         Создать первую привычку
       </Button>
     </div>
@@ -49,7 +49,9 @@
                 <span
                   class="text-xs"
                   :class="
-                    getProgress(habit.id) >= 1 ? 'text-success-default font-medium' : 'text-text-muted'
+                    getProgress(habit.id) >= 1
+                      ? 'text-success-default font-medium'
+                      : 'text-text-muted'
                   "
                 >
                   {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}
@@ -60,7 +62,7 @@
         </div>
         <Button
           variant="outline"
-          size="sm"
+          size="md"
           @click="markCompletion(habit)"
           :disabled="getProgress(habit.id) >= (habit.dailyGoal || 1)"
         >

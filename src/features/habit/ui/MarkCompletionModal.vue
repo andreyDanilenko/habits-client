@@ -5,18 +5,20 @@
     @close="$emit('close')"
   >
     <div class="space-y-4">
-      <FormField label="Во сколько выполнили?">
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Во сколько выполнили?</span>
         <Input v-model="form.time" type="time" />
-      </FormField>
+      </div>
 
-      <FormField label="Заметка (необязательно)">
-        <textarea
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Заметка (необязательно)</span>
+        <Textarea
           v-model="form.note"
-          rows="3"
+          :rows="3"
           placeholder="Как прошло выполнение? Какие были сложности или успехи?"
-          class="w-full px-3 py-2 border border-border-default rounded-lg focus:ring-2 focus:ring-primary-default focus:border-primary-default bg-bg-primary text-text-primary placeholder:text-text-muted resize-none"
+          resize="none"
         />
-      </FormField>
+      </div>
     </div>
 
     <template #footer>
@@ -32,7 +34,7 @@
 
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
-  import { ModalContent, Button, FormField, Input } from '@/shared/ui'
+  import { ModalContent, Button, Input, Textarea } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
   interface Props {

@@ -14,7 +14,11 @@
 
       <!-- Мои лицензии (кратко) -->
       <section v-if="licensesCount > 0" class="mb-10">
-        <Card class="p-5 border border-primary-light bg-primary-light/30" :shadow="true" :border="true">
+        <Card
+          class="p-5 border border-primary-light bg-primary-light/30"
+          :shadow="true"
+          :border="true"
+        >
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
               <div
@@ -24,10 +28,12 @@
               </div>
               <div>
                 <h2 class="font-semibold text-text-primary">Активных лицензий</h2>
-                <p class="text-sm text-text-secondary">Доступно для включения в настройках воркспейса</p>
+                <p class="text-sm text-text-secondary">
+                  Доступно для включения в настройках воркспейса
+                </p>
               </div>
             </div>
-            <Button variant="outline" size="sm" @click="$router.push('/workspace-settings')">
+            <Button variant="outline" size="md" @click="$router.push('/workspace-settings')">
               Настройки воркспейса
             </Button>
           </div>
@@ -53,7 +59,7 @@
             </div>
             <span class="font-medium text-text-primary">{{ method.name }}</span>
             <span class="mt-0.5 text-center text-xs text-text-muted">{{ method.note }}</span>
-            <Button variant="outline" size="sm" disabled class="mt-4 w-full">
+            <Button variant="outline" size="md" disabled class="mt-4 w-full">
               {{ method.buttonLabel }}
             </Button>
           </div>
@@ -87,7 +93,9 @@
                   <div
                     class="flex h-11 w-11 items-center justify-center rounded-xl text-2xl"
                     :class="
-                      item.isFree ? 'bg-success-light text-success-dark' : 'bg-primary-light text-primary-default'
+                      item.isFree
+                        ? 'bg-success-light text-success-dark'
+                        : 'bg-primary-light text-primary-default'
                     "
                   >
                     {{ item.emoji }}
@@ -127,9 +135,11 @@
                   <span class="mt-0.5 text-xs text-text-muted">{{ plan.note }}</span>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="md"
                     :class="
-                      plan.popular ? 'border-primary-light text-primary-dark hover:bg-primary-light' : ''
+                      plan.popular
+                        ? 'border-primary-light text-primary-dark hover:bg-primary-light'
+                        : ''
                     "
                     disabled
                     class="mt-4 w-full"

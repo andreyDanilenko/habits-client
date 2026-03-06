@@ -1,8 +1,5 @@
 <template>
-  <div 
-    class="rounded-2xl p-6"
-    :style="{ background: `linear-gradient(to right, var(--color-primary-light), var(--color-secondary-light))` }"
-  >
+  <div class="rounded-2xl p-6 bg-gradient-to-r from-primary-light to-secondary-light">
     <h1 class="text-text-primary mb-2">{{ greeting }}, {{ userName }}!</h1>
     <p class="text-text-secondary">Сегодня {{ formattedDate }}</p>
   </div>

@@ -3,12 +3,13 @@ import { ref, computed } from 'vue'
 import { authService } from '@/features/auth'
 import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
-import type { LoginDto, RegisterDto, AuthResponse } from '@/features/auth'
+import type { LoginDto, RegisterDto, AuthResponse, EffectivePermissions } from '@/features/auth'
 
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(null)
   const refreshToken = ref<string | null>(null)
   const isLoading = ref(false)
+  const effectivePermissions = ref<EffectivePermissions | null>(null)
 
   // Getters
   // Используем currentUser из userStore для проверки аутентификации,
@@ -80,6 +81,7 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('Logout failed:', error)
     } finally {
       clearTokens()
+      effectivePermissions.value = null
       useUserStore().clearUser()
       useWorkspaceStore().clearWorkspaces()
     }
@@ -120,6 +122,21 @@ export const useAuthStore = defineStore('auth', () => {
     refreshToken.value = null
   }
 
+  const loadEffectivePermissions = async () => {
+    const workspaceStore = useWorkspaceStore()
+    const currentWorkspace = workspaceStore.currentWorkspace
+    if (!currentWorkspace) {
+      effectivePermissions.value = null
+      return
+    }
+    try {
+      effectivePermissions.value = await authService.getEffectivePermissions(currentWorkspace.id)
+    } catch (error) {
+      console.error('Failed to load effective permissions:', error)
+      effectivePermissions.value = null
+    }
+  }
+
   const initAuth = async () => {
     try {
       const userStore = useUserStore()
@@ -131,12 +148,14 @@ export const useAuthStore = defineStore('auth', () => {
       if (userStore.currentUser) {
         accessToken.value = 'cookie-based'
         refreshToken.value = 'cookie-based'
+        await loadEffectivePermissions()
       }
     } catch (error: any) {
       // Очищаем токены только если получили 401 (неавторизован)
       // Другие ошибки могут быть временными (сеть, сервер и т.д.)
       if (error?.response?.status === 401) {
         clearTokens()
+        effectivePermissions.value = null
       }
     }
   }
@@ -146,6 +165,7 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken,
     refreshToken,
     isLoading,
+    effectivePermissions,
 
     // Getters
     isAuthenticated,
@@ -158,5 +178,6 @@ export const useAuthStore = defineStore('auth', () => {
     setTokens,
     clearTokens,
     initAuth,
+    loadEffectivePermissions,
   }
 })

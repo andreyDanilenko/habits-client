@@ -2,23 +2,25 @@
   <div class="relative">
     <Tooltip variant="dropdown" trigger="click" placement="bottom" class="w-full justify-between">
       <template #trigger>
-        <Button variant="ghost" size="md" custom-class="w-full justify-between gap-2">
+        <Button variant="ghost" size="md" custom-class="w-full justify-between gap-(--spacing-2)">
           <div
-            class="w-6 h-6 rounded flex-shrink-0"
+            class="w-6 h-6 rounded-(--radius-md) flex-shrink-0"
             :style="{ backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)' }"
           />
-          <span class="text-sm font-medium text-text-primary whitespace-nowrap">
+          <span class="flex-1 min-w-0 truncate text-(--text-sm) font-medium text-text-primary text-left">
             {{ currentWorkspace?.name || 'Workspace' }}
           </span>
           <ChevronDownIcon class="w-4 h-4 text-text-muted flex-shrink-0" />
         </Button>
       </template>
 
-      <div class="w-64 bg-bg-primary rounded-lg shadow-card border border-border-default">
+      <div
+        class="w-64 bg-bg-primary rounded-(--radius-lg) shadow-card border border-border-default"
+      >
         <!-- Заголовок -->
-        <div class="px-4 py-3 border-b border-border-light">
+        <div class="px-(--spacing-4) py-(--spacing-3) border-b border-border-light">
           <div class="flex items-center justify-between">
-            <p class="text-sm font-semibold text-text-primary">Рабочие пространства</p>
+            <p class="text-(--text-sm) font-semibold text-text-primary">Рабочие пространства</p>
             <Button
               @click.stop="openWorkspaceSettings"
               icon-only
@@ -34,13 +36,13 @@
             v-for="workspace in workspaces"
             :key="workspace.id"
             variant="ghost"
-            size="sm"
+            size="md"
             @click.stop="switchWorkspace(workspace.id)"
-            custom-class="w-full justify-start gap-3 !px-4 !py-2"
+            custom-class="w-full justify-start gap-(--spacing-3) !px-(--spacing-4) !py-(--spacing-2)"
             :class="{ 'bg-primary-light': workspace.id === currentWorkspace?.id }"
           >
             <span
-              class="w-4 h-4 rounded flex-shrink-0"
+              class="w-4 h-4 rounded-(--radius-sm) flex-shrink-0"
               :style="{ backgroundColor: workspace.color || 'var(--color-primary-default)' }"
             />
             <span class="flex-1 text-left truncate min-w-0 text-text-primary">
@@ -53,11 +55,11 @@
         </div>
 
         <!-- Действия -->
-        <div class="border-t border-border-light p-2">
+        <div class="border-t border-border-light p-(--spacing-2)">
           <Button
             @click.stop="openCreateModal"
             variant="ghost"
-            size="sm"
+            size="md"
             class="w-full"
             :left-icon="PlusIcon"
           >

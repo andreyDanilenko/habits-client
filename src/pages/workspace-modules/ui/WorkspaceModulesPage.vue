@@ -27,7 +27,7 @@
             <Button
               v-if="canActivateModules"
               variant="outline"
-              size="sm"
+              size="md"
               :loading="disablingModule === module.id"
               @click="openDisableConfirm(module)"
             >
@@ -76,9 +76,7 @@
               <p v-else class="text-sm text-text-muted mb-1">
                 Включить модуль может владелец workspace или админ (при наличии лицензии).
               </p>
-              <Button variant="secondary" disabled>
-                Перейти к покупке / связь с владельцем
-              </Button>
+              <Button variant="secondary" disabled> Перейти к покупке / связь с владельцем </Button>
             </template>
           </div>
         </div>
@@ -135,13 +133,20 @@
 
   const canActivateModules = computed(() => isOwner.value || isAdmin.value)
 
-  /** Core-модули (например habits) можно включать без лицензии. Админ может включать/отключать любой модуль без лицензии. */
-  const coreModuleIds = new Set(['habits'])
-  /** Может ли пользователь включить этот модуль: админ — всегда; владелец — при лицензии или core. */
+  /**
+   * Core-модули (is_core = TRUE в БД) можно включать без лицензии.
+   * Админ может включать/отключать любой модуль без лицензии.
+   * Данные берём из API /workspace-modules (workspaceStore.modules), без хардкода id на фронте.
+   */
+  const coreModuleCodes = computed(
+    () => new Set(workspaceStore.modules.filter((m) => m.isCore).map((m) => m.moduleName)),
+  )
+
+  /** Может ли пользователь включить этот модуль: админ — всегда; владелец — при лицензии или если модуль core. */
   const canEnableModule = (moduleId: string) =>
     canActivateModules.value &&
     (isAdmin.value ||
-      coreModuleIds.has(moduleId) ||
+      coreModuleCodes.value.has(moduleId) ||
       workspaceStore.licensedModuleCodesForCurrentWorkspace.has(moduleId))
 
   const enabledSet = computed(() => new Set(workspaceStore.enabledModules))

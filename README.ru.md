@@ -7,10 +7,10 @@ ERP с первым модулем: привычки. **Сайт:** [https://hab
 
 ## Стек
 
-| Часть | Технологии |
-|-------|------------|
-| Фронтенд | Vue 3, TypeScript, Vite, Vue Router, Pinia, FSD |
-| Бэкенд (API) | Go, Gin, PostgreSQL (репо habits-api) |
+| Часть        | Технологии                                      |
+| ------------ | ----------------------------------------------- |
+| Фронтенд     | Vue 3, TypeScript, Vite, Vue Router, Pinia, FSD |
+| Бэкенд (API) | Go, Gin, PostgreSQL (репо habits-api)           |
 
 Этот репо — только SPA Привычек. API — отдельный репозиторий.
 

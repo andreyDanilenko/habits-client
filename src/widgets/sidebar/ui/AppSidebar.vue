@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- Mobile Overlay -->
     <Transition name="fade">
       <div
         v-if="isMobile && isOpen"
@@ -9,13 +8,12 @@
       />
     </Transition>
 
-    <!-- Sidebar -->
     <aside
       class="bg-bg-primary border-r border-border-default transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
       :class="sidebarClasses"
     >
-      <nav class="p-4 flex flex-col h-full overflow-y-auto sidebar-nav">
-        <div class="flex justify-end mb-4 flex-shrink-0">
+      <nav class="p-(--spacing-4) flex flex-col h-full sidebar-nav">
+        <div class="flex justify-end mb-(--spacing-4) flex-shrink-0">
           <Button
             v-if="isMobile"
             @click="closeSidebar"
@@ -34,14 +32,14 @@
           />
         </div>
 
-        <div class="mb-4 pb-4 border-b border-border-light flex-shrink-0">
-          <div v-if="!isCollapsed" class="w-full">
-            <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsed" />
+        <div class="mb-(--spacing-4) pb-(--spacing-4) border-b border-border-light flex-shrink-0">
+          <div v-if="!isCollapsedEffective" class="w-full">
+            <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsedEffective" />
             <WorkspaceSwitcher />
           </div>
           <div v-else class="flex justify-center">
             <div
-              class="w-8 h-8 rounded flex-shrink-0 cursor-pointer"
+              class="w-(--size-8) h-(--size-8) rounded-(--radius-md) flex-shrink-0 cursor-pointer"
               :style="{
                 backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)',
               }"
@@ -50,11 +48,11 @@
           </div>
         </div>
 
-        <div class="mb-4 flex-shrink-0">
-          <SidebarSectionHeader title="Модули" :collapsed="isCollapsed" />
+        <div class="mb-(--spacing-4) flex-shrink-0">
+          <SidebarSectionHeader title="Модули" :collapsed="isCollapsedEffective" />
           <SidebarNavigation
             :items="modulesNavItems"
-            :collapsed="isCollapsed"
+            :collapsed="isCollapsedEffective"
             @click="handleMobileClick"
             @item-click="handleModuleClick"
           />
@@ -62,20 +60,22 @@
 
         <div
           v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
-          class="mb-4 flex-1 min-h-0 overflow-y-auto"
+          class="mb-(--spacing-4) flex-1 min-h-0 overflow-y-auto"
         >
-          <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsed" />
+          <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsedEffective" />
           <SidebarNavigation
             :items="moduleRoutesNavItems"
-            :collapsed="isCollapsed"
+            :collapsed="isCollapsedEffective"
             @click="handleMobileClick"
           />
         </div>
 
-        <div class="border-t border-border-light pt-4 mt-auto flex-shrink-0 sidebar-footer">
+        <div
+          class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer"
+        >
           <SidebarNavigation
             :items="footerNavItems"
-            :collapsed="isCollapsed"
+            :collapsed="isCollapsedEffective"
             @click="handleMobileClick"
           />
         </div>
@@ -121,6 +121,9 @@
   const availableModules = computed(() =>
     getAvailableModules(enabledModuleCodes.value, hasPermission),
   )
+
+  // На мобильных всегда показываем развёрнутый сайдбар (текст не скрываем)
+  const isCollapsedEffective = computed(() => !isMobile.value && isCollapsed.value)
   const selectedModule = computed(() => {
     if (selectedModuleId.value) {
       return availableModules.value.find((m) => m.id === selectedModuleId.value) || null
@@ -194,7 +197,6 @@
     })
   })
 
-  // Структура данных для роутов модуля
   const moduleRoutesNavItems = computed<SidebarNavItem[]>(() => {
     if (!selectedModule.value) return []
     return getModuleRoutes(selectedModule.value).map((route) => ({
@@ -205,7 +207,6 @@
     }))
   })
 
-  // Структура данных для нижней секции
   const footerNavItems = computed<SidebarNavItem[]>(() => {
     const items: SidebarNavItem[] = []
     const userStore = useUserStore()
@@ -224,7 +225,7 @@
     if (isOwner.value || isAdmin) {
       items.push({
         id: 'workspace-settings',
-        label: 'Настройки воркспейса',
+        label: 'Воркспейс',
         icon: CogIcon,
         to: '/workspace-settings',
       })
@@ -239,11 +240,9 @@
     return items
   })
 
-  // Проверка размера экрана
   const checkMobile = () => {
     const wasMobile = isMobile.value
     isMobile.value = window.innerWidth < 1024
-    // Закрываем sidebar при переходе с мобильного на desktop
     if (wasMobile && !isMobile.value) {
       isOpen.value = false
     }
@@ -252,7 +251,6 @@
   onMounted(() => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    // Загружаем состояние collapsed из localStorage
     const saved = localStorage.getItem('sidebar-collapsed')
     if (saved !== null) {
       isCollapsed.value = saved === 'true'
@@ -263,7 +261,6 @@
     window.removeEventListener('resize', checkMobile)
   })
 
-  // Сохраняем состояние collapsed
   const toggleCollapsed = () => {
     isCollapsed.value = !isCollapsed.value
     localStorage.setItem('sidebar-collapsed', String(isCollapsed.value))
@@ -285,7 +282,6 @@
   }
 
   const handleModuleClick = (item: SidebarNavItem) => {
-    // Обновляем selectedModuleId при клике на модуль
     const module = availableModules.value.find((m) => m.id === item.id)
     if (module) {
       selectedModuleId.value = module.id
@@ -300,11 +296,14 @@
       return [
         'fixed top-0 left-0 h-screen transition-transform duration-300 ease-in-out',
         isOpen.value ? 'translate-x-0' : '-translate-x-full',
-        'w-64',
+        'w-(--layout-sidebar-width)',
       ].join(' ')
     }
 
-    return ['h-full transition-all duration-300', isCollapsed.value ? 'w-16' : 'w-64'].join(' ')
+    return [
+      'h-full transition-all duration-300',
+      isCollapsed.value ? 'w-(--layout-sidebar-width-collapsed)' : 'w-(--layout-sidebar-width)',
+    ].join(' ')
   })
 
   // Закрываем sidebar при изменении маршрута на мобильных
