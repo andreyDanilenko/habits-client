@@ -108,7 +108,7 @@
   const route = useRoute()
   const router = useRouter()
   const authStore = useAuthStore()
-  const { hasPermission, isOwner } = usePermissions()
+  const { hasPermission, isOwner, isAdmin } = usePermissions()
   const workspaceStore = useWorkspaceStore()
 
   const isCollapsed = ref(false)
@@ -210,11 +210,11 @@
   const footerNavItems = computed<SidebarNavItem[]>(() => {
     const items: SidebarNavItem[] = []
     const userStore = useUserStore()
-    const isAdmin =
+    const isGlobalAdmin =
       userStore.currentUser?.role === 'ADMIN' ||
       (typeof userStore.currentUser?.role === 'string' &&
         userStore.currentUser.role.toUpperCase() === 'ADMIN')
-    if (isAdmin) {
+    if (isGlobalAdmin) {
       items.push({
         id: 'admin',
         label: 'Админ-панель',
@@ -222,7 +222,7 @@
         to: '/admin',
       })
     }
-    if (isOwner.value || isAdmin) {
+    if (isOwner.value || isAdmin.value || isGlobalAdmin) {
       items.push({
         id: 'workspace-settings',
         label: 'Воркспейс',

@@ -77,6 +77,14 @@ class ApiClient {
     return response.data.data as T
   }
 
+  async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    if (USE_MOCK_API) {
+      return mockApi.put<T>(url, data)
+    }
+    const response = await this.client.patch<{ status: string; data?: T }>(url, data, config)
+    return response.data.data as T
+  }
+
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     if (USE_MOCK_API) {
       return mockApi.delete<T>(url)

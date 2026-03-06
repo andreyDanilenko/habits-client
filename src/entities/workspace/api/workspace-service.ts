@@ -4,6 +4,7 @@ import type {
   CreateWorkspaceDto,
   UpdateWorkspaceDto,
   WorkspaceModule,
+  Member,
 } from '@/entities/workspace'
 
 interface WorkspacesDataResponse {
@@ -57,9 +58,23 @@ export const workspaceService = {
     await api.delete(`${API_ENDPOINTS.WORKSPACE.BASE}/${workspaceId}`)
   },
 
-  getWorkspaceMembers: async (workspaceId: string) => {
-    const response = await api.get(API_ENDPOINTS.WORKSPACE.MEMBERS(workspaceId))
-    return response
+  getWorkspaceMembers: async (workspaceId: string): Promise<Member[]> => {
+    const response = await api.get<{ members: Member[] }>(
+      API_ENDPOINTS.WORKSPACE.MEMBERS(workspaceId),
+    )
+    return response.members ?? []
+  },
+
+  removeMember: async (workspaceId: string, userId: string): Promise<void> => {
+    await api.delete(API_ENDPOINTS.WORKSPACE.MEMBER(workspaceId, userId))
+  },
+
+  updateMemberRole: async (
+    workspaceId: string,
+    userId: string,
+    role: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST',
+  ): Promise<void> => {
+    await api.patch(API_ENDPOINTS.WORKSPACE.MEMBER(workspaceId, userId), { role })
   },
 
   switchWorkspace: async (workspaceId: string) => {

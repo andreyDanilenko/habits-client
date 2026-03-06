@@ -60,11 +60,20 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         }
         return
       }
-      if (list.length > 0) {
+      if (list?.length > 0) {
         await switchWorkspace(list[0].id)
+      } else {
+        currentWorkspace.value = null
+        applyWorkspaceHeader(null)
+        themeService.applyWorkspaceTheme(null)
+        modules.value = []
       }
     } catch (error) {
       console.error('Failed to fetch workspaces:', error)
+      currentWorkspace.value = null
+      applyWorkspaceHeader(null)
+      themeService.applyWorkspaceTheme(null)
+      modules.value = []
     } finally {
       isLoading.value = false
     }

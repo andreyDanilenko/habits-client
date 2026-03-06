@@ -51,7 +51,7 @@ export const authGuard = async (
   }
 
   const workspaceStore = useWorkspaceStore()
-  if (workspaceStore.workspaces.length === 0) {
+  if (workspaceStore.workspaces?.length === 0) {
     await workspaceStore.fetchWorkspaces()
   }
 

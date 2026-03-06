@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useUserStore } from '@/entities/user'
-import { useWorkspaceStore } from '@/entities/workspace'
+import { useWorkspaceStore } from '../model/workspace-store'
 import { useAuthStore } from '@/features/auth'
 import { WorkspaceRole } from '@/entities/user'
 
@@ -129,6 +129,14 @@ function getUserWorkspaceRole(): WorkspaceRole | null {
   if (!userStore.currentUser || !workspaceStore.currentWorkspace) {
     return null
   }
+  // Глобальный ADMIN имеет полный доступ в любом workspace
+  const globalRole = userStore.currentUser.role
+  if (
+    globalRole === 'ADMIN' ||
+    (typeof globalRole === 'string' && globalRole.toUpperCase() === 'ADMIN')
+  ) {
+    return WorkspaceRole.ADMIN
+  }
   // Приоритет: effectivePermissions.systemRole из API /me/permissions (user_role_assignments)
   const ep = authStore.effectivePermissions
   if (ep?.systemRole && ['OWNER', 'ADMIN', 'MEMBER', 'GUEST'].includes(ep.systemRole)) {
@@ -197,9 +205,24 @@ export function requireOwner() {
   }
 }
 
+/** Требует наличие текущего workspace. Редирект на / при отсутствии. */
+export function requireWorkspace() {
+  return () => {
+    const workspaceStore = useWorkspaceStore()
+    if (!workspaceStore.currentWorkspace) {
+      return { path: '/' }
+    }
+    return true
+  }
+}
+
 /** Разрешает доступ владельцу/админу воркспейса или глобальному админу (настройки воркспейса). */
 export function requireOwnerOrAdmin() {
   return () => {
+    const workspaceStore = useWorkspaceStore()
+    if (!workspaceStore.currentWorkspace) {
+      return { path: '/' }
+    }
     const { isOwner, isAdmin } = usePermissions()
     const userStore = useUserStore()
     const isGlobalAdmin =

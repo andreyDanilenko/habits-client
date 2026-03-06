@@ -1,7 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 import { authGuard, requireAdmin } from '@/features/auth'
-import { requireOwnerOrAdmin, requirePermission, requireModuleEnabled } from '@/entities/workspace'
+import {
+  requireOwnerOrAdmin,
+  requirePermission,
+  requireModuleEnabled,
+  requireWorkspace,
+} from '@/entities/workspace'
 import { modules, getAvailableModules } from '@/app/modules/config'
 
 const routes: RouteRecordRaw[] = [
@@ -16,6 +21,12 @@ const routes: RouteRecordRaw[] = [
     name: 'Register',
     component: () => import('@/pages/register'),
     meta: { public: true },
+  },
+  {
+    path: '/create-workspace',
+    name: 'CreateWorkspace',
+    component: () => import('@/pages/create-workspace'),
+    meta: { requiresAuth: true, noWorkspaceAllowed: true },
   },
   // Редирект с корня на первый доступный модуль или dashboard
   {
@@ -70,6 +81,7 @@ const routes: RouteRecordRaw[] = [
     name: 'SettingsMembers',
     component: () => import('@/pages/settings/members'),
     meta: { requiresAuth: true },
+    beforeEnter: requireOwnerOrAdmin(),
   },
   {
     path: '/workspace-settings',
@@ -90,6 +102,7 @@ const routes: RouteRecordRaw[] = [
     name: 'WorkspaceModules',
     component: () => import('@/pages/workspace-modules'),
     meta: { requiresAuth: true },
+    beforeEnter: requireWorkspace(),
   },
   {
     path: '/module-activation/:moduleCode',
@@ -135,12 +148,28 @@ modules.forEach((module) => {
         const moduleGuard = requireModuleEnabled(getAvailableModules)
         const moduleResult = moduleGuard(to)
         if (moduleResult !== true) {
+          const redirectPath =
+            typeof moduleResult === 'object' && 'path' in moduleResult
+              ? moduleResult.path
+              : null
+          if (redirectPath && redirectPath === to.path) {
+            next()
+            return
+          }
           next(moduleResult)
           return
         }
         if (route.permissions && route.permissions.length > 0) {
           const permResult = requirePermission(route.permissions[0])()
           if (permResult !== true) {
+            const permRedirectPath =
+              typeof permResult === 'object' && 'path' in permResult
+                ? permResult.path
+                : null
+            if (permRedirectPath && permRedirectPath === to.path) {
+              next()
+              return
+            }
             next(permResult)
             return
           }

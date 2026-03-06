@@ -22,6 +22,7 @@
           <div class="flex items-center justify-between">
             <p class="text-(--text-sm) font-semibold text-text-primary">Рабочие пространства</p>
             <Button
+              v-if="currentWorkspace"
               @click.stop="openWorkspaceSettings"
               icon-only
               variant="icon"

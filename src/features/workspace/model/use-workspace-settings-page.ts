@@ -1,4 +1,4 @@
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useModal } from '@/shared/lib/modal'
 import { ConfirmModal } from '@/shared/ui'
@@ -7,7 +7,8 @@ import { useWorkspaceStore, usePermissions } from '@/entities/workspace'
 export const useWorkspaceSettingsPage = () => {
   const router = useRouter()
   const workspaceStore = useWorkspaceStore()
-  const { isOwner } = usePermissions()
+  const { isOwner, isAdmin } = usePermissions()
+  const canEditWorkspace = computed(() => isOwner.value || isAdmin.value)
   const { openModal } = useModal()
 
   const isSaving = ref(false)
@@ -25,13 +26,6 @@ export const useWorkspaceSettingsPage = () => {
       return
     }
 
-    if (!isOwner.value) {
-      workspaceData.name = workspaceStore.currentWorkspace.name
-      workspaceData.description = workspaceStore.currentWorkspace.description || ''
-      workspaceData.color = workspaceStore.currentWorkspace.color || '#6366f1'
-      return
-    }
-
     workspaceData.name = workspaceStore.currentWorkspace.name
     workspaceData.description = workspaceStore.currentWorkspace.description || ''
     workspaceData.color = workspaceStore.currentWorkspace.color || '#6366f1'
@@ -42,7 +36,7 @@ export const useWorkspaceSettingsPage = () => {
   })
 
   const saveWorkspace = async () => {
-    if (!isOwner.value || !workspaceStore.currentWorkspace) {
+    if (!canEditWorkspace.value || !workspaceStore.currentWorkspace) {
       return
     }
 
@@ -93,6 +87,7 @@ export const useWorkspaceSettingsPage = () => {
     isDeleting,
     workspaceData,
     isOwner,
+    canEditWorkspace,
 
     // Methods
     saveWorkspace,
