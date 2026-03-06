@@ -17,6 +17,9 @@
           <p class="mt-1 text-sm font-medium text-text-primary truncate">
             {{ userEmail }}
           </p>
+          <p v-if="workspaceRole" class="mt-0.5 text-xs text-text-secondary">
+            Роль в workspace: {{ workspaceRole }}
+          </p>
         </div>
 
         <div class="py-2">
@@ -65,15 +68,18 @@
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/entities/user'
   import { useAuthStore } from '@/features/auth'
+  import { usePermissions } from '@/features/permissions'
   import { Tooltip, Button } from '@/shared/ui'
 
   const router = useRouter()
   const userStore = useUserStore()
   const authStore = useAuthStore()
+  const { systemRole } = usePermissions()
   const showDropdown = ref(false)
 
   const userInitials = computed(() => userStore.userInitials || 'U')
   const userEmail = computed(() => userStore.currentUser?.email || 'Пользователь')
+  const workspaceRole = computed(() => systemRole.value || null)
 
   const closeDropdown = () => {
     showDropdown.value = false

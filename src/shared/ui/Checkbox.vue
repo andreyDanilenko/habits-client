@@ -67,7 +67,7 @@
   const props = withDefaults(defineProps<Props>(), {
     required: false,
     disabled: false,
-    size: 'sm',
+    size: 'xs',
     error: false,
     containerClass: 'items-start',
   })
@@ -96,11 +96,11 @@
 
   const boxSizeClasses = computed(() => {
     const sizes: Record<ComponentSize, string> = {
-      xs: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
-      sm: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
-      md: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
-      lg: 'w-(--size-8) h-(--size-8) min-w-(--size-8) min-h-(--size-8)',
-      xl: 'w-(--size-8) h-(--size-8) min-w-(--size-8) min-h-(--size-8)',
+      xs: 'w-(--size-5) h-(--size-5) min-w-(--size-5) min-h-(--size-5)',
+      sm: 'w-(--size-5) h-(--size-5) min-w-(--size-5) min-h-(--size-5)',
+      md: 'w-(--size-5) h-(--size-5) min-w-(--size-5) min-h-(--size-5)',
+      lg: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
+      xl: 'w-(--size-6) h-(--size-6) min-w-(--size-6) min-h-(--size-6)',
       xxl: 'w-(--size-8) h-(--size-8) min-w-(--size-8) min-h-(--size-8)',
     }
     return sizes[props.size]

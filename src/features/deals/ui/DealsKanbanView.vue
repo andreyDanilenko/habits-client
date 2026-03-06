@@ -159,16 +159,12 @@
   }
 
   function onCardContextMenu(evt: MouseEvent, deal: Deal) {
-    console.log('env', deal)
-
     contextMenu.x = evt.clientX
     contextMenu.y = evt.clientY
     contextMenu.deal = deal
   }
 
   function getCompanyOrContact(_deal: Deal): string {
-    console.log('env', _deal)
-
     return '—'
   }
 

@@ -24,7 +24,11 @@ export const roleService = {
   },
 
   getPermissions: async (workspaceId: string, roleId: string): Promise<RolePermissionsResponse> => {
-    return api.get<RolePermissionsResponse>(API_ENDPOINTS.ROLES.PERMISSIONS(workspaceId, roleId))
+    const response = await api.get<{ permissions: PermissionString[] }>(
+      API_ENDPOINTS.ROLES.PERMISSIONS(workspaceId, roleId),
+    )
+    const raw = response?.permissions ?? []
+    return [...new Set(raw)] as RolePermissionsResponse
   },
 
   create: async (workspaceId: string, dto: CreateRoleDto): Promise<Role> => {

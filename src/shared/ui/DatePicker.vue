@@ -12,7 +12,7 @@
       readonly
       class="cursor-pointer"
       @click="showPicker = true"
-    >
+    > 
       <template #rightIcon>
         <button
           type="button"

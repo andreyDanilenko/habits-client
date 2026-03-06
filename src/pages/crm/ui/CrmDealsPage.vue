@@ -31,6 +31,7 @@
 
         <DealsKanbanView
           v-if="actions.viewMode.value === 'kanban'"
+          :key="actions.selectedPipelineId.value"
           :columns="actions.kanbanColumns.value"
           @update:columns="actions.setKanbanColumnsFromBoard"
           :pipelines="actions.pipelines.value"

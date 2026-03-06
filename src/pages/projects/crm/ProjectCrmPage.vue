@@ -193,6 +193,7 @@
         </div>
         <DealsKanbanView
           v-else
+          :key="selectedPipelineId"
           :columns="kanbanColumns"
           @update:columns="onKanbanColumnsUpdate"
           :pipelines="pipelines"

@@ -179,6 +179,7 @@ button {
   --radius-xl: calc(var(--unit-base) * 4);
   --radius-full: 9999px;
 
+  --size-5: calc(var(--unit-base) * 5);
   --size-6: calc(var(--unit-base) * 6);
   --size-8: calc(var(--unit-base) * 8);
   --size-10: calc(var(--unit-base) * 10);

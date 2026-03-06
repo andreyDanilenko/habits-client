@@ -1,7 +1,7 @@
 <template>
   <Modal :is-open="internalOpen" @update:isOpen="onModalUpdate">
     <ModalContent :title="title" :description="descriptionText" @close="handleClose">
-      <div class="space-y-4">
+      <div class="space-y-(--spacing-4)">
         <Input v-model="name" label="Название роли" placeholder="Например, Менеджер по продажам" />
         <Textarea
           v-model="descriptionText"
@@ -11,15 +11,15 @@
         />
 
         <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-text-secondary">Права роли</span>
+          <div class="flex items-center justify-between mb-(--spacing-2)">
+            <span class="text-(--text-sm) font-medium text-text-secondary">Права роли</span>
           </div>
           <PermissionTree :model-value="permissions" @update:model-value="onPermissionsChange" />
         </div>
       </div>
 
       <template #footer>
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end gap-(--spacing-2)">
           <Button variant="secondary" @click="handleClose"> Отмена </Button>
           <Button :disabled="!isValid" :loading="isSaving" @click="handleSave"> Сохранить </Button>
         </div>
@@ -66,8 +66,6 @@
     role: props.role ?? null,
     initialPermissions: props.initialPermissions,
   })
-
-  console.log(permissions)
 
   const isSaving = ref(false)
 

@@ -112,7 +112,7 @@
   import type { Module } from '@/app/modules/config'
 
   const workspaceStore = useWorkspaceStore()
-  const { isOwner } = usePermissions()
+  const { isOwner, isAdmin } = usePermissions()
   const userStore = useUserStore()
 
   onMounted(() => {
@@ -124,14 +124,17 @@
   const showDisableModal = ref(false)
   const disableTarget = ref<Module | null>(null)
 
-  const isAdmin = computed(
+  const isGlobalAdmin = computed(
     () =>
       userStore.currentUser?.role === 'ADMIN' ||
       (typeof userStore.currentUser?.role === 'string' &&
         userStore.currentUser.role.toUpperCase() === 'ADMIN'),
   )
 
-  const canActivateModules = computed(() => isOwner.value || isAdmin.value)
+  /** Владелец/админ workspace или глобальный админ может включать/отключать модули. */
+  const canActivateModules = computed(
+    () => isOwner.value || isAdmin.value || isGlobalAdmin.value,
+  )
 
   /**
    * Core-модули (is_core = TRUE в БД) можно включать без лицензии.
@@ -142,10 +145,11 @@
     () => new Set(workspaceStore.modules.filter((m) => m.isCore).map((m) => m.moduleName)),
   )
 
-  /** Может ли пользователь включить этот модуль: админ — всегда; владелец — при лицензии или если модуль core. */
+  /** Может ли пользователь включить этот модуль: админ (workspace/глобальный) — всегда; владелец — при лицензии или если модуль core. */
   const canEnableModule = (moduleId: string) =>
     canActivateModules.value &&
     (isAdmin.value ||
+      isGlobalAdmin.value ||
       coreModuleCodes.value.has(moduleId) ||
       workspaceStore.licensedModuleCodesForCurrentWorkspace.has(moduleId))
 

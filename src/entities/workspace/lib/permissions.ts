@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
+import { useAuthStore } from '@/features/auth'
 import { WorkspaceRole } from '@/entities/user'
 
 export enum WorkspacePermission {
@@ -123,16 +124,20 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
 function getUserWorkspaceRole(): WorkspaceRole | null {
   const userStore = useUserStore()
   const workspaceStore = useWorkspaceStore()
+  const authStore = useAuthStore()
 
   if (!userStore.currentUser || !workspaceStore.currentWorkspace) {
     return null
   }
+  // Приоритет: effectivePermissions.systemRole из API /me/permissions (user_role_assignments)
+  const ep = authStore.effectivePermissions
+  if (ep?.systemRole && ['OWNER', 'ADMIN', 'MEMBER', 'GUEST'].includes(ep.systemRole)) {
+    return ep.systemRole as WorkspaceRole
+  }
+  // Fallback: ownerId → OWNER (до загрузки permissions или если миграции не применены)
   if (workspaceStore.currentWorkspace.ownerId === userStore.currentUser.id) {
     return WorkspaceRole.OWNER
   }
-
-  // TODO: Получать роль из workspace members когда API будет готов
-  // Пока возвращаем MEMBER по умолчанию для не-владельцев
   return WorkspaceRole.MEMBER
 }
 
@@ -192,16 +197,16 @@ export function requireOwner() {
   }
 }
 
-/** Разрешает доступ владельцу воркспейса или глобальному админу (настройки воркспейса). */
+/** Разрешает доступ владельцу/админу воркспейса или глобальному админу (настройки воркспейса). */
 export function requireOwnerOrAdmin() {
   return () => {
-    const { isOwner } = usePermissions()
+    const { isOwner, isAdmin } = usePermissions()
     const userStore = useUserStore()
-    const isAdmin =
+    const isGlobalAdmin =
       userStore.currentUser?.role === 'ADMIN' ||
       (typeof userStore.currentUser?.role === 'string' &&
         userStore.currentUser.role.toUpperCase() === 'ADMIN')
-    if (isOwner.value || isAdmin) {
+    if (isOwner.value || isAdmin.value || isGlobalAdmin) {
       return true
     }
     return { name: 'HabitsDashboard' }

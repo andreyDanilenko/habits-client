@@ -1,42 +1,38 @@
 <template>
-  <div v-if="hasModules" class="space-y-4">
+  <div v-if="hasModules" class="space-y-(--spacing-4)">
     <div
       v-for="module in Object.values(tree.modules)"
       :key="module.code"
-      class="border rounded-md p-3"
+      class="border border-border-default rounded-(--radius-md) p-(--spacing-3)"
     >
-      <div class="font-semibold mb-2">
+      <div class="font-semibold mb-(--spacing-2) text-text-primary">
         {{ module.name }}
       </div>
-      <div class="space-y-2">
-        <div v-for="entity in Object.values(module.entities)" :key="entity.code" class="pl-3">
-          <div class="font-medium text-sm mb-1">
+      <div class="space-y-(--spacing-2)">
+        <div v-for="entity in Object.values(module.entities)" :key="entity.code" class="pl-(--spacing-3)">
+          <div class="font-medium text-(--text-sm) mb-(--spacing-1) text-text-secondary">
             {{ entity.name }}
           </div>
-          <div class="pl-3 space-y-1">
-            <label
+          <div class="pl-(--spacing-3) space-y-(--spacing-1)">
+            <Checkbox
               v-for="action in Object.values(entity.actions)"
               :key="action.code"
-              class="flex items-center gap-2 text-sm"
-            >
-              <input
-                type="checkbox"
-                :value="action.permissionString"
-                :checked="modelValueSet.has(action.permissionString as PermissionString)"
-                @change="onToggle(action.permissionString as PermissionString, $event)"
-              />
-              <span>{{ action.name }}</span>
-            </label>
+              :model-value="isChecked(action.permissionString)"
+              :label="action.name"
+              container-class="items-center"
+              @update:model-value="(v) => onToggle(action.permissionString, v)"
+            />
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div v-else class="text-sm text-gray-500">Нет доступных прав для этого workspace.</div>
+  <div v-else class="text-(--text-sm) text-text-muted">Нет доступных прав для этого workspace.</div>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { Checkbox } from '@/shared/ui'
   import { usePermissionTree } from '../model/use-permission-tree'
   import type { PermissionString } from '@/entities/role'
 
@@ -54,13 +50,14 @@
 
   const modelValueSet = computed(() => new Set(props.modelValue ?? []))
 
-  const onToggle = (value: PermissionString, event: Event) => {
+  const isChecked = (permissionString: string) => modelValueSet.value.has(permissionString as PermissionString)
+
+  const onToggle = (value: string, checked: boolean) => {
     const next = new Set(modelValueSet.value)
-    const input = event.target as HTMLInputElement | null
-    if (input?.checked) {
-      next.add(value)
+    if (checked) {
+      next.add(value as PermissionString)
     } else {
-      next.delete(value)
+      next.delete(value as PermissionString)
     }
     emit('update:modelValue', Array.from(next) as PermissionString[])
   }
