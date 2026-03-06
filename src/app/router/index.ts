@@ -6,8 +6,10 @@ import {
   requirePermission,
   requireModuleEnabled,
   requireWorkspace,
+  usePermissions,
+  useWorkspaceStore,
 } from '@/entities/workspace'
-import { modules, getAvailableModules } from '@/app/modules/config'
+import { modules, getAvailableModules, getAvailableModuleRoutes } from '@/app/modules/config'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -38,10 +40,23 @@ const routes: RouteRecordRaw[] = [
     path: '/habits',
     redirect: '/habits/dashboard',
   },
-  // Редирект с /crm на контакты
+  // Редирект с /crm на первый доступный роут CRM по правам
   {
     path: '/crm',
-    redirect: '/crm/contacts',
+    redirect: (to: RouteLocationNormalized) => {
+      const workspaceStore = useWorkspaceStore()
+      const { hasPermission } = usePermissions()
+      const enabled = workspaceStore.enabledModules
+      const available = getAvailableModules(enabled, hasPermission)
+      const crmModule = available.find((m) => m.id === 'crm')
+      if (crmModule) {
+        const routes = getAvailableModuleRoutes(crmModule, hasPermission)
+        if (routes.length > 0) {
+          return { path: routes[0].path }
+        }
+      }
+      return { path: '/habits/dashboard' }
+    },
   },
   // Редирект с /notes на список
   {

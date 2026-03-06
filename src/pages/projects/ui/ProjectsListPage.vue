@@ -2,10 +2,12 @@
   <div class="max-w-4xl mx-auto space-y-(--spacing-6) pb-(--spacing-8)">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-(--spacing-4)">
       <h1 class="text-xl font-semibold text-text-primary">Проекты</h1>
-      <Button variant="primary" @click="openCreate">
-        <PlusIcon class="size-4 mr-2 inline" />
-        Создать проект
-      </Button>
+      <PermissionGuard :permission="PROJECT_PERMISSIONS.projectCreate">
+        <Button variant="primary" @click="openCreate">
+          <PlusIcon class="size-4 mr-2 inline" />
+          Создать проект
+        </Button>
+      </PermissionGuard>
     </div>
 
     <div v-if="searchVisible" class="flex gap-(--spacing-2)">
@@ -32,7 +34,9 @@
             : 'У вас пока нет проектов. Создайте первый проект, чтобы группировать контакты, компании и сделки CRM.'
         }}
       </p>
-      <Button v-if="!searchQuery" variant="primary" @click="openCreate"> Создать проект </Button>
+      <PermissionGuard v-if="!searchQuery" :permission="PROJECT_PERMISSIONS.projectCreate">
+        <Button variant="primary" @click="openCreate"> Создать проект </Button>
+      </PermissionGuard>
     </div>
 
     <ul v-else class="space-y-(--spacing-3)">
@@ -61,18 +65,22 @@
               </div>
             </div>
             <div class="flex items-center gap-(--spacing-1) shrink-0" @click.prevent>
-              <Button size="md" variant="ghost" title="Редактировать" @click="openEdit(project)">
-                Редактировать
-              </Button>
-              <Button
-                size="md"
-                variant="ghost"
-                class="text-danger-default hover:bg-danger-light"
-                title="Удалить"
-                @click.prevent="confirmDelete(project)"
-              >
-                Удалить
-              </Button>
+              <PermissionGuard :permission="PROJECT_PERMISSIONS.projectUpdate">
+                <Button size="md" variant="ghost" title="Редактировать" @click="openEdit(project)">
+                  Редактировать
+                </Button>
+              </PermissionGuard>
+              <PermissionGuard :permission="PROJECT_PERMISSIONS.projectDelete">
+                <Button
+                  size="md"
+                  variant="ghost"
+                  class="text-danger-default hover:bg-danger-light"
+                  title="Удалить"
+                  @click.prevent="confirmDelete(project)"
+                >
+                  Удалить
+                </Button>
+              </PermissionGuard>
             </div>
           </div>
         </router-link>
@@ -105,6 +113,8 @@
   import { useRouter } from 'vue-router'
   import { Button, Spinner, Modal, ConfirmModal } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
+  import { PermissionGuard } from '@/features/permissions'
+  import { PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { ProjectFormModal } from '@/features/projects'
   import { projectService } from '@/entities/project'
   import { useWorkspaceStore } from '@/entities/workspace'

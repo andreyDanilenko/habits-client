@@ -36,7 +36,9 @@
           <span class="text-(--text-sm) text-text-secondary">
             Выбрано: {{ actions.selectedIds.value.size }}
           </span>
-          <Button variant="outline" size="md" @click="actions.bulkDelete">Удалить</Button>
+          <PermissionGuard :permission="CRM_PERMISSIONS.contactDelete">
+            <Button variant="outline" size="md" @click="actions.bulkDelete">Удалить</Button>
+          </PermissionGuard>
           <Button variant="ghost" size="md" disabled>Изменить ответственного</Button>
           <Button variant="ghost" size="md" disabled>Добавить тег</Button>
         </div>

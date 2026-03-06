@@ -72,9 +72,9 @@ export const workspaceService = {
   updateMemberRole: async (
     workspaceId: string,
     userId: string,
-    role: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST',
+    payload: { role?: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST'; roleId?: string },
   ): Promise<void> => {
-    await api.patch(API_ENDPOINTS.WORKSPACE.MEMBER(workspaceId, userId), { role })
+    await api.patch(API_ENDPOINTS.WORKSPACE.MEMBER(workspaceId, userId), payload)
   },
 
   switchWorkspace: async (workspaceId: string) => {

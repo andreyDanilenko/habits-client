@@ -32,6 +32,10 @@ export const authGuard = async (
   const userStore = useUserStore()
 
   if (to.meta.public) {
+    // Уже авторизованный пользователь — редирект на дашборд
+    if (authStore.isAuthenticated) {
+      return next({ path: '/habits/dashboard' })
+    }
     return next()
   }
 

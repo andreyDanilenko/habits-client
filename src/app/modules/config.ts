@@ -8,6 +8,7 @@ import {
   BookIcon,
   HabitsIcon,
   CrmIcon,
+  BellIcon,
 } from '@/shared/ui/icon'
 
 export interface ModuleRoute {
@@ -73,6 +74,14 @@ export const modules: Module[] = [
         component: () => import('@/pages/habits/journal'),
         permissions: [WorkspacePermission.JOURNAL_VIEW],
       },
+      {
+        path: '/habits/activity',
+        name: 'HabitsActivity',
+        label: 'Активность',
+        icon: BellIcon,
+        component: () => import('@/pages/habits/activity'),
+        permissions: [WorkspacePermission.HABITS_VIEW],
+      },
     ],
   },
   {
@@ -80,7 +89,12 @@ export const modules: Module[] = [
     label: 'CRM',
     icon: CrmIcon,
     basePath: '/crm',
-    permissions: [WorkspacePermission.CRM_VIEW],
+    permissions: [
+      WorkspacePermission.CRM_CONTACT_VIEW,
+      WorkspacePermission.CRM_COMPANY_VIEW,
+      WorkspacePermission.CRM_DEAL_VIEW,
+      WorkspacePermission.CRM_PIPELINE_MANAGE,
+    ],
     routes: [
       {
         path: '/crm/contacts',
@@ -88,7 +102,7 @@ export const modules: Module[] = [
         label: 'Контакты',
         icon: ListIcon,
         component: () => import('@/pages/crm'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.CRM_CONTACT_VIEW],
       },
       {
         path: '/crm/contacts/:id',
@@ -96,7 +110,7 @@ export const modules: Module[] = [
         label: 'Контакт',
         icon: ListIcon,
         component: () => import('@/pages/crm/contact-detail'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.CRM_CONTACT_VIEW],
         meta: { hideFromMenu: true },
       },
       {
@@ -105,7 +119,7 @@ export const modules: Module[] = [
         label: 'Компании',
         icon: ListIcon,
         component: () => import('@/pages/crm/companies'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.CRM_COMPANY_VIEW],
       },
       {
         path: '/crm/companies/:id',
@@ -113,7 +127,7 @@ export const modules: Module[] = [
         label: 'Компания',
         icon: ListIcon,
         component: () => import('@/pages/crm/company-detail'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.CRM_COMPANY_VIEW],
         meta: { hideFromMenu: true },
       },
       {
@@ -122,7 +136,7 @@ export const modules: Module[] = [
         label: 'Сделки',
         icon: ListIcon,
         component: () => import('@/pages/crm/deals'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.CRM_DEAL_VIEW],
       },
       {
         path: '/crm/deals/:id',
@@ -130,7 +144,7 @@ export const modules: Module[] = [
         label: 'Карточка сделки',
         icon: ListIcon,
         component: () => import('@/pages/crm/deal-detail'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.CRM_DEAL_VIEW],
         meta: { hideFromMenu: true },
       },
       {
@@ -139,9 +153,7 @@ export const modules: Module[] = [
         label: 'Воронки продаж',
         icon: ListIcon,
         component: () => import('@/pages/crm/pipelines'),
-        // Сейчас доступ только владельцу воркспейса.
-        // В дальнейшем можно выдать это право ролям администратора CRM.
-        permissions: [WorkspacePermission.PERMISSIONS_EDIT],
+        permissions: [WorkspacePermission.CRM_PIPELINE_MANAGE],
       },
     ],
   },
@@ -150,7 +162,7 @@ export const modules: Module[] = [
     label: 'Проекты',
     icon: ListIcon,
     basePath: '/projects',
-    permissions: [WorkspacePermission.CRM_VIEW],
+    permissions: [WorkspacePermission.PROJECT_VIEW],
     routes: [
       {
         path: '/projects',
@@ -158,7 +170,7 @@ export const modules: Module[] = [
         label: 'Проекты',
         icon: ListIcon,
         component: () => import('@/pages/projects'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.PROJECT_VIEW],
       },
       {
         path: '/projects/:id',
@@ -166,7 +178,7 @@ export const modules: Module[] = [
         label: 'Проект',
         icon: ListIcon,
         component: () => import('@/pages/projects/detail'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.PROJECT_VIEW],
         meta: { hideFromMenu: true },
       },
       {
@@ -175,7 +187,7 @@ export const modules: Module[] = [
         label: 'CRM в проекте',
         icon: CrmIcon,
         component: () => import('@/pages/projects/crm'),
-        permissions: [WorkspacePermission.CRM_VIEW],
+        permissions: [WorkspacePermission.PROJECT_VIEW],
         meta: { hideFromMenu: true },
       },
     ],

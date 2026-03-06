@@ -68,10 +68,9 @@
     isModalOpen.value = true
   }
 
-  const onEdit = async (role: Role) => {
+  const onEdit = async (role: Role) => {    
     editingRole.value = role
     try {
-      // Загружаем права роли отдельным запросом, чтобы не тянуть их в список
       const workspaceId = role.workspaceId
       const permissions = await roleService.getPermissions(workspaceId, role.id)
       editingPermissions.value = permissions

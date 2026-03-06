@@ -27,8 +27,12 @@
             ИНН {{ company.inn }}
           </p>
           <div class="flex flex-wrap gap-(--spacing-2) mt-(--spacing-3)">
-            <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
-            <Button size="md" variant="ghost" @click="confirmDeleteCompany">Удалить</Button>
+            <PermissionGuard :permission="CRM_PERMISSIONS.companyUpdate">
+              <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
+            </PermissionGuard>
+            <PermissionGuard :permission="CRM_PERMISSIONS.companyDelete">
+              <Button size="md" variant="ghost" @click="confirmDeleteCompany">Удалить</Button>
+            </PermissionGuard>
           </div>
         </div>
       </div>
@@ -82,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { Modal, ConfirmModal, Button, Spinner, DetailTabsPanel } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
@@ -98,11 +102,15 @@
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
   import { companyService } from '@/entities/company'
-  import { usePermissions, WorkspacePermission } from '@/entities/workspace'
+  import { usePermissions as useWorkspacePermissions, WorkspacePermission } from '@/entities/workspace'
+  import { usePermissions } from '@/features/permissions'
+  import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
+  import { PermissionGuard } from '@/features/permissions'
   import type { CreateCompanyDto } from '@/entities/company'
   import type { Deal } from '@/entities/deal'
 
   const router = useRouter()
+  const { can } = usePermissions()
 
   const {
     workspaceId,
@@ -121,13 +129,27 @@
   const showDeleteModal = ref(false)
   const showAttachContactModal = ref(false)
 
-  const tabs = [
+  const allTabs = [
     { id: 'main', label: 'Основная информация' },
     { id: 'contacts', label: 'Контакты' },
     { id: 'deals', label: 'Сделки' },
     { id: 'activity', label: 'Активность' },
     { id: 'projects', label: 'Проекты' },
   ]
+  const tabs = computed(() =>
+    allTabs.filter((t) => {
+      if (t.id === 'activity') return can(CRM_PERMISSIONS.activityRead)
+      if (t.id === 'projects') return can(PROJECT_PERMISSIONS.projectRead)
+      return true
+    }),
+  )
+
+  watch(tabs, (next) => {
+    const ids = next.map((t) => t.id)
+    if (!ids.includes(activeTab.value)) {
+      activeTab.value = ids[0] ?? 'main'
+    }
+  }, { immediate: true })
 
   const tabComponents = {
     main: CompanyMainInfo,
@@ -149,18 +171,24 @@
       loading: companyDealsLoading.value,
       dealsSum: companyDealsSum.value,
     },
-    activity: { entityType: 'company' as const, entityId: companyId.value },
+    activity: {
+      entityType: 'company' as const,
+      entityId: companyId.value,
+      canCreate: can(CRM_PERMISSIONS.activityCreate),
+      canEdit: can(CRM_PERMISSIONS.activityUpdate),
+      canDelete: can(CRM_PERMISSIONS.activityDelete),
+    },
     projects: {
       workspaceId: workspaceId.value,
       entityType: 'crm_company',
       entityId: companyId.value,
       entityName: company.value?.name,
-      canEdit: canEditCrm.value,
+      canEdit: can(PROJECT_PERMISSIONS.entityAttach),
       projectsBasePath: '/projects',
     },
   }))
 
-  const { hasPermission } = usePermissions()
+  const { hasPermission } = useWorkspacePermissions()
   const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
   const companyDealsSum = computed(() =>

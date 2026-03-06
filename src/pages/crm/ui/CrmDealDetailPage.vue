@@ -16,6 +16,7 @@
           :model-value="deal.name"
           placeholder="Без названия"
           title-class="text-(--text-xl)"
+          :readonly="!can(CRM_PERMISSIONS.dealUpdate)"
           @save="(v) => saveName(v)"
         />
       </h1>
@@ -35,46 +36,52 @@
                 <span class="font-medium text-primary-default">
                   {{ formatDealMoney(deal.budget, deal.currency) }}
                 </span>
-                <div class="min-w-[160px]">
-                  <Select
-                    :model-value="selectedPipelineId"
-                    :options="pipelineOptions"
-                    size="md"
-                    @update:model-value="(v) => selectPipeline(String(v ?? ''))"
-                  />
-                </div>
-                <div class="min-w-[140px]">
-                  <Select
-                    :model-value="deal.stageId"
-                    :options="stageOptions"
-                    size="md"
-                    @update:model-value="(v) => v && onStageChange(String(v))"
-                  />
-                </div>
+                <PermissionGuard :permission="CRM_PERMISSIONS.dealMove">
+                  <div class="min-w-[160px]">
+                    <Select
+                      :model-value="selectedPipelineId"
+                      :options="pipelineOptions"
+                      size="md"
+                      @update:model-value="(v) => selectPipeline(String(v ?? ''))"
+                    />
+                  </div>
+                  <div class="min-w-[140px]">
+                    <Select
+                      :model-value="deal.stageId"
+                      :options="stageOptions"
+                      size="md"
+                      @update:model-value="(v) => v && onStageChange(String(v))"
+                    />
+                  </div>
+                </PermissionGuard>
               </div>
               <div class="flex flex-wrap gap-(--spacing-2) mt-(--spacing-3)">
-                <Button size="md" variant="outline" @click="actions.openEditDeal(deal)">
-                  Редактировать
-                </Button>
-                <Button size="md" variant="ghost" @click="actions.openDeleteConfirm(deal)">
-                  Удалить
-                </Button>
-                <Button
+                <PermissionGuard :permission="CRM_PERMISSIONS.dealUpdate">
+                  <Button size="md" variant="outline" @click="actions.openEditDeal(deal)">
+                    Редактировать
+                  </Button>
+                </PermissionGuard>
+                <PermissionGuard :permission="CRM_PERMISSIONS.dealDelete">
+                  <Button size="md" variant="ghost" @click="actions.openDeleteConfirm(deal)">
+                    Удалить
+                  </Button>
+                </PermissionGuard>
+                <PermissionGuard
                   v-if="deal.status === 'open'"
-                  size="md"
-                  variant="primary"
-                  @click="closeAsWon"
+                  :permission="CRM_PERMISSIONS.dealUpdate"
                 >
-                  Закрыть выигрыш
-                </Button>
-                <Button
+                  <Button size="md" variant="primary" @click="closeAsWon">
+                    Закрыть выигрыш
+                  </Button>
+                </PermissionGuard>
+                <PermissionGuard
                   v-if="deal.status === 'open'"
-                  size="md"
-                  variant="ghost"
-                  @click="closeAsLost"
+                  :permission="CRM_PERMISSIONS.dealUpdate"
                 >
-                  Закрыть проигрыш
-                </Button>
+                  <Button size="md" variant="ghost" @click="closeAsLost">
+                    Закрыть проигрыш
+                  </Button>
+                </PermissionGuard>
               </div>
             </div>
           </header>
@@ -92,12 +99,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { BasePageLayout } from '@/shared/ui/common'
 import { Button, Spinner, Select, EditableTitle, DetailTabsPanel } from '@/shared/ui'
 import { ArrowLeftIcon } from '@/shared/ui/icon'
-import { usePermissions, WorkspacePermission } from '@/entities/workspace'
+import { usePermissions as useWorkspacePermissions, WorkspacePermission } from '@/entities/workspace'
+import { usePermissions } from '@/features/permissions'
+import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
+import { PermissionGuard } from '@/features/permissions'
 import { dealService } from '@/entities/deal'
 import {
   useDealDetail,
@@ -139,7 +149,8 @@ const stageOptions = computed(() =>
   stages.value.map((s) => ({ value: s.id, label: s.name })),
 )
 
-const { hasPermission } = usePermissions()
+const { can } = usePermissions()
+const { hasPermission } = useWorkspacePermissions()
 const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
 const updateDealForDetail = async (id: string, data: CreateDealDto) => {
@@ -164,13 +175,27 @@ const actions = useDealActions({
 })
 
 const activeTab = ref('main')
-const tabs = [
+const allTabs = [
   { id: 'main', label: 'Основная информация' },
   { id: 'activity', label: 'Активность' },
   { id: 'projects', label: 'Проекты' },
   { id: 'tasks', label: 'Задачи' },
   { id: 'products', label: 'Товары/Услуги' },
 ]
+const tabs = computed(() =>
+  allTabs.filter((t) => {
+    if (t.id === 'activity') return can(CRM_PERMISSIONS.activityRead)
+    if (t.id === 'projects') return can(PROJECT_PERMISSIONS.projectRead)
+    return true
+  }),
+)
+
+watch(tabs, (next) => {
+  const ids = next.map((t) => t.id)
+  if (!ids.includes(activeTab.value)) {
+    activeTab.value = ids[0] ?? 'main'
+  }
+}, { immediate: true })
 
 const tabComponents = {
   main: DealMainInfo,
@@ -186,13 +211,19 @@ const tabProps = computed(() => ({
     contactName: contactName.value,
     companyName: companyName.value,
   },
-  activity: { entityType: 'deal' as const, entityId: dealId.value },
+  activity: {
+    entityType: 'deal' as const,
+    entityId: dealId.value,
+    canCreate: can(CRM_PERMISSIONS.activityCreate),
+    canEdit: can(CRM_PERMISSIONS.activityUpdate),
+    canDelete: can(CRM_PERMISSIONS.activityDelete),
+  },
   projects: {
     workspaceId: workspaceId.value,
     entityType: 'crm_deal',
     entityId: dealId.value,
     entityName: deal.value?.name,
-    canEdit: canEditCrm.value,
+    canEdit: can(PROJECT_PERMISSIONS.entityAttach),
     projectsBasePath: '/projects',
   },
   tasks: { text: 'Связанные задачи (в разработке).' },

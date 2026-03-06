@@ -14,7 +14,7 @@
           <div class="flex items-center justify-between mb-(--spacing-2)">
             <span class="text-(--text-sm) font-medium text-text-secondary">Права роли</span>
           </div>
-          <PermissionTree :model-value="permissions" @update:model-value="onPermissionsChange" />
+          <PermissionTree :model-value="permissions" :is-system="props.role?.isSystem" @update:model-value="onPermissionsChange" />
         </div>
       </div>
 
@@ -63,7 +63,7 @@
   )
 
   const { name, description, permissions, isValid, setPermissions, save } = useRoleEditor({
-    role: props.role ?? null,
+    role: () => props.role ?? null,
     initialPermissions: props.initialPermissions,
   })
 

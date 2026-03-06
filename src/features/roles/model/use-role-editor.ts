@@ -3,25 +3,30 @@ import type { Role, PermissionString } from '@/entities/role'
 import { useRolesPage } from './use-roles-page'
 
 interface RoleEditorOptions {
-  role?: Role | null
+  role?: Role | null | (() => Role | null | undefined)
   initialPermissions?: PermissionString[]
 }
 
 export function useRoleEditor(options: RoleEditorOptions = {}) {
-  const { role, initialPermissions } = options
+  const { role: roleOrGetter, initialPermissions } = options
   const { createRole, updateRole } = useRolesPage()
 
-  const name = ref(role?.name ?? '')
-  const description = ref<string | null | undefined>(role?.description ?? null)
+  const getCurrentRole = (): Role | null | undefined =>
+    typeof roleOrGetter === 'function' ? roleOrGetter() : roleOrGetter
+
+  const currentRole = getCurrentRole()
+  const name = ref(currentRole?.name ?? '')
+  const description = ref<string | null | undefined>(currentRole?.description ?? null)
   const permissions = ref<PermissionString[]>(initialPermissions ?? [])
 
-  const isSystem = computed(() => role?.isSystem ?? false)
+  const isSystem = computed(() => getCurrentRole()?.isSystem ?? false)
   const isValid = computed(() => name.value.trim().length > 0)
 
   watchEffect(() => {
-    if (role) {
-      name.value = role.name
-      description.value = role.description
+    const r = getCurrentRole()
+    if (r) {
+      name.value = r.name
+      description.value = r.description
     }
   })
 
@@ -38,6 +43,7 @@ export function useRoleEditor(options: RoleEditorOptions = {}) {
       description: description.value ?? null,
       permissions: permissions.value,
     }
+    const role = getCurrentRole()
     if (!role) {
       return createRole(payload)
     }
