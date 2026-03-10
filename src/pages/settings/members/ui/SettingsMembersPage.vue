@@ -13,43 +13,36 @@
 
     <div v-else class="space-y-4">
       <Card v-for="member in members" :key="member.id" class="p-4">
-        <div class="flex items-start justify-between gap-4">
-          <div class="space-y-1">
-            <div class="font-medium text-text-primary">
-              {{ member.name || member.email }}
-            </div>
-            <div class="text-xs text-text-secondary">
-              {{ member.email }}
-            </div>
-          </div>
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <div class="flex flex-col items-end gap-1">
-              <label class="text-xs text-text-secondary">Роль</label>
-              <select
-                :value="getRoleSelectValue(member)"
-                :disabled="!canChangeRole(member) || roleChangingMemberId === member.id"
-                class="border border-border-default rounded-md px-2 py-1.5 text-sm bg-bg-primary text-text-primary disabled:opacity-60 disabled:cursor-not-allowed"
-                @change="onRoleChange(member, $event)"
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <UserInfo
+            :name="member.name"
+            :email="member.email"
+            size="md"
+          />
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:flex-shrink-0">
+            <div class="flex flex-col sm:items-end gap-1 min-w-0 sm:min-w-[140px]">
+              <span
+                v-if="isOwner(member)"
+                class="text-sm text-text-secondary"
               >
-                <optgroup label="Системные">
-                  <option value="OWNER">OWNER</option>
-                  <option value="ADMIN">ADMIN</option>
-                  <option value="MEMBER">MEMBER</option>
-                  <option value="GUEST">GUEST</option>
-                </optgroup>
-                <optgroup v-if="customRoles.length" label="Кастомные">
-                  <option v-for="r in customRoles" :key="r.id" :value="r.id">
-                    {{ r.name }}
-                  </option>
-                </optgroup>
-              </select>
+                Владелец
+              </span>
+              <Select
+                v-else
+                :model-value="getRoleSelectValue(member)"
+                :options="roleSelectOptions"
+                :disabled="roleChangingMemberId === member.id"
+                size="md"
+                placeholder="Роль"
+                @update:model-value="(v) => onRoleChangeValue(member, v)"
+              />
             </div>
             <Button
               v-if="canRemoveMember(member)"
               variant="outline"
               size="md"
               :loading="removingMemberId === member.id"
-              class="text-red-600 border-red-200 hover:bg-red-50"
+              class="text-red-600 border-red-200 hover:bg-red-50 w-full sm:w-auto"
               @click="openRemoveModal(member)"
             >
               Удалить из workspace
@@ -57,10 +50,7 @@
           </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <MemberRoleChips :user-id="member.id" />
-          <UserPermissionsPanel :user-id="member.id" />
-        </div>
+
       </Card>
       <p v-if="!members.length" class="text-sm text-text-secondary">
         В этом workspace пока нет участников.
@@ -87,7 +77,7 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue'
-  import { Card, Button, Modal, ConfirmModal } from '@/shared/ui'
+  import { Card, Button, Modal, ConfirmModal, Select, UserInfo } from '@/shared/ui'
   import {
     useWorkspaceStore,
     workspaceService,
@@ -96,8 +86,6 @@
     type Member,
   } from '@/entities/workspace'
   import { useUserStore } from '@/entities/user'
-  import { MemberRoleChips } from '@/features/members'
-  import { UserPermissionsPanel } from '@/features/user-permissions'
   import { roleService } from '@/entities/role'
   import type { Role } from '@/entities/role'
 
@@ -118,6 +106,12 @@
 
   const customRoles = computed(() => availableRoles.value.filter((r) => !r.isSystem))
 
+  const roleSelectOptions = computed(() => {
+    const system = SYSTEM_ROLES.map((r) => ({ value: r, label: r }))
+    const custom = customRoles.value.map((r) => ({ value: r.id, label: r.name }))
+    return [...system, ...custom]
+  })
+
   const canManageMembers = computed(
     () =>
       hasPermission(WorkspacePermission.MEMBERS_EDIT_ROLE) ||
@@ -129,6 +123,9 @@
   )
 
   const currentUserId = computed(() => userStore.currentUser?.id ?? '')
+
+  const isOwner = (member: Member) =>
+    String(member.systemRole).toUpperCase() === 'OWNER'
 
   const canChangeRole = (member: Member) => {
     if (!canManageMembers.value) return false
@@ -182,23 +179,21 @@
     }
   }
 
-  const onRoleChange = async (member: Member, ev: Event) => {
-    const value = (
-      ev.target && 'value' in ev.target ? (ev.target as HTMLSelectElement).value : ''
-    ) as string
+  const onRoleChangeValue = async (member: Member, value: string | number | null | undefined) => {
+    const val = String(value ?? '')
     const workspaceId = workspaceStore.currentWorkspace?.id
-    if (!workspaceId || !value) return
-    if (value === getRoleSelectValue(member)) return
+    if (!workspaceId || !val) return
+    if (val === getRoleSelectValue(member)) return
 
     roleChangingMemberId.value = member.id
     try {
-      const payload = SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
-        ? { role: value as (typeof SYSTEM_ROLES)[number] }
-        : { roleId: value }
+      const payload = SYSTEM_ROLES.includes(val as (typeof SYSTEM_ROLES)[number])
+        ? { role: val as (typeof SYSTEM_ROLES)[number] }
+        : { roleId: val }
       await workspaceService.updateMemberRole(workspaceId, member.id, payload)
-      member.systemRole = SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
-        ? (value as Member['systemRole'])
-        : (availableRoles.value.find((r) => r.id === value)?.name ?? value)
+      member.systemRole = SYSTEM_ROLES.includes(val as (typeof SYSTEM_ROLES)[number])
+        ? (val as Member['systemRole'])
+        : (availableRoles.value.find((r) => r.id === val)?.name ?? val)
     } catch (err) {
       console.error('Failed to update role:', err)
       await loadMembers()
