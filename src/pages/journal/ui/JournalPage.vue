@@ -1,65 +1,66 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6 pb-8">
-    <JournalPageHeader @create-entry="openCreateModal" />
+  <BasePageLayout title="Дневник" description="Указывайте свое состояние и впечатления за день">
+    <template #header-actions>
+      <Button class="w-full sm:w-auto" @click="openCreateModal">Добавить запись</Button>
+    </template>
 
-    <JournalPageStats
-      v-if="!isLoading && filteredEntries.length > 0"
-      :total-count="filteredEntries.length"
-      :monthly-count="monthlyCount"
-      :average-mood="averageMood"
-      :average-mood-emoji="averageMoodEmoji"
-    />
+    <template #content>
+      <JournalPageStats
+        v-if="!isLoading && filteredEntries.length > 0"
+        :total-count="filteredEntries.length"
+        :monthly-count="monthlyCount"
+        :average-mood="averageMood"
+        :average-mood-emoji="averageMoodEmoji"
+      />
 
-    <PageFilters
-      :enabled-filters="[PageFiltersEnum.SEARCH, PageFiltersEnum.MOOD, PageFiltersEnum.PERIOD]"
-      :has-active-filters="hasActiveFilters"
-      :search-query="searchQuery"
-      :selected-mood="selectedMood"
-      :selected-period="selectedDate"
-      :mood-options="moodOptions"
-      :period-options="dateOptions"
-      search-placeholder="Поиск по записям, тегам, содержимому..."
-      @update:search-query="searchQuery = $event"
-      @update:selected-mood="selectedMood = $event"
-      @update:selected-period="selectedDate = $event"
-      @clear-filters="clearFilters"
-    />
+      <PageFilters
+        :enabled-filters="[PageFiltersEnum.SEARCH, PageFiltersEnum.MOOD, PageFiltersEnum.PERIOD]"
+        :has-active-filters="hasActiveFilters"
+        :search-query="searchQuery"
+        :selected-mood="selectedMood"
+        :selected-period="selectedDate"
+        :mood-options="moodOptions"
+        :period-options="dateOptions"
+        search-placeholder="Поиск по записям, тегам, содержимому..."
+        @update:search-query="searchQuery = $event"
+        @update:selected-mood="selectedMood = $event"
+        @update:selected-period="selectedDate = $event"
+        @clear-filters="clearFilters"
+      />
 
-    <div v-if="isLoading" class="text-center py-12">
-      <Spinner />
-      <p class="text-gray-500 mt-4">Загрузка записей...</p>
-    </div>
+      <div v-if="isLoading" class="text-center py-12">
+        <Spinner />
+        <p class="text-gray-500 mt-4">Загрузка записей...</p>
+      </div>
 
-    <EmptyState
-      v-else-if="filteredEntries.length === 0"
-      :title="hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей'"
-      :description="
-        hasActiveFilters
-          ? 'Попробуйте изменить фильтры или поисковый запрос'
-          : 'Начните вести дневник и записывайте свои мысли, достижения и планы'
-      "
-      action-button-text="Создать запись"
-      :show-clear-filters="hasActiveFilters"
-      @clear-filters="clearFilters"
-      @action="openCreateModal"
-    />
+      <EmptyState
+        v-else-if="filteredEntries.length === 0"
+        :title="hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей'"
+        :description="
+          hasActiveFilters
+            ? 'Попробуйте изменить фильтры или поисковый запрос'
+            : 'Начните вести дневник и записывайте свои мысли, достижения и планы'
+        "
+        action-button-text="Создать запись"
+        :show-clear-filters="hasActiveFilters"
+        @clear-filters="clearFilters"
+        @action="openCreateModal"
+      />
 
-    <JournalPageEntriesList
-      v-else
-      :grouped-entries="groupedEntries"
-      @edit-entry="editEntry"
-      @delete-entry="deleteEntry"
-    />
-  </div>
+      <JournalPageEntriesList
+        v-else
+        :grouped-entries="groupedEntries"
+        @edit-entry="editEntry"
+        @delete-entry="deleteEntry"
+      />
+    </template>
+  </BasePageLayout>
 </template>
 
 <script setup lang="ts">
-  import { Spinner, EmptyState, PageFilters, PageFiltersEnum } from '@/shared/ui'
-  import {
-    JournalPageHeader,
-    JournalPageStats,
-    JournalPageEntriesList,
-  } from '@/features/journal/ui'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Spinner, EmptyState, PageFilters, PageFiltersEnum, Button } from '@/shared/ui'
+  import { JournalPageStats, JournalPageEntriesList } from '@/features/journal/ui'
   import { useJournalPage, useJournalActions } from '@/features/journal/model'
 
   const {

@@ -1,20 +1,8 @@
 <template>
   <div class="space-y-4">
     <div v-if="canCreate" class="flex flex-wrap items-center gap-2">
-      <Button
-        size="md"
-        variant="outline"
-        @click="handleNoteClick"
-      >
-        Заметка
-      </Button>
-      <Button
-        size="md"
-        variant="outline"
-        @click="handleCallClick"
-      >
-        Звонок
-      </Button>
+      <Button size="md" variant="outline" @click="handleNoteClick"> Заметка </Button>
+      <Button size="md" variant="outline" @click="handleCallClick"> Звонок </Button>
       <div class="relative">
         <Button
           size="md"

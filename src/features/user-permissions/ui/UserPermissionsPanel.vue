@@ -22,7 +22,12 @@
               до {{ perm.expiresAt }}
             </span>
           </div>
-          <Button size="md" variant="secondary" class="flex-shrink-0 sm:self-center" @click="onRevoke(perm.permissionId)">
+          <Button
+            size="md"
+            variant="secondary"
+            class="flex-shrink-0 sm:self-center"
+            @click="onRevoke(perm.permissionId)"
+          >
             Отозвать
           </Button>
         </li>

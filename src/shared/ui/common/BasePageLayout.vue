@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto space-y-(--spacing-6) pb-(--spacing-8)">
-    <div class="flex items-start justify-between gap-(--spacing-4)">
-      <div class="flex-1">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-(--spacing-4)">
+      <div class="flex-1 min-w-0">
         <slot name="header-title">
           <h1 class="text-text-primary">{{ title }}</h1>
           <p v-if="description" class="mt-(--spacing-1) text-(--text-sm) text-text-secondary">
@@ -10,7 +10,9 @@
         </slot>
       </div>
 
-      <div class="flex items-center gap-(--spacing-3)">
+      <div
+        class="flex flex-wrap items-center gap-(--spacing-3) space-y-(--spacing-6) flex-shrink-0"
+      >
         <slot name="header-actions"></slot>
       </div>
     </div>
@@ -31,11 +33,11 @@
       <div class="h-full">
         <slot name="sidebar"></slot>
       </div>
-      <div class="h-full">
+      <div class="h-full space-y-(--spacing-6)">
         <slot name="content"></slot>
       </div>
     </div>
-    <div v-else class="h-full">
+    <div v-else class="h-full max-w-7xl mx-auto space-y-(--spacing-6)">
       <slot name="content"></slot>
     </div>
 

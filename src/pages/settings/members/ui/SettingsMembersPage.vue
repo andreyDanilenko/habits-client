@@ -14,24 +14,17 @@
     <div v-else class="space-y-4">
       <Card v-for="member in members" :key="member.id" class="p-4">
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <UserInfo
-            :name="member.name"
-            :email="member.email"
-            size="md"
-          />
+          <UserInfo :name="member.name" :email="member.email" size="md" />
           <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:flex-shrink-0">
             <div class="flex flex-col sm:items-end gap-1 min-w-0 sm:min-w-[140px]">
-              <span
-                v-if="isOwner(member)"
-                class="text-sm text-text-secondary"
-              >
+              <span v-if="isWorkspaceOwner(member)" class="text-sm text-text-secondary">
                 Владелец
               </span>
               <Select
                 v-else
                 :model-value="getRoleSelectValue(member)"
                 :options="roleSelectOptions"
-                :disabled="roleChangingMemberId === member.id"
+                :disabled="!canChangeRole(member) || roleChangingMemberId === member.id"
                 size="md"
                 placeholder="Роль"
                 @update:model-value="(v) => onRoleChangeValue(member, v)"
@@ -49,8 +42,6 @@
             </Button>
           </div>
         </div>
-
-
       </Card>
       <p v-if="!members.length" class="text-sm text-text-secondary">
         В этом workspace пока нет участников.
@@ -124,8 +115,8 @@
 
   const currentUserId = computed(() => userStore.currentUser?.id ?? '')
 
-  const isOwner = (member: Member) =>
-    String(member.systemRole).toUpperCase() === 'OWNER'
+  const isWorkspaceOwner = (member: Member) =>
+    member.id === workspaceStore.currentWorkspace?.ownerId
 
   const canChangeRole = (member: Member) => {
     if (!canManageMembers.value) return false

@@ -1,60 +1,68 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6 pb-8">
-    <HabitsPageHeader @add-habit="handleAddHabit" />
+  <BasePageLayout
+    title="Мои привычки"
+    description="Управляйте своими привычками и отслеживайте прогресс"
+  >
+    <template #header-actions>
+      <Button class="w-full sm:w-auto" @click="handleAddHabit">Добавить привычку</Button>
+    </template>
 
-    <HabitsPageStats
-      v-if="!isLoading && habits.length > 0"
-      :total-count="totalCount"
-      :completed-today="completedToday"
-      :completion-rate="completionRate"
-    />
+    <template #content>
+      <HabitsPageStats
+        v-if="!isLoading && habits.length > 0"
+        :total-count="totalCount"
+        :completed-today="completedToday"
+        :completion-rate="completionRate"
+      />
 
-    <PageFilters
-      :enabled-filters="[PageFiltersEnum.DATE, PageFiltersEnum.SHOW_ALL]"
-      :has-active-filters="hasActiveFilters"
-      :selected-date="selectedDate"
-      :show-all="showAll"
-      @date-change="handleDateChange"
-      @show-all="handleShowAll"
-      @reset-filter="handleResetFilter"
-      @clear-filters="handleResetFilter"
-    />
+      <PageFilters
+        :enabled-filters="[PageFiltersEnum.DATE, PageFiltersEnum.SHOW_ALL]"
+        :has-active-filters="hasActiveFilters"
+        :selected-date="selectedDate"
+        :show-all="showAll"
+        @date-change="handleDateChange"
+        @show-all="handleShowAll"
+        @reset-filter="handleResetFilter"
+        @clear-filters="handleResetFilter"
+      />
 
-    <div v-if="isLoading" class="text-center py-12">
-      <Spinner />
-      <p class="text-gray-500 mt-4">Загрузка привычек...</p>
-    </div>
+      <div v-if="isLoading" class="text-center py-12">
+        <Spinner />
+        <p class="text-gray-500 mt-4">Загрузка привычек...</p>
+      </div>
 
-    <EmptyState
-      v-else-if="habits.length === 0"
-      :title="hasActiveFilters ? 'Привычки не найдены' : 'Нет привычек'"
-      :description="
-        hasActiveFilters
-          ? 'Попробуйте изменить фильтры или сбросить их'
-          : 'Создайте свою первую привычку, чтобы начать отслеживать прогресс'
-      "
-      action-button-text="Создать привычку"
-      :show-clear-filters="hasActiveFilters"
-      @clear-filters="handleResetFilter"
-      @action="handleAddHabit"
-    />
+      <EmptyState
+        v-else-if="habits.length === 0"
+        :title="hasActiveFilters ? 'Привычки не найдены' : 'Нет привычек'"
+        :description="
+          hasActiveFilters
+            ? 'Попробуйте изменить фильтры или сбросить их'
+            : 'Создайте свою первую привычку, чтобы начать отслеживать прогресс'
+        "
+        action-button-text="Создать привычку"
+        :show-clear-filters="hasActiveFilters"
+        @clear-filters="handleResetFilter"
+        @action="handleAddHabit"
+      />
 
-    <HabitsList
-      v-else
-      :habits="habits"
-      :progress-map="habitProgressMap"
-      @select-habit="selectHabit"
-      @edit-habit="editHabit"
-      @delete-habit="deleteHabit"
-      @mark-completion="markCompletion"
-    />
-  </div>
+      <HabitsList
+        v-else
+        :habits="habits"
+        :progress-map="habitProgressMap"
+        @select-habit="selectHabit"
+        @edit-habit="editHabit"
+        @delete-habit="deleteHabit"
+        @mark-completion="markCompletion"
+      />
+    </template>
+  </BasePageLayout>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { Spinner, EmptyState, PageFilters, PageFiltersEnum } from '@/shared/ui'
-  import { HabitsPageHeader, HabitsPageStats, HabitsList } from '@/features/habit/ui'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Spinner, EmptyState, PageFilters, PageFiltersEnum, Button } from '@/shared/ui'
+  import { HabitsPageStats, HabitsList } from '@/features/habit/ui'
   import { useHabitsPage } from '@/features/habit/model'
 
   const {

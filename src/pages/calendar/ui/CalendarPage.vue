@@ -1,19 +1,27 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6">
-    <CalendarPageHeader
-      :formatted-month="formattedMonth"
-      @prev-month="prevMonth"
-      @next-month="nextMonth"
-    />
+  <BasePageLayout title="Календарь привычек" description="Просмотр всех привычек по дням">
+    <template #header-actions>
+      <div class="flex items-center gap-2">
+        <Button icon-only variant="icon" :left-icon="ArrowLeftIcon" @click="prevMonth" />
+        <span class="font-medium min-w-[140px] text-center text-text-primary">
+          {{ formattedMonth }}
+        </span>
+        <Button icon-only variant="icon" :left-icon="ArrowRightIcon" @click="nextMonth" />
+      </div>
+    </template>
 
-    <CalendarLegend />
-
-    <CalendarGrid :calendar-days="calendarDays" :week-days="weekDays" :is-loading="isLoading" />
-  </div>
+    <template #content>
+      <CalendarLegend />
+      <CalendarGrid :calendar-days="calendarDays" :week-days="weekDays" :is-loading="isLoading" />
+    </template>
+  </BasePageLayout>
 </template>
 
 <script setup lang="ts">
-  import { CalendarPageHeader, CalendarLegend, CalendarGrid } from '@/features/calendar'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Button } from '@/shared/ui'
+  import { ArrowLeftIcon, ArrowRightIcon } from '@/shared/ui/icon'
+  import { CalendarLegend, CalendarGrid } from '@/features/calendar'
   import { useCalendarPage } from '@/features/calendar/model'
 
   const { calendarDays, formattedMonth, weekDays, isLoading, prevMonth, nextMonth } =
