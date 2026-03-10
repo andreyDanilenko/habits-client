@@ -11,16 +11,8 @@
         <slot name="actions" />
       </div>
     </div>
-    <div
-      v-if="loading"
-      class="text-text-muted text-(--text-sm) py-(--spacing-4)"
-    >
-      Загрузка…
-    </div>
-    <div
-      v-else-if="!items?.length"
-      class="text-text-muted text-(--text-sm) py-(--spacing-4)"
-    >
+    <div v-if="loading" class="text-text-muted text-(--text-sm) py-(--spacing-4)">Загрузка…</div>
+    <div v-else-if="!items?.length" class="text-text-muted text-(--text-sm) py-(--spacing-4)">
       {{ emptyText }}
     </div>
     <slot v-else :items="items" />

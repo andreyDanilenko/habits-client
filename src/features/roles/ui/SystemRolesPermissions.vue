@@ -21,12 +21,7 @@
       >
         <div class="font-medium text-text-primary mb-2">{{ roleName }}</div>
         <div class="flex flex-wrap gap-1.5">
-          <Badge
-            v-for="perm in perms"
-            :key="perm"
-            variant="outline"
-            class="text-xs font-mono"
-          >
+          <Badge v-for="perm in perms" :key="perm" variant="outline" class="text-xs font-mono">
             {{ perm }}
           </Badge>
         </div>
@@ -61,5 +56,8 @@
   }
 
   onMounted(() => void fetch())
-  watch(() => workspaceStore.currentWorkspace?.id, () => void fetch())
+  watch(
+    () => workspaceStore.currentWorkspace?.id,
+    () => void fetch(),
+  )
 </script>

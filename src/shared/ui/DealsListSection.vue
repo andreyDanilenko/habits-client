@@ -12,7 +12,7 @@
     <template #default="{ items: slotItems }">
       <ul class="space-y-(--spacing-2)">
         <li
-          v-for="deal in (slotItems as Deal[])"
+          v-for="deal in slotItems as Deal[]"
           :key="deal.id"
           class="flex items-center justify-between gap-(--spacing-4) py-(--spacing-2) border-b border-border-light"
         >

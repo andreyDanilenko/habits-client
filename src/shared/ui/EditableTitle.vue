@@ -23,39 +23,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+  import { ref, watch, nextTick } from 'vue'
 
-const props = withDefaults(
-  defineProps<{
-    modelValue: string
-    placeholder?: string
-    titleClass?: string
-    readonly?: boolean
-  }>(),
-  { placeholder: '', titleClass: '', readonly: false },
-)
+  const props = withDefaults(
+    defineProps<{
+      modelValue: string
+      placeholder?: string
+      titleClass?: string
+      readonly?: boolean
+    }>(),
+    { placeholder: '', titleClass: '', readonly: false },
+  )
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-  save: [value: string]
-}>()
+  const emit = defineEmits<{
+    'update:modelValue': [value: string]
+    save: [value: string]
+  }>()
 
-const isEditing = ref(false)
-const inputRef = ref<HTMLInputElement | null>(null)
+  const isEditing = ref(false)
+  const inputRef = ref<HTMLInputElement | null>(null)
 
-watch(isEditing, async (editing) => {
-  if (editing) {
-    await nextTick()
-    inputRef.value?.focus()
+  watch(isEditing, async (editing) => {
+    if (editing) {
+      await nextTick()
+      inputRef.value?.focus()
+    }
+  })
+
+  function handleSave() {
+    const value = inputRef.value?.value?.trim()
+    if (value !== undefined && value !== props.modelValue) {
+      emit('update:modelValue', value)
+      emit('save', value)
+    }
+    isEditing.value = false
   }
-})
-
-function handleSave() {
-  const value = inputRef.value?.value?.trim()
-  if (value !== undefined && value !== props.modelValue) {
-    emit('update:modelValue', value)
-    emit('save', value)
-  }
-  isEditing.value = false
-}
 </script>

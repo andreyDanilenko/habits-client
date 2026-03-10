@@ -2,12 +2,16 @@
   <ModalContent :title="entry ? 'Редактировать запись' : 'Запись за день'" @close="handleClose">
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Дата</span
+        >
         <DatePicker v-model="form.date" required />
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Настроение</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Настроение</span
+        >
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="mood in moods"
@@ -26,7 +30,9 @@
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание за день</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Описание за день</span
+        >
         <Textarea
           v-model="descriptionModel"
           :rows="8"
@@ -36,7 +42,9 @@
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги (необязательно)</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Теги (необязательно)</span
+        >
         <div class="flex flex-wrap gap-2 items-center">
           <Badge
             v-for="tag in form.tags || []"
@@ -108,7 +116,9 @@
 
   const descriptionModel = computed({
     get: () => form.value.description ?? '',
-    set: (v: string) => { form.value.description = v },
+    set: (v: string) => {
+      form.value.description = v
+    },
   })
 
   const applyEntryToForm = (value: JournalEntry | null) => {

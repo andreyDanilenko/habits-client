@@ -7,12 +7,13 @@ export type { DealsViewMode, DealsStatusFilter } from './use-deals-list'
 
 export function useDealsPage() {
   const list = useDealsList()
-  const crud = useDealsCrud(
-    () => list.workspaceId.value,
-    list.fetchDeals,
-    list.clearSelection,
+  const crud = useDealsCrud(() => list.workspaceId.value, list.fetchDeals, list.clearSelection)
+  const kanban = useDealsKanban(
+    list.deals,
+    list.currentPipeline,
+    crud.updateDeal,
+    list.mergeDealInList,
   )
-  const kanban = useDealsKanban(list.deals, list.currentPipeline, crud.updateDeal, list.mergeDealInList)
 
   return {
     // List

@@ -2,7 +2,9 @@
   <div class="max-w-4xl mx-auto space-y-6 pb-8">
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Активность</h1>
-      <p class="mt-1 text-text-secondary">Все действия в workspace: привычки, выполнения, записи в дневнике</p>
+      <p class="mt-1 text-text-secondary">
+        Все действия в workspace: привычки, выполнения, записи в дневнике
+      </p>
     </div>
 
     <div v-if="isLoading" class="text-center py-12">
@@ -30,8 +32,14 @@
         <div class="flex-1 min-w-0">
           <p class="text-sm text-text-primary">{{ activity.title }}</p>
           <div class="flex items-center gap-2 mt-1 flex-wrap">
-            <span class="text-xs text-text-secondary">{{ formatRelativeTime(activity.createdAt) }}</span>
-            <Badge v-if="activity.userName && activity.userName !== 'null'" variant="outline" class="text-xs">
+            <span class="text-xs text-text-secondary">{{
+              formatRelativeTime(activity.createdAt)
+            }}</span>
+            <Badge
+              v-if="activity.userName && activity.userName !== 'null'"
+              variant="outline"
+              class="text-xs"
+            >
               {{ activity.userName }}
             </Badge>
           </div>
@@ -107,9 +115,12 @@
     }
   })
 
-  watch(() => habitStore.activityRefreshTrigger, () => {
-    if (workspaceId.value) fetchActivities()
-  })
+  watch(
+    () => habitStore.activityRefreshTrigger,
+    () => {
+      if (workspaceId.value) fetchActivities()
+    },
+  )
 
   onMounted(() => {
     if (workspaceId.value) fetchActivities()

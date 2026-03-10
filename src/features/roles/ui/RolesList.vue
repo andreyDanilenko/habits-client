@@ -68,7 +68,7 @@
     isModalOpen.value = true
   }
 
-  const onEdit = async (role: Role) => {    
+  const onEdit = async (role: Role) => {
     editingRole.value = role
     try {
       const workspaceId = role.workspaceId

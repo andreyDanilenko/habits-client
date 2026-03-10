@@ -56,10 +56,10 @@ export function usePipelineStages(initialStages: StageForm[] = []) {
   const recalculateProbabilities = () => {
     if (!stages.length) return
 
-    const regularStages = stages.filter(s => !s.isFinal && !s.isLost)
-    
+    const regularStages = stages.filter((s) => !s.isFinal && !s.isLost)
+
     if (!regularStages.length) {
-      stages.forEach(stage => {
+      stages.forEach((stage) => {
         if (stage.isFinal) stage.probability = 100
         if (stage.isLost) stage.probability = 0
       })
@@ -69,7 +69,7 @@ export function usePipelineStages(initialStages: StageForm[] = []) {
     const step = 100 / (regularStages.length + 1)
     let currentIdx = 0
 
-    stages.forEach(stage => {
+    stages.forEach((stage) => {
       if (stage.isFinal) {
         stage.probability = 100
       } else if (stage.isLost) {
@@ -92,9 +92,9 @@ export function usePipelineStages(initialStages: StageForm[] = []) {
   }
 
   const validate = () => {
-    const finalCount = stages.filter(s => s.isFinal).length
-    const lostCount = stages.filter(s => s.isLost).length
-    
+    const finalCount = stages.filter((s) => s.isFinal).length
+    const lostCount = stages.filter((s) => s.isLost).length
+
     if (stages.length === 0) {
       return 'Добавьте хотя бы один этап'
     }

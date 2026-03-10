@@ -58,7 +58,9 @@
               <p class="text-(--text-xs) text-text-muted mt-(--spacing-2)">
                 {{ formatDate(project.updatedAt) }}
               </p>
-              <div class="flex flex-wrap gap-(--spacing-3) mt-(--spacing-2) text-(--text-xs) text-text-secondary">
+              <div
+                class="flex flex-wrap gap-(--spacing-3) mt-(--spacing-2) text-(--text-xs) text-text-secondary"
+              >
                 <span>Контакты: {{ getCount(project.id, 'contacts') }}</span>
                 <span>Компании: {{ getCount(project.id, 'companies') }}</span>
                 <span>Сделки: {{ getCount(project.id, 'deals') }}</span>

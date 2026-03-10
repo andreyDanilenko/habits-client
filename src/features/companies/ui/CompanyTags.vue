@@ -1,8 +1,6 @@
 <template>
   <div v-if="tags?.length">
-    <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
-      Теги
-    </h3>
+    <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">Теги</h3>
     <div class="flex flex-wrap gap-(--spacing-2)">
       <span
         v-for="tag in tags"

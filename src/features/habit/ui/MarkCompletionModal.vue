@@ -6,12 +6,16 @@
   >
     <div class="space-y-4">
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Во сколько выполнили?</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Во сколько выполнили?</span
+        >
         <Input v-model="form.time" type="time" />
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Заметка (необязательно)</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Заметка (необязательно)</span
+        >
         <Textarea
           v-model="form.note"
           :rows="3"

@@ -6,7 +6,9 @@
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Компания</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Компания</span
+        >
         <Select
           :model-value="filters.companyId ?? ''"
           :options="companyOptions"
@@ -15,7 +17,9 @@
         />
       </div>
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата создания (с)</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Дата создания (с)</span
+        >
         <DatePicker
           :model-value="filters.dateFrom ?? ''"
           @update:model-value="
@@ -24,14 +28,18 @@
         />
       </div>
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата создания (по)</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Дата создания (по)</span
+        >
         <DatePicker
           :model-value="filters.dateTo ?? ''"
           @update:model-value="$emit('update:filters', { ...filters, dateTo: $event || undefined })"
         />
       </div>
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Ответственный</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Ответственный</span
+        >
         <Select
           :model-value="filters.ownerId ?? ''"
           :options="ownerOptions"
@@ -41,7 +49,9 @@
       </div>
     </div>
     <div v-if="availableTags.length">
-      <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги</span>
+      <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+        >Теги</span
+      >
       <div class="flex flex-wrap gap-2">
         <button
           v-for="tag in availableTags"

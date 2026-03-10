@@ -7,23 +7,31 @@
     >
       <form class="space-y-4" @submit.prevent="() => handleSubmit(true)">
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Имя <span class="text-error-default">*</span></span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Имя <span class="text-error-default">*</span></span
+          >
           <Input
             v-model="form.firstName"
             placeholder="Имя"
             :error="errors.firstName"
             @blur="validateFirstName"
           />
-          <p v-if="errors.firstName" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.firstName }}</p>
+          <p v-if="errors.firstName" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
+            {{ errors.firstName }}
+          </p>
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Фамилия</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Фамилия</span
+          >
           <Input v-model="form.lastName" placeholder="Фамилия" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Телефон</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Телефон</span
+          >
           <Input
             v-model="phoneModel"
             type="tel"
@@ -31,11 +39,15 @@
             :error="errors.phone"
             inputClasses="w-full"
           />
-          <p v-if="errors.phone" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.phone }}</p>
+          <p v-if="errors.phone" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
+            {{ errors.phone }}
+          </p>
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Email</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Email</span
+          >
           <Input
             v-model="form.email"
             type="email"
@@ -43,11 +55,15 @@
             :error="errors.email"
             @blur="validateEmail"
           />
-          <p v-if="errors.email" class="mt-(--spacing-1) text-(--text-xs) text-error-default">{{ errors.email }}</p>
+          <p v-if="errors.email" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
+            {{ errors.email }}
+          </p>
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Компания</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Компания</span
+          >
           <SearchSelect
             v-model="form.companyId"
             :options="companyOptions"
@@ -63,17 +79,23 @@
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Должность</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Должность</span
+          >
           <Input v-model="form.position" placeholder="Должность" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">День рождения</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >День рождения</span
+          >
           <DatePicker v-model="form.birthday" />
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Теги</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Теги</span
+          >
           <div class="space-y-2">
             <div class="flex flex-wrap gap-2">
               <Tag
@@ -97,7 +119,9 @@
         </div>
 
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Ответственный</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Ответственный</span
+          >
           <Select
             v-model="form.ownerId"
             :options="ownerSelectOptions"

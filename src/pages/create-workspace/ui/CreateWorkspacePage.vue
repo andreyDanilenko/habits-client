@@ -10,7 +10,6 @@
         <h1 class="text-text-primary mt-(--spacing-6)">Создайте рабочее пространство</h1>
         <p class="mt-(--spacing-2) text-(--text-sm) text-text-secondary">
           У вас пока нет workspace. Создайте своё или дождитесь приглашения.
-
         </p>
       </div>
 
@@ -89,7 +88,9 @@
 
   const descriptionModel = computed({
     get: () => form.description ?? '',
-    set: (v: string) => { form.description = v },
+    set: (v: string) => {
+      form.description = v
+    },
   })
 
   const handleSubmit = async () => {

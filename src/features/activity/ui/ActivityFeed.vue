@@ -5,7 +5,7 @@
         size="md"
         variant="outline"
         @click="
-          showComposer = true;
+          showComposer = true
           showCallModal = false
         "
       >
@@ -15,7 +15,7 @@
         size="md"
         variant="outline"
         @click="
-          showCallModal = true;
+          showCallModal = true
           showComposer = false
         "
       >

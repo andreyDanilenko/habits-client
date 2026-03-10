@@ -7,7 +7,9 @@
             class="w-6 h-6 rounded-(--radius-md) flex-shrink-0"
             :style="{ backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)' }"
           />
-          <span class="flex-1 min-w-0 truncate text-(--text-sm) font-medium text-text-primary text-left">
+          <span
+            class="flex-1 min-w-0 truncate text-(--text-sm) font-medium text-text-primary text-left"
+          >
             {{ currentWorkspace?.name || 'Workspace' }}
           </span>
           <ChevronDownIcon class="w-4 h-4 text-text-muted flex-shrink-0" />

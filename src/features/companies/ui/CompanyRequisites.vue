@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
-      Реквизиты
-    </h3>
+    <h3 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">Реквизиты</h3>
     <dl class="grid gap-(--spacing-2) sm:grid-cols-2 text-(--text-sm)">
       <div class="flex gap-(--spacing-2)">
         <dt class="text-text-muted w-28">Название:</dt>

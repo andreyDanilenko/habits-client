@@ -29,10 +29,10 @@ export function usePipelineForm() {
 
     form.name = pipeline.name
     form.isDefault = pipeline.isDefault
-    
+
     const sortedStages = [...pipeline.stages]
       .sort((a, b) => a.order - b.order)
-      .map(stage => ({
+      .map((stage) => ({
         id: stage.id,
         name: stage.name,
         color: stage.color,
@@ -40,7 +40,7 @@ export function usePipelineForm() {
         isFinal: stage.isFinal,
         isLost: stage.isLost,
       }))
-    
+
     stagesManager.setStages(sortedStages)
   }
 
@@ -62,17 +62,17 @@ export function usePipelineForm() {
     // Состояние
     form,
     stages: stagesManager.stages,
-    
+
     // Валидация
     validationMessage,
-    
+
     // Методы для этапов (прокси)
     addStage: stagesManager.addStage,
     removeStage: stagesManager.removeStage,
     toggleFinal: stagesManager.toggleFinal,
     toggleLost: stagesManager.toggleLost,
     setStages: stagesManager.setStages,
-    
+
     // Методы для формы
     loadPipeline,
     resetToCreate,

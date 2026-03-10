@@ -70,9 +70,7 @@
   const sidebarRef = ref<InstanceType<typeof AppSidebar> | null>(null)
 
   const contentClass = computed(() => {
-    return showHeader.value
-      ? 'mx-auto px-(--spacing-6) py-(--spacing-6) md:py-(--spacing-8)'
-      : ''
+    return showHeader.value ? 'mx-auto px-(--spacing-6) py-(--spacing-6) md:py-(--spacing-8)' : ''
   })
 
   const openCreateModal = () => {

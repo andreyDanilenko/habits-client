@@ -1,8 +1,5 @@
 <template>
-  <BasePageLayout
-    :title="deal?.name ?? 'Сделка'"
-    :error-message="error"
-  >
+  <BasePageLayout :title="deal?.name ?? 'Сделка'" :error-message="error">
     <template #header-title>
       <router-link
         :to="{ name: 'CrmDeals' }"
@@ -70,17 +67,13 @@
                   v-if="deal.status === 'open'"
                   :permission="CRM_PERMISSIONS.dealUpdate"
                 >
-                  <Button size="md" variant="primary" @click="closeAsWon">
-                    Закрыть выигрыш
-                  </Button>
+                  <Button size="md" variant="primary" @click="closeAsWon"> Закрыть выигрыш </Button>
                 </PermissionGuard>
                 <PermissionGuard
                   v-if="deal.status === 'open'"
                   :permission="CRM_PERMISSIONS.dealUpdate"
                 >
-                  <Button size="md" variant="ghost" @click="closeAsLost">
-                    Закрыть проигрыш
-                  </Button>
+                  <Button size="md" variant="ghost" @click="closeAsLost"> Закрыть проигрыш </Button>
                 </PermissionGuard>
               </div>
             </div>
@@ -99,134 +92,134 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { BasePageLayout } from '@/shared/ui/common'
-import { Button, Spinner, Select, EditableTitle, DetailTabsPanel } from '@/shared/ui'
-import { ArrowLeftIcon } from '@/shared/ui/icon'
-import { usePermissions as useWorkspacePermissions, WorkspacePermission } from '@/entities/workspace'
-import { usePermissions } from '@/features/permissions'
-import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
-import { PermissionGuard } from '@/features/permissions'
-import { dealService } from '@/entities/deal'
-import {
-  useDealDetail,
-  useDealActions,
-  DealMainInfo,
-  DealPlaceholderTab,
-} from '@/features/deals'
-import type { CreateDealDto } from '@/entities/deal'
-import { formatDealMoney } from '@/features/deals/lib/format'
-import { ActivityFeed } from '@/features/activity'
-import { ProjectEntityPanel } from '@/features/projects'
+  import { ref, computed, watch } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Button, Spinner, Select, EditableTitle, DetailTabsPanel } from '@/shared/ui'
+  import { ArrowLeftIcon } from '@/shared/ui/icon'
+  import {
+    usePermissions as useWorkspacePermissions,
+    WorkspacePermission,
+  } from '@/entities/workspace'
+  import { usePermissions } from '@/features/permissions'
+  import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
+  import { PermissionGuard } from '@/features/permissions'
+  import { dealService } from '@/entities/deal'
+  import { useDealDetail, useDealActions, DealMainInfo, DealPlaceholderTab } from '@/features/deals'
+  import type { CreateDealDto } from '@/entities/deal'
+  import { formatDealMoney } from '@/features/deals/lib/format'
+  import { ActivityFeed } from '@/features/activity'
+  import { ProjectEntityPanel } from '@/features/projects'
 
-const router = useRouter()
+  const router = useRouter()
 
-const detail = useDealDetail()
-const {
-  workspaceId,
-  dealId,
-  deal,
-  pipelines,
-  isLoading,
-  error,
-  contactName,
-  companyName,
-  selectedPipelineId,
-  stages,
-  fetchDeal,
-  saveName,
-  selectPipeline,
-  onStageChange,
-  closeAsWon,
-  closeAsLost,
-} = detail
+  const detail = useDealDetail()
+  const {
+    workspaceId,
+    dealId,
+    deal,
+    pipelines,
+    isLoading,
+    error,
+    contactName,
+    companyName,
+    selectedPipelineId,
+    stages,
+    fetchDeal,
+    saveName,
+    selectPipeline,
+    onStageChange,
+    closeAsWon,
+    closeAsLost,
+  } = detail
 
-const pipelineOptions = computed(() =>
-  pipelines.value.map((p) => ({ value: p.id, label: p.name })),
-)
-const stageOptions = computed(() =>
-  stages.value.map((s) => ({ value: s.id, label: s.name })),
-)
+  const pipelineOptions = computed(() =>
+    pipelines.value.map((p) => ({ value: p.id, label: p.name })),
+  )
+  const stageOptions = computed(() => stages.value.map((s) => ({ value: s.id, label: s.name })))
 
-const { can } = usePermissions()
-const { hasPermission } = useWorkspacePermissions()
-const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
+  const { can } = usePermissions()
+  const { hasPermission } = useWorkspacePermissions()
+  const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
-const updateDealForDetail = async (id: string, data: CreateDealDto) => {
-  const d = await dealService.update(workspaceId.value, id, data)
-  await fetchDeal()
-  return d
-}
-const deleteDealForDetail = async (id: string) => {
-  await dealService.delete(workspaceId.value, id)
-  router.push({ name: 'CrmDeals' })
-}
-
-const actions = useDealActions({
-  workspaceId: () => workspaceId.value,
-  pipelines: () => pipelines.value,
-  createDeal: async () => {
-    throw new Error('Create not available on detail page')
-  },
-  updateDeal: updateDealForDetail,
-  deleteDeal: deleteDealForDetail,
-  onSuccess: fetchDeal,
-})
-
-const activeTab = ref('main')
-const allTabs = [
-  { id: 'main', label: 'Основная информация' },
-  { id: 'activity', label: 'Активность' },
-  { id: 'projects', label: 'Проекты' },
-  { id: 'tasks', label: 'Задачи' },
-  { id: 'products', label: 'Товары/Услуги' },
-]
-const tabs = computed(() =>
-  allTabs.filter((t) => {
-    if (t.id === 'activity') return can(CRM_PERMISSIONS.activityRead)
-    if (t.id === 'projects') return can(PROJECT_PERMISSIONS.projectRead)
-    return true
-  }),
-)
-
-watch(tabs, (next) => {
-  const ids = next.map((t) => t.id)
-  if (!ids.includes(activeTab.value)) {
-    activeTab.value = ids[0] ?? 'main'
+  const updateDealForDetail = async (id: string, data: CreateDealDto) => {
+    const d = await dealService.update(workspaceId.value, id, data)
+    await fetchDeal()
+    return d
   }
-}, { immediate: true })
+  const deleteDealForDetail = async (id: string) => {
+    await dealService.delete(workspaceId.value, id)
+    router.push({ name: 'CrmDeals' })
+  }
 
-const tabComponents = {
-  main: DealMainInfo,
-  activity: ActivityFeed,
-  projects: ProjectEntityPanel,
-  tasks: DealPlaceholderTab,
-  products: DealPlaceholderTab,
-}
+  const actions = useDealActions({
+    workspaceId: () => workspaceId.value,
+    pipelines: () => pipelines.value,
+    createDeal: async () => {
+      throw new Error('Create not available on detail page')
+    },
+    updateDeal: updateDealForDetail,
+    deleteDeal: deleteDealForDetail,
+    onSuccess: fetchDeal,
+  })
 
-const tabProps = computed(() => ({
-  main: {
-    deal: deal.value!,
-    contactName: contactName.value,
-    companyName: companyName.value,
-  },
-  activity: {
-    entityType: 'deal' as const,
-    entityId: dealId.value,
-    canCreate: can(CRM_PERMISSIONS.activityCreate),
-    canEdit: can(CRM_PERMISSIONS.activityUpdate),
-    canDelete: can(CRM_PERMISSIONS.activityDelete),
-  },
-  projects: {
-    workspaceId: workspaceId.value,
-    entityType: 'crm_deal',
-    entityId: dealId.value,
-    entityName: deal.value?.name,
-    canEdit: can(PROJECT_PERMISSIONS.entityAttach),
-    projectsBasePath: '/projects',
-  },
-  tasks: { text: 'Связанные задачи (в разработке).' },
-  products: { text: 'Товары/услуги (для будущего расширения).' },
-}))
+  const activeTab = ref('main')
+  const allTabs = [
+    { id: 'main', label: 'Основная информация' },
+    { id: 'activity', label: 'Активность' },
+    { id: 'projects', label: 'Проекты' },
+    { id: 'tasks', label: 'Задачи' },
+    { id: 'products', label: 'Товары/Услуги' },
+  ]
+  const tabs = computed(() =>
+    allTabs.filter((t) => {
+      if (t.id === 'activity') return can(CRM_PERMISSIONS.activityRead)
+      if (t.id === 'projects') return can(PROJECT_PERMISSIONS.projectRead)
+      return true
+    }),
+  )
+
+  watch(
+    tabs,
+    (next) => {
+      const ids = next.map((t) => t.id)
+      if (!ids.includes(activeTab.value)) {
+        activeTab.value = ids[0] ?? 'main'
+      }
+    },
+    { immediate: true },
+  )
+
+  const tabComponents = {
+    main: DealMainInfo,
+    activity: ActivityFeed,
+    projects: ProjectEntityPanel,
+    tasks: DealPlaceholderTab,
+    products: DealPlaceholderTab,
+  }
+
+  const tabProps = computed(() => ({
+    main: {
+      deal: deal.value!,
+      contactName: contactName.value,
+      companyName: companyName.value,
+    },
+    activity: {
+      entityType: 'deal' as const,
+      entityId: dealId.value,
+      canCreate: can(CRM_PERMISSIONS.activityCreate),
+      canEdit: can(CRM_PERMISSIONS.activityUpdate),
+      canDelete: can(CRM_PERMISSIONS.activityDelete),
+    },
+    projects: {
+      workspaceId: workspaceId.value,
+      entityType: 'crm_deal',
+      entityId: dealId.value,
+      entityName: deal.value?.name,
+      canEdit: can(PROJECT_PERMISSIONS.entityAttach),
+      projectsBasePath: '/projects',
+    },
+    tasks: { text: 'Связанные задачи (в разработке).' },
+    products: { text: 'Товары/услуги (для будущего расширения).' },
+  }))
 </script>

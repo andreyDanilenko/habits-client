@@ -164,9 +164,7 @@ modules.forEach((module) => {
         const moduleResult = moduleGuard(to)
         if (moduleResult !== true) {
           const redirectPath =
-            typeof moduleResult === 'object' && 'path' in moduleResult
-              ? moduleResult.path
-              : null
+            typeof moduleResult === 'object' && 'path' in moduleResult ? moduleResult.path : null
           if (redirectPath && redirectPath === to.path) {
             next()
             return
@@ -178,9 +176,7 @@ modules.forEach((module) => {
           const permResult = requirePermission(route.permissions[0])()
           if (permResult !== true) {
             const permRedirectPath =
-              typeof permResult === 'object' && 'path' in permResult
-                ? permResult.path
-                : null
+              typeof permResult === 'object' && 'path' in permResult ? permResult.path : null
             if (permRedirectPath && permRedirectPath === to.path) {
               next()
               return

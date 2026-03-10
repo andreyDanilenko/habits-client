@@ -11,76 +11,72 @@
         </div>
       </slot>
     </div>
+
     <div class="KanbanColumn__Body flex-1 overflow-y-auto p-2 min-h-[200px] flex flex-col">
-      <DndList
-        :model-value="column.items"
-        :item-key="itemKey"
-        :group="dndGroup"
+      <draggable
+        v-model="column.items"
+        item-key="id"
+        :group="{ name: dndGroup || 'deals' }"
         tag="div"
         class="space-y-2 min-h-full flex-1"
-        :disabled="disabled"
-        :empty-insert-threshold="40"
-        @update:model-value="onListChange"
-        @change="onDndChange"
+        @start="() => console.log('KANBAN START', column.id)"
+        @end="() => console.log('KANBAN END', column.id)"
+        @change="
+          (e) => {
+            console.log('KANBAN CHANGE', column.id, e)
+            onDndChange(e)
+          }
+        "
       >
         <template #item="{ element }">
-          <slot name="card" :item="element" :column="column">
-            <div class="rounded-lg border border-border-default bg-bg-primary p-3 text-sm">
+          <div>
+            <slot name="card" :item="element" :column="column">
               {{ element }}
-            </div>
-          </slot>
+            </slot>
+          </div>
         </template>
-      </DndList>
+      </draggable>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { DndList } from '@/shared/ui/Dnd'
+  import draggable from 'vuedraggable'
   import type { KanbanColumnModel } from './KanbanBoard.types'
 
   const props = withDefaults(
     defineProps<{
       column: KanbanColumnModel
-      itemKey?: string | ((item: unknown) => string)
       dndGroup?: string
-      disabled?: boolean
     }>(),
     {
-      dndGroup: 'kanban',
-      disabled: false,
+      dndGroup: 'deals',
     },
   )
 
   const emit = defineEmits<{
-    'update:column': [column: KanbanColumnModel]
     move: [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
   }>()
 
-  const columnColorStyle = computed(() => {
-    if (!props.column.color) return {}
-    return {
-      '--kanban-column-accent': props.column.color,
-      borderTopColor: props.column.color,
-      borderTopWidth: '3px',
-    }
-  })
-
-  function onListChange(newItems: unknown[]) {
-    emit('update:column', { ...props.column, items: newItems })
-  }
+  const columnColorStyle = computed(() =>
+    props.column.color
+      ? {
+          '--kanban-column-accent': props.column.color,
+          borderTopColor: props.column.color,
+          borderTopWidth: '3px',
+        }
+      : {},
+  )
 
   function onDndChange(evt: {
     added?: { element: unknown }
     removed?: { element: unknown }
     moved?: { element: unknown }
   }) {
-    if (evt.added) {
-      emit('move', { item: evt.added.element, toColumnId: props.column.id })
-    }
-    if (evt.removed) {
-      emit('move', { item: evt.removed.element, fromColumnId: props.column.id })
-    }
+    console.log()
+
+    if (evt.added) emit('move', { item: evt.added.element, toColumnId: props.column.id })
+    if (evt.removed) emit('move', { item: evt.removed.element, fromColumnId: props.column.id })
   }
 </script>

@@ -1,7 +1,5 @@
 <template>
-  <BasePageLayout
-    :title="company ? company.name : 'Компания'"
-  >
+  <BasePageLayout :title="company ? company.name : 'Компания'">
     <template #header-title>
       <router-link
         :to="{ name: 'CrmCompanies' }"
@@ -20,10 +18,7 @@
           <h1 class="text-text-primary text-(--text-xl) font-semibold">
             {{ company.name }}
           </h1>
-          <p
-            v-if="company.inn"
-            class="text-text-secondary text-(--text-sm) mt-(--spacing-0-5)"
-          >
+          <p v-if="company.inn" class="text-text-secondary text-(--text-sm) mt-(--spacing-0-5)">
             ИНН {{ company.inn }}
           </p>
           <div class="flex flex-wrap gap-(--spacing-2) mt-(--spacing-3)">
@@ -58,7 +53,7 @@
         :is-open="showFormModal"
         :company="company ?? null"
         @close="
-          showFormModal = false;
+          showFormModal = false
           fetchCompany()
         "
         @update="handleUpdate"
@@ -102,7 +97,10 @@
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
   import { companyService } from '@/entities/company'
-  import { usePermissions as useWorkspacePermissions, WorkspacePermission } from '@/entities/workspace'
+  import {
+    usePermissions as useWorkspacePermissions,
+    WorkspacePermission,
+  } from '@/entities/workspace'
   import { usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { PermissionGuard } from '@/features/permissions'
@@ -144,12 +142,16 @@
     }),
   )
 
-  watch(tabs, (next) => {
-    const ids = next.map((t) => t.id)
-    if (!ids.includes(activeTab.value)) {
-      activeTab.value = ids[0] ?? 'main'
-    }
-  }, { immediate: true })
+  watch(
+    tabs,
+    (next) => {
+      const ids = next.map((t) => t.id)
+      if (!ids.includes(activeTab.value)) {
+        activeTab.value = ids[0] ?? 'main'
+      }
+    },
+    { immediate: true },
+  )
 
   const tabComponents = {
     main: CompanyMainInfo,

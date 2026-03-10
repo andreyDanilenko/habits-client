@@ -8,9 +8,7 @@
   >
     <template #actions>
       <PermissionGuard v-if="onAttachToDeal" :permission="CRM_PERMISSIONS.dealCreate">
-        <Button size="md" variant="primary" @click="onAttachToDeal">
-          Добавить в сделку
-        </Button>
+        <Button size="md" variant="primary" @click="onAttachToDeal"> Добавить в сделку </Button>
       </PermissionGuard>
       <slot name="actions" />
     </template>

@@ -1,7 +1,7 @@
 <template>
-  <VueDraggableNext
-    v-model="model"
-    :item-key="itemKey"
+  <draggable
+    :list="debugList"
+    :item-key="resolvedItemKey"
     :group="group"
     :tag="tag"
     :animation="animation"
@@ -13,36 +13,29 @@
     v-bind="$attrs"
     @change="onChange"
   >
-    <!-- Библиотека использует только default-слот: ожидает массив дочерних узлов (по одному на элемент списка) -->
-    <template #default>
-      <template v-for="(element, index) in props.modelValue" :key="getItemKey(element, index)">
-        <slot name="item" :element="element" :index="index" />
-      </template>
+    <template #item="{ element, index }">
+      <slot name="item" :element="element" :index="index" />
     </template>
-  </VueDraggableNext>
+  </draggable>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { VueDraggableNext } from 'vue-draggable-next'
+  import { computed, ref } from 'vue'
+  import draggable from 'vuedraggable'
 
-  /**
-   * Обёртка над vue-draggable-next для использования по принципу чистой архитектуры.
-   * Библиотека DnD изолирована в shared — страницы и фичи используют только этот компонент.
-   */
+  const debugList = ref([
+    { id: 1, name: 'John' },
+    { id: 2, name: 'Jane' },
+    { id: 3, name: 'Bob' },
+  ])
+
   const props = withDefaults(
     defineProps<{
-      /** Массив элементов (v-model) */
       modelValue: unknown[]
-      /** Ключ элемента для key (id или функция) */
       itemKey?: string | ((item: unknown) => string)
-      /** Имя группы для перетаскивания между списками (одинаковое у связанных колонок) */
-      group?: string
-      /** HTML-тег контейнера */
+      group?: string | Record<string, unknown>
       tag?: string
-      /** Анимация в ms */
       animation?: number
-      /** Отключить перетаскивание */
       disabled?: boolean
       ghostClass?: string
       chosenClass?: string
@@ -61,9 +54,9 @@
   )
 
   const emit = defineEmits<{
-    'update:modelValue': [value: unknown[]]
+    'update:modelValue': [unknown[]]
     change: [
-      event: {
+      {
         added?: { element: unknown }
         removed?: { element: unknown }
         moved?: { element: unknown }
@@ -71,17 +64,17 @@
     ]
   }>()
 
+  // мост между внешним v-model и внутренним list
   const model = computed({
     get: () => props.modelValue,
     set: (value: unknown[]) => emit('update:modelValue', value),
   })
 
-  function getItemKey(item: unknown, index: number): string {
-    if (props.itemKey === undefined) return String(index)
-    if (typeof props.itemKey === 'function') return props.itemKey(item)
-    const obj = item as Record<string, unknown>
-    return String(obj?.[props.itemKey] ?? index)
-  }
+  const resolvedItemKey = computed(() => {
+    if (typeof props.itemKey === 'string') return props.itemKey
+    if (typeof props.itemKey === 'function') return props.itemKey
+    return (item: any) => (item && (item.id ?? item.key ?? item._id)) ?? String(item)
+  })
 
   function onChange(evt: {
     added?: { element: unknown }
@@ -90,8 +83,6 @@
   }) {
     emit('change', evt)
   }
-
-  defineExpose({ getItemKey })
 </script>
 
 <style scoped>

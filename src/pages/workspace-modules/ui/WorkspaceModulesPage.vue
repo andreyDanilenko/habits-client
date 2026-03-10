@@ -132,9 +132,7 @@
   )
 
   /** Владелец/админ workspace или глобальный админ может включать/отключать модули. */
-  const canActivateModules = computed(
-    () => isOwner.value || isAdmin.value || isGlobalAdmin.value,
-  )
+  const canActivateModules = computed(() => isOwner.value || isAdmin.value || isGlobalAdmin.value)
 
   /**
    * Core-модули (is_core = TRUE в БД) можно включать без лицензии.

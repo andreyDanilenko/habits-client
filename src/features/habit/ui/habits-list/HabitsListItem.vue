@@ -11,11 +11,7 @@
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <h3 class="text-text-primary">{{ habit.title }}</h3>
-            <Badge
-              v-if="displayOwnerName"
-              variant="outline"
-              class="text-xs"
-            >
+            <Badge v-if="displayOwnerName" variant="outline" class="text-xs">
               {{ displayOwnerName }}
             </Badge>
           </div>
@@ -60,9 +56,7 @@
         {{ progress === 1 ? 'выполнение' : progress < 5 ? 'выполнения' : 'выполнений' }} сегодня
       </div>
       <div v-if="canEdit" class="flex items-center space-x-2">
-        <Button variant="link" size="md" @click.stop="$emit('edit', habit)">
-          Редактировать
-        </Button>
+        <Button variant="link" size="md" @click.stop="$emit('edit', habit)"> Редактировать </Button>
       </div>
     </div>
   </div>
@@ -88,12 +82,9 @@
     return n && n !== 'null' ? n : null
   })
   const canDelete = computed(
-    () =>
-      props.habit.userId === userStore.currentUser?.id || isOwner.value,
+    () => props.habit.userId === userStore.currentUser?.id || isOwner.value,
   )
-  const canEdit = computed(
-    () => props.habit.userId === userStore.currentUser?.id,
-  )
+  const canEdit = computed(() => props.habit.userId === userStore.currentUser?.id)
 
   defineEmits<{
     edit: [habit: Habit]

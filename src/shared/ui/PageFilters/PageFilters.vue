@@ -10,7 +10,9 @@
 
       <div class="flex flex-wrap gap-3">
         <div v-if="enabledFilters.includes(PageFiltersEnum.DATE)" class="flex-1 min-w-[200px]">
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Дата</span
+          >
           <DatePicker
             :model-value="selectedDate"
             :disabled="showAll"

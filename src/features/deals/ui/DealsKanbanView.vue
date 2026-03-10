@@ -12,10 +12,9 @@
     <KanbanBoard
       v-else
       :columns="columnsModel"
-      @update:columns="(v) => onColumnsUpdate(v as KanbanColumnModel<Deal>[])"
       :item-key="getDealId"
       dnd-group="deals"
-      :disabled="!canMove"
+      :disabled="false"
       @move="onMove"
     >
       <template #column-header="{ column }">
@@ -115,6 +114,8 @@
   const canEdit = computed(() => props.canEdit ?? can(CRM_PERMISSIONS.dealUpdate))
   const canDelete = computed(() => props.canDelete ?? can(CRM_PERMISSIONS.dealDelete))
   const canMove = computed(() => {
+    console.log(can(CRM_PERMISSIONS.dealMove) || can(CRM_PERMISSIONS.dealUpdate))
+
     return can(CRM_PERMISSIONS.dealMove) || can(CRM_PERMISSIONS.dealUpdate)
   })
 
@@ -165,19 +166,15 @@
     clearContextMenu()
   }
 
-  function onColumnsUpdate(_v: KanbanColumnModel<Deal>[]) {
-    // источник истины для колонок — данные сделок, обновляемые родителем
-  }
-
   function onMove(payload: { item: unknown; toColumnId?: string }) {
-    console.log(payload);
-    
+    console.log(payload)
+
     emit('move', payload)
   }
 
   function onCardContextMenu(evt: MouseEvent, deal: Deal) {
-    console.log(evt, deal);
-    
+    console.log(evt, deal)
+
     contextMenu.x = evt.clientX
     contextMenu.y = evt.clientY
     contextMenu.deal = deal

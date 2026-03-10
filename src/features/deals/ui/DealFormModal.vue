@@ -108,87 +108,87 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Modal,
-  ModalContent,
-  Button,
-  Input,
-  Textarea,
-  DatePicker,
-  Select,
-  SearchSelect,
-} from '@/shared/ui'
-import type { Contact } from '@/entities/contact'
-import type { Deal, CreateDealDto } from '@/entities/deal'
-import { useDealForm } from '../model/use-deal-form'
+  import {
+    Modal,
+    ModalContent,
+    Button,
+    Input,
+    Textarea,
+    DatePicker,
+    Select,
+    SearchSelect,
+  } from '@/shared/ui'
+  import type { Contact } from '@/entities/contact'
+  import type { Deal, CreateDealDto } from '@/entities/deal'
+  import { useDealForm } from '../model/use-deal-form'
 
-const props = withDefaults(
-  defineProps<{
-    isOpen: boolean
-    deal: Deal | null
-    pipelines: import('@/entities/deal').Pipeline[]
-    pipelineId?: string
-    defaultStageId: string | undefined
-    workspaceId: string
-    defaultOwnerId: string
-    preselectedContact?: Contact | null
-    /** При использовании с useModal: создаёт контакт и возвращает его (для подстановки в форму) */
-    onCreateContact?: () => Promise<Contact | null>
-  }>(),
-  { pipelineId: undefined, preselectedContact: null, onCreateContact: undefined },
-)
+  const props = withDefaults(
+    defineProps<{
+      isOpen: boolean
+      deal: Deal | null
+      pipelines: import('@/entities/deal').Pipeline[]
+      pipelineId?: string
+      defaultStageId: string | undefined
+      workspaceId: string
+      defaultOwnerId: string
+      preselectedContact?: Contact | null
+      /** При использовании с useModal: создаёт контакт и возвращает его (для подстановки в форму) */
+      onCreateContact?: () => Promise<Contact | null>
+    }>(),
+    { pipelineId: undefined, preselectedContact: null, onCreateContact: undefined },
+  )
 
-const emit = defineEmits<{
-  close: []
-  confirm: [result: { id?: string; data: CreateDealDto }]
-  save: [data: CreateDealDto]
-  update: [id: string, data: CreateDealDto]
-  'create-contact': []
-  'preselected-applied': []
-}>()
+  const emit = defineEmits<{
+    close: []
+    confirm: [result: { id?: string; data: CreateDealDto }]
+    save: [data: CreateDealDto]
+    update: [id: string, data: CreateDealDto]
+    'create-contact': []
+    'preselected-applied': []
+  }>()
 
-const {
-  form,
-  saving,
-  contactQuery,
-  contactOptions,
-  contactSearching,
-  selectedContactDisplay,
-  pipelineOptions,
-  stageOptions,
-  ownerOptions,
-  currencyOptions,
-  getContactOptionLabel,
-  selectContact,
-  onContactSearch,
-  buildSubmitData,
-} = useDealForm(props, {
-  onPreselectedApplied: () => emit('preselected-applied'),
-})
+  const {
+    form,
+    saving,
+    contactQuery,
+    contactOptions,
+    contactSearching,
+    selectedContactDisplay,
+    pipelineOptions,
+    stageOptions,
+    ownerOptions,
+    currencyOptions,
+    getContactOptionLabel,
+    selectContact,
+    onContactSearch,
+    buildSubmitData,
+  } = useDealForm(props, {
+    onPreselectedApplied: () => emit('preselected-applied'),
+  })
 
-async function handleCreateContact() {
-  if (props.onCreateContact) {
-    await props.onCreateContact()
-  } else {
-    emit('create-contact')
-  }
-}
-
-async function handleSubmit() {
-  if (!form.value.name.trim()) return
-  saving.value = true
-  try {
-    const data = buildSubmitData()
-    if (props.deal) {
-      emit('confirm', { id: props.deal.id, data })
-      emit('update', props.deal.id, data)
+  async function handleCreateContact() {
+    if (props.onCreateContact) {
+      await props.onCreateContact()
     } else {
-      emit('confirm', { data })
-      emit('save', data)
+      emit('create-contact')
     }
-    emit('close')
-  } finally {
-    saving.value = false
   }
-}
+
+  async function handleSubmit() {
+    if (!form.value.name.trim()) return
+    saving.value = true
+    try {
+      const data = buildSubmitData()
+      if (props.deal) {
+        emit('confirm', { id: props.deal.id, data })
+        emit('update', props.deal.id, data)
+      } else {
+        emit('confirm', { data })
+        emit('save', data)
+      }
+      emit('close')
+    } finally {
+      saving.value = false
+    }
+  }
 </script>

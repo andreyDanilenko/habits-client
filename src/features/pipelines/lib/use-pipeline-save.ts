@@ -13,7 +13,7 @@ export function usePipelineSave() {
 
   const createPipeline = async (
     workspaceId: string,
-    data: { name: string; isDefault: boolean; stages: StageForm[] }
+    data: { name: string; isDefault: boolean; stages: StageForm[] },
   ): Promise<Pipeline | null> => {
     isSaving.value = true
     error.value = null
@@ -44,7 +44,7 @@ export function usePipelineSave() {
   const updatePipeline = async (
     workspaceId: string,
     pipelineId: string,
-    data: { name: string; isDefault: boolean; stages: StageForm[] }
+    data: { name: string; isDefault: boolean; stages: StageForm[] },
   ): Promise<Pipeline | null> => {
     isSaving.value = true
     error.value = null

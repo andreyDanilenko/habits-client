@@ -5,7 +5,7 @@ import { usePagination } from '@/shared/lib/use-pagination'
 
 export function usePipelinesList() {
   const workspaceStore = useWorkspaceStore()
-  
+
   const pipelines = ref<Pipeline[]>([])
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -18,10 +18,10 @@ export function usePipelinesList() {
 
   const fetchPipelines = async () => {
     if (!workspaceId.value) return
-    
+
     isLoading.value = true
     error.value = null
-    
+
     try {
       pipelines.value = await pipelineService.getList(workspaceId.value)
     } catch (e: any) {
@@ -36,12 +36,12 @@ export function usePipelinesList() {
   }
 
   const getPipelineById = (id: string) => {
-    return pipelines.value.find(p => p.id === id) ?? null
+    return pipelines.value.find((p) => p.id === id) ?? null
   }
 
   const updateInList = (updatedPipeline: Pipeline) => {
     pipelines.value = pipelines.value.map((p) =>
-      p.id === updatedPipeline.id ? updatedPipeline : p
+      p.id === updatedPipeline.id ? updatedPipeline : p,
     )
   }
 
@@ -59,11 +59,11 @@ export function usePipelinesList() {
     isLoading,
     error,
     selectedId,
-    
+
     // Пагинация
     pagination,
     PAGE_SIZE,
-    
+
     // Методы
     fetchPipelines,
     selectPipeline,

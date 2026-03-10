@@ -1,9 +1,5 @@
 <template>
-  <DetailListSection
-    :title="title"
-    :empty-text="emptyText ?? 'Нет контактов.'"
-    :items="contacts"
-  >
+  <DetailListSection :title="title" :empty-text="emptyText ?? 'Нет контактов.'" :items="contacts">
     <template #actions>
       <slot name="actions" />
     </template>
@@ -20,7 +16,7 @@
           </thead>
           <tbody>
             <tr
-              v-for="contact in (slotItems as Contact[])"
+              v-for="contact in slotItems as Contact[]"
               :key="contact.id"
               class="border-b border-border-light"
             >

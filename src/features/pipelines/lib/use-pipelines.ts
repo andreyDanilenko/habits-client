@@ -50,15 +50,11 @@ export function usePipelines() {
       list.addToList(created)
       selectPipeline(created.id)
     } else if (currentPipeline.value) {
-      const updated = await save.updatePipeline(
-        list.workspaceId.value,
-        currentPipeline.value.id,
-        {
-          name: form.form.name,
-          isDefault: form.form.isDefault,
-          stages: form.stages,
-        }
-      )
+      const updated = await save.updatePipeline(list.workspaceId.value, currentPipeline.value.id, {
+        name: form.form.name,
+        isDefault: form.form.isDefault,
+        stages: form.stages,
+      })
       if (!updated) return
       list.updateInList(updated)
       selectPipeline(updated.id)
@@ -75,7 +71,7 @@ export function usePipelines() {
     list.removeFromList(deletedId)
 
     if (list.pipelines.value.length > 0) {
-      const def = list.pipelines.value.find(p => p.isDefault) ?? list.pipelines.value[0]
+      const def = list.pipelines.value.find((p) => p.isDefault) ?? list.pipelines.value[0]
       selectPipeline(def.id)
     } else {
       list.selectPipeline(null)
@@ -95,7 +91,7 @@ export function usePipelines() {
         list.fetchPipelines()
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   // При загрузке списка выбираем первую воронку
@@ -103,10 +99,10 @@ export function usePipelines() {
     () => list.pipelines.value,
     (pipelines) => {
       if (!list.selectedId.value && pipelines.length > 0) {
-        const def = pipelines.find(p => p.isDefault) ?? pipelines[0]
+        const def = pipelines.find((p) => p.isDefault) ?? pipelines[0]
         selectPipeline(def.id)
       }
-    }
+    },
   )
 
   return {

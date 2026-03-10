@@ -63,12 +63,7 @@
         >
           {{ contactsSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет контактов.' }}
           <PermissionGuard v-if="!contactsSearch" :permission="PROJECT_PERMISSIONS.entityAttach">
-            <Button
-              size="md"
-              variant="primary"
-              class="mt-2"
-              @click="openAddModal('crm_contact')"
-            >
+            <Button size="md" variant="primary" class="mt-2" @click="openAddModal('crm_contact')">
               Добавить контакты
             </Button>
           </PermissionGuard>
@@ -126,12 +121,7 @@
         >
           {{ companiesSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет компаний.' }}
           <PermissionGuard v-if="!companiesSearch" :permission="PROJECT_PERMISSIONS.entityAttach">
-            <Button
-              size="md"
-              variant="primary"
-              class="mt-2"
-              @click="openAddModal('crm_company')"
-            >
+            <Button size="md" variant="primary" class="mt-2" @click="openAddModal('crm_company')">
               Добавить компании
             </Button>
           </PermissionGuard>
@@ -178,7 +168,9 @@
               </select>
             </template>
             <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
-              <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
+              <Button size="md" variant="primary" @click="openCreateDealModal"
+                >Создать сделку</Button
+              >
             </PermissionGuard>
             <PermissionGuard :permission="PROJECT_PERMISSIONS.entityAttach">
               <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
@@ -200,7 +192,9 @@
           В этом проекте пока нет сделок.
           <div class="flex gap-2 justify-center mt-2">
             <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
-              <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
+              <Button size="md" variant="primary" @click="openCreateDealModal"
+                >Создать сделку</Button
+              >
             </PermissionGuard>
             <PermissionGuard :permission="PROJECT_PERMISSIONS.entityAttach">
               <Button size="md" variant="outline" @click="openAddModal('crm_deal')"

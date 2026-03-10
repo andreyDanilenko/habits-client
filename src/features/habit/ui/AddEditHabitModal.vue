@@ -5,7 +5,9 @@
   >
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Название привычки <span class="text-error-default">*</span></span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Название привычки <span class="text-error-default">*</span></span
+        >
         <Input
           v-model="form.title"
           type="text"
@@ -13,11 +15,15 @@
           maxlength="50"
           placeholder="Например: Утренняя зарядка"
         />
-        <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">{{ form.title.length }} / 50</span>
+        <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary"
+          >{{ form.title.length }} / 50</span
+        >
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Описание (необязательно)</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Описание (необязательно)</span
+        >
         <Textarea
           v-model="form.description"
           :rows="3"
@@ -25,11 +31,15 @@
           placeholder="Краткое описание вашей привычки..."
           resize="none"
         />
-        <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">{{ form.description?.length || 0 }} / 200</span>
+        <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary"
+          >{{ form.description?.length || 0 }} / 200</span
+        >
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Цвет</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Цвет</span
+        >
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="color in colors"
@@ -43,7 +53,9 @@
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Иконка</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Иконка</span
+        >
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="icon in icons"
@@ -58,7 +70,9 @@
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Цель на день</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Цель на день</span
+        >
         <div class="flex items-center space-x-2">
           <Input
             :model-value="String(form.dailyGoal)"
@@ -75,7 +89,9 @@
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Предпочтительное время</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Предпочтительное время</span
+        >
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="time in timesOfDay"
@@ -88,12 +104,16 @@
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Категория</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Категория</span
+        >
         <Select v-model="form.category" :options="categoryOptions" placeholder="Без категории" />
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Тип расписания</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Тип расписания</span
+        >
         <div class="flex gap-2">
           <SelectButton
             :is-selected="form.scheduleType === 'recurring'"
@@ -109,7 +129,9 @@
       </div>
 
       <div v-if="form.scheduleType === 'recurring'">
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дни недели <span class="text-error-default">*</span></span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Дни недели <span class="text-error-default">*</span></span
+        >
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="day in weekDays"
@@ -119,11 +141,18 @@
             @click="toggleDay(day.value)"
           />
         </div>
-        <p v-if="form.recurringDays.length === 0" class="mt-(--spacing-1) text-(--text-xs) text-error-default">Выберите хотя бы один день недели</p>
+        <p
+          v-if="form.recurringDays.length === 0"
+          class="mt-(--spacing-1) text-(--text-xs) text-error-default"
+        >
+          Выберите хотя бы один день недели
+        </p>
       </div>
 
       <div v-if="form.scheduleType === 'one_time'">
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Дата выполнения <span class="text-error-default">*</span></span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Дата выполнения <span class="text-error-default">*</span></span
+        >
         <DatePicker v-model="form.oneTimeDate" />
       </div>
     </form>

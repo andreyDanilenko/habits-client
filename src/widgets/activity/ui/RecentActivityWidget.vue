@@ -89,9 +89,12 @@
     else activities.value = []
   })
 
-  watch(() => habitStore.activityRefreshTrigger, () => {
-    if (workspaceId.value) fetchActivities()
-  })
+  watch(
+    () => habitStore.activityRefreshTrigger,
+    () => {
+      if (workspaceId.value) fetchActivities()
+    },
+  )
 
   onMounted(() => {
     if (workspaceId.value) fetchActivities()

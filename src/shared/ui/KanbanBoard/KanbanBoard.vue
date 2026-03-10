@@ -7,7 +7,6 @@
       :item-key="itemKey"
       :dnd-group="dndGroup"
       :disabled="disabled"
-      @update:column="onColumnUpdate"
       @move="onMove"
     >
       <template #header="slotProps">
@@ -30,18 +29,10 @@
   })
 
   const emit = defineEmits<{
-    'update:columns': [columns: KanbanColumnModel[]]
     move: [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
   }>()
 
   const columns = defineModel<KanbanColumnModel[]>('columns', { required: true })
-
-  function onColumnUpdate(updated: KanbanColumnModel) {
-    const next = columns.value.map((c) =>
-      c.id === updated.id ? { ...c, items: updated.items } : c,
-    )
-    emit('update:columns', next)
-  }
 
   function onMove(e: { item: unknown; fromColumnId?: string; toColumnId?: string }) {
     emit('move', e)

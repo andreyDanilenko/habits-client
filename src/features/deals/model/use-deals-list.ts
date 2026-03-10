@@ -32,13 +32,11 @@ export function useDealsList() {
   )
 
   const currentPipeline = computed(
-    () =>
-      pipelines.value.find((p) => p.id === selectedPipelineId.value) ?? defaultPipeline.value,
+    () => pipelines.value.find((p) => p.id === selectedPipelineId.value) ?? defaultPipeline.value,
   )
 
   const defaultStageId = computed(
-    () =>
-      currentPipeline.value?.stages?.[0]?.id ?? defaultPipeline.value?.stages?.[0]?.id,
+    () => currentPipeline.value?.stages?.[0]?.id ?? defaultPipeline.value?.stages?.[0]?.id,
   )
 
   const fetchPipelines = async () => {
@@ -60,12 +58,11 @@ export function useDealsList() {
     error.value = null
     try {
       const isKanban = viewMode.value === 'kanban'
-      const statusParam =
-        isKanban
-          ? 'open'
-          : statusFilter.value === 'all'
-            ? undefined
-            : statusFilter.value
+      const statusParam = isKanban
+        ? 'open'
+        : statusFilter.value === 'all'
+          ? undefined
+          : statusFilter.value
       const res = await dealService.getList({
         workspaceId: workspaceId.value,
         page: isKanban ? 1 : tableState.page.value,

@@ -7,6 +7,7 @@
 **Endpoint:** `GET /workspaces/:workspaceId/permissions/catalog`
 
 **Ответ:**
+
 ```json
 {
   "status": "success",
@@ -24,8 +25,12 @@
     ],
     "modules": {
       "crm": {
-        "deal": [ /* массив Permission */ ],
-        "contact": [ /* ... */ ]
+        "deal": [
+          /* массив Permission */
+        ],
+        "contact": [
+          /* ... */
+        ]
       }
     }
   }
@@ -40,15 +45,12 @@
 **Endpoint:** `GET /workspaces/:workspaceId/roles/:roleId/permissions`
 
 **Ответ:**
+
 ```json
 {
   "status": "success",
   "data": {
-    "permissions": [
-      "crm:deal:create",
-      "crm:deal:read",
-      "crm:contact:create"
-    ]
+    "permissions": ["crm:deal:create", "crm:deal:read", "crm:contact:create"]
   }
 }
 ```
@@ -60,6 +62,7 @@
 **Endpoint:** `GET /workspaces/:workspaceId/roles`
 
 **Ответ:**
+
 ```json
 {
   "status": "success",
@@ -90,6 +93,7 @@
 **Примеры:** `crm:deal:create`, `habits:habit:read`, `workspace:role:manage`
 
 **Связь с каталогом:**
+
 ```
 Permission { moduleCode, entityType, action }  →  permissionString = `${moduleCode}:${entityType}:${action}`
 ```
@@ -114,12 +118,12 @@ Role permissions (string[]) →  modelValue (PermissionString[])  →  modelValu
 
 ### 3.2 Список ролей + права при редактировании
 
-| Шаг | Действие |
-|-----|----------|
-| 1 | Загрузить роли: `roleService.list(workspaceId)` → `Role[]` |
-| 2 | При клике «Редактировать»: `roleService.getPermissions(workspaceId, role.id)` → `PermissionString[]` |
-| 3 | Передать `initialPermissions` в `RoleFormModal` |
-| 4 | `PermissionTree` получает каталог из `usePermissionTree()` и `modelValue` из `permissions` |
+| Шаг | Действие                                                                                             |
+| --- | ---------------------------------------------------------------------------------------------------- |
+| 1   | Загрузить роли: `roleService.list(workspaceId)` → `Role[]`                                           |
+| 2   | При клике «Редактировать»: `roleService.getPermissions(workspaceId, role.id)` → `PermissionString[]` |
+| 3   | Передать `initialPermissions` в `RoleFormModal`                                                      |
+| 4   | `PermissionTree` получает каталог из `usePermissionTree()` и `modelValue` из `permissions`           |
 
 ### 3.3 Дубликаты в массиве permissions
 
@@ -140,10 +144,10 @@ const uniquePermissions = [...new Set(permissions)]
 ```ts
 getPermissions: async (workspaceId: string, roleId: string): Promise<PermissionString[]> => {
   const response = await api.get<{ permissions: PermissionString[] }>(
-    API_ENDPOINTS.ROLES.PERMISSIONS(workspaceId, roleId)
+    API_ENDPOINTS.ROLES.PERMISSIONS(workspaceId, roleId),
   )
   const raw = response?.permissions ?? []
-  return [...new Set(raw)] as PermissionString[]  // дедупликация
+  return [...new Set(raw)] as PermissionString[] // дедупликация
 }
 ```
 
@@ -181,11 +185,11 @@ getPermissions: async (workspaceId: string, roleId: string): Promise<PermissionS
 
 ## 6. Резюме
 
-| Источник | Формат | Назначение |
-|----------|--------|------------|
-| Catalog | `Permission[]` с `id`, `moduleCode`, `entityType`, `action`, `name` | Структура дерева, человекочитаемые названия |
-| Role permissions | `PermissionString[]` (`"module:entity:action"`) | Выбранные права роли |
-| Связь | `perm.moduleCode + ":" + perm.entityType + ":" + perm.action` | Сопоставление каталога и прав роли |
+| Источник         | Формат                                                              | Назначение                                  |
+| ---------------- | ------------------------------------------------------------------- | ------------------------------------------- |
+| Catalog          | `Permission[]` с `id`, `moduleCode`, `entityType`, `action`, `name` | Структура дерева, человекочитаемые названия |
+| Role permissions | `PermissionString[]` (`"module:entity:action"`)                     | Выбранные права роли                        |
+| Связь            | `perm.moduleCode + ":" + perm.entityType + ":" + perm.action`       | Сопоставление каталога и прав роли          |
 
 **Правило:** Каталог задаёт «что можно выбрать», права роли — «что выбрано». Оба используют один и тот же строковый идентификатор `PermissionString`.
 

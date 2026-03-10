@@ -38,7 +38,7 @@
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
                 @click="
-                  menuOpen = false;
+                  menuOpen = false
                   $emit('toggleImportant')
                 "
               >
@@ -49,7 +49,7 @@
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
                 @click="
-                  menuOpen = false;
+                  menuOpen = false
                   $emit('edit')
                 "
               >
@@ -60,7 +60,7 @@
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
                 @click="
-                  menuOpen = false;
+                  menuOpen = false
                   $emit('delete')
                 "
               >

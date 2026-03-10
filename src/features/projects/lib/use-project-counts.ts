@@ -7,13 +7,12 @@ export function useProjectCounts(workspaceId: string) {
 
   const fetchCounts = async (projectIds: string[]) => {
     if (!workspaceId || projectIds.length === 0) return
-    
+
     isLoading.value = true
     const next: Record<string, { contacts: number; companies: number; deals: number }> = {}
-    
-    try {
 
-    /// Убоать этот костыль и добавить метод для получения сущностей в проекте для дешборда проекта 
+    try {
+      /// Убоать этот костыль и добавить метод для получения сущностей в проекте для дешборда проекта
       await Promise.all(
         projectIds.map(async (projectId) => {
           const [contactIds, companyIds, dealIds] = await Promise.all([
@@ -26,7 +25,7 @@ export function useProjectCounts(workspaceId: string) {
             companies: companyIds.length,
             deals: dealIds.length,
           }
-        })
+        }),
       )
       counts.value = next
     } finally {

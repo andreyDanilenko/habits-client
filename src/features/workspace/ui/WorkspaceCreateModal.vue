@@ -79,7 +79,9 @@
 
   const descriptionModel = computed({
     get: () => form.description ?? '',
-    set: (v: string) => { form.description = v },
+    set: (v: string) => {
+      form.description = v
+    },
   })
 
   const handleSubmit = async () => {

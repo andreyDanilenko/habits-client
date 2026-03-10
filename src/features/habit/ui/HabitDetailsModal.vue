@@ -168,12 +168,9 @@
   const userStore = useUserStore()
   const { isOwner } = usePermissions()
   const canDelete = computed(
-    () =>
-      props.habit.userId === userStore.currentUser?.id || isOwner.value,
+    () => props.habit.userId === userStore.currentUser?.id || isOwner.value,
   )
-  const canEdit = computed(
-    () => props.habit.userId === userStore.currentUser?.id,
-  )
+  const canEdit = computed(() => props.habit.userId === userStore.currentUser?.id)
   const emit = defineEmits<{
     close: []
     confirm: [action: 'edit' | 'delete']

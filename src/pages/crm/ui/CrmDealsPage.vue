@@ -66,52 +66,46 @@
           @delete="actions.confirmDelete"
         />
 
-        <!-- Простая отладочная зона DnD без Kanban-обёртки -->
-        <section class="border border-dashed border-border-default rounded-(--radius-md) p-(--spacing-3)">
-          <h2 class="text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
+        <!-- Простая отладочная зона DnD без Kanban-обёртки (моки, чистый vuedraggable) -->
+        <section class="border border-dashed rounded-md p-4">
+          <h2 class="text-sm font-medium text-gray-600 mb-2">
             Debug Kanban DnD (mock pipelines → lists of lists)
           </h2>
-          <div class="flex gap-(--spacing-4) overflow-x-auto">
+
+          <div class="flex gap-4 overflow-x-auto">
             <div
               v-for="(col, colIndex) in debugColumns"
               :key="col.id"
-              class="min-w-[220px] rounded-(--radius-md) border border-border-default bg-bg-secondary/60 p-(--spacing-2) flex flex-col gap-(--spacing-2)"
+              class="min-w-[220px] rounded-md border bg-gray-100 p-2 flex flex-col gap-2"
             >
-              <div class="font-medium text-text-primary text-(--text-sm)">
+              <div class="font-medium text-gray-800 text-sm">
                 {{ col.title }}
-                <span class="text-(--text-xs) text-text-muted ml-1">
-                  ({{ col.items.length }})
-                </span>
+                <span class="text-xs text-gray-500 ml-1"> ({{ col.items.length }}) </span>
               </div>
 
-              <DndList
+              <draggable
                 v-model="debugColumns[colIndex].items"
                 item-key="id"
-                group="debug-kanban"
-                class="space-y-(--spacing-2) min-h-[80px]"
+                :group="{ name: 'debug-kanban' }"
+                class="space-y-2 min-h-[80px]"
                 @change="(e) => onDebugChange(col.id, e)"
               >
                 <template #item="{ element }">
-                  <div
-                    class="border border-border-default rounded-(--radius-sm) bg-bg-primary px-3 py-2 text-(--text-sm)"
-                  >
-                    <div class="font-medium text-text-primary">
+                  <div class="border border-gray-300 rounded-sm bg-white px-3 py-2 text-sm">
+                    <div class="font-medium text-gray-800">
                       {{ element.name }}
                     </div>
-                    <div class="text-(--text-xs) text-text-muted">
+                    <div class="text-xs text-gray-500">
                       {{ element.id }}
                     </div>
                   </div>
                 </template>
-              </DndList>
+              </draggable>
             </div>
           </div>
         </section>
-
-
       </div>
     </template>
-
   </BasePageLayout>
 </template>
 
@@ -122,13 +116,13 @@
   import { PlusIcon } from '@/shared/ui/icon'
   import { PermissionGuard, usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS } from '@/features/permissions/config'
+  import draggable from 'vuedraggable'
   import {
     useDealsPageActions,
     DealsToolbar,
     DealsTableWidget,
     DealsKanbanView,
   } from '@/features/deals'
-  import { DndList } from '@/shared/ui/Dnd'
 
   const { can } = usePermissions()
   const actions = useDealsPageActions()

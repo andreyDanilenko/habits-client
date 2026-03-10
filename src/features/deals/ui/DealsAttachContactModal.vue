@@ -92,9 +92,7 @@
 
   const contactLabel = computed(() => {
     if (!props.contact) return ''
-    const full = [props.contact.firstName, props.contact.lastName]
-      .filter(Boolean)
-      .join(' ')
+    const full = [props.contact.firstName, props.contact.lastName].filter(Boolean).join(' ')
     return full || props.contact.id
   })
 
@@ -119,9 +117,13 @@
     if (!props.workspaceId || !props.contact) return
     attachLoadingId.value = deal.id
     try {
-      await crud.updateDeal(deal.id, { contactId: props.contact.id }, {
-        skipRefetch: true,
-      })
+      await crud.updateDeal(
+        deal.id,
+        { contactId: props.contact.id },
+        {
+          skipRefetch: true,
+        },
+      )
       emit('confirm')
       emit('attached')
       emit('close')

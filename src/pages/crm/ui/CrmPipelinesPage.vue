@@ -5,9 +5,7 @@
     :error-message="listError || saveError || deleteError"
   >
     <template #header-actions>
-      <Button v-if="canManage" @click="startCreate">
-        Создать воронку
-      </Button>
+      <Button v-if="canManage" @click="startCreate"> Создать воронку </Button>
     </template>
 
     <template #sidebar>
@@ -63,48 +61,48 @@
 </template>
 
 <script setup lang="ts">
-import { BasePageLayout } from '@/shared/ui/common'
-import { Button, Modal, ConfirmModal } from '@/shared/ui'
-import { usePipelines } from '@/features/pipelines/lib/use-pipelines'
-import PipelinesList from '@/features/pipelines/ui/PipelineList.vue'
-import PipelineEditor from '@/features/pipelines/ui/PipelineEditor.vue'
+  import { BasePageLayout } from '@/shared/ui/common'
+  import { Button, Modal, ConfirmModal } from '@/shared/ui'
+  import { usePipelines } from '@/features/pipelines/lib/use-pipelines'
+  import PipelinesList from '@/features/pipelines/ui/PipelineList.vue'
+  import PipelineEditor from '@/features/pipelines/ui/PipelineEditor.vue'
 
-const {
-  // Состояние
-  pipelines,
-  isLoading,
-  listError,
-  selectedId,
-  pagination,
-  PAGE_SIZE,
-  
-  form,
-  stages,
-  validationMessage,
-  
-  isSaving,
-  isDeleting,
-  saveError,
-  deleteError,
-  pipelineToDelete,
-  
-  canManage,
-  currentPipeline,
-  isCreating,
-  
-  // Методы
-  addStage,
-  removeStage,
-  toggleFinal,
-  toggleLost,
-  setStages,
-  
-  selectPipeline,
-  startCreate,
-  handleSave,
-  handleDelete,
-  confirmDelete,
-  cancelDelete,
-  resetForm,
-} = usePipelines()
+  const {
+    // Состояние
+    pipelines,
+    isLoading,
+    listError,
+    selectedId,
+    pagination,
+    PAGE_SIZE,
+
+    form,
+    stages,
+    validationMessage,
+
+    isSaving,
+    isDeleting,
+    saveError,
+    deleteError,
+    pipelineToDelete,
+
+    canManage,
+    currentPipeline,
+    isCreating,
+
+    // Методы
+    addStage,
+    removeStage,
+    toggleFinal,
+    toggleLost,
+    setStages,
+
+    selectPipeline,
+    startCreate,
+    handleSave,
+    handleDelete,
+    confirmDelete,
+    cancelDelete,
+    resetForm,
+  } = usePipelines()
 </script>

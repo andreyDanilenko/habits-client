@@ -46,7 +46,9 @@
               <Button size="md" variant="ghost" @click="confirmDeleteContact">Удалить</Button>
             </PermissionGuard>
             <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
-              <Button size="md" variant="primary" @click="openAttachToDeal">Добавить в сделку</Button>
+              <Button size="md" variant="primary" @click="openAttachToDeal"
+                >Добавить в сделку</Button
+              >
             </PermissionGuard>
           </div>
         </div>
@@ -73,7 +75,7 @@
         :is-open="showFormModal"
         :contact="contact ?? null"
         @close="
-          showFormModal = false;
+          showFormModal = false
           fetchContact()
         "
         @save="handleSave"
@@ -116,7 +118,10 @@
   } from '@/features/contacts'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
-  import { usePermissions as useWorkspacePermissions, WorkspacePermission } from '@/entities/workspace'
+  import {
+    usePermissions as useWorkspacePermissions,
+    WorkspacePermission,
+  } from '@/entities/workspace'
   import { usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { DealsAttachContactModal } from '@/features/deals'
@@ -160,12 +165,16 @@
     }),
   )
 
-  watch(tabs, (next) => {
-    const ids = next.map((t) => t.id)
-    if (!ids.includes(activeTab.value)) {
-      activeTab.value = ids[0] ?? 'main'
-    }
-  }, { immediate: true })
+  watch(
+    tabs,
+    (next) => {
+      const ids = next.map((t) => t.id)
+      if (!ids.includes(activeTab.value)) {
+        activeTab.value = ids[0] ?? 'main'
+      }
+    },
+    { immediate: true },
+  )
 
   const tabComponents = {
     main: ContactMainInfo,
@@ -197,7 +206,9 @@
       workspaceId: workspaceId.value,
       entityType: 'crm_contact',
       entityId: contactId.value,
-      entityName: contact.value ? `${contact.value.firstName} ${contact.value.lastName}`.trim() : undefined,
+      entityName: contact.value
+        ? `${contact.value.firstName} ${contact.value.lastName}`.trim()
+        : undefined,
       canEdit: can(PROJECT_PERMISSIONS.entityAttach),
       projectsBasePath: '/projects',
     },

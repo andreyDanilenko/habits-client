@@ -7,9 +7,7 @@ export function contactDisplayName(contact: Contact): string {
 }
 
 export function phoneTypeLabel(type: string): string {
-  return (
-    { mobile: 'Мобильный', work: 'Рабочий', home: 'Домашний' }[type] ?? type
-  )
+  return { mobile: 'Мобильный', work: 'Рабочий', home: 'Домашний' }[type] ?? type
 }
 
 export function formatContactDate(iso: string | undefined): string {

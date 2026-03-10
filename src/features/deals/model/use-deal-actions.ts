@@ -33,14 +33,8 @@ export function useDealActions({
   const userStore = useUserStore()
   const { openModal } = useModal()
 
-  const { createCompany } = useCompaniesCrud(
-    workspaceId,
-    () => Promise.resolve(),
-  )
-  const { createContact } = useContactsCrud(
-    workspaceId,
-    () => Promise.resolve(),
-  )
+  const { createCompany } = useCompaniesCrud(workspaceId, () => Promise.resolve())
+  const { createContact } = useContactsCrud(workspaceId, () => Promise.resolve())
 
   const openCompanyForm = useOpenCompanyForm()
   const openContactFormForCreate = useOpenContactForm({
@@ -60,9 +54,7 @@ export function useDealActions({
     isOpen: true,
     deal,
     pipelines: pipelines(),
-    pipelineId: deal
-      ? deal.pipelineId
-      : pipelines().find((p) => p.isDefault)?.id,
+    pipelineId: deal ? deal.pipelineId : pipelines().find((p) => p.isDefault)?.id,
     defaultStageId: deal
       ? pipelines().find((p) => p.id === deal.pipelineId)?.stages?.[0]?.id
       : pipelines().find((p) => p.isDefault)?.stages?.[0]?.id,

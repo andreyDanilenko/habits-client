@@ -21,7 +21,7 @@
       <h2 class="text-text-primary mb-4">Основная информация</h2>
 
       <div class="space-y-4">
-          <Input
+        <Input
           v-model="workspaceData.name"
           label="Название"
           type="text"
@@ -139,6 +139,12 @@
   import { useWorkspaceSettingsPage } from '@/features/workspace/model'
   import { Card, Button, Input, Textarea } from '@/shared/ui'
 
-  const { isSaving, workspaceData, isOwner, canEditWorkspace, saveWorkspace, handleDeleteWorkspace } =
-    useWorkspaceSettingsPage()
+  const {
+    isSaving,
+    workspaceData,
+    isOwner,
+    canEditWorkspace,
+    saveWorkspace,
+    handleDeleteWorkspace,
+  } = useWorkspaceSettingsPage()
 </script>

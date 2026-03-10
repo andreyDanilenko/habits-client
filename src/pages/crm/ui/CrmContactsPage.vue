@@ -67,7 +67,6 @@
         />
       </div>
     </template>
-
   </BasePageLayout>
 </template>
 
@@ -77,11 +76,7 @@
   import { PlusIcon } from '@/shared/ui/icon'
   import { PermissionGuard } from '@/features/permissions'
   import { CRM_PERMISSIONS } from '@/features/permissions/config'
-  import {
-    useContactsPageActions,
-    ContactsToolbar,
-    ContactsTableWidget,
-  } from '@/features/contacts'
+  import { useContactsPageActions, ContactsToolbar, ContactsTableWidget } from '@/features/contacts'
 
   const actions = useContactsPageActions()
 </script>

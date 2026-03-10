@@ -54,10 +54,7 @@ export interface UseDealFormCallbacks {
   onPreselectedApplied: () => void
 }
 
-export function useDealForm(
-  props: UseDealFormProps,
-  callbacks: UseDealFormCallbacks,
-) {
+export function useDealForm(props: UseDealFormProps, callbacks: UseDealFormCallbacks) {
   const form = ref<DealFormState>(emptyForm())
   const saving = ref(false)
   const contactQuery = ref('')
@@ -68,8 +65,7 @@ export function useDealForm(
   const stages = computed(() => {
     const explicitPipelineId = form.value.pipelineId || props.pipelineId
     const pipeline =
-      (explicitPipelineId &&
-        props.pipelines.find((p) => p.id === explicitPipelineId)) ||
+      (explicitPipelineId && props.pipelines.find((p) => p.id === explicitPipelineId)) ||
       props.pipelines.find((p) => p.isDefault) ||
       props.pipelines[0]
     return pipeline?.stages ?? []
@@ -79,9 +75,7 @@ export function useDealForm(
     props.pipelines.map((p) => ({ value: p.id, label: p.name })),
   )
 
-  const stageOptions = computed(() =>
-    stages.value.map((s) => ({ value: s.id, label: s.name })),
-  )
+  const stageOptions = computed(() => stages.value.map((s) => ({ value: s.id, label: s.name })))
 
   const ownerOptions = computed(() => [
     { value: props.defaultOwnerId || '1', label: 'Текущий пользователь' },
@@ -104,10 +98,7 @@ export function useDealForm(
     contactOptions.value = []
     if (c.companyId && props.workspaceId) {
       try {
-        const company = await companyService.getById(
-          props.workspaceId,
-          c.companyId,
-        )
+        const company = await companyService.getById(props.workspaceId, c.companyId)
         form.value.companyNameDisplay = company.name
       } catch {
         form.value.companyNameDisplay = ''
@@ -122,10 +113,7 @@ export function useDealForm(
     const fallbackPipeline =
       (deal?.pipelineId ?? pipelineId) &&
       pipelines.find((p) => p.id === (deal?.pipelineId ?? pipelineId))
-    const defaultPipeline =
-      fallbackPipeline ||
-      pipelines.find((p) => p.isDefault) ||
-      pipelines[0]
+    const defaultPipeline = fallbackPipeline || pipelines.find((p) => p.isDefault) || pipelines[0]
     const initialPipelineId = defaultPipeline?.id ?? ''
     const firstStageId = defaultPipeline?.stages?.[0]?.id ?? ''
 
@@ -151,17 +139,11 @@ export function useDealForm(
       callbacks.onPreselectedApplied()
     } else if (deal?.contactId && props.workspaceId) {
       try {
-        const contact = await contactService.getById(
-          props.workspaceId,
-          deal.contactId,
-        )
+        const contact = await contactService.getById(props.workspaceId, deal.contactId)
         selectedContactDisplay.value = contactDisplayName(contact)
         if (contact.companyId) {
           form.value.companyId = contact.companyId
-          const company = await companyService.getById(
-            props.workspaceId,
-            contact.companyId,
-          )
+          const company = await companyService.getById(props.workspaceId, contact.companyId)
           form.value.companyNameDisplay = company.name
         }
       } catch {
@@ -169,10 +151,7 @@ export function useDealForm(
       }
     } else if (deal?.companyId && props.workspaceId) {
       try {
-        const company = await companyService.getById(
-          props.workspaceId,
-          deal.companyId,
-        )
+        const company = await companyService.getById(props.workspaceId, deal.companyId)
         form.value.companyNameDisplay = company.name
       } catch {
         // ignore
@@ -206,9 +185,7 @@ export function useDealForm(
     const pipeline = props.pipelines.find((p) => p.id === pipelineId)
     const firstStageId = pipeline?.stages?.[0]?.id
     if (!firstStageId) return
-    const stageInPipeline = pipeline.stages.some(
-      (s) => s.id === form.value.stageId,
-    )
+    const stageInPipeline = pipeline.stages.some((s) => s.id === form.value.stageId)
     if (!stageInPipeline) {
       form.value.stageId = firstStageId
     }
@@ -218,9 +195,7 @@ export function useDealForm(
     const pipelineId =
       form.value.pipelineId ||
       props.pipelineId ||
-      props.pipelines.find((p) =>
-        p.stages?.some((s) => s.id === form.value.stageId),
-      )?.id ||
+      props.pipelines.find((p) => p.stages?.some((s) => s.id === form.value.stageId))?.id ||
       props.pipelines[0]?.id ||
       ''
     return {

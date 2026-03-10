@@ -38,13 +38,20 @@
           @change="() => (localPeriod = p.value)"
         />
       </div>
-      <div v-if="localPeriod === 'custom'" class="mt-(--spacing-2) grid grid-cols-2 gap-(--spacing-2)">
+      <div
+        v-if="localPeriod === 'custom'"
+        class="mt-(--spacing-2) grid grid-cols-2 gap-(--spacing-2)"
+      >
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">С</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >С</span
+          >
           <DatePicker v-model="localDateFrom" size="md" placeholder="ДД.ММ.ГГГГ" />
         </div>
         <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">По</span>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >По</span
+          >
           <DatePicker v-model="localDateTo" size="md" placeholder="ДД.ММ.ГГГГ" />
         </div>
       </div>

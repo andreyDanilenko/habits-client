@@ -18,12 +18,7 @@
           class="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-bg-tertiary"
           @click="selectedId = c.id"
         >
-          <input
-            type="radio"
-            class="shrink-0"
-            :value="c.id"
-            v-model="selectedId"
-          />
+          <input type="radio" class="shrink-0" :value="c.id" v-model="selectedId" />
           <div class="min-w-0">
             <p class="text-sm text-text-primary truncate">
               {{ contactDisplayName(c) }}

@@ -9,7 +9,11 @@
         {{ module.name }}
       </div>
       <div class="space-y-(--spacing-2)">
-        <div v-for="entity in Object.values(module.entities)" :key="entity.code" class="pl-(--spacing-3)">
+        <div
+          v-for="entity in Object.values(module.entities)"
+          :key="entity.code"
+          class="pl-(--spacing-3)"
+        >
           <div class="font-medium text-(--text-sm) mb-(--spacing-1) text-text-secondary">
             {{ entity.name }}
           </div>
@@ -42,7 +46,6 @@
     isSystem?: boolean
   }>()
 
-
   const emit = defineEmits<{
     (e: 'update:modelValue', value: PermissionString[]): void
   }>()
@@ -53,7 +56,8 @@
 
   const modelValueSet = computed(() => new Set(props.modelValue ?? []))
 
-  const isChecked = (permissionString: string) => modelValueSet.value.has(permissionString as PermissionString)
+  const isChecked = (permissionString: string) =>
+    modelValueSet.value.has(permissionString as PermissionString)
 
   const onToggle = (value: string, checked: boolean) => {
     const next = new Set(modelValueSet.value)

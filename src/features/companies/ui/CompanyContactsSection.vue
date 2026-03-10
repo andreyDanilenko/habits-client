@@ -6,14 +6,10 @@
   >
     <template #actions>
       <PermissionGuard :permission="CRM_PERMISSIONS.companyUpdate">
-        <Button size="md" variant="ghost" @click="onAttachContact">
-          Привязать контакт
-        </Button>
+        <Button size="md" variant="ghost" @click="onAttachContact"> Привязать контакт </Button>
       </PermissionGuard>
       <PermissionGuard :permission="CRM_PERMISSIONS.contactCreate">
-        <Button size="md" variant="outline" @click="onCreateContact">
-          Создать контакт
-        </Button>
+        <Button size="md" variant="outline" @click="onCreateContact"> Создать контакт </Button>
       </PermissionGuard>
     </template>
   </ContactsTableSection>

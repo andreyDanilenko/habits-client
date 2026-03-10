@@ -5,7 +5,11 @@ import type { KanbanColumnModel } from '@/shared/ui'
 export function useDealsKanban(
   deals: Ref<Deal[]>,
   currentPipeline: ComputedRef<Pipeline | undefined>,
-  updateDeal: (id: string, data: { stageId: string }, opts?: { skipRefetch?: boolean }) => Promise<unknown>,
+  updateDeal: (
+    id: string,
+    data: { stageId: string },
+    opts?: { skipRefetch?: boolean },
+  ) => Promise<unknown>,
   mergeDealInList: (id: string, patch: Partial<Deal>) => void,
 ) {
   const kanbanColumns = ref<KanbanColumnModel<Deal>[]>([])
@@ -73,11 +77,7 @@ export function useDealsKanban(
     kanbanColumns.value = buildKanbanColumns()
   }
 
-  watch(
-    [deals, currentPipeline],
-    () => syncKanbanColumnsInPlace(),
-    { immediate: true },
-  )
+  watch([deals, currentPipeline], () => syncKanbanColumnsInPlace(), { immediate: true })
 
   function setKanbanColumnsFromBoard(_v: KanbanColumnModel<Deal>[]) {
     // no-op: колонки только из syncKanbanColumnsInPlace и handleDealMove

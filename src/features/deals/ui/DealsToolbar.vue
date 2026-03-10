@@ -2,7 +2,9 @@
   <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center flex-wrap">
     <div class="flex gap-2 flex-shrink-0 flex-wrap items-center">
       <div v-if="pipelines.length > 1" class="min-w-[160px]">
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Воронка</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Воронка</span
+        >
         <Select
           :model-value="selectedPipelineId"
           :options="pipelineSelectOptions"
@@ -17,7 +19,9 @@
       />
 
       <div v-if="viewMode === 'table'" class="min-w-[140px]">
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">Статус</span>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Статус</span
+        >
         <Select
           :model-value="status"
           :options="statusOptions"
@@ -26,7 +30,10 @@
       </div>
 
       <div class="flex flex-wrap items-end gap-2">
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1) shrink-0">Период</span>
+        <span
+          class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1) shrink-0"
+          >Период</span
+        >
         <DatePicker
           :model-value="dateFrom"
           placeholder="ДД.ММ.ГГГГ"

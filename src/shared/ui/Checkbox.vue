@@ -37,7 +37,11 @@
 
         <p
           v-if="hint"
-          :class="['mt-(--spacing-1)', hintSizeClasses, error ? 'text-error-default' : 'text-text-muted']"
+          :class="[
+            'mt-(--spacing-1)',
+            hintSizeClasses,
+            error ? 'text-error-default' : 'text-text-muted',
+          ]"
         >
           {{ hint }}
         </p>

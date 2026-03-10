@@ -6,11 +6,7 @@
       :kpp="company.kpp"
       :ogrn="company.ogrn"
     />
-    <CompanyContactInfo
-      :phone="company.phone"
-      :email="company.email"
-      :website="company.website"
-    />
+    <CompanyContactInfo :phone="company.phone" :email="company.email" :website="company.website" />
     <CompanyAddresses
       :legal-address="company.legalAddress"
       :actual-address="company.actualAddress"

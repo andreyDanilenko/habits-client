@@ -183,17 +183,18 @@
   }
 
   const onRoleChange = async (member: Member, ev: Event) => {
-    const value = (ev.target && 'value' in ev.target ? (ev.target as HTMLSelectElement).value : '') as string
+    const value = (
+      ev.target && 'value' in ev.target ? (ev.target as HTMLSelectElement).value : ''
+    ) as string
     const workspaceId = workspaceStore.currentWorkspace?.id
     if (!workspaceId || !value) return
     if (value === getRoleSelectValue(member)) return
 
     roleChangingMemberId.value = member.id
     try {
-      const payload =
-        SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
-          ? { role: value as (typeof SYSTEM_ROLES)[number] }
-          : { roleId: value }
+      const payload = SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
+        ? { role: value as (typeof SYSTEM_ROLES)[number] }
+        : { roleId: value }
       await workspaceService.updateMemberRole(workspaceId, member.id, payload)
       member.systemRole = SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
         ? (value as Member['systemRole'])

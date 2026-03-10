@@ -27,9 +27,7 @@ export function useDealDetail() {
     const explicitId = selectedPipelineId.value || deal.value?.pipelineId
     const pipeline: Pipeline | undefined =
       (explicitId && pipelines.value.find((p) => p.id === explicitId)) ||
-      pipelines.value.find((p) =>
-        p.stages?.some((s) => s.id === deal.value?.stageId),
-      ) ||
+      pipelines.value.find((p) => p.stages?.some((s) => s.id === deal.value?.stageId)) ||
       pipelines.value[0]
     return pipeline?.stages ?? []
   })
@@ -46,9 +44,7 @@ export function useDealDetail() {
       pipelines.value = await dealService.getPipelines(workspaceId.value)
       const initialPipelineId =
         deal.value?.pipelineId ||
-        pipelines.value.find((p) =>
-          p.stages?.some((s) => s.id === deal.value?.stageId),
-        )?.id ||
+        pipelines.value.find((p) => p.stages?.some((s) => s.id === deal.value?.stageId))?.id ||
         pipelines.value[0]?.id ||
         ''
       selectedPipelineId.value = initialPipelineId
@@ -57,25 +53,16 @@ export function useDealDetail() {
       companyName.value = ''
       if (deal.value?.contactId) {
         try {
-          const contact = await contactService.getById(
-            workspaceId.value,
-            deal.value.contactId,
-          )
-          const fullName = [contact.firstName, contact.lastName]
-            .filter(Boolean)
-            .join(' ')
-          contactName.value =
-            fullName || contact.emails?.[0]?.address || 'Контакт'
+          const contact = await contactService.getById(workspaceId.value, deal.value.contactId)
+          const fullName = [contact.firstName, contact.lastName].filter(Boolean).join(' ')
+          contactName.value = fullName || contact.emails?.[0]?.address || 'Контакт'
         } catch {
           contactName.value = 'Контакт'
         }
       }
       if (deal.value?.companyId) {
         try {
-          const company = await companyService.getById(
-            workspaceId.value,
-            deal.value.companyId,
-          )
+          const company = await companyService.getById(workspaceId.value, deal.value.companyId)
           companyName.value = company.name || 'Компания'
         } catch {
           companyName.value = 'Компания'

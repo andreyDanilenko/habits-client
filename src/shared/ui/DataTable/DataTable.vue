@@ -32,7 +32,11 @@
       >
         <colgroup>
           <col v-if="selectable" style="width: 1%; min-width: 50px" />
-          <col v-for="col in columns" :key="col.id" :style="{ minWidth: props.cellMinWidth, width: 'auto' }" />
+          <col
+            v-for="col in columns"
+            :key="col.id"
+            :style="{ minWidth: props.cellMinWidth, width: 'auto' }"
+          />
           <col v-if="rowActions" style="min-width: 100px; width: auto" />
         </colgroup>
         <thead>
@@ -146,7 +150,8 @@
               class="py-2 px-2 border-b border-border-light text-sm text-text-primary align-middle bg-bg-primary whitespace-nowrap group-hover:bg-bg-tertiary overflow-hidden"
               :class="[
                 selectedIdsSet.has(getRowId(row)) && 'bg-primary-default/10',
-                props.stickyActions && 'sticky right-0 z-30 bg-bg-primary group-hover:bg-bg-tertiary',
+                props.stickyActions &&
+                  'sticky right-0 z-30 bg-bg-primary group-hover:bg-bg-tertiary',
                 props.stickyActions && 'shadow-[-2px_0_0_0_rgba(0,0,0,0.04)]',
               ]"
               @click.stop

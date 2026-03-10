@@ -42,7 +42,6 @@
         />
       </div>
     </template>
-
   </BasePageLayout>
 </template>
 

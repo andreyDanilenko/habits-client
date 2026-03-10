@@ -16,7 +16,7 @@
     </div>
     <div class="flex items-center gap-2">
       <Button size="md" variant="secondary" @click="$emit('edit', role)">
-         {{ role.isSystem ? 'Просмотр' : 'Редактировать' }}
+        {{ role.isSystem ? 'Просмотр' : 'Редактировать' }}
       </Button>
       <Button v-if="!role.isSystem" size="md" variant="danger" @click="$emit('delete', role)">
         Удалить
