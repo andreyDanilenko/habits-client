@@ -1,12 +1,10 @@
 import { ref, watch, type Ref, type ComputedRef } from 'vue'
-import { dealService } from '@/entities/deal'
 import type { Deal, Pipeline } from '@/entities/deal'
 import type { KanbanColumnModel } from '@/shared/ui'
 
 export function useDealsKanban(
   deals: Ref<Deal[]>,
   currentPipeline: ComputedRef<Pipeline | undefined>,
-  workspaceId: Ref<string>,
   updateDeal: (id: string, data: { stageId: string }, opts?: { skipRefetch?: boolean }) => Promise<unknown>,
   mergeDealInList: (id: string, patch: Partial<Deal>) => void,
 ) {
@@ -92,12 +90,14 @@ export function useDealsKanban(
     savingDealIds.value = new Set(savingDealIds.value).add(deal.id)
     const prevStageId = deal.stageId
 
+    // оптимистично переносим сделку в новый этап
     mergeDealInList(deal.id, { stageId: toId })
     kanbanColumns.value = buildKanbanColumns()
     try {
+      // одного PUT достаточно — сервер уже хранит актуальное состояние
       await updateDeal(deal.id, { stageId: toId }, { skipRefetch: true })
-      const updated = await dealService.getById(workspaceId.value, deal.id)
-      mergeDealInList(deal.id, { updatedAt: updated.updatedAt })
+      // при желании можно локально тронуть updatedAt, но это не обязательно
+      // mergeDealInList(deal.id, { updatedAt: new Date().toISOString() })
     } catch {
       mergeDealInList(deal.id, { stageId: prevStageId })
       kanbanColumns.value = buildKanbanColumns()

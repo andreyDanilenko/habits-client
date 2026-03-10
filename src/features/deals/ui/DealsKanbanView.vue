@@ -107,7 +107,6 @@
       canRemoveFromProject?: boolean
       canEdit?: boolean
       canDelete?: boolean
-      canMove?: boolean
     }>(),
     { showRemoveFromProject: false, canRemoveFromProject: true },
   )
@@ -115,7 +114,9 @@
   const { can } = usePermissions()
   const canEdit = computed(() => props.canEdit ?? can(CRM_PERMISSIONS.dealUpdate))
   const canDelete = computed(() => props.canDelete ?? can(CRM_PERMISSIONS.dealDelete))
-  const canMove = computed(() => props.canMove ?? can(CRM_PERMISSIONS.dealMove))
+  const canMove = computed(() => {
+    return can(CRM_PERMISSIONS.dealMove) || can(CRM_PERMISSIONS.dealUpdate)
+  })
 
   const savingDealIdsSet = computed(() => props.savingDealIds ?? new Set())
 
@@ -169,10 +170,14 @@
   }
 
   function onMove(payload: { item: unknown; toColumnId?: string }) {
+    console.log(payload);
+    
     emit('move', payload)
   }
 
   function onCardContextMenu(evt: MouseEvent, deal: Deal) {
+    console.log(evt, deal);
+    
     contextMenu.x = evt.clientX
     contextMenu.y = evt.clientY
     contextMenu.deal = deal

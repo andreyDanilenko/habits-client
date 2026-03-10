@@ -12,13 +12,7 @@ export function useDealsPage() {
     list.fetchDeals,
     list.clearSelection,
   )
-  const kanban = useDealsKanban(
-    list.deals,
-    list.currentPipeline,
-    list.workspaceId,
-    crud.updateDeal,
-    list.mergeDealInList,
-  )
+  const kanban = useDealsKanban(list.deals, list.currentPipeline, crud.updateDeal, list.mergeDealInList)
 
   return {
     // List
