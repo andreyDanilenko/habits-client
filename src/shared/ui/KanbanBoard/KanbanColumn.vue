@@ -16,6 +16,7 @@
       <draggable
         v-model="column.items"
         item-key="id"
+        animation="200"
         :group="{ name: dndGroup || 'deals' }"
         tag="div"
         class="space-y-2 min-h-full flex-1"

@@ -65,8 +65,6 @@
           @edit="actions.openEditModal"
           @delete="actions.confirmDelete"
         />
-
-       
       </div>
     </template>
   </BasePageLayout>

@@ -80,29 +80,28 @@
           v-model="form.stages"
           item-key="id"
           tag="div"
+          animation="200"
           class="space-y-(--spacing-2)"
           :disabled="!canManage || isSaving"
-          :animation="0"
           @change="$emit('update-stages', form.stages)"
         >
           <template #item="{ element, index }">
             <div>
-              <slot name="stage-editor" :stage="normalizeStage(element)" :index="index">
-                <PipelineStageEditor
-                  :stage="normalizeStage(element)"
-                  :index="index"
-                  :disabled="!canManage || isSaving"
-                  :show-remove="canManage"
-                  :remove-disabled="isSaving || form.stages.length <= 1"
-                  @remove="$emit('remove-stage', index)"
-                  @update:is-final="$emit('toggle-final', index, $event)"
-                  @update:is-lost="$emit('toggle-lost', index, $event)"
-                />
-              </slot>
+              <!-- <slot name="stage-editor" :stage="normalizeStage(element)" :index="index"> -->
+              <PipelineStageEditor
+                :stage="normalizeStage(element)"
+                :index="index"
+                :disabled="!canManage || isSaving"
+                :show-remove="canManage"
+                :remove-disabled="isSaving || form.stages.length <= 1"
+                @remove="$emit('remove-stage', index)"
+                @update:is-final="$emit('toggle-final', index, $event)"
+                @update:is-lost="$emit('toggle-lost', index, $event)"
+              />
+              <!-- </slot> -->
             </div>
           </template>
         </draggable>
-
 
         <p v-if="validationMessage" class="text-xs text-error-default">
           {{ validationMessage }}
