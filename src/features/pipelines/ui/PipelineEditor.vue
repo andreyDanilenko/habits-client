@@ -76,30 +76,33 @@
           {{ stagesHint }}
         </p>
 
-        <DndList
+        <draggable
           v-model="form.stages"
           item-key="id"
           tag="div"
           class="space-y-(--spacing-2)"
           :disabled="!canManage || isSaving"
           :animation="0"
-          @update:modelValue="$emit('update-stages', $event)"
+          @change="$emit('update-stages', form.stages)"
         >
           <template #item="{ element, index }">
-            <slot name="stage-editor" :stage="normalizeStage(element)" :index="index">
-              <PipelineStageEditor
-                :stage="normalizeStage(element)"
-                :index="index"
-                :disabled="!canManage || isSaving"
-                :show-remove="canManage"
-                :remove-disabled="isSaving || form.stages.length <= 1"
-                @remove="$emit('remove-stage', index)"
-                @update:is-final="$emit('toggle-final', index, $event)"
-                @update:is-lost="$emit('toggle-lost', index, $event)"
-              />
-            </slot>
+            <div>
+              <slot name="stage-editor" :stage="normalizeStage(element)" :index="index">
+                <PipelineStageEditor
+                  :stage="normalizeStage(element)"
+                  :index="index"
+                  :disabled="!canManage || isSaving"
+                  :show-remove="canManage"
+                  :remove-disabled="isSaving || form.stages.length <= 1"
+                  @remove="$emit('remove-stage', index)"
+                  @update:is-final="$emit('toggle-final', index, $event)"
+                  @update:is-lost="$emit('toggle-lost', index, $event)"
+                />
+              </slot>
+            </div>
           </template>
-        </DndList>
+        </draggable>
+
 
         <p v-if="validationMessage" class="text-xs text-error-default">
           {{ validationMessage }}
@@ -120,8 +123,8 @@
 
 <script setup lang="ts">
   import type { Pipeline } from '@/entities/deal'
+  import draggable from 'vuedraggable'
   import { Card, Button, Input, Checkbox, PipelineStageEditor } from '@/shared/ui'
-  import { DndList } from '@/shared/ui/Dnd'
 
   const props = defineProps<{
     form: any
