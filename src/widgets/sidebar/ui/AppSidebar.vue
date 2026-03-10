@@ -294,7 +294,7 @@
 
     if (isMobile.value) {
       return [
-        'fixed top-0 left-0 h-screen transition-transform duration-300 ease-in-out',
+        'fixed top-0 left-0 h-dvh h-screen transition-transform duration-300 ease-in-out',
         isOpen.value ? 'translate-x-0' : '-translate-x-full',
         'w-(--layout-sidebar-width)',
       ].join(' ')
@@ -340,11 +340,11 @@
   }
 
   .sidebar-nav {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom), 34px);
   }
 
   .sidebar-footer {
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: max(1rem, env(safe-area-inset-bottom), 34px);
   }
 
   @media (min-width: 1024px) {
