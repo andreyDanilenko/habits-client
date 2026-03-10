@@ -344,7 +344,13 @@
   }
 
   .sidebar-footer {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom), 34px);
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom), 50px);
+  }
+
+  @media (max-width: 1023px) {
+    aside {
+      padding-bottom: max(env(safe-area-inset-bottom), 50px);
+    }
   }
 
   @media (min-width: 1024px) {
