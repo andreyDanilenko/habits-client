@@ -23,19 +23,16 @@ export const useAuthStore = defineStore('auth', () => {
   const login = async (credentials: LoginDto) => {
     isLoading.value = true
     try {
-      // Сервер устанавливает токены в HttpOnly куки, поэтому нам не нужно
-      // сохранять их в store. Вместо этого проверяем успешность логина
-      // через fetchCurrentUser
       await authService.login(credentials)
 
-      // После успешного логина получаем информацию о пользователе
-      // чтобы установить состояние аутентификации
       const userStore = useUserStore()
       await userStore.fetchCurrentUser()
 
-      // Устанавливаем флаги для совместимости (токены в куках)
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
+
+      // Очищаем workspace store, чтобы при следующей навигации загрузились актуальные данные
+      useWorkspaceStore().clearWorkspaces()
 
       return { success: true }
     } catch (error) {
@@ -50,19 +47,16 @@ export const useAuthStore = defineStore('auth', () => {
   const register = async (data: RegisterDto) => {
     isLoading.value = true
     try {
-      // Сервер устанавливает токены в HttpOnly куки, поэтому нам не нужно
-      // сохранять их в store. Вместо этого проверяем успешность регистрации
-      // через fetchCurrentUser
       await authService.register(data)
 
-      // После успешной регистрации получаем информацию о пользователе
-      // чтобы установить состояние аутентификации
       const userStore = useUserStore()
       await userStore.fetchCurrentUser()
 
-      // Устанавливаем флаги для совместимости (токены в куках)
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
+
+      // Очищаем workspace store, чтобы при следующей навигации загрузились актуальные данные
+      useWorkspaceStore().clearWorkspaces()
 
       return { success: true }
     } catch (error) {

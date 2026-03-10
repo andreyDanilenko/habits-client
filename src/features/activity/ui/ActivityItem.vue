@@ -45,7 +45,7 @@
                 {{ activity.isImportant ? 'Снять важность' : 'Пометить важным' }}
               </button>
               <button
-                v-if="activity.isEditable"
+                v-if="activity.isEditable && props.canEdit"
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
                 @click="
@@ -56,7 +56,7 @@
                 Редактировать
               </button>
               <button
-                v-if="activity.isDeletable"
+                v-if="activity.isDeletable && props.canDelete"
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
                 @click="
@@ -160,8 +160,10 @@
     defineProps<{
       activity: ActivityType
       showActions?: boolean
+      canEdit?: boolean
+      canDelete?: boolean
     }>(),
-    { showActions: true },
+    { showActions: true, canEdit: true, canDelete: true },
   )
 
   defineEmits<{

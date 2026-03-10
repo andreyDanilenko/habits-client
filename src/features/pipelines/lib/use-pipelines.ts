@@ -16,9 +16,7 @@ export function usePipelines() {
   const del = usePipelineDelete()
 
   // Computed
-  const canManage = computed(
-    () => isOwner.value && hasPermission(WorkspacePermission.PERMISSIONS_EDIT)
-  )
+  const canManage = computed(() => hasPermission(WorkspacePermission.CRM_PIPELINE_MANAGE))
 
   const currentPipeline = computed(() => {
     if (!list.selectedId.value) return null

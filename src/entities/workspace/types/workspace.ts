@@ -30,10 +30,13 @@ export interface WorkspaceModule {
   updatedAt: string
 }
 
+/** Системная или кастомная роль участника */
+export type MemberSystemRole = 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST' | (string & {})
+
 export interface Member {
   id: string
   email: string
   name: string
-  systemRole: 'OWNER' | 'ADMIN' | 'MEMBER' | 'GUEST'
+  systemRole: MemberSystemRole
   joinedAt: string
 }

@@ -14,6 +14,7 @@ export interface Habit {
   isActive: boolean
   userId: string
   workspaceId: string
+  ownerName?: string
   createdAt: string
   updatedAt: string
 }

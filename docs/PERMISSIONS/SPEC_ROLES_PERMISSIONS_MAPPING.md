@@ -188,3 +188,9 @@ getPermissions: async (workspaceId: string, roleId: string): Promise<PermissionS
 | Связь | `perm.moduleCode + ":" + perm.entityType + ":" + perm.action` | Сопоставление каталога и прав роли |
 
 **Правило:** Каталог задаёт «что можно выбрать», права роли — «что выбрано». Оба используют один и тот же строковый идентификатор `PermissionString`.
+
+---
+
+## 7. Связанные документы
+
+- [docs/MEMBERS/EXPLAIN_PERMISSIONS_HIERARCHY.md](../../../docs/MEMBERS/EXPLAIN_PERMISSIONS_HIERARCHY.md) — иерархия системной роли, кастомных ролей и индивидуальных прав

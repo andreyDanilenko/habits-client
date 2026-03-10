@@ -14,6 +14,8 @@ export const API_ENDPOINTS = {
     CURRENT: apiV1 + '/workspaces/current',
     MY_LICENSES: apiV1 + '/workspaces/me/module-licenses',
     MEMBERS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/members`,
+    MEMBER: (workspaceId: string, userId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/members/${userId}`,
     SWITCH: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/switch`,
     MODULES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/modules`,
     MODULE: (workspaceId: string, moduleCode: string) =>
@@ -93,10 +95,14 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/habits/${habitsId}/stats`,
     COMPLETIONS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/completions`,
     CALENDAR: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits/calendar`,
+    ACTIVITIES: (workspaceId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/habits/activities`,
   },
 
   PERMISSIONS: {
     CATALOG: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/permissions/catalog`,
+    SYSTEM_ROLES: (workspaceId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/permissions/system-roles`,
   },
 
   ROLES: {

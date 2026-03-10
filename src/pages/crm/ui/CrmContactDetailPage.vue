@@ -39,9 +39,15 @@
             </span>
           </div>
           <div class="flex flex-wrap gap-(--spacing-2) mt-(--spacing-3)">
-            <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
-            <Button size="md" variant="ghost" @click="confirmDeleteContact">Удалить</Button>
-            <Button size="md" variant="primary" @click="openAttachToDeal">Добавить в сделку</Button>
+            <PermissionGuard :permission="CRM_PERMISSIONS.contactUpdate">
+              <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
+            </PermissionGuard>
+            <PermissionGuard :permission="CRM_PERMISSIONS.contactDelete">
+              <Button size="md" variant="ghost" @click="confirmDeleteContact">Удалить</Button>
+            </PermissionGuard>
+            <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
+              <Button size="md" variant="primary" @click="openAttachToDeal">Добавить в сделку</Button>
+            </PermissionGuard>
           </div>
         </div>
       </div>
@@ -95,9 +101,10 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { Modal, ConfirmModal, Button, Spinner, DetailTabsPanel } from '@/shared/ui'
+  import { PermissionGuard } from '@/features/permissions'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import { BasePageLayout } from '@/shared/ui/common'
   import {
@@ -109,11 +116,14 @@
   } from '@/features/contacts'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
-  import { usePermissions, WorkspacePermission } from '@/entities/workspace'
+  import { usePermissions as useWorkspacePermissions, WorkspacePermission } from '@/entities/workspace'
+  import { usePermissions } from '@/features/permissions'
+  import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { DealsAttachContactModal } from '@/features/deals'
   import type { CreateContactDto } from '@/entities/contact'
 
   const router = useRouter()
+  const { can } = usePermissions()
 
   const {
     workspaceId,
@@ -135,13 +145,27 @@
   const contactActive = ref(true)
   const showAttachToDealModal = ref(false)
 
-  const tabs = [
+  const allTabs = [
     { id: 'main', label: 'Основная информация' },
     { id: 'deals', label: 'Сделки' },
     { id: 'activity', label: 'Активность' },
     { id: 'projects', label: 'Проекты' },
     { id: 'tasks', label: 'Задачи' },
   ]
+  const tabs = computed(() =>
+    allTabs.filter((t) => {
+      if (t.id === 'activity') return can(CRM_PERMISSIONS.activityRead)
+      if (t.id === 'projects') return can(PROJECT_PERMISSIONS.projectRead)
+      return true
+    }),
+  )
+
+  watch(tabs, (next) => {
+    const ids = next.map((t) => t.id)
+    if (!ids.includes(activeTab.value)) {
+      activeTab.value = ids[0] ?? 'main'
+    }
+  }, { immediate: true })
 
   const tabComponents = {
     main: ContactMainInfo,
@@ -150,6 +174,10 @@
     projects: ProjectEntityPanel,
     tasks: ContactTasksPlaceholder,
   }
+
+  const canActivityCreate = computed(() => can(CRM_PERMISSIONS.activityCreate))
+  const canActivityEdit = computed(() => can(CRM_PERMISSIONS.activityUpdate))
+  const canActivityDelete = computed(() => can(CRM_PERMISSIONS.activityDelete))
 
   const tabProps = computed(() => ({
     main: { contact: contact.value! },
@@ -161,14 +189,16 @@
     activity: {
       entityType: 'contact' as const,
       entityId: contactId.value,
-      canCreate: canCreateCrm.value,
+      canCreate: canActivityCreate.value,
+      canEdit: canActivityEdit.value,
+      canDelete: canActivityDelete.value,
     },
     projects: {
       workspaceId: workspaceId.value,
       entityType: 'crm_contact',
       entityId: contactId.value,
       entityName: contact.value ? `${contact.value.firstName} ${contact.value.lastName}`.trim() : undefined,
-      canEdit: canCreateCrm.value,
+      canEdit: can(PROJECT_PERMISSIONS.entityAttach),
       projectsBasePath: '/projects',
     },
     tasks: {
@@ -176,7 +206,7 @@
     },
   }))
 
-  const { hasPermission } = usePermissions()
+  const { hasPermission } = useWorkspacePermissions()
   const canCreateCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
   const initials = computed(() => {
     if (!contact.value) return '?'

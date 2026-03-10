@@ -3,7 +3,10 @@ import type { UserPermission, UserRole } from '@/entities/assignment'
 
 export const assignmentService = {
   getUserRoles: async (workspaceId: string, userId: string): Promise<UserRole[]> => {
-    return api.get<UserRole[]>(API_ENDPOINTS.ASSIGNMENTS.USER_ROLES(workspaceId, userId))
+    const response = await api.get<{ roles: UserRole[] }>(
+      API_ENDPOINTS.ASSIGNMENTS.USER_ROLES(workspaceId, userId),
+    )
+    return response?.roles ?? []
   },
 
   assignRole: async (workspaceId: string, userId: string, roleId: string): Promise<void> => {
@@ -15,9 +18,10 @@ export const assignmentService = {
   },
 
   getUserPermissions: async (workspaceId: string, userId: string): Promise<UserPermission[]> => {
-    return api.get<UserPermission[]>(
+    const response = await api.get<{ permissions: UserPermission[] }>(
       API_ENDPOINTS.ASSIGNMENTS.USER_PERMISSIONS(workspaceId, userId),
     )
+    return response?.permissions ?? []
   },
 
   grantPermission: async (

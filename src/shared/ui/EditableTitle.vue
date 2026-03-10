@@ -11,9 +11,11 @@
     />
     <span
       v-else
-      class="cursor-pointer hover:underline text-text-primary"
-      :class="titleClass"
-      @click="isEditing = true"
+      :class="[
+        titleClass,
+        props.readonly ? 'text-text-primary' : 'cursor-pointer hover:underline text-text-primary',
+      ]"
+      @click="!props.readonly && (isEditing = true)"
     >
       {{ modelValue || placeholder }}
     </span>
@@ -28,8 +30,9 @@ const props = withDefaults(
     modelValue: string
     placeholder?: string
     titleClass?: string
+    readonly?: boolean
   }>(),
-  { placeholder: '', titleClass: '' },
+  { placeholder: '', titleClass: '', readonly: false },
 )
 
 const emit = defineEmits<{

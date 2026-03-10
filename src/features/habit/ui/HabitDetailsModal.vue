@@ -9,7 +9,16 @@
           {{ habit.icon || '📝' }}
         </div>
         <div class="flex-1">
-          <h3 class="text-text-primary">{{ habit.title }}</h3>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="text-text-primary">{{ habit.title }}</h3>
+            <Badge
+              v-if="habit.ownerName && habit.ownerName !== 'null'"
+              variant="outline"
+              class="text-xs"
+            >
+              {{ habit.ownerName }}
+            </Badge>
+          </div>
           <p v-if="habit.description" class="mt-2 text-text-secondary">
             {{ habit.description }}
           </p>
@@ -121,12 +130,20 @@
 
     <template #footer>
       <div class="flex justify-between">
-        <Button type="button" variant="outline" @click="$emit('confirm', 'delete')">
+        <Button
+          v-if="canDelete"
+          type="button"
+          variant="outline"
+          @click="$emit('confirm', 'delete')"
+        >
           Удалить
         </Button>
+        <div v-else />
         <div class="flex space-x-3">
           <Button type="button" variant="outline" @click="$emit('close')"> Закрыть </Button>
-          <Button type="button" @click="$emit('confirm', 'edit')"> Редактировать </Button>
+          <Button v-if="canEdit" type="button" @click="$emit('confirm', 'edit')">
+            Редактировать
+          </Button>
         </div>
       </div>
     </template>
@@ -139,6 +156,8 @@
   import { getLocalDateString } from '@/shared/lib'
   import type { Habit, HabitCompletion, HabitStats } from '@/entities/habit'
   import { habitService } from '@/entities/habit'
+  import { useUserStore } from '@/entities/user'
+  import { usePermissions } from '@/entities/workspace/lib/permissions'
 
   interface Props {
     habit: Habit
@@ -146,6 +165,15 @@
   }
 
   const props = defineProps<Props>()
+  const userStore = useUserStore()
+  const { isOwner } = usePermissions()
+  const canDelete = computed(
+    () =>
+      props.habit.userId === userStore.currentUser?.id || isOwner.value,
+  )
+  const canEdit = computed(
+    () => props.habit.userId === userStore.currentUser?.id,
+  )
   const emit = defineEmits<{
     close: []
     confirm: [action: 'edit' | 'delete']

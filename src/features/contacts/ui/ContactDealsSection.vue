@@ -7,14 +7,11 @@
     :deals="deals"
   >
     <template #actions>
-      <Button
-        v-if="onAttachToDeal"
-        size="md"
-        variant="primary"
-        @click="onAttachToDeal"
-      >
-        Добавить в сделку
-      </Button>
+      <PermissionGuard v-if="onAttachToDeal" :permission="CRM_PERMISSIONS.dealCreate">
+        <Button size="md" variant="primary" @click="onAttachToDeal">
+          Добавить в сделку
+        </Button>
+      </PermissionGuard>
       <slot name="actions" />
     </template>
   </DealsListSection>
@@ -22,6 +19,8 @@
 
 <script setup lang="ts">
   import { Button, DealsListSection } from '@/shared/ui'
+  import { PermissionGuard } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
   import type { Deal } from '@/entities/deal'
 
   defineProps<{

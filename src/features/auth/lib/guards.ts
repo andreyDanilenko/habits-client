@@ -32,6 +32,10 @@ export const authGuard = async (
   const userStore = useUserStore()
 
   if (to.meta.public) {
+    // Уже авторизованный пользователь — редирект на дашборд
+    if (authStore.isAuthenticated) {
+      return next({ path: '/habits/dashboard' })
+    }
     return next()
   }
 
@@ -51,7 +55,7 @@ export const authGuard = async (
   }
 
   const workspaceStore = useWorkspaceStore()
-  if (workspaceStore.workspaces.length === 0) {
+  if (workspaceStore.workspaces?.length === 0) {
     await workspaceStore.fetchWorkspaces()
   }
 

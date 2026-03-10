@@ -15,7 +15,7 @@
       @update:columns="(v) => onColumnsUpdate(v as KanbanColumnModel<Deal>[])"
       :item-key="getDealId"
       dnd-group="deals"
-      :disabled="false"
+      :disabled="!canMove"
       @move="onMove"
     >
       <template #column-header="{ column }">
@@ -46,6 +46,7 @@
       :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
     >
       <button
+        v-if="canEdit"
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
         @click="handleEditClick"
@@ -53,6 +54,7 @@
         Редактировать
       </button>
       <button
+        v-if="canEdit"
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
         @click="handleCopyClick"
@@ -60,7 +62,7 @@
         Копировать
       </button>
       <button
-        v-if="showRemoveFromProject"
+        v-if="showRemoveFromProject && canRemoveFromProject"
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
         @click="handleRemoveFromProjectClick"
@@ -68,6 +70,7 @@
         Убрать из проекта
       </button>
       <button
+        v-if="canDelete"
         type="button"
         class="w-full px-4 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
         @click="handleDeleteClick"
@@ -81,6 +84,8 @@
 <script setup lang="ts">
   import { reactive, computed } from 'vue'
   import { KanbanBoard, Spinner } from '@/shared/ui'
+  import { usePermissions } from '@/features/permissions'
+  import { CRM_PERMISSIONS } from '@/features/permissions/config'
   import DealKanbanCard from './DealKanbanCard.vue'
   import type { Deal, Pipeline } from '@/entities/deal'
   import type { KanbanColumnModel } from '@/shared/ui'
@@ -99,9 +104,18 @@
       isError: boolean
       savingDealIds?: Set<string>
       showRemoveFromProject?: boolean
+      canRemoveFromProject?: boolean
+      canEdit?: boolean
+      canDelete?: boolean
+      canMove?: boolean
     }>(),
-    { showRemoveFromProject: false },
+    { showRemoveFromProject: false, canRemoveFromProject: true },
   )
+
+  const { can } = usePermissions()
+  const canEdit = computed(() => props.canEdit ?? can(CRM_PERMISSIONS.dealUpdate))
+  const canDelete = computed(() => props.canDelete ?? can(CRM_PERMISSIONS.dealDelete))
+  const canMove = computed(() => props.canMove ?? can(CRM_PERMISSIONS.dealMove))
 
   const savingDealIdsSet = computed(() => props.savingDealIds ?? new Set())
 

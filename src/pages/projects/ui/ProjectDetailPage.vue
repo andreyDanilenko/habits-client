@@ -29,10 +29,14 @@
           </p>
           <p class="text-xs text-text-muted mt-2">Обновлён: {{ formatDate(project.updatedAt) }}</p>
           <div class="flex flex-wrap gap-2 mt-3">
-            <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
-            <Button size="md" variant="ghost" class="text-danger-default" @click="confirmDelete">
-              Удалить
-            </Button>
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.projectUpdate">
+              <Button size="md" variant="outline" @click="openEdit">Редактировать</Button>
+            </PermissionGuard>
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.projectDelete">
+              <Button size="md" variant="ghost" class="text-danger-default" @click="confirmDelete">
+                Удалить
+              </Button>
+            </PermissionGuard>
           </div>
         </div>
       </header>
@@ -86,6 +90,8 @@
   import { useRoute, useRouter } from 'vue-router'
   import { Button, Spinner, Modal, ConfirmModal } from '@/shared/ui'
   import { ArrowLeftIcon, CrmIcon } from '@/shared/ui/icon'
+  import { PermissionGuard } from '@/features/permissions'
+  import { PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { ProjectFormModal } from '@/features/projects'
   import { projectService } from '@/entities/project'
   import { useWorkspaceStore } from '@/entities/workspace'

@@ -49,9 +49,11 @@
               placeholder="Поиск по имени..."
               class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-default"
             />
-            <Button size="md" variant="primary" @click="openAddModal('crm_contact')"
-              >Добавить контакты</Button
-            >
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.entityAttach">
+              <Button size="md" variant="primary" @click="openAddModal('crm_contact')"
+                >Добавить контакты</Button
+              >
+            </PermissionGuard>
           </div>
         </div>
         <div v-if="contactsLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -60,15 +62,16 @@
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
         >
           {{ contactsSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет контактов.' }}
-          <Button
-            v-if="!contactsSearch"
-            size="md"
-            variant="primary"
-            class="mt-2"
-            @click="openAddModal('crm_contact')"
-          >
-            Добавить контакты
-          </Button>
+          <PermissionGuard v-if="!contactsSearch" :permission="PROJECT_PERMISSIONS.entityAttach">
+            <Button
+              size="md"
+              variant="primary"
+              class="mt-2"
+              @click="openAddModal('crm_contact')"
+            >
+              Добавить контакты
+            </Button>
+          </PermissionGuard>
         </div>
         <ul v-else class="space-y-2">
           <li
@@ -85,14 +88,16 @@
             <span class="text-xs text-text-muted shrink-0">{{
               c.emails?.[0]?.address ?? c.phones?.[0]?.number ?? '—'
             }}</span>
-            <button
-              type="button"
-              class="p-1.5 rounded text-text-muted hover:bg-bg-tertiary hover:text-danger-default"
-              title="Удалить из проекта"
-              @click="confirmDetach('crm_contact', c.id, contactLabel(c))"
-            >
-              <XMarkIcon class="size-4" />
-            </button>
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.entityDetach">
+              <button
+                type="button"
+                class="p-1.5 rounded text-text-muted hover:bg-bg-tertiary hover:text-danger-default"
+                title="Удалить из проекта"
+                @click="confirmDetach('crm_contact', c.id, contactLabel(c))"
+              >
+                <XMarkIcon class="size-4" />
+              </button>
+            </PermissionGuard>
           </li>
         </ul>
       </template>
@@ -107,9 +112,11 @@
               placeholder="Поиск по названию..."
               class="px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm w-48 focus:outline-none focus:ring-2 focus:ring-primary-default"
             />
-            <Button size="md" variant="primary" @click="openAddModal('crm_company')"
-              >Добавить компании</Button
-            >
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.entityAttach">
+              <Button size="md" variant="primary" @click="openAddModal('crm_company')"
+                >Добавить компании</Button
+              >
+            </PermissionGuard>
           </div>
         </div>
         <div v-if="companiesLoading" class="text-text-muted text-sm py-4">Загрузка…</div>
@@ -118,15 +125,16 @@
           class="rounded-lg border border-border-light border-dashed p-6 text-center text-text-muted text-sm"
         >
           {{ companiesSearch ? 'Ничего не найдено.' : 'В этом проекте пока нет компаний.' }}
-          <Button
-            v-if="!companiesSearch"
-            size="md"
-            variant="primary"
-            class="mt-2"
-            @click="openAddModal('crm_company')"
-          >
-            Добавить компании
-          </Button>
+          <PermissionGuard v-if="!companiesSearch" :permission="PROJECT_PERMISSIONS.entityAttach">
+            <Button
+              size="md"
+              variant="primary"
+              class="mt-2"
+              @click="openAddModal('crm_company')"
+            >
+              Добавить компании
+            </Button>
+          </PermissionGuard>
         </div>
         <ul v-else class="space-y-2">
           <li
@@ -141,14 +149,16 @@
               {{ c.name }}
             </router-link>
             <span class="text-xs text-text-muted shrink-0">{{ c.inn ?? '—' }}</span>
-            <button
-              type="button"
-              class="p-1.5 rounded text-text-muted hover:bg-bg-tertiary hover:text-danger-default"
-              title="Удалить из проекта"
-              @click="confirmDetach('crm_company', c.id, c.name)"
-            >
-              <XMarkIcon class="size-4" />
-            </button>
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.entityDetach">
+              <button
+                type="button"
+                class="p-1.5 rounded text-text-muted hover:bg-bg-tertiary hover:text-danger-default"
+                title="Удалить из проекта"
+                @click="confirmDetach('crm_company', c.id, c.name)"
+              >
+                <XMarkIcon class="size-4" />
+              </button>
+            </PermissionGuard>
           </li>
         </ul>
       </template>
@@ -167,10 +177,14 @@
                 <option v-for="p in pipelines" :key="p.id" :value="p.id">{{ p.name }}</option>
               </select>
             </template>
-            <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
-            <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
-              >Добавить сделки</Button
-            >
+            <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
+              <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
+            </PermissionGuard>
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.entityAttach">
+              <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
+                >Добавить сделки</Button
+              >
+            </PermissionGuard>
           </div>
         </div>
         <div v-if="dealsLoading && pipelines.length === 0" class="text-text-muted text-sm py-4">
@@ -185,10 +199,14 @@
         >
           В этом проекте пока нет сделок.
           <div class="flex gap-2 justify-center mt-2">
-            <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
-            <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
-              >Добавить сделки</Button
-            >
+            <PermissionGuard :permission="CRM_PERMISSIONS.dealCreate">
+              <Button size="md" variant="primary" @click="openCreateDealModal">Создать сделку</Button>
+            </PermissionGuard>
+            <PermissionGuard :permission="PROJECT_PERMISSIONS.entityAttach">
+              <Button size="md" variant="outline" @click="openAddModal('crm_deal')"
+                >Добавить сделки</Button
+              >
+            </PermissionGuard>
           </div>
         </div>
         <DealsKanbanView
@@ -201,6 +219,7 @@
           :is-error="false"
           :saving-deal-ids="savingDealIds"
           show-remove-from-project
+          :can-remove-from-project="canRemoveFromProject"
           @move="handleDealMove"
           @open-deal="openDealCard"
           @edit="openEditDealModal"
@@ -262,6 +281,8 @@
   import { useRoute, useRouter } from 'vue-router'
   import { Button, Spinner, Modal, ConfirmModal } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
+  import { PermissionGuard, usePermissions } from '@/features/permissions'
+  import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { AddEntitiesToProjectModal } from '@/features/projects'
   import { DealsKanbanView, DealFormModal } from '@/features/deals'
   import { projectService } from '@/entities/project'
@@ -282,6 +303,9 @@
   const router = useRouter()
   const workspaceStore = useWorkspaceStore()
   const userStore = useUserStore()
+  const { can } = usePermissions()
+
+  const canRemoveFromProject = computed(() => can(PROJECT_PERMISSIONS.entityDetach))
 
   const workspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? '')
   const projectId = computed(() => route.params.id as string)

@@ -17,6 +17,7 @@
             <Checkbox
               v-for="action in Object.values(entity.actions)"
               :key="action.code"
+              :disabled="isSystem"
               :model-value="isChecked(action.permissionString)"
               :label="action.name"
               container-class="items-center"
@@ -38,7 +39,9 @@
 
   const props = defineProps<{
     modelValue: PermissionString[]
+    isSystem?: boolean
   }>()
+
 
   const emit = defineEmits<{
     (e: 'update:modelValue', value: PermissionString[]): void

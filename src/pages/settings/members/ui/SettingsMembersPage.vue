@@ -21,7 +21,39 @@
             <div class="text-xs text-text-secondary">
               {{ member.email }}
             </div>
-            <div class="text-xs text-text-secondary">Системная роль: {{ member.systemRole }}</div>
+          </div>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <div class="flex flex-col items-end gap-1">
+              <label class="text-xs text-text-secondary">Роль</label>
+              <select
+                :value="getRoleSelectValue(member)"
+                :disabled="!canChangeRole(member) || roleChangingMemberId === member.id"
+                class="border border-border-default rounded-md px-2 py-1.5 text-sm bg-bg-primary text-text-primary disabled:opacity-60 disabled:cursor-not-allowed"
+                @change="onRoleChange(member, $event)"
+              >
+                <optgroup label="Системные">
+                  <option value="OWNER">OWNER</option>
+                  <option value="ADMIN">ADMIN</option>
+                  <option value="MEMBER">MEMBER</option>
+                  <option value="GUEST">GUEST</option>
+                </optgroup>
+                <optgroup v-if="customRoles.length" label="Кастомные">
+                  <option v-for="r in customRoles" :key="r.id" :value="r.id">
+                    {{ r.name }}
+                  </option>
+                </optgroup>
+              </select>
+            </div>
+            <Button
+              v-if="canRemoveMember(member)"
+              variant="outline"
+              size="md"
+              :loading="removingMemberId === member.id"
+              class="text-red-600 border-red-200 hover:bg-red-50"
+              @click="openRemoveModal(member)"
+            >
+              Удалить из workspace
+            </Button>
           </div>
         </div>
 
@@ -34,21 +66,103 @@
         В этом workspace пока нет участников.
       </p>
     </div>
+
+    <Modal :is-open="showRemoveModal" @update:is-open="showRemoveModal = $event">
+      <ConfirmModal
+        title="Удалить участника?"
+        :message="
+          memberToRemove
+            ? `${memberToRemove.name || memberToRemove.email} (${memberToRemove.email}) будет удалён из workspace и потеряет доступ ко всем данным.`
+            : ''
+        "
+        confirm-text="Удалить"
+        confirm-variant="danger"
+        :loading="removingMemberId !== null"
+        @close="closeRemoveModal"
+        @confirm="confirmRemove"
+      />
+    </Modal>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
-  import { Card } from '@/shared/ui'
-  import { useWorkspaceStore, workspaceService, type Member } from '@/entities/workspace'
+  import { ref, computed, onMounted, watch } from 'vue'
+  import { Card, Button, Modal, ConfirmModal } from '@/shared/ui'
+  import {
+    useWorkspaceStore,
+    workspaceService,
+    usePermissions,
+    WorkspacePermission,
+    type Member,
+  } from '@/entities/workspace'
+  import { useUserStore } from '@/entities/user'
   import { MemberRoleChips } from '@/features/members'
   import { UserPermissionsPanel } from '@/features/user-permissions'
+  import { roleService } from '@/entities/role'
+  import type { Role } from '@/entities/role'
+
+  const SYSTEM_ROLES = ['OWNER', 'ADMIN', 'MEMBER', 'GUEST'] as const
 
   const workspaceStore = useWorkspaceStore()
+  const userStore = useUserStore()
+  const { hasPermission } = usePermissions()
 
   const members = ref<Member[]>([])
+  const availableRoles = ref<Role[]>([])
   const isLoading = ref(false)
   const isError = ref(false)
+  const removingMemberId = ref<string | null>(null)
+  const showRemoveModal = ref(false)
+  const memberToRemove = ref<Member | null>(null)
+  const roleChangingMemberId = ref<string | null>(null)
+
+  const customRoles = computed(() => availableRoles.value.filter((r) => !r.isSystem))
+
+  const canManageMembers = computed(
+    () =>
+      hasPermission(WorkspacePermission.MEMBERS_EDIT_ROLE) ||
+      hasPermission(WorkspacePermission.MEMBERS_REMOVE),
+  )
+
+  const ownerCount = computed(
+    () => members.value.filter((m) => String(m.systemRole).toUpperCase() === 'OWNER').length,
+  )
+
+  const currentUserId = computed(() => userStore.currentUser?.id ?? '')
+
+  const canChangeRole = (member: Member) => {
+    if (!canManageMembers.value) return false
+    if (member.id === currentUserId.value) return false
+    if (String(member.systemRole).toUpperCase() === 'OWNER' && ownerCount.value <= 1) return false
+    return true
+  }
+
+  const canRemoveMember = (member: Member) => {
+    if (!hasPermission(WorkspacePermission.MEMBERS_REMOVE)) return false
+    if (member.id === currentUserId.value) return false
+    if (String(member.systemRole).toUpperCase() === 'OWNER' && ownerCount.value <= 1) return false
+    return true
+  }
+
+  const getRoleSelectValue = (member: Member): string => {
+    const sr = member.systemRole
+    if (SYSTEM_ROLES.includes(sr as (typeof SYSTEM_ROLES)[number])) return sr
+    const r = availableRoles.value.find((x) => x.name === sr)
+    return r?.id ?? sr
+  }
+
+  const loadRoles = async () => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) {
+      availableRoles.value = []
+      return
+    }
+    try {
+      availableRoles.value = await roleService.list(workspaceId)
+    } catch {
+      availableRoles.value = []
+    }
+  }
 
   const loadMembers = async () => {
     const workspaceId = workspaceStore.currentWorkspace?.id
@@ -59,8 +173,7 @@
     isLoading.value = true
     isError.value = false
     try {
-      const response = await workspaceService.getWorkspaceMembers(workspaceId)
-      members.value = response as Member[]
+      members.value = await workspaceService.getWorkspaceMembers(workspaceId)
     } catch {
       isError.value = true
       members.value = []
@@ -69,7 +182,70 @@
     }
   }
 
+  const onRoleChange = async (member: Member, ev: Event) => {
+    const value = (ev.target && 'value' in ev.target ? (ev.target as HTMLSelectElement).value : '') as string
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId || !value) return
+    if (value === getRoleSelectValue(member)) return
+
+    roleChangingMemberId.value = member.id
+    try {
+      const payload =
+        SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
+          ? { role: value as (typeof SYSTEM_ROLES)[number] }
+          : { roleId: value }
+      await workspaceService.updateMemberRole(workspaceId, member.id, payload)
+      member.systemRole = SYSTEM_ROLES.includes(value as (typeof SYSTEM_ROLES)[number])
+        ? (value as Member['systemRole'])
+        : (availableRoles.value.find((r) => r.id === value)?.name ?? value)
+    } catch (err) {
+      console.error('Failed to update role:', err)
+      await loadMembers()
+    } finally {
+      roleChangingMemberId.value = null
+    }
+  }
+
+  const openRemoveModal = (member: Member) => {
+    memberToRemove.value = member
+    showRemoveModal.value = true
+  }
+
+  const closeRemoveModal = () => {
+    if (!removingMemberId.value) {
+      memberToRemove.value = null
+      showRemoveModal.value = false
+    }
+  }
+
+  const confirmRemove = async () => {
+    const member = memberToRemove.value
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!member || !workspaceId) return
+
+    removingMemberId.value = member.id
+    try {
+      await workspaceService.removeMember(workspaceId, member.id)
+      members.value = members.value.filter((m) => m.id !== member.id)
+      memberToRemove.value = null
+      showRemoveModal.value = false
+    } catch (err) {
+      console.error('Failed to remove member:', err)
+    } finally {
+      removingMemberId.value = null
+    }
+  }
+
   onMounted(() => {
+    void loadRoles()
     void loadMembers()
   })
+
+  watch(
+    () => workspaceStore.currentWorkspace?.id,
+    () => {
+      void loadRoles()
+      void loadMembers()
+    },
+  )
 </script>

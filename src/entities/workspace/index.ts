@@ -13,6 +13,7 @@ export {
   requirePermission,
   requireOwner,
   requireOwnerOrAdmin,
+  requireWorkspace,
   requireModuleEnabled,
   WorkspacePermission,
 } from './lib/permissions'

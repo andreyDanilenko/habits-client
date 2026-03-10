@@ -1,8 +1,8 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-6">
-    <!-- Баннер для не-владельцев -->
+    <!-- Баннер для пользователей без прав на редактирование -->
     <div
-      v-if="!isOwner"
+      v-if="!canEditWorkspace"
       class="p-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg"
     >
       <p class="text-sm text-yellow-800 dark:text-yellow-300">
@@ -21,13 +21,13 @@
       <h2 class="text-text-primary mb-4">Основная информация</h2>
 
       <div class="space-y-4">
-        <Input
+          <Input
           v-model="workspaceData.name"
           label="Название"
           type="text"
           name="name"
           placeholder="Введите название workspace"
-          :disabled="!isOwner"
+          :disabled="!canEditWorkspace"
         />
 
         <Textarea
@@ -35,7 +35,7 @@
           label="Описание"
           :rows="3"
           placeholder="Введите описание workspace"
-          :disabled="!isOwner"
+          :disabled="!canEditWorkspace"
         />
 
         <div>
@@ -44,37 +44,38 @@
             <input
               v-model="workspaceData.color"
               type="color"
-              :disabled="!isOwner"
+              :disabled="!canEditWorkspace"
               class="h-10 w-20 border border-border-default rounded cursor-pointer disabled:cursor-not-allowed bg-bg-primary"
             />
             <Input
               v-model="workspaceData.color"
               type="text"
               placeholder="#000000"
-              :disabled="!isOwner"
+              :disabled="!canEditWorkspace"
               class="flex-1"
             />
           </div>
         </div>
 
-        <div v-if="isOwner" class="pt-4">
+        <div v-if="canEditWorkspace" class="pt-4">
           <Button @click="saveWorkspace" :loading="isSaving"> Сохранить изменения </Button>
         </div>
       </div>
     </Card>
 
-    <!-- Участники (Soon) -->
-    <Card v-if="isOwner" class="p-6">
+    <!-- Участники -->
+    <Card v-if="canEditWorkspace" class="p-6">
       <h2 class="text-text-primary mb-4">Участники</h2>
       <div class="space-y-4">
-        <div
-          class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg"
+        <p class="text-sm text-text-secondary">
+          Управление участниками workspace, назначение ролей и прав доступа.
+        </p>
+        <router-link
+          to="/settings/members"
+          class="inline-flex items-center text-primary-default hover:text-primary-dark font-medium"
         >
-          <p class="text-sm text-blue-800 dark:text-blue-300">
-            <span class="font-semibold">Soon:</span> Управление участниками workspace, назначение
-            ролей и прав доступа.
-          </p>
-        </div>
+          Перейти к участникам →
+        </router-link>
       </div>
     </Card>
 
@@ -104,7 +105,7 @@
     </Card>
 
     <!-- Права доступа -->
-    <Card v-if="isOwner" class="p-6">
+    <Card v-if="canEditWorkspace" class="p-6">
       <h2 class="text-text-primary mb-4">Права доступа</h2>
       <div class="space-y-4">
         <p class="text-sm text-text-secondary">Управляйте ролями workspace и их правами доступа.</p>
@@ -117,7 +118,7 @@
       </div>
     </Card>
 
-    <!-- Опасная зона -->
+    <!-- Опасная зона (только владелец может удалить workspace) -->
     <Card v-if="isOwner" class="p-6 border-red-200 dark:border-red-900">
       <h2 class="text-red-900 dark:text-red-400 mb-4">Опасная зона</h2>
 
@@ -138,6 +139,6 @@
   import { useWorkspaceSettingsPage } from '@/features/workspace/model'
   import { Card, Button, Input, Textarea } from '@/shared/ui'
 
-  const { isSaving, workspaceData, isOwner, saveWorkspace, handleDeleteWorkspace } =
+  const { isSaving, workspaceData, isOwner, canEditWorkspace, saveWorkspace, handleDeleteWorkspace } =
     useWorkspaceSettingsPage()
 </script>

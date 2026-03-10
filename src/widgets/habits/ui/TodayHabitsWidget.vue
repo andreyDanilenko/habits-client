@@ -30,7 +30,16 @@
               {{ habit.icon || '📝' }}
             </div>
             <div class="flex-1">
-              <h3 class="text-text-primary">{{ habit.title }}</h3>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-text-primary">{{ habit.title }}</h3>
+                <Badge
+                  v-if="habit.ownerName && habit.ownerName !== 'null'"
+                  variant="outline"
+                  class="text-xs"
+                >
+                  {{ habit.ownerName }}
+                </Badge>
+              </div>
               <div v-if="(habit.dailyGoal || 1) > 1" class="mt-2 flex items-center space-x-2">
                 <span class="text-xs text-text-secondary">
                   Прогресс: {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
@@ -75,6 +84,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { Badge } from '@/shared/ui'
   import { useHabitStore } from '@/entities/habit'
   import { useHabitActions } from '@/features/habit/model/use-habit-actions'
   import { useHabitProgress } from '@/features/habit/model/use-habit-progress'

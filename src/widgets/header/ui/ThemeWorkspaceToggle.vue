@@ -19,7 +19,7 @@
   })
 
   const applyTheme = (value: boolean) => {
-    if (value) {
+    if (value && workspaceStore.currentWorkspace) {
       themeService.enableWorkspaceTheme()
       themeService.applyWorkspaceTheme(workspaceStore.currentWorkspace)
     } else {

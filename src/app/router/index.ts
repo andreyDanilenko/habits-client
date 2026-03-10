@@ -1,8 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw, RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 import { authGuard, requireAdmin } from '@/features/auth'
-import { requireOwnerOrAdmin, requirePermission, requireModuleEnabled } from '@/entities/workspace'
-import { modules, getAvailableModules } from '@/app/modules/config'
+import {
+  requireOwnerOrAdmin,
+  requirePermission,
+  requireModuleEnabled,
+  requireWorkspace,
+  usePermissions,
+  useWorkspaceStore,
+} from '@/entities/workspace'
+import { modules, getAvailableModules, getAvailableModuleRoutes } from '@/app/modules/config'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,6 +24,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/register'),
     meta: { public: true },
   },
+  {
+    path: '/create-workspace',
+    name: 'CreateWorkspace',
+    component: () => import('@/pages/create-workspace'),
+    meta: { requiresAuth: true, noWorkspaceAllowed: true },
+  },
   // Редирект с корня на первый доступный модуль или dashboard
   {
     path: '/',
@@ -27,10 +40,23 @@ const routes: RouteRecordRaw[] = [
     path: '/habits',
     redirect: '/habits/dashboard',
   },
-  // Редирект с /crm на контакты
+  // Редирект с /crm на первый доступный роут CRM по правам
   {
     path: '/crm',
-    redirect: '/crm/contacts',
+    redirect: (to: RouteLocationNormalized) => {
+      const workspaceStore = useWorkspaceStore()
+      const { hasPermission } = usePermissions()
+      const enabled = workspaceStore.enabledModules
+      const available = getAvailableModules(enabled, hasPermission)
+      const crmModule = available.find((m) => m.id === 'crm')
+      if (crmModule) {
+        const routes = getAvailableModuleRoutes(crmModule, hasPermission)
+        if (routes.length > 0) {
+          return { path: routes[0].path }
+        }
+      }
+      return { path: '/habits/dashboard' }
+    },
   },
   // Редирект с /notes на список
   {
@@ -70,6 +96,7 @@ const routes: RouteRecordRaw[] = [
     name: 'SettingsMembers',
     component: () => import('@/pages/settings/members'),
     meta: { requiresAuth: true },
+    beforeEnter: requireOwnerOrAdmin(),
   },
   {
     path: '/workspace-settings',
@@ -90,6 +117,7 @@ const routes: RouteRecordRaw[] = [
     name: 'WorkspaceModules',
     component: () => import('@/pages/workspace-modules'),
     meta: { requiresAuth: true },
+    beforeEnter: requireWorkspace(),
   },
   {
     path: '/module-activation/:moduleCode',
@@ -135,12 +163,28 @@ modules.forEach((module) => {
         const moduleGuard = requireModuleEnabled(getAvailableModules)
         const moduleResult = moduleGuard(to)
         if (moduleResult !== true) {
+          const redirectPath =
+            typeof moduleResult === 'object' && 'path' in moduleResult
+              ? moduleResult.path
+              : null
+          if (redirectPath && redirectPath === to.path) {
+            next()
+            return
+          }
           next(moduleResult)
           return
         }
         if (route.permissions && route.permissions.length > 0) {
           const permResult = requirePermission(route.permissions[0])()
           if (permResult !== true) {
+            const permRedirectPath =
+              typeof permResult === 'object' && 'path' in permResult
+                ? permResult.path
+                : null
+            if (permRedirectPath && permRedirectPath === to.path) {
+              next()
+              return
+            }
             next(permResult)
             return
           }
