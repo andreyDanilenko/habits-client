@@ -66,57 +66,18 @@
           @delete="actions.confirmDelete"
         />
 
-        <!-- Простая отладочная зона DnD без Kanban-обёртки (моки, чистый vuedraggable) -->
-        <section class="border border-dashed rounded-md p-4">
-          <h2 class="text-sm font-medium text-gray-600 mb-2">
-            Debug Kanban DnD (mock pipelines → lists of lists)
-          </h2>
-
-          <div class="flex gap-4 overflow-x-auto">
-            <div
-              v-for="(col, colIndex) in debugColumns"
-              :key="col.id"
-              class="min-w-[220px] rounded-md border bg-gray-100 p-2 flex flex-col gap-2"
-            >
-              <div class="font-medium text-gray-800 text-sm">
-                {{ col.title }}
-                <span class="text-xs text-gray-500 ml-1"> ({{ col.items.length }}) </span>
-              </div>
-
-              <draggable
-                v-model="debugColumns[colIndex].items"
-                item-key="id"
-                :group="{ name: 'debug-kanban' }"
-                class="space-y-2 min-h-[80px]"
-                @change="(e) => onDebugChange(col.id, e)"
-              >
-                <template #item="{ element }">
-                  <div class="border border-gray-300 rounded-sm bg-white px-3 py-2 text-sm">
-                    <div class="font-medium text-gray-800">
-                      {{ element.name }}
-                    </div>
-                    <div class="text-xs text-gray-500">
-                      {{ element.id }}
-                    </div>
-                  </div>
-                </template>
-              </draggable>
-            </div>
-          </div>
-        </section>
+       
       </div>
     </template>
   </BasePageLayout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
   import { BasePageLayout } from '@/shared/ui/common'
   import { Button } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
-  import { PermissionGuard, usePermissions } from '@/features/permissions'
+  import { PermissionGuard } from '@/features/permissions'
   import { CRM_PERMISSIONS } from '@/features/permissions/config'
-  import draggable from 'vuedraggable'
   import {
     useDealsPageActions,
     DealsToolbar,
@@ -124,26 +85,7 @@
     DealsKanbanView,
   } from '@/features/deals'
 
-  const { can } = usePermissions()
   const actions = useDealsPageActions()
-
-  // Прототип канбан-доски: пайплайн как список колонок (lists of lists),
-  // каждая колонка хранит собственный массив сделок.
-  const debugColumns = ref([
-    {
-      id: 'stage-a',
-      title: 'Stage A',
-      items: [
-        { id: 'debug-1', name: 'Debug deal 1' },
-        { id: 'debug-2', name: 'Debug deal 2' },
-      ],
-    },
-    {
-      id: 'stage-b',
-      title: 'Stage B',
-      items: [{ id: 'debug-3', name: 'Debug deal 3' }],
-    },
-  ])
 
   const onDebugChange = (columnId: string, evt: unknown) => {
     // Можно логировать, как vue-draggable-next сообщает о добавлении/удалении:
