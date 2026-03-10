@@ -74,10 +74,7 @@
       <ContactFormModal
         :is-open="showFormModal"
         :contact="contact ?? null"
-        @close="
-          showFormModal = false
-          fetchContact()
-        "
+        @close="handleFormClose"
         @save="handleSave"
         @update="handleUpdate"
       />
@@ -118,10 +115,6 @@
   } from '@/features/contacts'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
-  import {
-    usePermissions as useWorkspacePermissions,
-    WorkspacePermission,
-  } from '@/entities/workspace'
   import { usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { DealsAttachContactModal } from '@/features/deals'
@@ -217,8 +210,6 @@
     },
   }))
 
-  const { hasPermission } = useWorkspacePermissions()
-  const canCreateCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
   const initials = computed(() => {
     if (!contact.value) return '?'
     const f = contact.value.firstName?.slice(0, 1) ?? ''
@@ -229,6 +220,11 @@
 
   function openEdit() {
     showFormModal.value = true
+  }
+
+  function handleFormClose() {
+    showFormModal.value = false
+    fetchContact()
   }
 
   function confirmDeleteContact() {

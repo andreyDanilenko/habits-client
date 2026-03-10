@@ -37,10 +37,7 @@
               <button
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                @click="
-                  menuOpen = false
-                  $emit('toggleImportant')
-                "
+                @click="handleToggleImportant"
               >
                 {{ activity.isImportant ? 'Снять важность' : 'Пометить важным' }}
               </button>
@@ -48,10 +45,7 @@
                 v-if="activity.isEditable && props.canEdit"
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-text-primary hover:bg-bg-tertiary"
-                @click="
-                  menuOpen = false
-                  $emit('edit')
-                "
+                @click="handleEdit"
               >
                 Редактировать
               </button>
@@ -59,10 +53,7 @@
                 v-if="activity.isDeletable && props.canDelete"
                 type="button"
                 class="w-full px-3 py-2 text-left text-sm text-danger-default hover:bg-bg-tertiary"
-                @click="
-                  menuOpen = false
-                  $emit('delete')
-                "
+                @click="handleDelete"
               >
                 Удалить
               </button>
@@ -166,7 +157,7 @@
     { showActions: true, canEdit: true, canDelete: true },
   )
 
-  defineEmits<{
+  const emit = defineEmits<{
     toggleImportant: []
     edit: []
     delete: []
@@ -267,4 +258,19 @@
   onUnmounted(() => {
     document.removeEventListener('click', handleClickOutside)
   })
+
+  function handleToggleImportant() {
+    menuOpen.value = false
+    emit('toggleImportant')
+  }
+
+  function handleEdit() {
+    menuOpen.value = false
+    emit('edit')
+  }
+
+  function handleDelete() {
+    menuOpen.value = false
+    emit('delete')
+  }
 </script>

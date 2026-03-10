@@ -48,15 +48,15 @@
     },
   )
 
+  type DndChangeEvent = {
+    added?: { element: unknown }
+    removed?: { element: unknown }
+    moved?: { element: unknown }
+  }
+
   const emit = defineEmits<{
     'update:modelValue': [unknown[]]
-    change: [
-      {
-        added?: { element: unknown }
-        removed?: { element: unknown }
-        moved?: { element: unknown }
-      },
-    ]
+    change: [DndChangeEvent]
   }>()
 
   const model = computed({
@@ -70,7 +70,7 @@
     return (item: any) => (item && (item.id ?? item.key ?? item._id)) ?? String(item)
   })
 
-  function onChange(evt: { added?; removed?; moved? }) {
+  function onChange(evt: DndChangeEvent) {
     emit('change', evt)
   }
 </script>

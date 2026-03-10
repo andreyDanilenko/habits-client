@@ -84,9 +84,4 @@
   } from '@/features/deals'
 
   const actions = useDealsPageActions()
-
-  const onDebugChange = (columnId: string, evt: unknown) => {
-    // Можно логировать, как vue-draggable-next сообщает о добавлении/удалении:
-    // console.log('debug change', columnId, evt)
-  }
 </script>

@@ -97,10 +97,6 @@
   import { BasePageLayout } from '@/shared/ui/common'
   import { Button, Spinner, Select, EditableTitle, DetailTabsPanel } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
-  import {
-    usePermissions as useWorkspacePermissions,
-    WorkspacePermission,
-  } from '@/entities/workspace'
   import { usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { PermissionGuard } from '@/features/permissions'
@@ -139,8 +135,6 @@
   const stageOptions = computed(() => stages.value.map((s) => ({ value: s.id, label: s.name })))
 
   const { can } = usePermissions()
-  const { hasPermission } = useWorkspacePermissions()
-  const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
 
   const updateDealForDetail = async (id: string, data: CreateDealDto) => {
     const d = await dealService.update(workspaceId.value, id, data)

@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
   // Редирект с /crm на первый доступный роут CRM по правам
   {
     path: '/crm',
-    redirect: (to: RouteLocationNormalized) => {
+    redirect: () => {
       const workspaceStore = useWorkspaceStore()
       const { hasPermission } = usePermissions()
       const enabled = workspaceStore.enabledModules

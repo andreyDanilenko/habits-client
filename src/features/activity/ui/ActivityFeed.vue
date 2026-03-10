@@ -4,20 +4,14 @@
       <Button
         size="md"
         variant="outline"
-        @click="
-          showComposer = true
-          showCallModal = false
-        "
+        @click="handleNoteClick"
       >
         Заметка
       </Button>
       <Button
         size="md"
         variant="outline"
-        @click="
-          showCallModal = true
-          showComposer = false
-        "
+        @click="handleCallClick"
       >
         Звонок
       </Button>
@@ -218,6 +212,16 @@
   onMounted(() => {
     feed.load()
   })
+
+  function handleNoteClick() {
+    showComposer.value = true
+    showCallModal.value = false
+  }
+
+  function handleCallClick() {
+    showCallModal.value = true
+    showComposer.value = false
+  }
 
   function onFiltersApply(f: Parameters<typeof feed.setFilters>[0]) {
     feed.setFilters(f)

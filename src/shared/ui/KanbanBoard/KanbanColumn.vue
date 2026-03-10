@@ -22,12 +22,7 @@
         class="space-y-2 min-h-full flex-1"
         @start="() => console.log('KANBAN START', column.id)"
         @end="() => console.log('KANBAN END', column.id)"
-        @change="
-          (e) => {
-            console.log('KANBAN CHANGE', column.id, e)
-            onDndChange(e)
-          }
-        "
+        @change="handleChange"
       >
         <template #item="{ element }">
           <div>
@@ -60,6 +55,12 @@
     move: [payload: { item: unknown; fromColumnId?: string; toColumnId?: string }]
   }>()
 
+  type DndChangeEvent = {
+    added?: { element: unknown }
+    removed?: { element: unknown }
+    moved?: { element: unknown }
+  }
+
   const columnColorStyle = computed(() =>
     props.column.color
       ? {
@@ -70,14 +71,13 @@
       : {},
   )
 
-  function onDndChange(evt: {
-    added?: { element: unknown }
-    removed?: { element: unknown }
-    moved?: { element: unknown }
-  }) {
-    console.log()
-
+  function onDndChange(evt: DndChangeEvent) {
     if (evt.added) emit('move', { item: evt.added.element, toColumnId: props.column.id })
     if (evt.removed) emit('move', { item: evt.removed.element, fromColumnId: props.column.id })
+  }
+
+  function handleChange(evt: DndChangeEvent) {
+    console.log('KANBAN CHANGE', props.column.id, evt)
+    onDndChange(evt)
   }
 </script>

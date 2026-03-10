@@ -7,7 +7,7 @@ import { usePipelineSave } from './use-pipeline-save'
 import { usePipelineDelete } from './use-pipeline-delete'
 
 export function usePipelines() {
-  const { isOwner, hasPermission } = usePermissions()
+  const { hasPermission } = usePermissions()
 
   // Инстансы хуков
   const list = usePipelinesList() // workspaceId уже внутри этого хука

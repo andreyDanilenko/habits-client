@@ -52,10 +52,7 @@
       <CompanyFormModal
         :is-open="showFormModal"
         :company="company ?? null"
-        @close="
-          showFormModal = false
-          fetchCompany()
-        "
+        @close="handleFormClose"
         @update="handleUpdate"
       />
       <Modal :is-open="showAttachContactModal" @close="closeAttachContactModal">
@@ -97,10 +94,6 @@
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
   import { companyService } from '@/entities/company'
-  import {
-    usePermissions as useWorkspacePermissions,
-    WorkspacePermission,
-  } from '@/entities/workspace'
   import { usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { PermissionGuard } from '@/features/permissions'
@@ -190,9 +183,6 @@
     },
   }))
 
-  const { hasPermission } = useWorkspacePermissions()
-  const canEditCrm = computed(() => hasPermission(WorkspacePermission.CRM_CREATE))
-
   const companyDealsSum = computed(() =>
     companyDeals.value.reduce((acc: number, d: Deal) => acc + (d.budget ?? 0), 0),
   )
@@ -204,6 +194,11 @@
 
   function openEdit() {
     showFormModal.value = true
+  }
+
+  function handleFormClose() {
+    showFormModal.value = false
+    fetchCompany()
   }
 
   function openAttachContact() {

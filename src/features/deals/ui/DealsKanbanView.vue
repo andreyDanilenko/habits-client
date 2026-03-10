@@ -14,7 +14,7 @@
       :columns="columnsModel"
       :item-key="getDealId"
       dnd-group="deals"
-      :disabled="false"
+      :disabled="!canMove"
       @move="onMove"
     >
       <template #column-header="{ column }">
@@ -114,8 +114,6 @@
   const canEdit = computed(() => props.canEdit ?? can(CRM_PERMISSIONS.dealUpdate))
   const canDelete = computed(() => props.canDelete ?? can(CRM_PERMISSIONS.dealDelete))
   const canMove = computed(() => {
-    console.log(can(CRM_PERMISSIONS.dealMove) || can(CRM_PERMISSIONS.dealUpdate))
-
     return can(CRM_PERMISSIONS.dealMove) || can(CRM_PERMISSIONS.dealUpdate)
   })
 
