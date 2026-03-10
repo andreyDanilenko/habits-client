@@ -16,6 +16,8 @@
       v-else-if="activities.length === 0"
       title="Нет активности"
       description="Здесь будет отображаться лента действий: создание привычек, выполнения, записи в дневнике"
+      :show-action-button="false"
+      :show-icon="false"
     />
 
     <div v-else class="space-y-4">

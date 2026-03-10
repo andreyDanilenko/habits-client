@@ -3,7 +3,7 @@
     <DashboardHeader :greeting="greeting" :user-name="userName" :formatted-date="formattedDate" />
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2 space-y-6">
-        <TodayHabitsWidget />
+        <TodayHabitsWidget @add-habit="handleAddHabit" />
         <CalendarWidget />
       </div>
 
@@ -24,6 +24,8 @@
   import { RecentActivityWidget } from '@/widgets/activity'
   import { DashboardHeader } from '@/features/dashboard'
   import { useDashboardPage } from '@/features/dashboard/model'
+  import { useHabitActions } from '@/features/habit/model'
 
   const { userName, greeting, formattedDate } = useDashboardPage()
+  const { handleAddHabit } = useHabitActions()
 </script>

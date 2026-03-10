@@ -14,11 +14,11 @@
         <slot name="title">{{ title }}</slot>
       </h3>
 
-      <p class="text-text-secondary mb-6">
+      <p class="text-text-secondary" :class="hasActions ? 'mb-6' : 'mb-0'">
         <slot name="description">{{ description }}</slot>
       </p>
 
-      <div class="flex gap-3 justify-center">
+      <div v-if="hasActions" class="flex gap-3 justify-center mt-4">
         <slot name="actions">
           <Button v-if="showClearFilters" variant="outline" @click="$emit('clear-filters')">
             Сбросить фильтры
@@ -31,10 +31,11 @@
 </template>
 
 <script setup lang="ts">
+  import { computed, useSlots } from 'vue'
   import { Card, Button } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
 
-  withDefaults(
+  const props = withDefaults(
     defineProps<{
       title?: string
       description?: string
@@ -51,6 +52,12 @@
       showClearFilters: false,
       showIcon: true,
     },
+  )
+
+  const slots = useSlots()
+
+  const hasActions = computed(
+    () => props.showActionButton || props.showClearFilters || !!slots.actions,
   )
 
   defineEmits<{
