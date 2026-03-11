@@ -11,7 +11,8 @@ export const handleUnauthorized = async (router: Router) => {
   userStore.clearUser()
 
   const currentRoute = router.currentRoute.value
-  const isPublicRoute = currentRoute.meta.public === true
+  const isPublicRoute =
+    currentRoute.meta.public === true || currentRoute.path.startsWith('/invite/')
 
   if (!isPublicRoute) {
     try {
@@ -32,7 +33,11 @@ export const authGuard = async (
   const userStore = useUserStore()
 
   if (to.meta.public) {
-    // Уже авторизованный пользователь — редирект на дашборд
+    // /invite/:token — доступна и авторизованным, и нет (нужно принять приглашение)
+    if (to.path.startsWith('/invite/')) {
+      return next()
+    }
+    // Логин/регистрация — авторизованный пользователь идёт на дашборд
     if (authStore.isAuthenticated) {
       return next({ path: '/habits/dashboard' })
     }

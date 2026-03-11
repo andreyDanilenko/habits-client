@@ -68,6 +68,7 @@
             required
             placeholder="example@email.com"
             :error="errors.email"
+            :disabled="isInviteFlow"
           />
 
           <Input
@@ -121,8 +122,8 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { reactive, ref, onMounted, computed } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import { Card, Button, Input, Checkbox } from '@/shared/ui'
   import { Logo } from '@/shared/ui/icon'
   import { getPasswordError } from '@/shared/lib/validation'
@@ -130,8 +131,13 @@
   import { useUserStore } from '@/entities/user'
 
   const router = useRouter()
+  const route = useRoute()
   const authStore = useAuthStore()
   const userStore = useUserStore()
+
+  const inviteToken = computed(() => (route.query.inviteToken as string) || '')
+  const prefillEmail = computed(() => (route.query.email as string) || '')
+  const isInviteFlow = computed(() => !!inviteToken.value)
 
   const isLoading = ref(false)
   const emailSent = ref(false)
@@ -180,6 +186,7 @@
         email: form.email,
         password: form.password,
         name: form.name || undefined,
+        inviteToken: inviteToken.value || undefined,
       })
 
       if (result.pendingVerification) {
@@ -200,6 +207,12 @@
       isLoading.value = false
     }
   }
+
+  onMounted(() => {
+    if (prefillEmail.value) {
+      form.email = prefillEmail.value
+    }
+  })
 
   const resetForm = () => {
     emailSent.value = false

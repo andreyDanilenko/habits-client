@@ -21,6 +21,9 @@ export const API_ENDPOINTS = {
     MODULES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/modules`,
     MODULE: (workspaceId: string, moduleCode: string) =>
       apiV1 + `/workspaces/${workspaceId}/modules/${moduleCode}`,
+    INVITATIONS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/invitations`,
+    INVITATION: (workspaceId: string, invitationId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/invitations/${invitationId}`,
     NOTES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/notes`,
     NOTE: (workspaceId: string, noteId: string) =>
       apiV1 + `/workspaces/${workspaceId}/notes/${noteId}`,
@@ -33,6 +36,12 @@ export const API_ENDPOINTS = {
     COUNTERPARTIES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/counterparties`,
     COUNTERPARTY: (workspaceId: string, id: string) =>
       apiV1 + `/workspaces/${workspaceId}/counterparties/${id}`,
+  },
+
+  /** Публичные эндпоинты (без auth или с опциональным auth) */
+  PUBLIC: {
+    INVITATION: (token: string) => apiV1 + `/public/invitations/${token}`,
+    INVITATION_ACCEPT: (token: string) => apiV1 + `/public/invitations/${token}/accept`,
   },
 
   /** Только для пользователей с глобальной ролью ADMIN. Иначе 403. */

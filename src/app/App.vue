@@ -64,7 +64,8 @@
     () =>
       route.name !== 'Login' &&
       route.name !== 'Register' &&
-      route.name !== 'VerifyEmail',
+      route.name !== 'VerifyEmail' &&
+      route.name !== 'Invite',
   )
   const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
   const hasNoPermissions = computed(

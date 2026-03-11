@@ -103,6 +103,69 @@ export const workspaceService = {
     )
     return response
   },
+
+  createInvitation: async (
+    workspaceId: string,
+    data: { email: string; systemRole: 'MEMBER' | 'GUEST' },
+  ): Promise<Invitation> => {
+    return api.post<Invitation>(API_ENDPOINTS.WORKSPACE.INVITATIONS(workspaceId), data)
+  },
+
+  listInvitations: async (
+    workspaceId: string,
+    params?: { status?: string; limit?: number; offset?: number },
+  ): Promise<{ invitations: Invitation[]; total: number }> => {
+    const searchParams = new URLSearchParams()
+    if (params?.status) searchParams.set('status', params.status)
+    if (params?.limit) searchParams.set('limit', String(params.limit))
+    if (params?.offset) searchParams.set('offset', String(params.offset))
+    const qs = searchParams.toString()
+    const url = API_ENDPOINTS.WORKSPACE.INVITATIONS(workspaceId) + (qs ? `?${qs}` : '')
+    return api.get<{ invitations: Invitation[]; total: number }>(url)
+  },
+
+  cancelInvitation: async (workspaceId: string, invitationId: string): Promise<void> => {
+    await api.delete(API_ENDPOINTS.WORKSPACE.INVITATION(workspaceId, invitationId))
+  },
+}
+
+export const publicInvitationService = {
+  getByToken: async (token: string): Promise<PublicInvitationInfo> => {
+    return api.get<PublicInvitationInfo>(API_ENDPOINTS.PUBLIC.INVITATION(token))
+  },
+  accept: async (token: string): Promise<AcceptInvitationResponse> => {
+    return api.post<AcceptInvitationResponse>(API_ENDPOINTS.PUBLIC.INVITATION_ACCEPT(token))
+  },
+}
+
+export interface PublicInvitationInfo {
+  email: string
+  workspaceName: string
+  invitedByName: string
+  systemRole: string
+  expiresAt: string
+  userExists: boolean
+  isAuthenticated: boolean
+}
+
+export interface AcceptInvitationResponse {
+  status: 'accepted' | 'requires_auth' | 'expired' | 'wrong_email'
+  redirectTo?: string
+  email?: string
+  userExists?: boolean
+  message?: string
+}
+
+export interface Invitation {
+  id: string
+  email: string
+  workspaceId: string
+  invitedBy?: { id: string; name: string; email: string }
+  systemRole: string
+  status: string
+  inviteLink?: string
+  expiresAt: string
+  createdAt: string
 }
 
 export interface UserModuleLicense {

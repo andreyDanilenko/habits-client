@@ -31,6 +31,12 @@ const routes: RouteRecordRaw[] = [
     meta: { public: true },
   },
   {
+    path: '/invite/:token',
+    name: 'Invite',
+    component: () => import('@/pages/invite'),
+    meta: { public: true },
+  },
+  {
     path: '/create-workspace',
     name: 'CreateWorkspace',
     component: () => import('@/pages/create-workspace'),

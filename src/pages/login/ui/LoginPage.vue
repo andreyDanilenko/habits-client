@@ -73,16 +73,22 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { reactive, ref, onMounted } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import { Card, Button, Input, Checkbox } from '@/shared/ui'
   import { Logo } from '@/shared/ui/icon'
   import { useAuthStore } from '@/features/auth'
   import { useUserStore } from '@/entities/user'
 
   const router = useRouter()
+  const route = useRoute()
   const authStore = useAuthStore()
   const userStore = useUserStore()
+
+  onMounted(() => {
+    const email = route.query.email as string
+    if (email) form.email = email
+  })
 
   const isLoading = ref(false)
 
@@ -110,7 +116,12 @@
       })
 
       if (authStore.isAuthenticated && userStore.currentUser) {
-        router.push('/')
+        const inviteToken = route.query.inviteToken as string
+        if (inviteToken) {
+          router.push(`/invite/${inviteToken}`)
+        } else {
+          router.push('/')
+        }
       } else {
         errors.email = 'Ошибка аутентификации'
       }

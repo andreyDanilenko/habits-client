@@ -25,9 +25,14 @@ const initApp = async () => {
   const authStore = useAuthStore()
 
   const path = window.location.pathname
-  const isPublicAuthPage =
-    path === '/login' || path === '/register' || path.startsWith('/auth/verify-email')
-  if (!isPublicAuthPage) {
+  // Страницы, где пользователь точно не авторизован — initAuth не нужен
+  const isUnauthenticatedPage =
+    path === '/login' ||
+    path === '/register' ||
+    path.startsWith('/auth/verify-email')
+  // Для /invite/ initAuth обязателен: если пользователь авторизован, нужно обновить сессию
+  // до принятия приглашения, иначе accept может вернуть requires_auth из-за истёкшего токена
+  if (!isUnauthenticatedPage) {
     await authStore.initAuth()
   }
 

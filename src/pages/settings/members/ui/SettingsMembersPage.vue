@@ -7,6 +7,46 @@
       </p>
     </div>
 
+    <!-- Приглашения -->
+    <div v-if="canInvite" class="space-y-4">
+      <h2 class="text-lg font-medium text-text-primary">Пригласить</h2>
+      <Card class="p-4">
+        <form @submit.prevent="handleInvite" class="flex flex-col sm:flex-row gap-3">
+          <Input
+            v-model="inviteEmail"
+            label="Email"
+            type="email"
+            name="invite-email"
+            placeholder="email@example.com"
+            autocomplete="off"
+            class="flex-1 min-w-0"
+          />
+          <Select
+            v-model="inviteRole"
+            :options="inviteRoleOptions"
+            placeholder="Роль"
+            class="w-full sm:w-40"
+          />
+          <Button type="submit" :loading="inviteLoading">Пригласить</Button>
+        </form>
+      </Card>
+      <div v-if="invitations.length" class="space-y-2">
+        <h3 class="text-sm font-medium text-text-secondary">Ожидающие приглашения</h3>
+        <Card v-for="inv in invitations" :key="inv.id" class="p-3 flex items-center justify-between">
+          <span class="text-text-primary">{{ inv.email }}</span>
+          <span class="text-sm text-text-secondary">{{ inv.systemRole }}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            :loading="cancellingId === inv.id"
+            @click="cancelInvite(inv)"
+          >
+            Отменить
+          </Button>
+        </Card>
+      </div>
+    </div>
+
     <div v-if="isLoading" class="text-sm text-text-secondary">Загрузка списка участников…</div>
 
     <div v-else-if="isError" class="text-sm text-red-600">Не удалось загрузить участников.</div>
@@ -68,13 +108,14 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue'
-  import { Card, Button, Modal, ConfirmModal, Select, UserInfo } from '@/shared/ui'
+  import { Card, Button, Modal, ConfirmModal, Select, UserInfo, Input } from '@/shared/ui'
   import {
     useWorkspaceStore,
     workspaceService,
     usePermissions,
     WorkspacePermission,
     type Member,
+    type Invitation,
   } from '@/entities/workspace'
   import { useUserStore } from '@/entities/user'
   import { roleService } from '@/entities/role'
@@ -94,6 +135,16 @@
   const showRemoveModal = ref(false)
   const memberToRemove = ref<Member | null>(null)
   const roleChangingMemberId = ref<string | null>(null)
+  const inviteEmail = ref('')
+  const inviteRole = ref<'MEMBER' | 'GUEST'>('MEMBER')
+  const inviteLoading = ref(false)
+  const invitations = ref<Invitation[]>([])
+  const cancellingId = ref<string | null>(null)
+
+  const inviteRoleOptions = [
+    { value: 'MEMBER', label: 'MEMBER' },
+    { value: 'GUEST', label: 'GUEST' },
+  ]
 
   const customRoles = computed(() => availableRoles.value.filter((r) => !r.isSystem))
 
@@ -108,6 +159,8 @@
       hasPermission(WorkspacePermission.MEMBERS_EDIT_ROLE) ||
       hasPermission(WorkspacePermission.MEMBERS_REMOVE),
   )
+
+  const canInvite = computed(() => hasPermission(WorkspacePermission.MEMBERS_INVITE))
 
   const ownerCount = computed(
     () => members.value.filter((m) => String(m.systemRole).toUpperCase() === 'OWNER').length,
@@ -223,9 +276,54 @@
     }
   }
 
+  const loadInvitations = async () => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId || !canInvite.value) return
+    try {
+      const res = await workspaceService.listInvitations(workspaceId, { status: 'PENDING' })
+      invitations.value = res.invitations ?? []
+    } catch {
+      invitations.value = []
+    }
+  }
+
+  const handleInvite = async () => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId || !inviteEmail.value.trim()) return
+    inviteLoading.value = true
+    try {
+      await workspaceService.createInvitation(workspaceId, {
+        email: inviteEmail.value.trim(),
+        systemRole: inviteRole.value,
+      })
+      inviteEmail.value = ''
+      await loadInvitations()
+    } catch (err: any) {
+      console.error('Invite failed:', err)
+      alert(err?.response?.data?.message ?? err?.message ?? 'Не удалось отправить приглашение')
+    } finally {
+      inviteLoading.value = false
+    }
+  }
+
+  const cancelInvite = async (inv: Invitation) => {
+    const workspaceId = workspaceStore.currentWorkspace?.id
+    if (!workspaceId) return
+    cancellingId.value = inv.id
+    try {
+      await workspaceService.cancelInvitation(workspaceId, inv.id)
+      invitations.value = invitations.value.filter((i) => i.id !== inv.id)
+    } catch {
+      await loadInvitations()
+    } finally {
+      cancellingId.value = null
+    }
+  }
+
   onMounted(() => {
     void loadRoles()
     void loadMembers()
+    void loadInvitations()
   })
 
   watch(
@@ -233,6 +331,7 @@
     () => {
       void loadRoles()
       void loadMembers()
+      void loadInvitations()
     },
   )
 </script>

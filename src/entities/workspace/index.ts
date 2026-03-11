@@ -7,7 +7,13 @@ export type {
 } from './types/workspace'
 
 export { useWorkspaceStore } from './model/workspace-store'
-export { workspaceService } from './api/workspace-service'
+export {
+  workspaceService,
+  publicInvitationService,
+  type Invitation,
+  type PublicInvitationInfo,
+  type AcceptInvitationResponse,
+} from './api/workspace-service'
 export {
   usePermissions,
   requirePermission,

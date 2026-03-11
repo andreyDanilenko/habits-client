@@ -7,6 +7,7 @@ export interface RegisterDto {
   email: string
   password: string
   name?: string
+  inviteToken?: string
 }
 
 export interface AuthResponse {
