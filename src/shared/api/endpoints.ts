@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: apiV1 + '/auth/login',
     REGISTER: apiV1 + '/auth/register',
+    VERIFY_EMAIL: apiV1 + '/auth/verify-email',
     LOGOUT: apiV1 + '/auth/logout',
     REFRESH: apiV1 + '/auth/refresh',
     ME: apiV1 + '/auth/me',

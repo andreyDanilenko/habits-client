@@ -13,7 +13,45 @@
         </p>
       </div>
 
-      <Card class="p-(--spacing-8)">
+      <Card v-if="emailSent" class="p-(--spacing-8)">
+        <div class="space-y-(--spacing-6) text-center">
+          <div
+            class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30"
+          >
+            <svg
+              class="h-6 w-6 text-green-600 dark:text-green-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          </div>
+          <h2 class="text-lg font-medium text-text-primary">Письмо отправлено</h2>
+          <p class="text-(--text-sm) text-text-secondary">
+            {{ emailSentMessage }}
+          </p>
+          <p class="text-(--text-sm) text-text-secondary">
+            Перейдите по ссылке из письма, чтобы подтвердить регистрацию.
+          </p>
+          <Button variant="outline" class="w-full" @click="resetForm">Зарегистрировать другой email</Button>
+          <div class="text-center">
+            <router-link
+              to="/login"
+              class="font-medium text-primary-default hover:text-primary-dark"
+            >
+              Вернуться к входу
+            </router-link>
+          </div>
+        </div>
+      </Card>
+
+      <Card v-else class="p-(--spacing-8)">
         <form @submit.prevent="handleSubmit" class="space-y-(--spacing-6)">
           <Input v-model="form.name" label="Имя" name="name" placeholder="Введите ваше имя" />
 
@@ -91,6 +129,8 @@
   const userStore = useUserStore()
 
   const isLoading = ref(false)
+  const emailSent = ref(false)
+  const emailSentMessage = ref('')
 
   const form = reactive({
     name: '',
@@ -131,14 +171,19 @@
     isLoading.value = true
 
     try {
-      await authStore.register({
+      const result = await authStore.register({
         email: form.email,
         password: form.password,
         name: form.name || undefined,
       })
 
-      await userStore.fetchCurrentUser()
+      if (result.pendingVerification) {
+        emailSent.value = true
+        emailSentMessage.value = result.message || 'На вашу почту отправлена ссылка для подтверждения регистрации.'
+        return
+      }
 
+      await userStore.fetchCurrentUser()
       router.push('/')
     } catch (error: any) {
       if (error.response?.data?.message) {
@@ -149,5 +194,18 @@
     } finally {
       isLoading.value = false
     }
+  }
+
+  const resetForm = () => {
+    emailSent.value = false
+    emailSentMessage.value = ''
+    form.name = ''
+    form.email = ''
+    form.password = ''
+    form.confirmPassword = ''
+    form.acceptTerms = false
+    errors.email = ''
+    errors.password = ''
+    errors.confirmPassword = ''
   }
 </script>

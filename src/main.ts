@@ -25,7 +25,8 @@ const initApp = async () => {
   const authStore = useAuthStore()
 
   const path = window.location.pathname
-  const isPublicAuthPage = path === '/login' || path === '/register'
+  const isPublicAuthPage =
+    path === '/login' || path === '/register' || path.startsWith('/auth/verify-email')
   if (!isPublicAuthPage) {
     await authStore.initAuth()
   }

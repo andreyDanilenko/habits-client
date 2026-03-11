@@ -25,6 +25,12 @@ const routes: RouteRecordRaw[] = [
     meta: { public: true },
   },
   {
+    path: '/auth/verify-email',
+    name: 'VerifyEmail',
+    component: () => import('@/pages/verify-email'),
+    meta: { public: true },
+  },
+  {
     path: '/create-workspace',
     name: 'CreateWorkspace',
     component: () => import('@/pages/create-workspace'),

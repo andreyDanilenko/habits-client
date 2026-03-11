@@ -60,7 +60,12 @@
   const authStore = useAuthStore()
   const { openModal } = useModal()
 
-  const showHeader = computed(() => route.name !== 'Login' && route.name !== 'Register')
+  const showHeader = computed(
+    () =>
+      route.name !== 'Login' &&
+      route.name !== 'Register' &&
+      route.name !== 'VerifyEmail',
+  )
   const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
   const hasNoPermissions = computed(
     () =>

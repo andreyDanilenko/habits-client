@@ -47,7 +47,11 @@ export const useAuthStore = defineStore('auth', () => {
   const register = async (data: RegisterDto) => {
     isLoading.value = true
     try {
-      await authService.register(data)
+      const result = await authService.register(data)
+
+      if (result.pendingVerification) {
+        return { success: true, pendingVerification: true, message: result.message }
+      }
 
       const userStore = useUserStore()
       await userStore.fetchCurrentUser()
@@ -55,7 +59,6 @@ export const useAuthStore = defineStore('auth', () => {
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
 
-      // Очищаем workspace store, чтобы при следующей навигации загрузились актуальные данные
       useWorkspaceStore().clearWorkspaces()
 
       return { success: true }

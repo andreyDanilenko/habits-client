@@ -3,8 +3,15 @@ import type { LoginDto, RegisterDto, AuthResponse, EffectivePermissions } from '
 import type { User } from '@/entities/user'
 
 interface AuthDataResponse {
-  user: User
+  user?: User
   expires_in?: number
+  message?: string
+}
+
+export interface RegisterResult {
+  pendingVerification?: boolean
+  message?: string
+  user?: User
 }
 
 export const authService = {
@@ -17,12 +24,15 @@ export const authService = {
     }
   },
 
-  register: async (data: RegisterDto): Promise<AuthResponse> => {
+  register: async (data: RegisterDto): Promise<AuthResponse & RegisterResult> => {
     const response = await api.post<AuthDataResponse>(API_ENDPOINTS.AUTH.REGISTER, data)
+    const pendingVerification = !response.user && !!response.message
     return {
-      accessToken: 'cookie-based',
-      refreshToken: 'cookie-based',
+      accessToken: pendingVerification ? '' : 'cookie-based',
+      refreshToken: pendingVerification ? '' : 'cookie-based',
       user: response.user,
+      pendingVerification,
+      message: response.message,
     }
   },
 
