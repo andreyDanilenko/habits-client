@@ -31,7 +31,18 @@ export const adminService = {
     return response.users
   },
 
-  deleteUser: async (userId: string): Promise<void> => {
-    await api.delete(API_ENDPOINTS.ADMIN.USER(userId))
+  deleteUser: async (userId: string, permanent = false): Promise<void> => {
+    const url = permanent
+      ? `${API_ENDPOINTS.ADMIN.USER(userId)}?permanent=true`
+      : API_ENDPOINTS.ADMIN.USER(userId)
+    await api.delete(url)
+  },
+
+  banUser: async (userId: string): Promise<void> => {
+    await api.post(API_ENDPOINTS.ADMIN.USER_BAN(userId))
+  },
+
+  unbanUser: async (userId: string): Promise<void> => {
+    await api.post(API_ENDPOINTS.ADMIN.USER_UNBAN(userId))
   },
 }

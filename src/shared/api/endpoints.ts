@@ -40,6 +40,8 @@ export const API_ENDPOINTS = {
     WORKSPACES: apiV1 + '/admin/workspaces',
     USERS: apiV1 + '/admin/users',
     USER: (id: string) => apiV1 + `/admin/users/${id}`,
+    USER_BAN: (id: string) => apiV1 + `/admin/users/${id}/ban`,
+    USER_UNBAN: (id: string) => apiV1 + `/admin/users/${id}/unban`,
     USER_LICENSES: (userId: string) => apiV1 + `/admin/users/${userId}/licenses`,
   },
 

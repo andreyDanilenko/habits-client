@@ -53,7 +53,12 @@
 
       <Card v-else class="p-(--spacing-8)">
         <form @submit.prevent="handleSubmit" class="space-y-(--spacing-6)">
-          <Input v-model="form.name" label="Имя" name="name" placeholder="Введите ваше имя" />
+          <Input
+            v-model="form.name"
+            label="Имя (необязательно)"
+            name="name"
+            placeholder="Введите ваше имя"
+          />
 
           <Input
             v-model="form.email"
