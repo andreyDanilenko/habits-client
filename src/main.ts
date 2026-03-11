@@ -24,7 +24,12 @@ const initApp = async () => {
   const { useAuthStore } = await import('@/features/auth')
   const authStore = useAuthStore()
 
-  await authStore.initAuth()
+  const path = window.location.pathname
+  const isPublicAuthPage = path === '/login' || path === '/register'
+  if (!isPublicAuthPage) {
+    await authStore.initAuth()
+  }
+
   app.use(router)
   await router.isReady()
   app.mount('#app')

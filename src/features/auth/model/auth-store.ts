@@ -82,20 +82,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const refresh = async () => {
-    // Проверяем, что пользователь аутентифицирован
-    const userStore = useUserStore()
-    if (!userStore.currentUser) {
-      throw new Error('No authenticated user')
-    }
-
     try {
-      // Сервер обновляет токены в HttpOnly куках
-      await authService.refresh('cookie-based')
+      // Сервер обновляет токены в HttpOnly куках (refresh_token передаётся автоматически)
+      await authService.refresh()
 
-      // После успешного обновления проверяем пользователя
+      const userStore = useUserStore()
       await userStore.fetchCurrentUser()
 
-      // Устанавливаем флаги для совместимости
       accessToken.value = 'cookie-based'
       refreshToken.value = 'cookie-based'
 

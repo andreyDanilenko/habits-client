@@ -1,5 +1,6 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import { mockApi } from './mock-client'
+import { API_ENDPOINTS } from './endpoints'
 
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true' || false
 const BASE_URL = import.meta.env.VITE_API_URL ?? ''
@@ -11,6 +12,8 @@ type UnauthorizedHandler = () => void | Promise<void>
 class ApiClient {
   private client: AxiosInstance
   private unauthorizedHandler: UnauthorizedHandler | null = null
+  /** Один refresh на все параллельные 401 — остальные ждут и ретраят после успеха */
+  private refreshPromise: Promise<boolean> | null = null
 
   constructor() {
     this.client = axios.create({
@@ -41,7 +44,40 @@ class ApiClient {
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {
-        if (error.response?.status === 401) {
+        const originalRequest = error.config
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          const isRefreshRequest = originalRequest.url?.includes('/auth/refresh')
+
+          if (isRefreshRequest) {
+            if (this.unauthorizedHandler) {
+              await this.unauthorizedHandler()
+            } else {
+              window.location.href = '/login'
+            }
+            return Promise.reject(error)
+          }
+
+          // Один refresh на все параллельные 401 — остальные ждут того же промиса
+          if (!this.refreshPromise) {
+            this.refreshPromise = this.client
+              .post(API_ENDPOINTS.AUTH.REFRESH)
+              .then((res) => {
+                this.refreshPromise = null
+                return res.status === 200
+              })
+              .catch(() => {
+                this.refreshPromise = null
+                return false
+              })
+          }
+
+          const refreshSucceeded = await this.refreshPromise
+          if (refreshSucceeded) {
+            originalRequest._retry = true
+            return this.client(originalRequest)
+          }
+
           if (this.unauthorizedHandler) {
             await this.unauthorizedHandler()
           } else {

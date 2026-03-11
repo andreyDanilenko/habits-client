@@ -28,8 +28,9 @@ export const authService = {
 
   logout: async (): Promise<void> => api.post(API_ENDPOINTS.AUTH.LOGOUT),
 
-  refresh: async (refreshToken: string): Promise<AuthResponse> => {
-    const response = await api.post<AuthDataResponse>(API_ENDPOINTS.AUTH.REFRESH, { refreshToken })
+  refresh: async (): Promise<AuthResponse> => {
+    // Refresh token передаётся через httpOnly cookie автоматически
+    const response = await api.post<AuthDataResponse>(API_ENDPOINTS.AUTH.REFRESH)
     return {
       accessToken: 'cookie-based',
       refreshToken: 'cookie-based',
