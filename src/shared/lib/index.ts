@@ -15,3 +15,4 @@ export {
   getGreeting,
   getTextPreview,
 } from './date'
+export { PASSWORD_REGEX, PASSWORD_ERROR, validatePassword, getPasswordError } from './validation'

@@ -33,8 +33,9 @@
             type="password"
             name="password"
             required
-            placeholder="Не менее 6 символов"
+            placeholder="Не менее 8 символов"
             :error="errors.password"
+            @blur="validatePasswordField"
           />
 
           <Input
@@ -81,6 +82,7 @@
   import { useRouter } from 'vue-router'
   import { Card, Button, Input, Checkbox } from '@/shared/ui'
   import { Logo } from '@/shared/ui/icon'
+  import { getPasswordError } from '@/shared/lib/validation'
   import { useAuthStore } from '@/features/auth'
   import { useUserStore } from '@/entities/user'
 
@@ -104,6 +106,10 @@
     confirmPassword: '',
   })
 
+  const validatePasswordField = () => {
+    errors.password = getPasswordError(form.password)
+  }
+
   const handleSubmit = async () => {
     errors.email = ''
     errors.password = ''
@@ -119,10 +125,8 @@
       return
     }
 
-    if (form.password.length < 6) {
-      errors.password = 'Пароль должен быть не менее 6 символов'
-      return
-    }
+    validatePasswordField()
+    if (errors.password) return
 
     isLoading.value = true
 
