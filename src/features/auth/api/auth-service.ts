@@ -51,4 +51,11 @@ export const authService = {
   getEffectivePermissions: async (workspaceId: string): Promise<EffectivePermissions> => {
     return api.get<EffectivePermissions>(API_ENDPOINTS.ME.PERMISSIONS(workspaceId))
   },
+
+  changePassword: async (data: {
+    currentPassword: string
+    newPassword: string
+  }): Promise<void> => {
+    await api.post(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, data)
+  },
 }

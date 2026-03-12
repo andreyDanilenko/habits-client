@@ -34,6 +34,54 @@
     </Card>
 
     <Card class="p-6">
+      <h2 class="text-text-primary mb-4">Безопасность</h2>
+
+      <div class="space-y-4">
+        <Input
+          v-model="passwordForm.currentPassword"
+          label="Текущий пароль"
+          type="password"
+          name="current-password"
+          placeholder="Введите текущий пароль"
+          :error="passwordErrors.currentPassword"
+        />
+
+        <Input
+          v-model="passwordForm.newPassword"
+          label="Новый пароль"
+          type="password"
+          name="new-password"
+          placeholder="Минимум 8 символов, буквы, цифры, спецсимволы"
+          :error="passwordErrors.newPassword"
+          hint="Минимум 8 символов, буквы, цифры, спецсимволы"
+          @blur="validateNewPasswordField"
+        />
+
+        <Input
+          v-model="passwordForm.confirmPassword"
+          label="Подтвердите новый пароль"
+          type="password"
+          name="confirm-password"
+          placeholder="Повторите новый пароль"
+          :error="passwordErrors.confirmPassword"
+        />
+
+        <p v-if="passwordSuccess" class="text-sm text-green-600 dark:text-green-400">
+          Пароль успешно изменён
+        </p>
+        <div class="pt-2">
+          <Button
+            :loading="isChangingPassword"
+            :disabled="!canChangePassword"
+            @click="changePassword"
+          >
+            Сменить пароль
+          </Button>
+        </div>
+      </div>
+    </Card>
+
+    <Card class="p-6">
       <h2 class="text-text-primary mb-4">Уведомления</h2>
 
       <div class="space-y-4">
@@ -98,6 +146,8 @@
   import { ref, reactive, computed, onMounted } from 'vue'
   import { Card, Button, Input } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
+  import { authService } from '@/features/auth'
+  import { getPasswordError } from '@/shared/lib/validation'
 
   const userStore = useUserStore()
   const isAdmin = computed(() => {
@@ -106,6 +156,8 @@
   })
 
   const isSaving = ref(false)
+  const isChangingPassword = ref(false)
+  const passwordSuccess = ref(false)
   const showDeleteConfirm = ref(false)
 
   const profile = reactive({
@@ -113,10 +165,73 @@
     name: '',
   })
 
+  const passwordForm = reactive({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  })
+
+  const passwordErrors = reactive({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  })
+
   const notifications = reactive({
     email: true,
     reminders: true,
   })
+
+  const canChangePassword = computed(
+    () =>
+      passwordForm.currentPassword.trim() &&
+      passwordForm.newPassword.trim() &&
+      passwordForm.confirmPassword.trim() &&
+      !getPasswordError(passwordForm.newPassword) &&
+      passwordForm.newPassword === passwordForm.confirmPassword,
+  )
+
+  const validateNewPasswordField = () => {
+    passwordErrors.newPassword = getPasswordError(passwordForm.newPassword)
+  }
+
+  const changePassword = async () => {
+    passwordErrors.currentPassword = ''
+    passwordErrors.newPassword = ''
+    passwordErrors.confirmPassword = ''
+    passwordSuccess.value = false
+
+    const newErr = getPasswordError(passwordForm.newPassword)
+    if (newErr) {
+      passwordErrors.newPassword = newErr
+      return
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      passwordErrors.confirmPassword = 'Пароли не совпадают'
+      return
+    }
+
+    isChangingPassword.value = true
+    try {
+      await authService.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      })
+      passwordForm.currentPassword = ''
+      passwordForm.newPassword = ''
+      passwordForm.confirmPassword = ''
+      passwordSuccess.value = true
+    } catch (error: any) {
+      const msg = error?.response?.data?.message
+      if (msg?.toLowerCase?.().includes('current') || msg?.toLowerCase?.().includes('incorrect')) {
+        passwordErrors.currentPassword = 'Неверный текущий пароль'
+      } else {
+        passwordErrors.currentPassword = msg || 'Не удалось сменить пароль'
+      }
+    } finally {
+      isChangingPassword.value = false
+    }
+  }
 
   onMounted(() => {
     if (userStore.currentUser) {

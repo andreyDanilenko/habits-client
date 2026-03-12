@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
     LOGOUT: apiV1 + '/auth/logout',
     REFRESH: apiV1 + '/auth/refresh',
     ME: apiV1 + '/auth/me',
+    CHANGE_PASSWORD: apiV1 + '/auth/change-password',
   },
 
   WORKSPACE: {
