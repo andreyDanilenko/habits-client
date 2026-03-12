@@ -4,15 +4,27 @@
   >
     <div class="max-w-md w-full text-center">
       <div v-if="status === 'loading'" class="space-y-4">
-        <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-primary-default border-t-transparent" />
+        <div
+          class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-primary-default border-t-transparent"
+        />
         <p class="text-text-secondary">Подтверждение регистрации...</p>
       </div>
       <div v-else-if="status === 'success'" class="space-y-4">
         <div
           class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30"
         >
-          <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          <svg
+            class="h-6 w-6 text-green-600 dark:text-green-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         </div>
         <h1 class="text-lg font-medium text-text-primary">Email подтверждён</h1>
@@ -22,13 +34,26 @@
         <div
           class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
         >
-          <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            class="h-6 w-6 text-red-600 dark:text-red-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </div>
         <h1 class="text-lg font-medium text-text-primary">Ошибка подтверждения</h1>
         <p class="text-(--text-sm) text-text-secondary">{{ errorMessage }}</p>
-        <router-link to="/register" class="block font-medium text-primary-default hover:text-primary-dark">
+        <router-link
+          to="/register"
+          class="block font-medium text-primary-default hover:text-primary-dark"
+        >
           Зарегистрироваться снова
         </router-link>
       </div>
@@ -64,7 +89,8 @@
     } catch (err: any) {
       status.value = 'error'
       errorMessage.value =
-        err.response?.data?.message || 'Ссылка недействительна или истекла. Зарегистрируйтесь снова.'
+        err.response?.data?.message ||
+        'Ссылка недействительна или истекла. Зарегистрируйтесь снова.'
     }
   })
 </script>

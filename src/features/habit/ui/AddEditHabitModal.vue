@@ -190,7 +190,11 @@
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
               Категория
             </label>
-            <Select v-model="form.category" :options="categoryOptions" placeholder="Без категории" />
+            <Select
+              v-model="form.category"
+              :options="categoryOptions"
+              placeholder="Без категории"
+            />
           </div>
         </div>
       </template>
@@ -229,7 +233,9 @@
             </div>
           </div>
           <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">Иконка</label>
+            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2"
+              >Иконка</label
+            >
             <div class="flex flex-wrap gap-2">
               <SelectButton
                 v-for="icon in icons"
@@ -308,7 +314,9 @@
           </button>
           <div v-show="showAdvanced" class="px-4 pb-4 pt-0 space-y-4 border-t border-border-light">
             <div>
-              <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+              <label
+                class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >
                 Описание
               </label>
               <Textarea
@@ -323,7 +331,9 @@
               </span>
             </div>
             <div>
-              <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+              <label
+                class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >
                 Цель на день
               </label>
               <div class="flex items-center gap-2">
@@ -341,7 +351,9 @@
               </div>
             </div>
             <div>
-              <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+              <label
+                class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >
                 Предпочтительное время
               </label>
               <div class="flex flex-wrap gap-2">
@@ -355,10 +367,16 @@
               </div>
             </div>
             <div>
-              <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+              <label
+                class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >
                 Категория
               </label>
-              <Select v-model="form.category" :options="categoryOptions" placeholder="Без категории" />
+              <Select
+                v-model="form.category"
+                :options="categoryOptions"
+                placeholder="Без категории"
+              />
             </div>
           </div>
         </div>
@@ -416,7 +434,11 @@
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
               Категория
             </label>
-            <Select v-model="form.category" :options="categoryOptions" placeholder="Без категории" />
+            <Select
+              v-model="form.category"
+              :options="categoryOptions"
+              placeholder="Без категории"
+            />
           </div>
         </template>
       </div>
@@ -425,17 +447,15 @@
     <template #footer>
       <div
         class="grid gap-3"
-        :class="
-          isMobile && !isEditing ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'
-        "
+        :class="isMobile && !isEditing ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'"
       >
         <!-- Mobile: stepped flow -->
         <template v-if="isMobile && !isEditing">
-          <Button type="button" variant="outline" @click="$emit('close')">
+          <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
             Отмена
           </Button>
           <template v-if="step === 1">
-            <Button type="button" variant="outline" @click="step = 2">
+            <Button type="button" variant="outline" class="w-full" @click="step = 2">
               Дополнительно
             </Button>
             <Button
@@ -443,20 +463,20 @@
               type="submit"
               :loading="isSubmitting"
               :disabled="!isStep1Valid"
-              class="col-span-2"
+              class="col-span-2 w-full"
             >
               Создать привычку
             </Button>
           </template>
           <template v-else>
-            <Button type="button" variant="outline" @click="step = 1">
+            <Button type="button" variant="outline" class="w-full" @click="step = 1">
               Назад
             </Button>
             <Button
               type="button"
               :loading="isSubmitting"
               :disabled="!isStep1Valid"
-              class="col-span-2"
+              class="col-span-2 w-full"
               @click="handleSubmit()"
             >
               Создать привычку

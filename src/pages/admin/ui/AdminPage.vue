@@ -50,10 +50,7 @@
               </Badge>
             </div>
             <p class="mt-0.5 text-sm text-text-secondary">{{ user.email }}</p>
-            <div
-              v-if="user.workspaces?.length && user.status === 'ACTIVE'"
-              class="mt-2"
-            >
+            <div v-if="user.workspaces?.length && user.status === 'ACTIVE'" class="mt-2">
               <p class="text-xs font-medium text-text-secondary mb-1">Воркспейсы:</p>
               <div class="flex flex-wrap gap-1.5 items-center">
                 <span
@@ -132,7 +129,12 @@
 
     <Modal
       :is-open="showDeleteModal"
-      @update:is-open="(v) => { showDeleteModal = v; if (!v) closeDeleteConfirm() }"
+      @update:is-open="
+        (v) => {
+          showDeleteModal = v
+          if (!v) closeDeleteConfirm()
+        }
+      "
     >
       <ModalContent
         :title="deleteMode === 'hard' ? 'Удалить навсегда?' : 'Деактивировать пользователя?'"
@@ -146,14 +148,14 @@
         <template #default>
           <p v-if="deleteTarget" class="text-text-primary">
             {{ deleteTarget.email }}
-            <span v-if="deleteTarget.name" class="text-text-secondary"> — {{ deleteTarget.name }}</span>
+            <span v-if="deleteTarget.name" class="text-text-secondary">
+              — {{ deleteTarget.name }}</span
+            >
           </p>
         </template>
         <template #footer>
           <div class="flex justify-end gap-3">
-            <Button type="button" variant="outline" @click="closeDeleteConfirm">
-              Отмена
-            </Button>
+            <Button type="button" variant="outline" @click="closeDeleteConfirm"> Отмена </Button>
             <Button
               v-if="deleteMode === 'soft'"
               type="button"

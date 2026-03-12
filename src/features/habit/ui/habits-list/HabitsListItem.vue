@@ -1,21 +1,21 @@
 <template>
-  <div>
+  <div class="flex flex-col h-full">
     <div class="flex items-start justify-between mb-4">
-      <div class="flex items-center space-x-3">
+      <div class="flex items-start gap-3">
         <div
-          class="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
+          class="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center text-white font-bold"
           :style="{ backgroundColor: habit.color || 'var(--color-primary-default)' }"
         >
           {{ habit.icon || '📝' }}
         </div>
         <div>
           <div class="flex items-center gap-2 flex-wrap">
-            <h3 class="text-text-primary">{{ habit.title }}</h3>
+            <h3 class="text-text-primary break-words">{{ habit.title }}</h3>
             <Badge v-if="displayOwnerName" variant="outline" class="text-xs">
               {{ displayOwnerName }}
             </Badge>
           </div>
-          <p v-if="habit.description" class="text-sm text-text-secondary mt-1">
+          <p v-if="habit.description" class="text-sm text-text-secondary mt-1 line-clamp-1">
             {{ habit.description }}
           </p>
         </div>
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-auto">
       <ProgressBar
         :current="progress"
         :total="habit.dailyGoal || 1"

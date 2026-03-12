@@ -19,10 +19,10 @@
       <div
         v-for="habit in habits"
         :key="habit.id"
-        class="flex items-center justify-between p-4 border border-border-default rounded-lg hover:bg-bg-secondary transition-colors"
+        class="flex items-center justify-between flex-wrap gap-3 p-4 border border-border-default rounded-lg hover:bg-bg-secondary transition-colors"
       >
-        <div class="flex-1">
-          <div class="flex items-center space-x-3">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-start gap-3 flex-wrap">
             <div
               class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
               :style="{ backgroundColor: habit.color || 'var(--color-primary-default)' }"
@@ -31,11 +31,13 @@
             </div>
             <div class="flex-1">
               <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="text-text-primary">{{ habit.title }}</h3>
+                <h3 class="text-text-primary break-words">
+                  {{ habit.title }}
+                </h3>
                 <Badge
                   v-if="habit.ownerName && habit.ownerName !== 'null'"
                   variant="outline"
-                  class="text-xs"
+                  class="text-xs max-w-[120px] truncate"
                 >
                   {{ habit.ownerName }}
                 </Badge>
@@ -54,29 +56,21 @@
                   />
                 </div>
               </div>
-              <div v-else class="mt-2">
-                <span
-                  class="text-xs"
-                  :class="
-                    getProgress(habit.id) >= 1
-                      ? 'text-success-default font-medium'
-                      : 'text-text-muted'
-                  "
-                >
-                  {{ getProgress(habit.id) >= 1 ? '✓ Выполнено' : 'Не выполнено' }}
-                </span>
-              </div>
             </div>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="md"
-          @click="markCompletion(habit)"
-          :disabled="getProgress(habit.id) >= (habit.dailyGoal || 1)"
-        >
-          {{ getProgress(habit.id) >= (habit.dailyGoal || 1) ? '✓ Выполнено' : 'Отметить' }}
-        </Button>
+        <div class="shrink-0 w-full sm:w-auto sm:ml-auto text-right">
+          <Button
+            v-if="getProgress(habit.id) < (habit.dailyGoal || 1)"
+            variant="outline"
+            size="md"
+            @click="markCompletion(habit)"
+          >
+            Отметить
+          </Button>
+
+          <span v-else class="text-success-default font-medium text-sm"> ✓ Выполнено </span>
+        </div>
       </div>
     </div>
   </Card>

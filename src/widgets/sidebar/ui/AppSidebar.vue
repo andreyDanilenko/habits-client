@@ -290,9 +290,7 @@
 
   const sidebarClasses = computed(() => {
     const isPublicPage =
-    route.name === 'Login' ||
-    route.name === 'Register' ||
-    route.name === 'VerifyEmail'
+      route.name === 'Login' || route.name === 'Register' || route.name === 'VerifyEmail'
     if (isPublicPage) return 'hidden'
 
     if (isMobile.value) {

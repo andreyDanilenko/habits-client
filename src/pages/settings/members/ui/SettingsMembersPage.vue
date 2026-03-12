@@ -32,7 +32,11 @@
       </Card>
       <div v-if="invitations.length" class="space-y-2">
         <h3 class="text-sm font-medium text-text-secondary">Ожидающие приглашения</h3>
-        <Card v-for="inv in invitations" :key="inv.id" class="p-3 flex items-center justify-between">
+        <Card
+          v-for="inv in invitations"
+          :key="inv.id"
+          class="p-3 flex items-center justify-between"
+        >
           <span class="text-text-primary">{{ inv.email }}</span>
           <span class="text-sm text-text-secondary">{{ inv.systemRole }}</span>
           <Button

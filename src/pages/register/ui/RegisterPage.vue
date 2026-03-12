@@ -39,7 +39,9 @@
           <p class="text-(--text-sm) text-text-secondary">
             Перейдите по ссылке из письма, чтобы подтвердить регистрацию.
           </p>
-          <Button variant="outline" class="w-full" @click="resetForm">Зарегистрировать другой email</Button>
+          <Button variant="outline" class="w-full" @click="resetForm"
+            >Зарегистрировать другой email</Button
+          >
           <div class="text-center">
             <router-link
               to="/login"
@@ -191,7 +193,8 @@
 
       if (result.pendingVerification) {
         emailSent.value = true
-        emailSentMessage.value = result.message || 'На вашу почту отправлена ссылка для подтверждения регистрации.'
+        emailSentMessage.value =
+          result.message || 'На вашу почту отправлена ссылка для подтверждения регистрации.'
         return
       }
 

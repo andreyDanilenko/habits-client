@@ -18,13 +18,23 @@
   >
     <Spinner v-if="loading" class="mr-2" :class="[spinnerColor, spinnerSize]" />
 
-    <component v-if="leftIcon" :is="leftIcon" :size="resolvedIconSize" :class="iconOnly ? '' : 'mr-2'" />
+    <component
+      v-if="leftIcon"
+      :is="leftIcon"
+      :size="resolvedIconSize"
+      :class="iconOnly ? '' : 'mr-2'"
+    />
 
     <template v-if="!iconOnly">
       <slot />
     </template>
 
-    <component v-if="rightIcon" :is="rightIcon" :size="resolvedIconSize" :class="iconOnly ? '' : 'ml-2'" />
+    <component
+      v-if="rightIcon"
+      :is="rightIcon"
+      :size="resolvedIconSize"
+      :class="iconOnly ? '' : 'ml-2'"
+    />
   </button>
 </template>
 
@@ -67,12 +77,12 @@
   // Размер кнопки задаётся на корневом уровне через --size-button (mobile/desktop).
   const buttonSizeClasses = computed(() => {
     const sizes = {
-      xs: 'w-full min-h-[var(--size-button)] px-(--spacing-2) text-(--text-xs)',
-      sm: 'w-full min-h-[var(--size-button)] px-(--spacing-2) text-(--text-xs)',
-      md: 'w-full min-h-[var(--size-button)] px-(--spacing-3) text-(--text-sm)',
-      lg: 'w-full min-h-[var(--size-button)] px-(--spacing-4) text-(--text-sm)',
-      xl: 'w-full min-h-[var(--size-button)] px-(--spacing-4) text-(--text-base)',
-      xxl: 'w-full min-h-[var(--size-button)] px-(--spacing-5) text-(--text-base)',
+      xs: 'min-h-[var(--size-button)] px-(--spacing-2) text-(--text-xs)',
+      sm: 'min-h-[var(--size-button)] px-(--spacing-2) text-(--text-xs)',
+      md: 'min-h-[var(--size-button)] px-(--spacing-3) text-(--text-sm)',
+      lg: 'min-h-[var(--size-button)] px-(--spacing-4) text-(--text-sm)',
+      xl: 'min-h-[var(--size-button)] px-(--spacing-4) text-(--text-base)',
+      xxl: 'min-h-[var(--size-button)] px-(--spacing-5) text-(--text-base)',
     }
     return sizes[props.size]
   })

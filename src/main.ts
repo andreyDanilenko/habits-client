@@ -27,9 +27,7 @@ const initApp = async () => {
   const path = window.location.pathname
   // Страницы, где пользователь точно не авторизован — initAuth не нужен
   const isUnauthenticatedPage =
-    path === '/login' ||
-    path === '/register' ||
-    path.startsWith('/auth/verify-email')
+    path === '/login' || path === '/register' || path.startsWith('/auth/verify-email')
   // Для /invite/ initAuth обязателен: если пользователь авторизован, нужно обновить сессию
   // до принятия приглашения, иначе accept может вернуть requires_auth из-за истёкшего токена
   if (!isUnauthenticatedPage) {

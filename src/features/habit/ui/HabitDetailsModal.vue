@@ -1,9 +1,5 @@
 <template>
-  <ModalContent
-    :title="habit.title"
-    :fullscreen-on-mobile="isMobile"
-    @close="$emit('close')"
-  >
+  <ModalContent :title="habit.title" :fullscreen-on-mobile="isMobile" @close="$emit('close')">
     <div class="space-y-6">
       <div class="flex items-start space-x-4">
         <div
@@ -138,7 +134,7 @@
           <Button
             type="button"
             variant="outline"
-            class="col-span-2"
+            class="col-span-2 w-full"
             @click="$emit('confirm', 'delete')"
           >
             Удалить
@@ -147,12 +143,12 @@
         <Button
           type="button"
           variant="outline"
-          :class="{ 'col-span-2': !canEdit }"
+          :class="['w-full', { 'col-span-2': !canEdit }]"
           @click="$emit('close')"
         >
           Закрыть
         </Button>
-        <Button v-if="canEdit" type="button" @click="$emit('confirm', 'edit')">
+        <Button v-if="canEdit" type="button" class="w-full" @click="$emit('confirm', 'edit')">
           Редактировать
         </Button>
       </div>

@@ -6,9 +6,12 @@
 
     <template #footer>
       <div class="grid grid-cols-2 gap-3">
-        <Button type="button" variant="outline" @click="$emit('close')"> Отмена </Button>
+        <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
+          Отмена
+        </Button>
         <Button
           type="button"
+          class="w-full"
           :variant="confirmVariant === 'danger' ? 'danger' : 'primary'"
           :loading="loading"
           @click="$emit('confirm', true)"

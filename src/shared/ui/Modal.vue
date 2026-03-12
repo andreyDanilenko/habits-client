@@ -34,10 +34,7 @@
                 v-if="bottomSheetOnMobile"
                 class="flex-shrink-0 flex justify-center pt-3 pb-1 lg:hidden"
               >
-                <div
-                  class="w-10 h-1 rounded-full bg-border-default"
-                  aria-hidden="true"
-                />
+                <div class="w-10 h-1 rounded-full bg-border-default" aria-hidden="true" />
               </div>
               <slot />
             </div>
@@ -74,12 +71,16 @@
         'lg:max-w-[min(30rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:overflow-x-auto lg:overflow-y-auto lg:rounded-xl lg:my-4 lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:max-h-[calc(100vh-2rem)]',
         'fixed bottom-0 left-0 right-0 max-h-[85vh] overflow-hidden flex flex-col rounded-t-xl shadow-[0_-4px_20px_rgba(0,0,0,0.12)] pb-[env(safe-area-inset-bottom)]',
         props.contentClass,
-      ].filter(Boolean).join(' ')
+      ]
+        .filter(Boolean)
+        .join(' ')
     }
     return [
       'max-w-[min(30rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-x-auto overflow-y-auto',
       props.contentClass,
-    ].filter(Boolean).join(' ')
+    ]
+      .filter(Boolean)
+      .join(' ')
   })
 
   const emit = defineEmits<{

@@ -1,7 +1,6 @@
 export const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
 
-export const PASSWORD_ERROR =
-  'Минимум 8 символов, буквы, цифры, спецсимволы'
+export const PASSWORD_ERROR = 'Минимум 8 символов, буквы, цифры, спецсимволы'
 
 export function validatePassword(password: string): boolean {
   return PASSWORD_REGEX.test(password)
