@@ -20,7 +20,7 @@
           </p>
         </div>
       </div>
-      <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+      <div class="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
         <div class="flex items-center space-x-1">
           <Button
             icon-only

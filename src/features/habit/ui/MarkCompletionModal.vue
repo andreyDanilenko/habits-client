@@ -2,6 +2,7 @@
   <ModalContent
     :title="`Отметить выполнение`"
     :description="`Привычка: ${habit.title}`"
+    :fullscreen-on-mobile="isMobile"
     @close="$emit('close')"
   >
     <div class="space-y-4">
@@ -26,7 +27,7 @@
     </div>
 
     <template #footer>
-      <div class="flex justify-end space-x-3">
+      <div class="grid grid-cols-2 gap-3">
         <Button type="button" variant="outline" @click="$emit('close')"> Отмена </Button>
         <Button type="button" @click="handleSubmit" :loading="isSubmitting">
           Отметить выполнение
@@ -37,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
+  import { reactive, ref, onMounted, onUnmounted } from 'vue'
   import { ModalContent, Button, Input, Textarea } from '@/shared/ui'
   import type { Habit } from '@/entities/habit'
 
@@ -58,6 +59,20 @@
   }>()
 
   const isSubmitting = ref(false)
+  const isMobile = ref(false)
+
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
 
   const form = reactive({
     time: new Date().toTimeString().slice(0, 5), // текущее время HH:MM

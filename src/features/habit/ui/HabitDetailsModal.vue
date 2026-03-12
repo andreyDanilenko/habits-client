@@ -1,5 +1,9 @@
 <template>
-  <ModalContent :title="habit.title" @close="$emit('close')">
+  <ModalContent
+    :title="habit.title"
+    :fullscreen-on-mobile="isMobile"
+    @close="$emit('close')"
+  >
     <div class="space-y-6">
       <div class="flex items-start space-x-4">
         <div
@@ -129,29 +133,35 @@
     </div>
 
     <template #footer>
-      <div class="flex justify-between">
+      <div class="grid grid-cols-2 gap-3">
+        <template v-if="canDelete">
+          <Button
+            type="button"
+            variant="outline"
+            class="col-span-2"
+            @click="$emit('confirm', 'delete')"
+          >
+            Удалить
+          </Button>
+        </template>
         <Button
-          v-if="canDelete"
           type="button"
           variant="outline"
-          @click="$emit('confirm', 'delete')"
+          :class="{ 'col-span-2': !canEdit }"
+          @click="$emit('close')"
         >
-          Удалить
+          Закрыть
         </Button>
-        <div v-else />
-        <div class="flex space-x-3">
-          <Button type="button" variant="outline" @click="$emit('close')"> Закрыть </Button>
-          <Button v-if="canEdit" type="button" @click="$emit('confirm', 'edit')">
-            Редактировать
-          </Button>
-        </div>
+        <Button v-if="canEdit" type="button" @click="$emit('confirm', 'edit')">
+          Редактировать
+        </Button>
       </div>
     </template>
   </ModalContent>
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onMounted } from 'vue'
+  import { computed, ref, onMounted, onUnmounted } from 'vue'
   import { ModalContent, Button, StatCard, Badge, ProgressBar } from '@/shared/ui'
   import { getLocalDateString } from '@/shared/lib'
   import type { Habit, HabitCompletion, HabitStats } from '@/entities/habit'
@@ -178,9 +188,20 @@
 
   const stats = ref<HabitStats | null>(null)
   const isLoadingStats = ref(false)
+  const isMobile = ref(false)
+
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
 
   onMounted(async () => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
     await loadStats()
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
   })
 
   const loadStats = async () => {

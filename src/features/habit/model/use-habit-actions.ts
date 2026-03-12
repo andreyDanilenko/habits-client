@@ -11,6 +11,9 @@ export const useHabitActions = () => {
   const handleAddHabit = () => {
     return openModal<Partial<Habit>>({
       component: AddEditHabitModal,
+      fullscreenOnMobile: true,
+      contentClass:
+        'fixed inset-0 flex flex-col h-[100dvh] max-w-none max-h-none m-0 rounded-none overflow-hidden lg:relative lg:flex-none lg:h-auto lg:max-w-[min(30rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:mx-auto lg:rounded-xl lg:my-4 lg:overflow-x-auto lg:overflow-y-auto',
       props: {
         habit: undefined,
       },
@@ -25,6 +28,9 @@ export const useHabitActions = () => {
   const editHabit = (habit: Habit) => {
     return openModal<Partial<Habit>>({
       component: AddEditHabitModal,
+      fullscreenOnMobile: true,
+      contentClass:
+        'fixed inset-0 flex flex-col h-[100dvh] max-w-none max-h-none m-0 rounded-none overflow-hidden lg:relative lg:flex-none lg:h-auto lg:max-w-[min(30rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:mx-auto lg:rounded-xl lg:my-4 lg:overflow-x-auto lg:overflow-y-auto',
       props: {
         habit,
       },
@@ -39,6 +45,7 @@ export const useHabitActions = () => {
   const deleteHabit = (habit: Habit) => {
     return openModal<boolean>({
       component: ConfirmModal,
+      bottomSheetOnMobile: true,
       props: {
         title: 'Удалить привычку',
         message: `Вы уверены, что хотите удалить привычку "${habit.title}"? Все данные о выполнениях также будут удалены.`,
@@ -58,6 +65,9 @@ export const useHabitActions = () => {
       note?: string
     }>({
       component: MarkCompletionModal,
+      fullscreenOnMobile: true,
+      contentClass:
+        'fixed inset-0 flex flex-col h-[100dvh] max-w-none max-h-none m-0 rounded-none overflow-hidden lg:relative lg:flex-none lg:h-auto lg:max-w-[min(30rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:mx-auto lg:rounded-xl lg:my-4 lg:overflow-x-auto lg:overflow-y-auto',
       props: {
         habit,
       },
@@ -72,6 +82,9 @@ export const useHabitActions = () => {
   const selectHabit = (habit: Habit) => {
     return openModal<'edit' | 'delete'>({
       component: HabitDetailsModal,
+      fullscreenOnMobile: true,
+      contentClass:
+        'fixed inset-0 flex flex-col h-[100dvh] max-w-none max-h-none m-0 rounded-none overflow-hidden lg:relative lg:flex-none lg:h-auto lg:max-w-[min(30rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:mx-auto lg:rounded-xl lg:my-4 lg:overflow-x-auto lg:overflow-y-auto',
       props: {
         habit,
         completions: habitStore.completions,
