@@ -3,6 +3,9 @@ import { ref, type Component, type Ref } from 'vue'
 export interface ModalConfig<T = any> {
   component: Component
   props?: Record<string, any>
+  contentClass?: string
+  fullscreenOnMobile?: boolean
+  bottomSheetOnMobile?: boolean
   onClose?: (result?: T) => void
   onConfirm?: (result?: T) => void
 }

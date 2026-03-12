@@ -18,13 +18,13 @@
   >
     <Spinner v-if="loading" class="mr-2" :class="[spinnerColor, spinnerSize]" />
 
-    <component v-if="leftIcon" :is="leftIcon" :size="iconSize" :class="iconOnly ? '' : 'mr-2'" />
+    <component v-if="leftIcon" :is="leftIcon" :size="resolvedIconSize" :class="iconOnly ? '' : 'mr-2'" />
 
     <template v-if="!iconOnly">
       <slot />
     </template>
 
-    <component v-if="rightIcon" :is="rightIcon" :size="iconSize" :class="iconOnly ? '' : 'ml-2'" />
+    <component v-if="rightIcon" :is="rightIcon" :size="resolvedIconSize" :class="iconOnly ? '' : 'ml-2'" />
   </button>
 </template>
 
@@ -44,6 +44,7 @@
     leftIcon?: Component
     rightIcon?: Component
     iconOnly?: boolean
+    iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
     iconColor?: 'default' | 'danger' | 'success' | 'warning' | 'info'
     customClass?: string
   }
@@ -63,27 +64,27 @@
     click: [e: MouseEvent]
   }>()
 
-  // ТОЛЬКО размеры заменил на переменные
+  // Размер кнопки задаётся на корневом уровне через --size-button (mobile/desktop).
   const buttonSizeClasses = computed(() => {
     const sizes = {
-      xs: 'h-(--size-6) min-h-(--size-6) px-(--spacing-2) text-(--text-xs)',
-      sm: 'h-(--size-6) min-h-(--size-6) px-(--spacing-2) text-(--text-xs)',
-      md: 'h-(--size-8) min-h-(--size-8) px-(--spacing-3) text-(--text-sm)',
-      lg: 'h-(--size-10) min-h-(--size-10) px-(--spacing-4) text-(--text-sm)',
-      xl: 'h-(--size-10) min-h-(--size-10) px-(--spacing-4) text-(--text-base)',
-      xxl: 'h-(--size-12) min-h-(--size-12) px-(--spacing-5) text-(--text-base)',
+      xs: 'w-full min-h-[var(--size-button)] px-(--spacing-2) text-(--text-xs)',
+      sm: 'w-full min-h-[var(--size-button)] px-(--spacing-2) text-(--text-xs)',
+      md: 'w-full min-h-[var(--size-button)] px-(--spacing-3) text-(--text-sm)',
+      lg: 'w-full min-h-[var(--size-button)] px-(--spacing-4) text-(--text-sm)',
+      xl: 'w-full min-h-[var(--size-button)] px-(--spacing-4) text-(--text-base)',
+      xxl: 'w-full min-h-[var(--size-button)] px-(--spacing-5) text-(--text-base)',
     }
     return sizes[props.size]
   })
 
   const buttonIconOnlyClasses = computed(() => {
     const sizes = {
-      xs: 'h-(--size-6) w-(--size-6) min-h-(--size-6) min-w-(--size-6) p-0 text-(--text-xs)',
-      sm: 'h-(--size-6) w-(--size-6) min-h-(--size-6) min-w-(--size-6) p-0 text-(--text-xs)',
-      md: 'h-(--size-8) w-(--size-8) min-h-(--size-8) min-w-(--size-8) p-0 text-(--text-xs)',
-      lg: 'h-(--size-10) w-(--size-10) min-h-(--size-10) min-w-(--size-10) p-0 text-(--text-sm)',
-      xl: 'h-(--size-10) w-(--size-10) min-h-(--size-10) min-w-(--size-10) p-0 text-(--text-base)',
-      xxl: 'h-(--size-12) w-(--size-12) min-h-(--size-12) min-w-(--size-12) p-0 text-(--text-base)',
+      xs: 'min-h-[var(--size-button)] min-w-[var(--size-button)] p-0 text-(--text-xs)',
+      sm: 'min-h-[var(--size-button)] min-w-[var(--size-button)] p-0 text-(--text-xs)',
+      md: 'min-h-[var(--size-button)] min-w-[var(--size-button)] p-0 text-(--text-xs)',
+      lg: 'min-h-[var(--size-button)] min-w-[var(--size-button)] p-0 text-(--text-sm)',
+      xl: 'min-h-[var(--size-button)] min-w-[var(--size-button)] p-0 text-(--text-base)',
+      xxl: 'min-h-[var(--size-button)] min-w-[var(--size-button)] p-0 text-(--text-base)',
     }
     return sizes[props.size]
   })
@@ -142,14 +143,15 @@
     return sizes[props.size]
   })
 
-  const iconSize = computed(() => {
-    const sizes = {
-      xs: 14,
-      sm: 14,
-      md: 16,
-      lg: 18,
-      xl: 18,
-      xxl: 20,
+  const resolvedIconSize = computed(() => {
+    if (props.iconSize) return props.iconSize
+    const sizes: Record<ComponentSize, 'xs' | 'sm' | 'md' | 'lg' | 'xl'> = {
+      xs: 'xs',
+      sm: 'sm',
+      md: 'md',
+      lg: 'lg',
+      xl: 'lg',
+      xxl: 'xl',
     }
     return sizes[props.size]
   })

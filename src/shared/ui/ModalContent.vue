@@ -1,6 +1,13 @@
 <template>
-  <div class="min-w-0 bg-bg-primary rounded-xl shadow-card-hover">
-    <div v-if="title" class="px-6 py-4 border-b border-border-light">
+  <div
+    class="min-w-0 bg-bg-primary flex flex-col"
+    :class="
+      fullscreenOnMobile
+        ? 'flex-1 min-h-0 overflow-hidden rounded-none shadow-none lg:flex-none lg:min-h-0 lg:overflow-visible lg:rounded-xl lg:shadow-card-hover'
+        : 'rounded-xl shadow-card-hover'
+    "
+  >
+    <div v-if="title" class="flex-shrink-0 px-6 py-4 border-b border-border-light">
       <div class="flex items-center justify-between">
         <h3 class="text-text-primary">
           {{ title }}
@@ -19,11 +26,18 @@
       </p>
     </div>
 
-    <div class="px-6 py-4">
+    <div
+      class="px-6 py-4"
+      :class="fullscreenOnMobile ? 'flex-1 min-h-0 overflow-y-auto overscroll-contain' : ''"
+    >
       <slot />
     </div>
 
-    <div v-if="hasFooterSlot" class="px-6 py-4 border-t border-border-light">
+    <div
+      v-if="hasFooterSlot"
+      class="flex-shrink-0 px-6 py-4 border-t border-border-light"
+      :class="fullscreenOnMobile ? 'pb-[max(1rem,env(safe-area-inset-bottom))]' : ''"
+    >
       <slot name="footer" />
     </div>
   </div>
@@ -38,10 +52,12 @@
     title?: string
     description?: string
     showCloseButton?: boolean
+    fullscreenOnMobile?: boolean
   }
 
   withDefaults(defineProps<Props>(), {
     showCloseButton: true,
+    fullscreenOnMobile: false,
   })
 
   const emit = defineEmits<{

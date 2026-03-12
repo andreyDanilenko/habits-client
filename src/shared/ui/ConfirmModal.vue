@@ -5,7 +5,7 @@
     </slot>
 
     <template #footer>
-      <div class="flex justify-end space-x-3">
+      <div class="grid grid-cols-2 gap-3">
         <Button type="button" variant="outline" @click="$emit('close')"> Отмена </Button>
         <Button
           type="button"

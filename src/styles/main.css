@@ -185,6 +185,10 @@ button {
   --size-10: calc(var(--unit-base) * 10);
   --size-12: calc(var(--unit-base) * 12);
 
+  --size-button-mobile: 48px;
+  --size-button-desktop: 40px;
+  --size-button: var(--size-button-mobile);
+
   --layout-sidebar-width: calc(var(--unit-base) * 64);
   --layout-sidebar-width-collapsed: calc(var(--unit-base) * 16);
   --layout-header-height: calc(var(--unit-base) * 16);
@@ -206,6 +210,12 @@ button {
   --text-2xl--line-height: 1.35;
   --text-3xl--line-height: 1.3;
   --text-4xl--line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --size-button: var(--size-button-desktop);
+  }
 }
 
 @keyframes data-table-progress {
