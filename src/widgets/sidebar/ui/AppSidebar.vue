@@ -93,7 +93,7 @@
     XMarkIcon,
     CogIcon,
     LogoutIcon,
-    ListIcon,
+    IconAdmin,
   } from '@/shared/ui/icon'
   import { Button } from '@/shared/ui'
   import { useAuthStore } from '@/features/auth'
@@ -218,7 +218,7 @@
       items.push({
         id: 'admin',
         label: 'Админ-панель',
-        icon: ListIcon,
+        icon: IconAdmin,
         to: '/admin',
       })
     }

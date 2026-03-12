@@ -25,6 +25,7 @@
           <Button
             icon-only
             variant="icon"
+            size="sm"
             icon-color="success"
             :left-icon="CheckIcon"
             @click.stop="$emit('mark-completion', habit)"
@@ -33,6 +34,7 @@
             v-if="canDelete"
             icon-only
             variant="icon"
+            size="sm"
             icon-color="danger"
             :left-icon="DeleteIcon"
             @click.stop="$emit('delete', habit)"
