@@ -1,15 +1,7 @@
 <template>
-  <Drawer
-    :is-open="isOpen"
-    title="Уведомления"
-    width="md"
-    @close="$emit('close')"
-  >
+  <Drawer :is-open="isOpen" title="Уведомления" width="md" @close="$emit('close')">
     <div class="flex flex-col gap-(--spacing-1)">
-      <div
-        v-if="unreadCount > 0"
-        class="flex justify-end mb-(--spacing-2)"
-      >
+      <div v-if="unreadCount > 0" class="flex justify-end mb-(--spacing-2)">
         <button
           type="button"
           class="text-(--text-xs) text-primary-default hover:text-primary-dark font-medium"
@@ -40,10 +32,7 @@
         <p class="text-text-primary text-(--text-xs) font-medium leading-tight m-0">
           {{ item.title }}
         </p>
-        <p
-          v-if="item.subtitle"
-          class="text-text-muted text-[10px] leading-tight mt-0.5 m-0"
-        >
+        <p v-if="item.subtitle" class="text-text-muted text-[10px] leading-tight mt-0.5 m-0">
           {{ item.subtitle }}
         </p>
         <time

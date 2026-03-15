@@ -1,13 +1,14 @@
 <template>
   <div
     class="rounded-(--radius-lg)"
-    :class="inline ? 'w-full bg-transparent' : 'w-64 bg-bg-primary shadow-card border border-border-default'"
+    :class="
+      inline
+        ? 'w-full bg-transparent'
+        : 'w-64 bg-bg-primary shadow-card border border-border-default'
+    "
   >
     <!-- Заголовок (скрыт в inline-режиме, т.к. заголовок уже в аккордеоне) -->
-    <div
-      v-if="!inline"
-      class="px-(--spacing-4) py-(--spacing-3) border-b border-border-light"
-    >
+    <div v-if="!inline" class="px-(--spacing-4) py-(--spacing-3) border-b border-border-light">
       <div class="flex items-center justify-between">
         <p class="text-(--text-sm) font-semibold text-text-primary">Рабочие пространства</p>
         <Button

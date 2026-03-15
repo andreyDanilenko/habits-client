@@ -48,8 +48,7 @@ export const notificationService = {
   create: (dto: CreateNotificationDto): Promise<NotificationDto> =>
     api.post<NotificationDto>(API_ENDPOINTS.ME.NOTIFICATIONS, dto),
 
-  markRead: (id: string): Promise<void> =>
-    api.patch<void>(API_ENDPOINTS.ME.NOTIFICATION_READ(id)),
+  markRead: (id: string): Promise<void> => api.patch<void>(API_ENDPOINTS.ME.NOTIFICATION_READ(id)),
 
   markAllRead: (channel?: string): Promise<void> => {
     const url = channel

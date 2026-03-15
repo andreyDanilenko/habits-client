@@ -64,19 +64,13 @@
             class="mb-(--spacing-4) flex-1 min-h-0 overflow-y-auto"
           >
             <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsedEffective" />
-            <SidebarNavigation
-              :items="moduleRoutesNavItems"
-              :collapsed="isCollapsedEffective"
-            />
+            <SidebarNavigation :items="moduleRoutesNavItems" :collapsed="isCollapsedEffective" />
           </div>
 
           <div
             class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer"
           >
-            <SidebarNavigation
-              :items="footerNavItems"
-              :collapsed="isCollapsedEffective"
-            />
+            <SidebarNavigation :items="footerNavItems" :collapsed="isCollapsedEffective" />
           </div>
         </template>
 
@@ -135,10 +129,7 @@
           </div>
 
           <div class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0">
-            <SidebarNavigation
-              :items="footerLogoutItems"
-              :collapsed="false"
-            />
+            <SidebarNavigation :items="footerLogoutItems" :collapsed="false" />
           </div>
         </template>
       </nav>

@@ -16,7 +16,10 @@ export interface NotificationItem {
   read: boolean
 }
 
-function formatDealNotification(eventType: string, payload: unknown): { title: string; subtitle?: string } {
+function formatDealNotification(
+  eventType: string,
+  payload: unknown,
+): { title: string; subtitle?: string } {
   const p = payload as {
     deal?: { name?: string }
     stageName?: string
@@ -53,7 +56,10 @@ function formatDealNotification(eventType: string, payload: unknown): { title: s
   }
 }
 
-function formatHabitNotification(eventType: string, payload: unknown): { title: string; subtitle?: string } {
+function formatHabitNotification(
+  eventType: string,
+  payload: unknown,
+): { title: string; subtitle?: string } {
   const p = payload as { habit?: { title?: string }; habitId?: string; title?: string }
   const habit = p?.habit
   const title = habit?.title ?? p?.title ?? 'Привычка'
@@ -72,7 +78,10 @@ function formatHabitNotification(eventType: string, payload: unknown): { title: 
   }
 }
 
-function formatInvitationNotification(_eventType: string, payload: unknown): { title: string; subtitle?: string } {
+function formatInvitationNotification(
+  _eventType: string,
+  payload: unknown,
+): { title: string; subtitle?: string } {
   const p = payload as { email?: string; role?: string }
   const email = p?.email ?? 'Пользователь'
   return {
@@ -81,7 +90,10 @@ function formatInvitationNotification(_eventType: string, payload: unknown): { t
   }
 }
 
-function formatNotification(eventType: RealtimeEventType, payload: unknown): { title: string; subtitle?: string } {
+function formatNotification(
+  eventType: RealtimeEventType,
+  payload: unknown,
+): { title: string; subtitle?: string } {
   if (eventType.startsWith('deal.')) return formatDealNotification(eventType, payload)
   if (eventType.startsWith('habit.')) return formatHabitNotification(eventType, payload)
   if (eventType === 'invitation.accepted') return formatInvitationNotification(eventType, payload)
@@ -169,10 +181,7 @@ export function useNotificationsStore() {
     }
 
     if (existing) {
-      notifications.value = [
-        item,
-        ...notifications.value.filter((n) => n !== existing),
-      ]
+      notifications.value = [item, ...notifications.value.filter((n) => n !== existing)]
     } else {
       notifications.value = [item, ...notifications.value].slice(0, maxItems)
     }
@@ -191,10 +200,7 @@ export function useNotificationsStore() {
         const match = notifications.value.find((n) => n.eventKey === eventKey || n.id === tempId)
         if (match) {
           const updated = dtoToItem(created)
-          notifications.value = [
-            updated,
-            ...notifications.value.filter((n) => n !== match),
-          ]
+          notifications.value = [updated, ...notifications.value.filter((n) => n !== match)]
         }
       })
       .catch(() => {})

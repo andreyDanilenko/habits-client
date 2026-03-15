@@ -101,7 +101,7 @@ export function useRealtime() {
         disconnect()
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   watch(
@@ -110,7 +110,7 @@ export function useRealtime() {
       if (socketInstance?.connected && wsId) {
         socketInstance.emit('joinWorkspace', wsId)
       }
-    }
+    },
   )
 
   return { socket: ref(socketInstance), isConnected, on }

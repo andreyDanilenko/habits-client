@@ -16,10 +16,7 @@
       </span>
     </Button>
 
-    <NotificationsDrawer
-      :is-open="isDrawerOpen"
-      @close="isDrawerOpen = false"
-    />
+    <NotificationsDrawer :is-open="isDrawerOpen" @close="isDrawerOpen = false" />
   </div>
 </template>
 
