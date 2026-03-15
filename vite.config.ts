@@ -18,5 +18,15 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    proxy: {
+      '/realtime': {
+        target: 'http://localhost:3001',
+        ws: true,
+      },
+      '/socket.io': {
+        target: 'http://localhost:3001',
+        ws: true,
+      },
+    },
   },
 })

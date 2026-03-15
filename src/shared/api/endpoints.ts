@@ -140,5 +140,8 @@ export const API_ENDPOINTS = {
 
   ME: {
     PERMISSIONS: (workspaceId: string) => apiV1 + `/me/permissions?workspaceId=${workspaceId}`,
+    NOTIFICATIONS: apiV1 + '/me/notifications',
+    NOTIFICATION_READ: (id: string) => apiV1 + `/me/notifications/${id}/read`,
+    NOTIFICATIONS_MARK_ALL_READ: apiV1 + '/me/notifications/mark-all-read',
   },
 } as const
