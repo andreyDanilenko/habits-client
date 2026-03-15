@@ -36,6 +36,7 @@
 
         <div class="flex items-center gap-1">
           <ThemeSwitcher />
+          <Notifications />
           <ProfileDropdown />
         </div>
       </div>

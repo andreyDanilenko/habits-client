@@ -32,53 +32,115 @@
           />
         </div>
 
-        <div class="mb-(--spacing-4) pb-(--spacing-4) border-b border-border-light flex-shrink-0">
-          <div v-if="!isCollapsedEffective" class="w-full">
-            <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsedEffective" />
-            <WorkspaceSwitcher />
+        <!-- Desktop layout -->
+        <template v-if="!isMobile">
+          <div class="mb-(--spacing-4) pb-(--spacing-4) border-b border-border-light flex-shrink-0">
+            <div v-if="!isCollapsedEffective" class="w-full">
+              <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsedEffective" />
+              <WorkspaceSwitcher />
+            </div>
+            <div v-else class="flex justify-center">
+              <div
+                class="w-(--size-8) h-(--size-8) rounded-(--radius-md) flex-shrink-0 cursor-pointer"
+                :style="{
+                  backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)',
+                }"
+                :title="currentWorkspace?.name || 'Workspace'"
+              />
+            </div>
           </div>
-          <div v-else class="flex justify-center">
-            <div
-              class="w-(--size-8) h-(--size-8) rounded-(--radius-md) flex-shrink-0 cursor-pointer"
-              :style="{
-                backgroundColor: currentWorkspace?.color || 'var(--color-primary-default)',
-              }"
-              :title="currentWorkspace?.name || 'Workspace'"
+
+          <div class="mb-(--spacing-4) flex-shrink-0">
+            <SidebarSectionHeader title="Модули" :collapsed="isCollapsedEffective" />
+            <SidebarNavigation
+              :items="modulesNavItems"
+              :collapsed="isCollapsedEffective"
+              @item-click="handleModuleClick"
             />
           </div>
-        </div>
 
-        <div class="mb-(--spacing-4) flex-shrink-0">
-          <SidebarSectionHeader title="Модули" :collapsed="isCollapsedEffective" />
-          <SidebarNavigation
-            :items="modulesNavItems"
-            :collapsed="isCollapsedEffective"
-            @click="handleMobileClick"
-            @item-click="handleModuleClick"
-          />
-        </div>
+          <div
+            v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
+            class="mb-(--spacing-4) flex-1 min-h-0 overflow-y-auto"
+          >
+            <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsedEffective" />
+            <SidebarNavigation
+              :items="moduleRoutesNavItems"
+              :collapsed="isCollapsedEffective"
+            />
+          </div>
 
-        <div
-          v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
-          class="mb-(--spacing-4) flex-1 min-h-0 overflow-y-auto"
-        >
-          <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsedEffective" />
-          <SidebarNavigation
-            :items="moduleRoutesNavItems"
-            :collapsed="isCollapsedEffective"
-            @click="handleMobileClick"
-          />
-        </div>
+          <div
+            class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer"
+          >
+            <SidebarNavigation
+              :items="footerNavItems"
+              :collapsed="isCollapsedEffective"
+            />
+          </div>
+        </template>
 
-        <div
-          class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer"
-        >
-          <SidebarNavigation
-            :items="footerNavItems"
-            :collapsed="isCollapsedEffective"
-            @click="handleMobileClick"
-          />
-        </div>
+        <!-- Mobile: accordion layout -->
+        <template v-else>
+          <div class="flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto">
+            <SidebarAccordion
+              id="workspaces"
+              title="Workspaces"
+              :is-open="openAccordion === 'workspaces'"
+              @toggle="toggleAccordion('workspaces')"
+            >
+              <WorkspaceSwitcherContent :inline="true" />
+            </SidebarAccordion>
+
+            <SidebarAccordion
+              id="modules"
+              title="Модули"
+              :is-open="openAccordion === 'modules'"
+              @toggle="toggleAccordion('modules')"
+            >
+              <SidebarNavigation
+                :items="modulesNavItems"
+                :collapsed="false"
+                @item-click="handleModuleClick"
+              />
+            </SidebarAccordion>
+
+            <SidebarAccordion
+              v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
+              :id="`routes-${selectedModule.id}`"
+              :title="selectedModule.label"
+              :is-open="openAccordion === 'routes'"
+              @toggle="toggleAccordion('routes')"
+            >
+              <SidebarNavigation
+                :items="moduleRoutesNavItems"
+                :collapsed="false"
+                @click="handleMobileClick"
+              />
+            </SidebarAccordion>
+
+            <SidebarAccordion
+              v-if="footerAccordionItems.length > 0"
+              id="footer"
+              title="Служебные"
+              :is-open="openAccordion === 'footer'"
+              @toggle="toggleAccordion('footer')"
+            >
+              <SidebarNavigation
+                :items="footerAccordionItems"
+                :collapsed="false"
+                @click="handleMobileClick"
+              />
+            </SidebarAccordion>
+          </div>
+
+          <div class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0">
+            <SidebarNavigation
+              :items="footerLogoutItems"
+              :collapsed="false"
+            />
+          </div>
+        </template>
       </nav>
     </aside>
   </div>
@@ -101,8 +163,10 @@
   import { usePermissions, useWorkspaceStore } from '@/entities/workspace'
   import { getAvailableModules, getAvailableModuleRoutes, type Module } from '@/app/modules/config'
   import WorkspaceSwitcher from '@/widgets/header/ui/WorkspaceSwitcher.vue'
+  import WorkspaceSwitcherContent from '@/widgets/header/ui/WorkspaceSwitcherContent.vue'
   import SidebarSectionHeader from './SidebarSectionHeader.vue'
   import SidebarNavigation from './SidebarNavigation.vue'
+  import SidebarAccordion from './SidebarAccordion.vue'
   import type { SidebarNavItem } from '../types'
 
   const route = useRoute()
@@ -115,6 +179,7 @@
   const isMobile = ref(false)
   const isOpen = ref(false)
   const selectedModuleId = ref<string | null>(null)
+  const openAccordion = ref<'workspaces' | 'modules' | 'routes' | 'footer' | null>(null)
 
   const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
   const enabledModuleCodes = computed(() => workspaceStore.enabledModules)
@@ -173,28 +238,23 @@
 
   const selectModule = (moduleId: string) => {
     selectedModuleId.value = moduleId
-    const module = availableModules.value.find((m) => m.id === moduleId)
-    if (module) {
-      const routes = getModuleRoutes(module)
-      if (routes.length > 0) {
-        router.push(routes[0].path)
-      }
+    if (isMobile.value) {
+      openAccordion.value = 'routes'
     }
   }
 
+  const toggleAccordion = (section: 'workspaces' | 'modules' | 'routes' | 'footer') => {
+    openAccordion.value = openAccordion.value === section ? null : section
+  }
+
   const modulesNavItems = computed<SidebarNavItem[]>(() => {
-    return availableModules.value.map((module) => {
-      const routes = getModuleRoutes(module)
-      const firstRoute = routes.length > 0 ? routes[0].path : undefined
-      return {
-        id: module.id,
-        label: module.label,
-        icon: module.icon,
-        to: firstRoute,
-        onClick: firstRoute ? undefined : () => selectModule(module.id),
-        isActive: selectedModuleId.value === module.id,
-      }
-    })
+    return availableModules.value.map((module) => ({
+      id: module.id,
+      label: module.label,
+      icon: module.icon,
+      onClick: () => selectModule(module.id),
+      isActive: selectedModuleId.value === module.id,
+    }))
   })
 
   const moduleRoutesNavItems = computed<SidebarNavItem[]>(() => {
@@ -240,6 +300,13 @@
     return items
   })
 
+  const footerAccordionItems = computed<SidebarNavItem[]>(() =>
+    footerNavItems.value.filter((item) => item.id !== 'logout'),
+  )
+  const footerLogoutItems = computed<SidebarNavItem[]>(() =>
+    footerNavItems.value.filter((item) => item.id === 'logout'),
+  )
+
   const checkMobile = () => {
     const wasMobile = isMobile.value
     isMobile.value = window.innerWidth < 1024
@@ -284,7 +351,7 @@
   const handleModuleClick = (item: SidebarNavItem) => {
     const module = availableModules.value.find((m) => m.id === item.id)
     if (module) {
-      selectedModuleId.value = module.id
+      selectModule(module.id)
     }
   }
 

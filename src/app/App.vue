@@ -54,10 +54,22 @@
   import { useAuthStore } from '@/features/auth'
   import { useModal } from '@/shared/lib/modal'
   import { WorkspaceCreateModal } from '@/features/workspace'
+  import { useRealtime } from '@/shared/realtime'
+  import { useHabitStore } from '@/entities/habit'
+  import { useNotificationsStore } from '@/features/notifications'
 
   const route = useRoute()
   const workspaceStore = useWorkspaceStore()
   const authStore = useAuthStore()
+  const habitStore = useHabitStore()
+
+  const { on } = useRealtime()
+  useNotificationsStore()
+  on('habit.completed', () => habitStore.fetchHabits())
+  on('habit.created', () => habitStore.fetchHabits())
+  on('habit.updated', () => habitStore.fetchHabits())
+  on('habit.deleted', () => habitStore.fetchHabits())
+  on('invitation.accepted', () => workspaceStore.fetchWorkspaces())
   const { openModal } = useModal()
 
   const showHeader = computed(

@@ -1,8 +1,9 @@
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onUnmounted } from 'vue'
 import { useWorkspaceStore } from '@/entities/workspace'
 import { dealService } from '@/entities/deal'
 import type { Deal, Pipeline } from '@/entities/deal'
 import { useDealsTableState } from './use-deals-table-state'
+import { useRealtime } from '@/shared/realtime'
 
 export type DealsViewMode = 'kanban' | 'table'
 export type DealsStatusFilter = 'all' | 'open' | 'won' | 'lost'
@@ -10,6 +11,7 @@ export type DealsStatusFilter = 'all' | 'open' | 'won' | 'lost'
 export function useDealsList() {
   const workspaceStore = useWorkspaceStore()
   const tableState = useDealsTableState()
+  const { on } = useRealtime()
 
   const pipelines = ref<Pipeline[]>([])
   const deals = ref<Deal[]>([])
@@ -119,6 +121,15 @@ export function useDealsList() {
     ],
     fetchDeals,
   )
+
+  const unsubDealCreated = on('deal.created', fetchDeals)
+  const unsubDealUpdated = on('deal.updated', fetchDeals)
+  const unsubDealDeleted = on('deal.deleted', fetchDeals)
+  onUnmounted(() => {
+    unsubDealCreated()
+    unsubDealUpdated()
+    unsubDealDeleted()
+  })
 
   return {
     ...tableState,
