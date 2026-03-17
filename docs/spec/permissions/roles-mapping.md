@@ -197,4 +197,4 @@ getPermissions: async (workspaceId: string, roleId: string): Promise<PermissionS
 
 ## 7. Связанные документы
 
-- [docs/MEMBERS/EXPLAIN_PERMISSIONS_HIERARCHY.md](../../../docs/MEMBERS/EXPLAIN_PERMISSIONS_HIERARCHY.md) — иерархия системной роли, кастомных ролей и индивидуальных прав
+- [docs/MEMBERS/EXPLAIN_PERMISSIONS_HIERARCHY.md](../../../../docs/MEMBERS/EXPLAIN_PERMISSIONS_HIERARCHY.md) — иерархия системной роли, кастомных ролей и индивидуальных прав
