@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <Transition name="modal">
+    <Transition name="modal" appear @after-leave="$emit('after-leave')">
       <div
         v-if="isOpen"
         class="fixed inset-0 z-50"
@@ -20,11 +20,11 @@
             bottomSheetOnMobile ? 'items-end p-0 lg:items-center lg:p-4' : 'items-center',
           ]"
         >
-          <Transition name="fade">
+          <Transition name="fade" appear>
             <div v-if="isOpen" class="fixed inset-0 bg-black/50" @click="handleBackdropClick" />
           </Transition>
 
-          <Transition :name="bottomSheetOnMobile ? 'slide-up-bottom' : 'slide-up'">
+          <Transition :name="bottomSheetOnMobile ? 'slide-up-bottom' : 'slide-up'" appear>
             <div
               v-if="isOpen"
               class="relative z-10 w-full min-w-0 mx-auto"
@@ -86,6 +86,7 @@
   const emit = defineEmits<{
     'update:isOpen': [value: boolean]
     close: []
+    'after-leave': []
   }>()
 
   const handleEscape = (e: KeyboardEvent) => {
@@ -128,7 +129,7 @@
 <style scoped>
   .modal-enter-active,
   .modal-leave-active {
-    transition: opacity 0.3s ease;
+    transition: opacity var(--duration-slow, 350ms) var(--ease-in-out, ease);
   }
 
   .modal-enter-from,
@@ -138,7 +139,7 @@
 
   .fade-enter-active,
   .fade-leave-active {
-    transition: opacity 0.2s ease;
+    transition: opacity var(--duration-slow, 350ms) var(--ease-in-out, ease);
   }
 
   .fade-enter-from,
@@ -148,18 +149,20 @@
 
   .slide-up-enter-active,
   .slide-up-leave-active {
-    transition: all 0.3s ease;
+    transition:
+      opacity var(--duration-slow, 350ms) var(--ease-in-out, ease),
+      transform var(--duration-slow, 350ms) var(--ease-out-expo, cubic-bezier(0.32, 0.72, 0, 1));
   }
 
   .slide-up-enter-from,
   .slide-up-leave-to {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px) scale(0.96);
   }
 
   .slide-up-bottom-enter-active,
   .slide-up-bottom-leave-active {
-    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform var(--duration-slow, 350ms) var(--ease-out-expo, cubic-bezier(0.32, 0.72, 0, 1));
   }
 
   .slide-up-bottom-enter-from,

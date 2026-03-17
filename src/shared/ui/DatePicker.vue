@@ -31,21 +31,36 @@
       class="absolute z-50 bg-bg-primary border border-border-default rounded-lg shadow-lg p-4 min-w-[280px]"
       :style="pickerStyles"
     >
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between gap-2 mb-4">
         <button
           type="button"
-          class="p-1 hover:bg-bg-tertiary rounded text-text-primary"
+          class="p-1 hover:bg-bg-tertiary rounded text-text-primary shrink-0"
           aria-label="Предыдущий месяц"
           @click="prevMonth"
         >
           <ArrowLeftIcon :size="16" class="text-current" />
         </button>
-        <span class="text-sm font-medium text-text-primary">
-          {{ currentMonthName }} {{ currentYear }}
-        </span>
+        <div class="flex flex-1 gap-2 min-w-0" @click.stop>
+          <div class="flex-1 min-w-0">
+            <Select
+              :model-value="currentMonth"
+              :options="monthOptions"
+              size="sm"
+              @update:model-value="setMonth"
+            />
+          </div>
+          <div class="w-24 shrink-0">
+            <Select
+              :model-value="currentYear"
+              :options="yearOptions"
+              size="sm"
+              @update:model-value="setYear"
+            />
+          </div>
+        </div>
         <button
           type="button"
-          class="p-1 hover:bg-bg-tertiary rounded text-text-primary"
+          class="p-1 hover:bg-bg-tertiary rounded text-text-primary shrink-0"
           aria-label="Следующий месяц"
           @click="nextMonth"
         >
@@ -91,6 +106,7 @@
   import { CalendarIcon, ArrowLeftIcon, ArrowRightIcon } from './icon'
   import Input from './Input.vue'
   import Button from './Button.vue'
+  import Select from './Select.vue'
   import type { ComponentSize } from './Button.vue'
 
   const props = withDefaults(
@@ -155,6 +171,7 @@
     if (!showPicker.value || !rootRef.value || !pickerRef.value) return
 
     await nextTick()
+    await new Promise((r) => requestAnimationFrame(r))
 
     const inputRect = rootRef.value.getBoundingClientRect()
     const pickerRect = pickerRef.value.getBoundingClientRect()
@@ -209,34 +226,24 @@
     }
   }
 
+  const handleResizeOrScroll = () => {
+    if (showPicker.value) updatePickerPosition()
+  }
+
   onMounted(() => {
     document.addEventListener('click', onClickOutside)
-    window.addEventListener('resize', () => {
-      if (showPicker.value) {
-        updatePickerPosition()
-      }
-    })
-    window.addEventListener(
-      'scroll',
-      () => {
-        if (showPicker.value) {
-          updatePickerPosition()
-        }
-      },
-      true,
-    )
+    window.addEventListener('resize', handleResizeOrScroll)
+    window.addEventListener('scroll', handleResizeOrScroll, true)
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('click', onClickOutside)
-    window.removeEventListener('resize', updatePickerPosition)
-    window.removeEventListener('scroll', updatePickerPosition, true)
+    window.removeEventListener('resize', handleResizeOrScroll)
+    window.removeEventListener('scroll', handleResizeOrScroll, true)
   })
 
   watch(showPicker, async (newVal) => {
-    if (newVal) {
-      await updatePickerPosition()
-    }
+    if (newVal) await updatePickerPosition()
   })
 
   watch(
@@ -254,9 +261,38 @@
 
   const currentYear = computed(() => currentDate.value.getFullYear())
   const currentMonth = computed(() => currentDate.value.getMonth())
-  const currentMonthName = computed(() =>
-    currentDate.value.toLocaleString('ru-RU', { month: 'long' }),
+
+  const monthNames = [
+    'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+  ]
+
+  const monthOptions = computed(() =>
+    monthNames.map((label, value) => ({ value, label })),
   )
+
+  const yearRange = computed(() => {
+    const y = currentDate.value.getFullYear()
+    const from = Math.min(y, Math.max(1970, y - 50))
+    const to = Math.max(y, Math.min(2100, y + 50))
+    const years: number[] = []
+    for (let i = from; i <= to; i++) years.push(i)
+    return years
+  })
+
+  const yearOptions = computed(() =>
+    yearRange.value.map((value) => ({ value, label: String(value) })),
+  )
+
+  function setMonth(v: string | number | null | undefined): void {
+    if (v == null) return
+    currentDate.value = new Date(currentYear.value, Number(v), 1)
+  }
+
+  function setYear(v: string | number | null | undefined): void {
+    if (v == null) return
+    currentDate.value = new Date(Number(v), currentMonth.value, 1)
+  }
 
   const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
