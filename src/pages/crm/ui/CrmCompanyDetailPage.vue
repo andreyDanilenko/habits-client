@@ -49,12 +49,20 @@
     </template>
 
     <template #modals>
-      <CompanyFormModal
+      <Modal
         :is-open="showFormModal"
-        :company="company ?? null"
+        :fullscreen-on-mobile="isMobile"
+        content-class="lg:max-w-[min(52rem,calc(100vw-2rem))]"
         @close="handleFormClose"
-        @update="handleUpdate"
-      />
+      >
+        <CompanyFormModal
+          v-if="showFormModal"
+          :is-open="true"
+          :company="company ?? null"
+          @close="handleFormClose"
+          @update="handleUpdate"
+        />
+      </Modal>
       <Modal :is-open="showAttachContactModal" @close="closeAttachContactModal">
         <CompanyAttachContactForm
           :workspace-id="workspaceId"
@@ -78,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { Modal, ConfirmModal, Button, Spinner, DetailTabsPanel } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
@@ -118,6 +126,17 @@
   const activeTab = ref('main')
   const showFormModal = ref(false)
   const showDeleteModal = ref(false)
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
   const showAttachContactModal = ref(false)
 
   const allTabs = [

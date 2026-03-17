@@ -96,6 +96,20 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/entities/${entityType}/${entityId}/projects`,
   },
 
+  TASKS: {
+    LIST: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/tasks`,
+    DETAIL: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}`,
+    COMPLETE: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/complete`,
+    REOPEN: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/reopen`,
+    COMMENTS: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/comments`,
+    COMMENT: (workspaceId: string, taskId: string, commentId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/comments/${commentId}`,
+  },
+
   HABITS: {
     BASE: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/habits`,
     DETAIL: (workspaceId: string, habitsId: string) =>

@@ -9,6 +9,7 @@ export {
 export type { DealsViewMode } from './model/use-deals-page'
 export {
   DealsToolbar,
+  DealsFiltersDrawer,
   DealsTableWidget,
   DealsKanbanView,
   DealFormModal,

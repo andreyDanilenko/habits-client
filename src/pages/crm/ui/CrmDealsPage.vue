@@ -15,60 +15,73 @@
 
     <template #content>
       <DealsToolbar
-        :pipelines="actions.pipelines.value"
         :view-mode="actions.viewMode.value"
+        :has-active-filters="actions.hasActiveFilters.value"
+        :active-filters-count="actions.activeFiltersCount.value"
+        @update:view-mode="actions.setViewMode"
+        @open-filters="showFiltersDrawer = true"
+      />
+
+      <DealsFiltersDrawer
+        :is-open="showFiltersDrawer"
+        :pipelines="actions.pipelines.value"
         :selected-pipeline-id="actions.selectedPipelineId.value"
         :date-from="actions.dateFrom.value"
         :date-to="actions.dateTo.value"
         :status="actions.statusFilter.value"
-        @update:view-mode="actions.setViewMode"
+        :has-active-filters="actions.hasActiveFilters.value"
+        @close="showFiltersDrawer = false"
+        @reset="resetDealsFilters"
         @update:selected-pipeline-id="actions.setSelectedPipelineId"
         @update:date-from="actions.setDateFrom"
         @update:date-to="actions.setDateTo"
         @update:status="actions.setStatusFilter"
       />
 
-      <DealsKanbanView
-        v-if="actions.viewMode.value === 'kanban'"
-        :key="actions.selectedPipelineId.value"
-        :columns="actions.kanbanColumns.value"
-        @update:columns="actions.setKanbanColumnsFromBoard"
-        :pipelines="actions.pipelines.value"
-        :is-loading="actions.isLoading.value"
-        :is-error="actions.isError.value"
-        :saving-deal-ids="actions.savingDealIds.value"
-        @move="actions.handleDealMove"
-        @open-deal="actions.openDealCard"
-        @edit="actions.openEditModal"
-        @copy="actions.openEditModal"
-        @delete="actions.confirmDelete"
-      />
+      <div class="mt-(--spacing-4)">
+        <DealsKanbanView
+          v-if="actions.viewMode.value === 'kanban'"
+          :key="actions.selectedPipelineId.value"
+          :columns="actions.kanbanColumns.value"
+          @update:columns="actions.setKanbanColumnsFromBoard"
+          :pipelines="actions.pipelines.value"
+          :is-loading="actions.isLoading.value"
+          :is-error="actions.isError.value"
+          :saving-deal-ids="actions.savingDealIds.value"
+          @move="actions.handleDealMove"
+          @open-deal="actions.openDealCard"
+          @edit="actions.openEditModal"
+          @copy="actions.openEditModal"
+          @delete="actions.confirmDelete"
+        />
 
-      <DealsTableWidget
-        v-else
-        :deals="actions.deals.value"
-        :pipelines="actions.pipelines.value"
-        :total="actions.total.value"
-        :is-loading="actions.isLoading.value"
-        :is-error="actions.isError.value"
-        :page="actions.page.value"
-        :page-size="actions.pageSize.value"
-        :sort-by="actions.sortBy.value"
-        :sort-order="actions.sortOrder.value"
-        :selected-ids="actions.selectedIds.value"
-        :handle-sort="actions.handleSort"
-        :handle-row-select="actions.handleRowSelect"
-        :handle-select-all="actions.handleSelectAll"
-        :set-page="actions.setPage"
-        :fetch-deals="actions.fetchDeals"
-        @edit="actions.openEditModal"
-        @delete="actions.confirmDelete"
-      />
+        <DealsTableWidget
+          v-else
+          :deals="actions.deals.value"
+          :pipelines="actions.pipelines.value"
+          :total="actions.total.value"
+          :is-loading="actions.isLoading.value"
+          :is-error="actions.isError.value"
+          :page="actions.page.value"
+          :page-size="actions.pageSize.value"
+          :sort-by="actions.sortBy.value"
+          :sort-order="actions.sortOrder.value"
+          :selected-ids="actions.selectedIds.value"
+          :handle-sort="actions.handleSort"
+          :handle-row-select="actions.handleRowSelect"
+          :handle-select-all="actions.handleSelectAll"
+          :set-page="actions.setPage"
+          :fetch-deals="actions.fetchDeals"
+          @edit="actions.openEditModal"
+          @delete="actions.confirmDelete"
+        />
+      </div>
     </template>
   </BasePageLayout>
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { BasePageLayout } from '@/shared/ui/common'
   import { Button } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
@@ -77,9 +90,16 @@
   import {
     useDealsPageActions,
     DealsToolbar,
+    DealsFiltersDrawer,
     DealsTableWidget,
     DealsKanbanView,
   } from '@/features/deals'
 
   const actions = useDealsPageActions()
+  const showFiltersDrawer = ref(false)
+
+  function resetDealsFilters() {
+    actions.resetFilters()
+    showFiltersDrawer.value = false
+  }
 </script>

@@ -30,3 +30,10 @@ export const PROJECT_PERMISSIONS = {
   entityAttach: 'projects:entity:attach' as PermissionString,
   entityDetach: 'projects:entity:detach' as PermissionString,
 } as const
+
+export const TASKS_PERMISSIONS = {
+  taskCreate: 'tasks:task:create' as PermissionString,
+  taskRead: 'tasks:task:read' as PermissionString,
+  taskUpdate: 'tasks:task:update' as PermissionString,
+  taskDelete: 'tasks:task:delete' as PermissionString,
+} as const

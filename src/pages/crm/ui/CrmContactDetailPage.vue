@@ -71,13 +71,23 @@
     </template>
 
     <template #modals>
-      <ContactFormModal
+      <Modal
         :is-open="showFormModal"
-        :contact="contact ?? null"
+        :fullscreen-on-mobile="isMobile"
+        content-class="lg:max-w-[min(40rem,calc(100vw-2rem))]"
         @close="handleFormClose"
-        @save="handleSave"
-        @update="handleUpdate"
-      />
+      >
+        <ContactFormModal
+          v-if="showFormModal"
+          :is-open="true"
+          :contact="contact ?? null"
+          :workspace-id="workspaceId"
+          :default-owner-id="defaultOwnerId"
+          @close="handleFormClose"
+          @save="handleSave"
+          @update="handleUpdate"
+        />
+      </Modal>
       <Modal :is-open="showDeleteModal" @close="showDeleteModal = false">
         <ConfirmModal
           title="Удалить контакт?"
@@ -88,19 +98,27 @@
           @confirm="doDelete"
         />
       </Modal>
-      <DealsAttachContactModal
+      <Modal
         :is-open="showAttachToDealModal"
-        :workspace-id="workspaceId"
-        :contact="contact"
+        :fullscreen-on-mobile="isMobile"
+        content-class="lg:max-w-[min(40rem,calc(100vw-2rem))]"
         @close="showAttachToDealModal = false"
-        @attached="fetchContactDeals"
-      />
+      >
+        <DealsAttachContactModal
+          v-if="showAttachToDealModal"
+          :is-open="true"
+          :workspace-id="workspaceId"
+          :contact="contact"
+          @close="showAttachToDealModal = false"
+          @attached="fetchContactDeals"
+        />
+      </Modal>
     </template>
   </BasePageLayout>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { Modal, ConfirmModal, Button, Spinner, DetailTabsPanel } from '@/shared/ui'
   import { PermissionGuard } from '@/features/permissions'
@@ -110,18 +128,33 @@
     ContactFormModal,
     ContactMainInfo,
     ContactDealsSection,
-    ContactTasksPlaceholder,
     useContactDetail,
   } from '@/features/contacts'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
+  import { TaskEntityPanel } from '@/features/tasks'
   import { usePermissions } from '@/features/permissions'
   import { CRM_PERMISSIONS, PROJECT_PERMISSIONS } from '@/features/permissions/config'
   import { DealsAttachContactModal } from '@/features/deals'
+  import { useUserStore } from '@/entities/user'
   import type { CreateContactDto } from '@/entities/contact'
 
   const router = useRouter()
   const { can } = usePermissions()
+  const userStore = useUserStore()
+  const defaultOwnerId = computed(() => userStore.currentUser?.id ?? '1')
+
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
 
   const {
     workspaceId,
@@ -174,7 +207,7 @@
     deals: ContactDealsSection,
     activity: ActivityFeed,
     projects: ProjectEntityPanel,
-    tasks: ContactTasksPlaceholder,
+    tasks: TaskEntityPanel,
   }
 
   const canActivityCreate = computed(() => can(CRM_PERMISSIONS.activityCreate))
@@ -206,7 +239,12 @@
       projectsBasePath: '/projects',
     },
     tasks: {
-      text: 'Список задач по контакту. Создать задачу (тема, срок, ответственный) — (скоро).',
+      workspaceId: workspaceId.value,
+      entityType: 'crm_contact',
+      entityId: contactId.value,
+      entityName: contact.value
+        ? `${contact.value.firstName} ${contact.value.lastName}`.trim()
+        : undefined,
     },
   }))
 

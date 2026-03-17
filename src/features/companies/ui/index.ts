@@ -1,4 +1,5 @@
 export { default as CompaniesToolbar } from './CompaniesToolbar.vue'
+export { default as CompaniesFiltersDrawer } from './CompaniesFiltersDrawer.vue'
 export { default as CompaniesTableWidget } from './CompaniesTableWidget.vue'
 export { default as CompanyFormModal } from './CompanyFormModal.vue'
 export { default as CompanyAttachContactForm } from './CompanyAttachContactForm.vue'

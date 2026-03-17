@@ -17,8 +17,15 @@
         :search-input="actions.searchInput.value"
         @update:search-input="actions.setSearchInput"
         @search="actions.onSearch"
+        @open-filters="showFiltersDrawer = true"
       />
 
+      <CompaniesFiltersDrawer
+        :is-open="showFiltersDrawer"
+        @close="showFiltersDrawer = false"
+      />
+
+      <div class="mt-(--spacing-4)">
       <CompaniesTableWidget
         :companies="actions.companies.value"
         :total="actions.total.value"
@@ -39,11 +46,13 @@
         @company-click="actions.goToCompany"
         @contacts-click="actions.goToContactsByCompany"
       />
+      </div>
     </template>
   </BasePageLayout>
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { BasePageLayout } from '@/shared/ui/common'
   import { Button } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
@@ -52,8 +61,10 @@
   import {
     useCompaniesPageActions,
     CompaniesToolbar,
+    CompaniesFiltersDrawer,
     CompaniesTableWidget,
   } from '@/features/companies'
 
   const actions = useCompaniesPageActions()
+  const showFiltersDrawer = ref(false)
 </script>

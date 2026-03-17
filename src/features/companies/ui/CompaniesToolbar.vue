@@ -13,16 +13,31 @@
         @keydown.esc="handleEsc"
       />
     </div>
+
+    <div class="flex gap-2 flex-shrink-0 items-center">
+      <Button
+        variant="outline"
+        @click="$emit('openFilters')"
+      >
+        <IconFunnel class="w-4 h-4 mr-(--spacing-2) inline" />
+        Фильтры
+      </Button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { SearchInput } from '@/shared/ui'
+  import { Button, SearchInput } from '@/shared/ui'
+  import { IconFunnel } from '@/shared/ui/icon'
 
-  defineProps<{ searchInput: string }>()
+  defineProps<{
+    searchInput: string
+  }>()
+
   const emit = defineEmits<{
     'update:searchInput': [value: string]
     search: [value: string]
+    openFilters: []
   }>()
 
   const handleClearSearch = () => {

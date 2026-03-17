@@ -12,6 +12,7 @@ export {
   ContactFormModal,
   ContactQuickViewPanel,
   ContactsFiltersPanel,
+  ContactsFiltersDrawer,
   ContactsTableSection,
   ContactMainInfo,
   ContactDealsSection,

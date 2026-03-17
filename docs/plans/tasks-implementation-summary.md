@@ -113,6 +113,7 @@ widgets           → TaskQuickAdd (в header), TaskStatsWidget
 
 ## 4. Ссылки
 
+- [TASKS_MODULE_SPEC_CHECKLIST](../../../docs/TASKS_MODULE_SPEC_CHECKLIST.md) — чеклист этапов и приёмки
 - [SPEC_BACK_3](../../../backend/docs/CRM/SPEC_BACK_3.md) — полная спека бэкенда
 - [SPEC_FRON_3](../../../backend/docs/CRM/SPEC_FRON_3.md) — полная спека фронтенда
 - [tasks/index.md](../tasks/index.md) — общий план задач
