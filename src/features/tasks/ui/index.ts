@@ -1,0 +1,7 @@
+export { default as TaskFormModal } from './TaskFormModal.vue'
+export { default as TaskList } from './TaskList.vue'
+export { default as TasksToolbar } from './TasksToolbar.vue'
+export { default as TasksKanbanView } from './TasksKanbanView.vue'
+export { default as TaskDetailModal } from './TaskDetailModal.vue'
+export { default as TaskEntityPanel } from './TaskEntityPanel.vue'
+export { default as TasksFiltersDrawer } from './TasksFiltersDrawer.vue'
