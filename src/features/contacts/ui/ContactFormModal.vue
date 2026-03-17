@@ -1,11 +1,11 @@
 <template>
-  <Modal :is-open="isOpen" @close="$emit('close')">
-    <ModalContent
-      :title="contact ? 'Редактировать контакт' : 'Новый контакт'"
-      :show-close-button="true"
-      @close="$emit('close')"
-    >
-      <form class="space-y-4" @submit.prevent="() => handleSubmit(true)">
+  <ModalContent
+    :title="contact ? 'Редактировать контакт' : 'Новый контакт'"
+    :show-close-button="true"
+    :fullscreen-on-mobile="isMobile"
+    @close="$emit('close')"
+  >
+    <form id="contact-form" class="space-y-4 lg:space-y-5" @submit.prevent="() => handleSubmit(true)">
         <div>
           <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
             >Имя <span class="text-error-default">*</span></span
@@ -129,29 +129,29 @@
             size="lg"
           />
         </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="ghost" @click="$emit('close')"> Отмена </Button>
-          <Button
-            v-if="!contact"
-            type="button"
-            variant="outline"
-            :loading="saving"
-            @click="handleSubmit(false)"
-          >
-            Сохранить и создать
-          </Button>
-          <Button type="submit" :loading="saving"> Сохранить </Button>
-        </div>
       </form>
-    </ModalContent>
-  </Modal>
+
+    <template #footer>
+      <div class="flex justify-end gap-(--spacing-2)">
+        <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
+        <Button
+          v-if="!contact"
+          type="button"
+          variant="outline"
+          :loading="saving"
+          @click="handleSubmit(false)"
+        >
+          Сохранить и создать
+        </Button>
+        <Button form="contact-form" type="submit" :loading="saving">Сохранить</Button>
+      </div>
+    </template>
+  </ModalContent>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed, unref } from 'vue'
+  import { ref, watch, computed, unref, onMounted, onUnmounted } from 'vue'
   import {
-    Modal,
     ModalContent,
     Button,
     Input,
@@ -203,6 +203,18 @@
     defaultOwnerId: '1',
     preselectedCompany: null,
     size: 'lg',
+  })
+
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
   })
 
   const emit = defineEmits<{

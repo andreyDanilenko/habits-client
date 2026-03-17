@@ -235,18 +235,26 @@
       @close="showAddModal = false"
       @add="handleAddEntities"
     />
-    <DealFormModal
+    <Modal
       :is-open="showDealFormModal"
-      :deal="dealToEdit"
-      :pipelines="pipelines"
-      :pipeline-id="selectedPipelineId"
-      :default-stage-id="defaultStageId"
-      :workspace-id="workspaceId"
-      :default-owner-id="defaultOwnerId"
+      :fullscreen-on-mobile="isMobile"
+      content-class="lg:max-w-[min(40rem,calc(100vw-2rem))]"
       @close="closeDealFormModal"
-      @save="handleDealFormSave"
-      @update="handleDealFormUpdate"
-    />
+    >
+      <DealFormModal
+        v-if="showDealFormModal"
+        :is-open="true"
+        :deal="dealToEdit"
+        :pipelines="pipelines"
+        :pipeline-id="selectedPipelineId"
+        :default-stage-id="defaultStageId"
+        :workspace-id="workspaceId"
+        :default-owner-id="defaultOwnerId"
+        @close="closeDealFormModal"
+        @save="handleDealFormSave"
+        @update="handleDealFormUpdate"
+      />
+    </Modal>
     <Modal :is-open="showDeleteDealModal" @close="showDeleteDealModal = false">
       <ConfirmModal
         title="Удалить сделку?"
@@ -271,7 +279,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { Button, Spinner, Modal, ConfirmModal } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
@@ -326,6 +334,17 @@
   const savingDealIds = ref<Set<string>>(new Set())
   const showDealFormModal = ref(false)
   const dealToEdit = ref<Deal | null>(null)
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
 
   const crmSections = computed(() => [
     { id: 'contacts' as const, label: 'Контакты', count: contacts.value.length },

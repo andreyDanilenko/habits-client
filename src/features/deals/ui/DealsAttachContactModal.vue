@@ -1,10 +1,10 @@
 <template>
-  <Modal :is-open="isOpen" @close="$emit('close')">
-    <ModalContent
-      title="Добавить контакт в сделку"
-      :show-close-button="true"
-      @close="$emit('close')"
-    >
+  <ModalContent
+    title="Добавить контакт в сделку"
+    :show-close-button="true"
+    :fullscreen-on-mobile="isMobile"
+    @close="$emit('close')"
+  >
       <div class="space-y-4">
         <p class="text-sm text-text-secondary">
           Выберите сделку, в которую добавить контакт
@@ -55,17 +55,19 @@
           </li>
         </ul>
 
-        <div class="flex justify-end pt-2">
-          <Button type="button" variant="ghost" @click="$emit('close')"> Отмена </Button>
-        </div>
       </div>
-    </ModalContent>
-  </Modal>
+
+    <template #footer>
+      <div class="flex justify-end">
+        <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
+      </div>
+    </template>
+  </ModalContent>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
-  import { Modal, ModalContent, Button } from '@/shared/ui'
+  import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
+  import { ModalContent, Button } from '@/shared/ui'
   import { useDealsCrud } from '../model/use-deals-crud'
   import { formatDealMoney } from '../lib/format'
   import type { Deal } from '@/entities/deal'
@@ -76,6 +78,18 @@
     workspaceId: string
     contact: Contact | null
   }>()
+
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
 
   const emit = defineEmits<{
     close: []

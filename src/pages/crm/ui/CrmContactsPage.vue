@@ -15,19 +15,27 @@
     <template #content>
       <ContactsToolbar
         :search-input="actions.searchInput.value"
-        :show-filters="actions.showFilters.value"
+        :has-active-filters="actions.hasActiveFilters.value"
+        :active-filters-count="actions.activeFiltersCount.value"
+        @update:search-input="actions.setSearchInput"
+        @search="actions.onSearch"
+        @open-filters="showFiltersDrawer = true"
+      />
+
+      <ContactsFiltersDrawer
+        :is-open="showFiltersDrawer"
         :filters="actions.contactFilters.value"
         :companies="actions.filterCompanies.value"
         :available-tags="actions.availableTags.value"
-        @update:search-input="actions.setSearchInput"
-        @update:show-filters="actions.setShowFilters"
-        @search="actions.onSearch"
+        :has-active-filters="actions.hasActiveFilters.value"
+        @close="showFiltersDrawer = false"
+        @reset="resetContactsFilters"
         @update:filters="actions.updateContactFilters"
         @import="actions.onImport"
         @export="actions.onExport"
-        @reset-filters="actions.resetFilters"
       />
 
+      <div class="mt-(--spacing-4)">
       <div
         v-if="actions.selectedIds.value?.size > 0"
         class="flex items-center gap-(--spacing-4) py-(--spacing-2) px-(--spacing-4) rounded-(--radius-lg) bg-bg-tertiary border border-border-light"
@@ -64,17 +72,30 @@
         @add-to-deal="actions.openAttachToDeal"
         @row-click="actions.openQuickView"
       />
+      </div>
     </template>
   </BasePageLayout>
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { BasePageLayout } from '@/shared/ui/common'
   import { Button } from '@/shared/ui'
   import { PlusIcon } from '@/shared/ui/icon'
   import { PermissionGuard } from '@/features/permissions'
   import { CRM_PERMISSIONS } from '@/features/permissions/config'
-  import { useContactsPageActions, ContactsToolbar, ContactsTableWidget } from '@/features/contacts'
+  import {
+    useContactsPageActions,
+    ContactsToolbar,
+    ContactsFiltersDrawer,
+    ContactsTableWidget,
+  } from '@/features/contacts'
 
   const actions = useContactsPageActions()
+  const showFiltersDrawer = ref(false)
+
+  function resetContactsFilters() {
+    actions.resetFilters()
+    showFiltersDrawer.value = false
+  }
 </script>

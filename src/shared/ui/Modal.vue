@@ -75,6 +75,15 @@
         .filter(Boolean)
         .join(' ')
     }
+    if (props.fullscreenOnMobile) {
+      return [
+        'flex flex-col',
+        'fixed inset-0 w-full h-full min-h-dvh overflow-hidden lg:relative lg:inset-auto lg:w-auto lg:h-auto lg:min-h-0 lg:max-w-[min(30rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:overflow-x-auto lg:overflow-y-auto lg:rounded-xl lg:my-4',
+        props.contentClass,
+      ]
+        .filter(Boolean)
+        .join(' ')
+    }
     return [
       'max-w-[min(30rem,calc(100vw-2rem))] max-h-[calc(100vh-2rem)] overflow-x-auto overflow-y-auto',
       props.contentClass,

@@ -106,6 +106,7 @@
   import { formatDealMoney } from '@/features/deals/lib/format'
   import { ActivityFeed } from '@/features/activity'
   import { ProjectEntityPanel } from '@/features/projects'
+  import { TaskEntityPanel } from '@/features/tasks'
 
   const router = useRouter()
 
@@ -188,7 +189,7 @@
     main: DealMainInfo,
     activity: ActivityFeed,
     projects: ProjectEntityPanel,
-    tasks: DealPlaceholderTab,
+    tasks: TaskEntityPanel,
     products: DealPlaceholderTab,
   }
 
@@ -213,7 +214,12 @@
       canEdit: can(PROJECT_PERMISSIONS.entityAttach),
       projectsBasePath: '/projects',
     },
-    tasks: { text: 'Связанные задачи (в разработке).' },
+    tasks: {
+      workspaceId: workspaceId.value,
+      entityType: 'crm_deal',
+      entityId: dealId.value,
+      entityName: deal.value?.name,
+    },
     products: { text: 'Товары/услуги (для будущего расширения).' },
   }))
 </script>

@@ -52,6 +52,8 @@ export function useContactActions({
     return openModal<{ id?: string; data: CreateContactDto }>({
       component: ContactFormModal,
       props: getContactFormProps(null),
+      fullscreenOnMobile: true,
+      contentClass: 'lg:max-w-[min(40rem,calc(100vw-2rem))]',
       onConfirm: async (result) => {
         if (result?.data) {
           if (result.id) {
@@ -70,6 +72,8 @@ export function useContactActions({
     return openModal<{ id?: string; data: CreateContactDto }>({
       component: ContactFormModal,
       props: getContactFormProps(contact),
+      fullscreenOnMobile: true,
+      contentClass: 'lg:max-w-[min(40rem,calc(100vw-2rem))]',
       onConfirm: async (result) => {
         if (result?.id && result?.data) {
           await updateContact(result.id, result.data)
@@ -98,6 +102,8 @@ export function useContactActions({
   const openQuickView = (contact: Contact) => {
     return openModal({
       component: ContactQuickViewModal,
+      fullscreenOnMobile: true,
+      contentClass: 'lg:max-w-[min(40rem,calc(100vw-2rem))]',
       props: {
         contact,
         onEdit: (c: Contact) => openEditContact(c),
@@ -117,6 +123,8 @@ export function useContactActions({
         workspaceId: workspaceId(),
         contact,
       },
+      fullscreenOnMobile: true,
+      contentClass: 'lg:max-w-[min(40rem,calc(100vw-2rem))]',
       onConfirm: async () => {
         await onSuccess?.()
       },

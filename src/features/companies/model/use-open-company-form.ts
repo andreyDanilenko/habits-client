@@ -16,6 +16,8 @@ export function useOpenCompanyForm() {
       openModal<{ id?: string; data: CreateCompanyDto }>({
         component: CompanyFormModal,
         props: { isOpen: true, company: null },
+        fullscreenOnMobile: true,
+        contentClass: 'lg:max-w-[min(52rem,calc(100vw-2rem))]',
         onConfirm: async (result) => {
           if (result?.data && params.workspaceId) {
             const company = await params.createCompany(result.data)

@@ -11,7 +11,7 @@
     <div v-if="canInvite" class="space-y-4">
       <h2 class="text-lg font-medium text-text-primary">Пригласить</h2>
       <Card class="p-4">
-        <form @submit.prevent="handleInvite" class="flex flex-col sm:flex-row gap-3">
+        <form @submit.prevent="handleInvite" class="flex flex-col sm:flex-row sm:items-end gap-3">
           <Input
             v-model="inviteEmail"
             label="Email"

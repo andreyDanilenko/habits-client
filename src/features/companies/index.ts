@@ -8,6 +8,7 @@ export {
 } from './model'
 export {
   CompaniesToolbar,
+  CompaniesFiltersDrawer,
   CompaniesTableWidget,
   CompanyFormModal,
   CompanyAttachContactForm,

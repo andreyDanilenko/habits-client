@@ -35,6 +35,8 @@ export function useOpenContactForm({
       params.preselectedCompanyRef.value = null
       openModal<{ id?: string; data: CreateContactDto }>({
         component: ContactFormModal,
+        fullscreenOnMobile: true,
+        contentClass: 'lg:max-w-[min(40rem,calc(100vw-2rem))]',
         props: {
           isOpen: true,
           contact: null,

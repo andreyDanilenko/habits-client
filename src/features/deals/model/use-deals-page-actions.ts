@@ -1,3 +1,4 @@
+import { computed } from 'vue'
 import { useDealsPage } from './use-deals-page'
 import { useDealActions } from './use-deal-actions'
 
@@ -33,6 +34,40 @@ export function useDealsPageActions() {
     page.statusFilter.value = v
   }
 
+  const defaultPipelineId = computed(
+    () => page.defaultPipeline?.value?.id ?? page.pipelines.value?.[0]?.id ?? '',
+  )
+
+  const hasActiveFilters = computed(
+    () =>
+      (page.pipelines.value.length > 1 &&
+        page.selectedPipelineId.value !== defaultPipelineId.value) ||
+      !!page.dateFrom.value ||
+      !!page.dateTo.value ||
+      page.statusFilter.value !== 'all',
+  )
+
+  const activeFiltersCount = computed(() => {
+    let n = 0
+    if (
+      page.pipelines.value.length > 1 &&
+      page.selectedPipelineId.value !== defaultPipelineId.value
+    )
+      n++
+    if (page.dateFrom.value) n++
+    if (page.dateTo.value) n++
+    if (page.statusFilter.value !== 'all') n++
+    return n
+  })
+
+  const resetFilters = () => {
+    const def = page.pipelines.value.find((p) => p.isDefault) ?? page.pipelines.value[0]
+    if (def) page.selectedPipelineId.value = def.id
+    page.dateFrom.value = ''
+    page.dateTo.value = ''
+    page.statusFilter.value = 'all'
+  }
+
   return {
     ...page,
     openCreateModal: actions.openAddDeal,
@@ -44,5 +79,8 @@ export function useDealsPageActions() {
     setDateFrom,
     setDateTo,
     setStatusFilter,
+    hasActiveFilters,
+    activeFiltersCount,
+    resetFilters,
   }
 }

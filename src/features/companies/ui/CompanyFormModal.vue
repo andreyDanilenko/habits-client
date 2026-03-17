@@ -1,12 +1,11 @@
 <template>
-  <Modal :is-open="isOpen" size="sm" @close="$emit('close')">
-    <ModalContent
-      :title="company ? 'Редактировать компанию' : 'Новая компания'"
-      size="sm"
-      :show-close-button="true"
-      @close="$emit('close')"
-    >
-      <form class="space-y-6 max-h-[85vh] overflow-y-auto pr-1" @submit.prevent="handleSubmit">
+  <ModalContent
+    :title="company ? 'Редактировать компанию' : 'Новая компания'"
+    :show-close-button="true"
+    :fullscreen-on-mobile="isMobile"
+    @close="$emit('close')"
+  >
+    <form id="company-form" class="space-y-6 lg:space-y-6" @submit.prevent="handleSubmit">
         <section class="space-y-4">
           <h3 class="text-sm font-medium text-text-secondary">Реквизиты</h3>
           <div>
@@ -153,25 +152,38 @@
             <Input v-model="form.tagsStr" placeholder="важный, партнёр" />
           </div>
         </section>
-
-        <div class="flex justify-end gap-2 pt-2 sticky bottom-0 bg-bg-primary py-2">
-          <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
-          <Button type="submit" :loading="saving">Сохранить</Button>
-        </div>
       </form>
-    </ModalContent>
-  </Modal>
+
+    <template #footer>
+      <div class="flex justify-end gap-(--spacing-2)">
+        <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
+        <Button form="company-form" type="submit" :loading="saving">Сохранить</Button>
+      </div>
+    </template>
+  </ModalContent>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
-  import { Modal, ModalContent, Button, Input, Checkbox } from '@/shared/ui'
+  import { ref, watch, onMounted, onUnmounted } from 'vue'
+  import { ModalContent, Button, Input, Checkbox } from '@/shared/ui'
   import type { Company, CreateCompanyDto, CompanyAddress } from '@/entities/company'
 
   const props = defineProps<{
     isOpen: boolean
     company: Company | null
   }>()
+
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
 
   const emit = defineEmits<{
     close: []

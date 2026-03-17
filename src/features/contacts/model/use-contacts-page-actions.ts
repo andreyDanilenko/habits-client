@@ -68,6 +68,25 @@ export function useContactsPageActions() {
     contactFilters.value = {}
   }
 
+  const hasActiveFilters = computed(
+    () =>
+      !!contactFilters.value.companyId ||
+      !!contactFilters.value.dateFrom ||
+      !!contactFilters.value.dateTo ||
+      !!contactFilters.value.ownerId ||
+      (contactFilters.value.tags?.length ?? 0) > 0,
+  )
+
+  const activeFiltersCount = computed(() => {
+    let n = 0
+    if (contactFilters.value.companyId) n++
+    if (contactFilters.value.dateFrom) n++
+    if (contactFilters.value.dateTo) n++
+    if (contactFilters.value.ownerId) n++
+    if ((contactFilters.value.tags?.length ?? 0) > 0) n++
+    return n
+  })
+
   function updateContactFilters(filters: ContactFilters) {
     contactFilters.value = filters
   }
@@ -132,6 +151,8 @@ export function useContactsPageActions() {
     setSearchInput,
     setShowFilters,
     resetFilters,
+    hasActiveFilters,
+    activeFiltersCount,
     updateContactFilters,
     bulkDelete,
     onImport,

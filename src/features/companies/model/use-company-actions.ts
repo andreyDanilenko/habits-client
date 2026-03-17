@@ -24,6 +24,8 @@ export function useCompanyActions({
     return openModal<{ id?: string; data: CreateCompanyDto }>({
       component: CompanyFormModal,
       props: { isOpen: true, company: null },
+      fullscreenOnMobile: true,
+      contentClass: 'lg:max-w-[min(52rem,calc(100vw-2rem))]',
       onConfirm: async (result) => {
         if (result?.data) {
           if (result.id) {
@@ -41,6 +43,8 @@ export function useCompanyActions({
     return openModal<{ id?: string; data: CreateCompanyDto }>({
       component: CompanyFormModal,
       props: { isOpen: true, company },
+      fullscreenOnMobile: true,
+      contentClass: 'lg:max-w-[min(52rem,calc(100vw-2rem))]',
       onConfirm: async (result) => {
         if (result?.id && result?.data) {
           await updateCompany(result.id, result.data)

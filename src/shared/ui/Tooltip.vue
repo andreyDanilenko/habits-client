@@ -23,7 +23,7 @@
         :style="tooltipStyle"
         @mouseenter="keepOpen = true"
         @mouseleave="onTooltipMouseLeave"
-        @click.stop
+        @click="onContentClick"
       >
         <template v-if="variant === 'dropdown'">
           <slot>{{ text }}</slot>
@@ -167,6 +167,13 @@
           close()
         }
       }, 100)
+    }
+  }
+
+  const onContentClick = (e: Event) => {
+    e.stopPropagation()
+    if (props.trigger === 'click' && props.variant === 'dropdown') {
+      close()
     }
   }
 

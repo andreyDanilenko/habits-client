@@ -6,201 +6,7 @@
     @close="$emit('close')"
   >
     <form id="habit-form" @submit.prevent="handleSubmit" class="flex flex-col min-h-0">
-      <!-- Mobile: stepped flow -->
-      <template v-if="isMobile && !isEditing">
-        <!-- Step indicator -->
-        <div class="flex gap-2.5 mb-4 lg:mb-6 items-center">
-          <button
-            type="button"
-            class="flex-1 h-0.5 rounded-full transition-colors cursor-pointer py-1 -my-1 min-w-0"
-            :class="step >= 1 ? 'bg-primary-default' : 'bg-border-light'"
-            :aria-label="step === 2 ? 'Вернуться к основным полям' : 'Шаг 1'"
-            @click="step === 2 ? (step = 1) : undefined"
-          />
-          <button
-            type="button"
-            class="flex-1 h-0.5 rounded-full transition-colors cursor-pointer py-1 -my-1 min-w-0"
-            :class="step >= 2 ? 'bg-primary-default' : 'bg-border-light'"
-            :aria-label="step === 1 ? 'Дополнительные настройки' : 'Шаг 2'"
-            @click="step === 1 ? (step = 2) : undefined"
-          />
-        </div>
-
-        <!-- Step 1: Core fields (conversion-optimized) -->
-        <div v-show="step === 1" class="space-y-4 lg:space-y-5">
-          <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Название <span class="text-error-default">*</span>
-            </label>
-            <Input
-              v-model="form.title"
-              type="text"
-              required
-              maxlength="50"
-              placeholder="Например: Утренняя зарядка"
-              :error="errors.title"
-              class="text-base"
-              autofocus
-            />
-            <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">
-              {{ form.title.length }} / 50
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <div>
-              <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-                Цвет
-              </label>
-              <div class="flex flex-wrap gap-2 min-h-[44px]">
-                <SelectButton
-                  v-for="color in colors"
-                  :key="color"
-                  :is-selected="form.color === color"
-                  size="circle"
-                  :custom-style="{ backgroundColor: color }"
-                  custom-class="min-w-[44px] min-h-[44px] w-11 h-11 md:!min-w-0 md:!min-h-0 md:!w-8 md:!h-8"
-                  @click="form.color = color"
-                />
-              </div>
-            </div>
-            <div>
-              <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-                Иконка
-              </label>
-              <div class="flex flex-wrap gap-2 min-h-[44px]">
-                <SelectButton
-                  v-for="icon in icons"
-                  :key="icon"
-                  :is-selected="form.icon === icon"
-                  size="md"
-                  custom-class="min-w-[44px] min-h-[44px] text-xl md:!min-w-0 md:!min-h-0 md:!w-10 md:!h-10 md:!text-lg"
-                  @click="form.icon = icon"
-                >
-                  {{ icon }}
-                </SelectButton>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-              Когда выполнять
-            </label>
-            <div class="flex gap-2 flex-wrap">
-              <SelectButton
-                :is-selected="form.scheduleType === 'recurring'"
-                label="Регулярно"
-                custom-class="min-h-[44px] md:!min-h-0"
-                @click="form.scheduleType = 'recurring'"
-              />
-              <SelectButton
-                :is-selected="form.scheduleType === 'one_time'"
-                label="Один раз"
-                custom-class="min-h-[44px] md:!min-h-0"
-                @click="form.scheduleType = 'one_time'"
-              />
-            </div>
-          </div>
-
-          <div v-if="form.scheduleType === 'recurring'">
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-              Дни недели <span class="text-error-default">*</span>
-            </label>
-            <div class="flex flex-wrap gap-2">
-              <SelectButton
-                v-for="day in weekDays"
-                :key="day.value"
-                :is-selected="isDaySelected(day.value)"
-                :label="day.label"
-                custom-class="min-h-[44px] md:!min-h-0"
-                @click="toggleDay(day.value)"
-              />
-            </div>
-            <p v-if="errors.recurringDays" class="mt-1 text-(--text-xs) text-error-default">
-              {{ errors.recurringDays }}
-            </p>
-          </div>
-
-          <div v-if="form.scheduleType === 'one_time'">
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-              Дата <span class="text-error-default">*</span>
-            </label>
-            <DatePicker v-model="form.oneTimeDate" />
-            <p v-if="errors.oneTimeDate" class="mt-1 text-(--text-xs) text-error-default">
-              {{ errors.oneTimeDate }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 2: Additional options -->
-        <div v-show="step === 2" class="space-y-4 lg:space-y-5">
-          <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Описание (необязательно)
-            </label>
-            <Textarea
-              v-model="form.description"
-              :rows="3"
-              :maxlength="200"
-              placeholder="Краткое описание вашей привычки..."
-              resize="none"
-            />
-            <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">
-              {{ form.description?.length || 0 }} / 200
-            </span>
-          </div>
-
-          <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Цель на день
-            </label>
-            <div class="flex items-center gap-3">
-              <Input
-                :model-value="String(form.dailyGoal)"
-                type="number"
-                min="1"
-                max="10"
-                class="w-20"
-                @update:model-value="
-                  (v) => (form.dailyGoal = Math.max(1, Math.min(10, Number(v) || 1)))
-                "
-              />
-              <span class="text-text-secondary">раз(а) в день</span>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Предпочтительное время
-            </label>
-            <div class="flex flex-wrap gap-2">
-              <SelectButton
-                v-for="time in timesOfDay"
-                :key="time.value"
-                :is-selected="form.preferredTime === time.value"
-                :label="time.label"
-                custom-class="min-h-[44px] md:!min-h-0"
-                @click="form.preferredTime = time.value"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Категория
-            </label>
-            <Select
-              v-model="form.category"
-              :options="categoryOptions"
-              placeholder="Без категории"
-            />
-          </div>
-        </div>
-      </template>
-
-      <!-- Desktop: single form with collapsible "Дополнительно" -->
-      <div v-else class="space-y-4 lg:space-y-5">
+      <div class="space-y-4 lg:space-y-5">
         <div>
           <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
             Название <span class="text-error-default">*</span>
@@ -212,6 +18,7 @@
             maxlength="50"
             placeholder="Например: Утренняя зарядка"
             :error="errors.title"
+            :class="isMobile ? 'text-base' : ''"
           />
           <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">
             {{ form.title.length }} / 50
@@ -221,13 +28,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div>
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">Цвет</label>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 min-h-[44px]">
               <SelectButton
                 v-for="color in colors"
                 :key="color"
                 :is-selected="form.color === color"
                 size="circle"
                 :custom-style="{ backgroundColor: color }"
+                custom-class="min-w-[44px] min-h-[44px] w-11 h-11 md:!min-w-0 md:!min-h-0 md:!w-8 md:!h-8"
                 @click="form.color = color"
               />
             </div>
@@ -236,12 +44,13 @@
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-2"
               >Иконка</label
             >
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 min-h-[44px]">
               <SelectButton
                 v-for="icon in icons"
                 :key="icon"
                 :is-selected="form.icon === icon"
                 size="md"
+                custom-class="min-w-[44px] min-h-[44px] text-xl md:!min-w-0 md:!min-h-0 md:!w-10 md:!h-10 md:!text-lg"
                 @click="form.icon = icon"
               >
                 {{ icon }}
@@ -251,25 +60,27 @@
         </div>
 
         <div>
-          <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+          <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
             Тип расписания
           </label>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <SelectButton
               :is-selected="form.scheduleType === 'recurring'"
               label="Регулярная"
+              custom-class="min-h-[44px] md:!min-h-0"
               @click="form.scheduleType = 'recurring'"
             />
             <SelectButton
               :is-selected="form.scheduleType === 'one_time'"
               label="Разовая"
+              custom-class="min-h-[44px] md:!min-h-0"
               @click="form.scheduleType = 'one_time'"
             />
           </div>
         </div>
 
         <div v-if="form.scheduleType === 'recurring'">
-          <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+          <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
             Дни недели <span class="text-error-default">*</span>
           </label>
           <div class="flex flex-wrap gap-2">
@@ -278,6 +89,7 @@
               :key="day.value"
               :is-selected="isDaySelected(day.value)"
               :label="day.label"
+              custom-class="min-h-[44px] md:!min-h-0"
               @click="toggleDay(day.value)"
             />
           </div>
@@ -296,7 +108,7 @@
           </p>
         </div>
 
-        <!-- Collapsible "Дополнительно" (desktop create mode) -->
+        <!-- Collapsible "Дополнительно" (create mode) -->
         <div
           v-if="!isEditing"
           class="border border-border-default rounded-(--radius-md) overflow-hidden"
@@ -447,49 +259,14 @@
     <template #footer>
       <div
         class="grid gap-3"
-        :class="isMobile && !isEditing ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'"
+        :class="isMobile ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'"
       >
-        <!-- Mobile: stepped flow -->
-        <template v-if="isMobile && !isEditing">
-          <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
-            Отмена
-          </Button>
-          <template v-if="step === 1">
-            <Button type="button" variant="outline" class="w-full" @click="step = 2">
-              Дополнительно
-            </Button>
-            <Button
-              form="habit-form"
-              type="submit"
-              :loading="isSubmitting"
-              :disabled="!isStep1Valid"
-              class="col-span-2 w-full"
-            >
-              Создать привычку
-            </Button>
-          </template>
-          <template v-else>
-            <Button type="button" variant="outline" class="w-full" @click="step = 1">
-              Назад
-            </Button>
-            <Button
-              type="button"
-              :loading="isSubmitting"
-              :disabled="!isStep1Valid"
-              class="col-span-2 w-full"
-              @click="handleSubmit()"
-            >
-              Создать привычку
-            </Button>
-          </template>
-        </template>
-        <!-- Desktop / Edit mode -->
-        <template v-else>
-          <Button type="button" variant="outline" @click="$emit('close')"> Отмена </Button>
-          <Button form="habit-form" type="submit" :loading="isSubmitting">
-            {{ isEditing ? 'Сохранить' : 'Создать привычку' }}
-          </Button>
-        </template>
+        <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
+          Отмена
+        </Button>
+        <Button form="habit-form" type="submit" :loading="isSubmitting" :disabled="!isStep1Valid">
+          {{ isEditing ? 'Сохранить' : 'Создать привычку' }}
+        </Button>
       </div>
     </template>
   </ModalContent>
@@ -521,7 +298,6 @@
 
   const isSubmitting = ref(false)
   const isEditing = computed(() => !!props.habit)
-  const step = ref(1)
   const showAdvanced = ref(false)
   const isMobile = ref(false)
 
@@ -641,10 +417,7 @@
   }
 
   const handleSubmit = async () => {
-    if (!validate()) {
-      if (isMobile.value && !isEditing.value) step.value = 1
-      return
-    }
+    if (!validate()) return
 
     isSubmitting.value = true
     try {

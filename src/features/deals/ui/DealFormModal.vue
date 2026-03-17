@@ -1,11 +1,12 @@
 <template>
-  <Modal :is-open="isOpen" @close="$emit('close')">
-    <ModalContent
-      :title="deal ? 'Редактировать сделку' : 'Новая сделка'"
-      :show-close-button="true"
-      @close="$emit('close')"
-    >
-      <form class="space-y-4" @submit.prevent="handleSubmit">
+  <ModalContent
+    :title="deal ? 'Редактировать сделку' : 'Новая сделка'"
+    :show-close-button="true"
+    :fullscreen-on-mobile="isMobile"
+    @close="$emit('close')"
+  >
+    <form id="deal-form" class="flex flex-col min-h-0" @submit.prevent="handleSubmit">
+      <div class="space-y-4 lg:space-y-5">
         <div>
           <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
             Название сделки <span class="text-error-default">*</span>
@@ -97,19 +98,21 @@
           </span>
           <Select v-model="form.ownerId" :options="ownerOptions" />
         </div>
+      </div>
+    </form>
 
-        <div class="flex justify-end gap-(--spacing-2) pt-(--spacing-2)">
-          <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
-          <Button type="submit" :loading="saving">Сохранить</Button>
-        </div>
-      </form>
-    </ModalContent>
-  </Modal>
+    <template #footer>
+      <div class="flex justify-end gap-(--spacing-2)">
+        <Button type="button" variant="ghost" @click="$emit('close')">Отмена</Button>
+        <Button form="deal-form" type="submit" :loading="saving">Сохранить</Button>
+      </div>
+    </template>
+  </ModalContent>
 </template>
 
 <script setup lang="ts">
+  import { ref, onMounted, onUnmounted } from 'vue'
   import {
-    Modal,
     ModalContent,
     Button,
     Input,
@@ -121,6 +124,18 @@
   import type { Contact } from '@/entities/contact'
   import type { Deal, CreateDealDto } from '@/entities/deal'
   import { useDealForm } from '../model/use-deal-form'
+
+  const isMobile = ref(false)
+  const checkMobile = () => {
+    isMobile.value = window.innerWidth < 1024
+  }
+  onMounted(() => {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('resize', checkMobile)
+  })
 
   const props = withDefaults(
     defineProps<{
