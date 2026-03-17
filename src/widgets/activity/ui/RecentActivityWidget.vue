@@ -18,7 +18,7 @@
       <p class="text-text-secondary">Нет недавней активности</p>
     </div>
 
-    <div v-else class="space-y-3">
+    <div v-else class="space-y-3" v-auto-animate>
       <div v-for="activity in activities" :key="activity.id" class="flex items-start space-x-3">
         <div
           class="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center flex-shrink-0"
@@ -61,13 +61,16 @@
 
   const workspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? null)
 
-  const fetchActivities = async () => {
+  const fetchActivities = async (options?: { background?: boolean }) => {
     const wsId = workspaceId.value
     if (!wsId) {
       activities.value = []
       return
     }
-    isLoading.value = true
+    const isBackground = options?.background === true
+    if (!isBackground) {
+      isLoading.value = true
+    }
     try {
       const { activities: list } = await habitService.getActivities(wsId, { limit: 3 })
       activities.value = list.map((a) => ({
@@ -80,7 +83,9 @@
     } catch {
       activities.value = []
     } finally {
-      isLoading.value = false
+      if (!isBackground) {
+        isLoading.value = false
+      }
     }
   }
 
@@ -92,7 +97,7 @@
   watch(
     () => habitStore.activityRefreshTrigger,
     () => {
-      if (workspaceId.value) fetchActivities()
+      if (workspaceId.value) fetchActivities({ background: true })
     },
   )
 

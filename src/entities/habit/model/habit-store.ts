@@ -54,14 +54,17 @@ export const useHabitStore = defineStore('habit', () => {
   })
 
   // Actions
-  const fetchHabits = async (targetDate?: Date) => {
+  const fetchHabits = async (targetDate?: Date, options?: { background?: boolean }) => {
     if (!workspaceStore.currentWorkspace) {
       habits.value = []
       completions.value = []
       return
     }
 
-    isLoading.value = true
+    const isBackground = options?.background === true
+    if (!isBackground) {
+      isLoading.value = true
+    }
     try {
       const dateToFetch = targetDate || selectedDate.value
       const dateString = getLocalDateString(dateToFetch)
@@ -72,7 +75,9 @@ export const useHabitStore = defineStore('habit', () => {
     } catch (error) {
       console.error('Failed to fetch habits:', error)
     } finally {
-      isLoading.value = false
+      if (!isBackground) {
+        isLoading.value = false
+      }
     }
   }
 

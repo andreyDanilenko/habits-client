@@ -9,13 +9,12 @@
       :bottom-sheet-on-mobile="modal.config.bottomSheetOnMobile ?? false"
       :close-on-backdrop="true"
       :close-on-escape="true"
-      @update:is-open="modal.close()"
-      @close="modal.close()"
+      @close="() => modal.close()"
     >
       <component
         :is="modal.config.component"
         v-bind="modal.config.props"
-        @close="modal.close()"
+        @close="() => modal.close()"
         @confirm="handleConfirm(modal, $event)"
       />
     </Modal>

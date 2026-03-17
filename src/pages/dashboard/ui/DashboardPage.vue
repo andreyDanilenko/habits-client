@@ -1,7 +1,7 @@
 <template>
-  <div class="max-w-7xl mx-auto space-y-6">
+  <div class="max-w-7xl mx-auto space-y-6" v-auto-animate>
     <DashboardHeader :greeting="greeting" :user-name="userName" :formatted-date="formattedDate" />
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" v-auto-animate>
       <div class="lg:col-span-2 space-y-6">
         <TodayHabitsWidget @add-habit="handleAddHabit" />
         <CalendarWidget />

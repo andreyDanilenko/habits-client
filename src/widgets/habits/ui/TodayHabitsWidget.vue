@@ -15,7 +15,7 @@
       </Button>
     </div>
 
-    <div v-else class="space-y-3">
+    <div v-else class="space-y-3" v-auto-animate>
       <div
         v-for="habit in habits"
         :key="habit.id"

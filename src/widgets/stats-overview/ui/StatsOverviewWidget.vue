@@ -2,11 +2,18 @@
   <Card :border="true" :padding="true">
     <h2 class="text-text-primary mb-4">Статистика</h2>
 
-    <div class="space-y-4">
+    <div class="space-y-4" v-auto-animate>
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-text-secondary">Выполнено сегодня</p>
-          <p class="text-2xl font-bold text-text-primary">{{ completedToday }}/{{ totalToday }}</p>
+          <Transition name="number-fade" mode="out-in">
+            <p
+              :key="`${completedToday}-${totalToday}`"
+              class="text-2xl font-bold text-text-primary"
+            >
+              {{ completedToday }}/{{ totalToday }}
+            </p>
+          </Transition>
         </div>
         <div class="bg-primary-light rounded-full flex items-center justify-center p-3">
           <CheckCircleIcon size="md" class="text-primary-default" stroke-width="2" />
@@ -33,3 +40,14 @@
     return Math.round((completedToday.value / totalToday.value) * 100)
   })
 </script>
+
+<style scoped>
+  .number-fade-enter-active,
+  .number-fade-leave-active {
+    transition: opacity 0.2s ease;
+  }
+  .number-fade-enter-from,
+  .number-fade-leave-to {
+    opacity: 0;
+  }
+</style>

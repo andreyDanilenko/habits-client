@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import App from '@/app/App.vue'
 import router from '@/app/router'
 import { api } from '@/shared/api'
@@ -13,6 +14,7 @@ const app = createApp(App)
 const pinia = createPinia()
 
 app.use(pinia)
+app.use(autoAnimatePlugin)
 
 // Настраиваем обработчик неавторизованных запросов API
 // Логика обработки вынесена в handleUnauthorized для переиспользования

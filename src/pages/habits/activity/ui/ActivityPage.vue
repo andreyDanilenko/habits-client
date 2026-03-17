@@ -17,7 +17,7 @@
         :show-icon="false"
       />
 
-      <div v-else class="space-y-4">
+      <div v-else class="space-y-4" v-auto-animate>
         <div
           v-for="activity in activities"
           :key="activity.id"
@@ -77,14 +77,17 @@
 
   const workspaceId = computed(() => workspaceStore.currentWorkspace?.id ?? null)
 
-  const fetchActivities = async () => {
+  const fetchActivities = async (options?: { background?: boolean }) => {
     const wsId = workspaceId.value
     if (!wsId) {
       activities.value = []
       total.value = 0
       return
     }
-    isLoading.value = true
+    const isBackground = options?.background === true
+    if (!isBackground) {
+      isLoading.value = true
+    }
     try {
       const offset = (currentPage.value - 1) * pageSize
       const { activities: list, total: t } = await habitService.getActivities(wsId, {
@@ -97,7 +100,9 @@
       activities.value = []
       total.value = 0
     } finally {
-      isLoading.value = false
+      if (!isBackground) {
+        isLoading.value = false
+      }
     }
   }
 
@@ -119,7 +124,7 @@
   watch(
     () => habitStore.activityRefreshTrigger,
     () => {
-      if (workspaceId.value) fetchActivities()
+      if (workspaceId.value) fetchActivities({ background: true })
     },
   )
 

@@ -65,10 +65,25 @@
 
   const { on } = useRealtime()
   useNotificationsStore()
-  on('habit.completed', () => habitStore.fetchHabits())
-  on('habit.created', () => habitStore.fetchHabits())
-  on('habit.updated', () => habitStore.fetchHabits())
-  on('habit.deleted', () => habitStore.fetchHabits())
+  on('habit.completed', () => {
+    habitStore.fetchHabits(undefined, { background: true })
+    habitStore.activityRefreshTrigger++
+  })
+  on('habit.created', () => {
+    habitStore.fetchHabits(undefined, { background: true })
+    habitStore.activityRefreshTrigger++
+  })
+  on('habit.updated', () => {
+    habitStore.fetchHabits(undefined, { background: true })
+    habitStore.activityRefreshTrigger++
+  })
+  on('habit.deleted', () => {
+    habitStore.fetchHabits(undefined, { background: true })
+    habitStore.activityRefreshTrigger++
+  })
+  on('activity.created', () => {
+    habitStore.activityRefreshTrigger++
+  })
   on('invitation.accepted', () => workspaceStore.fetchWorkspaces())
   const { openModal } = useModal()
 

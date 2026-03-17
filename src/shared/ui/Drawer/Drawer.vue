@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, onUnmounted, watch } from 'vue'
   import { XMarkIcon } from '@/shared/ui/icon'
 
   const props = withDefaults(
@@ -64,16 +64,40 @@
       title?: string
       width?: 'sm' | 'md' | 'lg'
       closeOnOverlay?: boolean
+      closeOnEscape?: boolean
       showCloseButton?: boolean
     }>(),
     {
       width: 'md',
       closeOnOverlay: true,
+      closeOnEscape: true,
       showCloseButton: true,
     },
   )
 
-  defineEmits<{ close: [] }>()
+  const emit = defineEmits<{ close: [] }>()
+
+  const handleEscape = (e: KeyboardEvent) => {
+    if (props.isOpen && props.closeOnEscape && e.key === 'Escape') {
+      emit('close')
+    }
+  }
+
+  watch(
+    () => props.isOpen,
+    (isOpen) => {
+      if (isOpen) {
+        document.addEventListener('keydown', handleEscape)
+      } else {
+        document.removeEventListener('keydown', handleEscape)
+      }
+    },
+    { immediate: true },
+  )
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleEscape)
+  })
 
   const WIDTH_CLASSES: Record<'sm' | 'md' | 'lg', string> = {
     sm: 'w-full max-w-sm',
@@ -94,11 +118,11 @@
   }
   .drawer-enter-active,
   .drawer-leave-active {
-    transition: opacity 0.2s ease;
+    transition: opacity var(--duration-normal, 250ms) var(--ease-in-out, ease);
   }
   .drawer-enter-active .Drawer,
   .drawer-leave-active .Drawer {
-    transition: transform 0.25s ease;
+    transition: transform var(--duration-slow, 350ms) var(--ease-out-expo, cubic-bezier(0.32, 0.72, 0, 1));
   }
   .drawer-enter-from,
   .drawer-leave-to {

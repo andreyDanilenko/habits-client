@@ -1,4 +1,4 @@
-import { ref, type Component, type Ref } from 'vue'
+import { ref, type Component } from 'vue'
 
 export interface ModalConfig<T = any> {
   component: Component
@@ -19,7 +19,7 @@ export interface ModalInstance {
 }
 
 class ModalManager {
-  private modals: Ref<ModalInstance[]> = ref([])
+  private modals = ref<ModalInstance[]>([])
 
   get currentModals() {
     return this.modals.value
@@ -40,7 +40,6 @@ class ModalManager {
   close(id: symbol, result?: any) {
     const instance = this.modals.value.find((m) => m.id === id)
     if (instance) {
-      // Приводим тип к нужному
       instance.config.onClose?.(result)
       this.modals.value = this.modals.value.filter((m) => m.id !== id)
     }

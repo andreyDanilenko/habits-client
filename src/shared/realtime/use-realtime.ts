@@ -11,6 +11,7 @@ export type RealtimeEventType =
   | 'habit.updated'
   | 'habit.deleted'
   | 'habit.completed'
+  | 'activity.created'
   | 'deal.created'
   | 'deal.updated'
   | 'deal.deleted'
@@ -65,6 +66,7 @@ export function useRealtime() {
       'habit.updated',
       'habit.deleted',
       'habit.completed',
+      'activity.created',
       'deal.created',
       'deal.updated',
       'deal.deleted',
