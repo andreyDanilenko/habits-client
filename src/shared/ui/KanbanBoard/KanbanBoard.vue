@@ -1,5 +1,5 @@
 <template>
-  <div class="KanbanBoard flex gap-4 overflow-x-auto pb-4">
+  <div class="KanbanBoard flex gap-4 overflow-x-auto pb-4" v-auto-animate>
     <KanbanColumn
       v-for="col in columns"
       :key="col.id"

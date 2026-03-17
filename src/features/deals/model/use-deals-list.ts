@@ -50,13 +50,16 @@ export function useDealsList() {
     }
   }
 
-  const fetchDeals = async () => {
+  const fetchDeals = async (options?: { background?: boolean }) => {
     if (!workspaceId.value) {
       deals.value = []
       total.value = 0
       return
     }
-    isLoading.value = true
+    const isBackground = options?.background === true
+    if (!isBackground) {
+      isLoading.value = true
+    }
     error.value = null
     try {
       const isKanban = viewMode.value === 'kanban'
@@ -83,7 +86,9 @@ export function useDealsList() {
       deals.value = []
       total.value = 0
     } finally {
-      isLoading.value = false
+      if (!isBackground) {
+        isLoading.value = false
+      }
     }
   }
 
@@ -119,12 +124,12 @@ export function useDealsList() {
       dateTo,
       statusFilter,
     ],
-    fetchDeals,
+    () => fetchDeals(),
   )
 
-  const unsubDealCreated = on('deal.created', fetchDeals)
-  const unsubDealUpdated = on('deal.updated', fetchDeals)
-  const unsubDealDeleted = on('deal.deleted', fetchDeals)
+  const unsubDealCreated = on('deal.created', () => fetchDeals({ background: true }))
+  const unsubDealUpdated = on('deal.updated', () => fetchDeals({ background: true }))
+  const unsubDealDeleted = on('deal.deleted', () => fetchDeals({ background: true }))
   onUnmounted(() => {
     unsubDealCreated()
     unsubDealUpdated()

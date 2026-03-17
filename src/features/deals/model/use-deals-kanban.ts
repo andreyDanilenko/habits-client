@@ -90,17 +90,13 @@ export function useDealsKanban(
     savingDealIds.value = new Set(savingDealIds.value).add(deal.id)
     const prevStageId = deal.stageId
 
-    // оптимистично переносим сделку в новый этап
+    // оптимистично переносим сделку в новый этап (watch на deals вызовет syncKanbanColumnsInPlace)
     mergeDealInList(deal.id, { stageId: toId })
-    kanbanColumns.value = buildKanbanColumns()
     try {
       // одного PUT достаточно — сервер уже хранит актуальное состояние
       await updateDeal(deal.id, { stageId: toId }, { skipRefetch: true })
-      // при желании можно локально тронуть updatedAt, но это не обязательно
-      // mergeDealInList(deal.id, { updatedAt: new Date().toISOString() })
     } catch {
       mergeDealInList(deal.id, { stageId: prevStageId })
-      kanbanColumns.value = buildKanbanColumns()
     } finally {
       const next = new Set(savingDealIds.value)
       next.delete(deal.id)
