@@ -34,7 +34,7 @@
           <span v-if="assigneeName(task)" class="ml-(--spacing-2)">→ {{ assigneeName(task) }}</span>
         </p>
       </div>
-      <div class="flex-shrink-0" @click.stop>
+      <div v-if="canShowActions" class="flex-shrink-0" @click.stop>
         <Tooltip trigger="click" placement="bottom" variant="dropdown">
           <template #trigger>
             <Button variant="ghost" size="md" class="!p-2">
@@ -97,11 +97,17 @@
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue'
   import { Button, Tooltip } from '@/shared/ui'
   import { CogIcon } from '@/shared/ui/icon'
-  import { PermissionGuard } from '@/features/permissions'
+  import { PermissionGuard, usePermissions } from '@/features/permissions'
   import { TASKS_PERMISSIONS } from '@/features/permissions/config'
   import type { Task } from '@/entities/task'
+
+  const { can } = usePermissions()
+  const canShowActions = computed(
+    () => can(TASKS_PERMISSIONS.taskUpdate) || can(TASKS_PERMISSIONS.taskDelete),
+  )
 
   const props = defineProps<{
     tasks: Task[]
