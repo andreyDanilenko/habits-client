@@ -38,6 +38,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import type { Task } from '@/entities/task'
+  import { priorityClass, priorityLabel, typeLabel } from '../lib/task-labels'
 
   const props = defineProps<{
     task: Task
@@ -55,38 +56,6 @@
     const opt = opts.find((o) => o.value === props.task.assigneeId)
     return opt?.label ?? ''
   })
-
-  function priorityClass(priority: string) {
-    const map: Record<string, string> = {
-      low: 'bg-bg-tertiary text-text-secondary',
-      medium: 'bg-info-light text-info-default',
-      high: 'bg-warning-light text-warning-default',
-      critical: 'bg-error-light text-error-default',
-    }
-    return map[priority] ?? map.medium
-  }
-
-  function priorityLabel(priority: string) {
-    const map: Record<string, string> = {
-      low: 'Низкий',
-      medium: 'Средний',
-      high: 'Высокий',
-      critical: 'Критический',
-    }
-    return map[priority] ?? priority
-  }
-
-  function typeLabel(type: string) {
-    const map: Record<string, string> = {
-      task: 'Задача',
-      bug: 'Ошибка',
-      feature: 'Функция',
-      meeting: 'Встреча',
-      call: 'Звонок',
-      other: 'Другое',
-    }
-    return map[type] ?? type
-  }
 </script>
 
 <style scoped>

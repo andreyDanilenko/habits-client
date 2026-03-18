@@ -19,7 +19,7 @@
       <SegmentedControl
         :model-value="viewMode"
         :options="viewModeOptions"
-        @update:model-value="$emit('update:viewMode', $event)"
+        @update:model-value="$emit('update:viewMode', $event as 'list' | 'kanban')"
       />
       <Button
         variant="outline"
@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
   import { Button, SearchInput, SegmentedControl } from '@/shared/ui'
-  import { IconFunnel, ListIcon } from '@/shared/ui/icon'
+  import { IconFunnel, ListIcon, IconKanban } from '@/shared/ui/icon'
 
   defineProps<{
     searchQuery: string
@@ -53,7 +53,7 @@
 
   const viewModeOptions = [
     { value: 'list', label: 'Список', icon: ListIcon },
-    { value: 'kanban', label: 'Канбан' },
+    { value: 'kanban', label: 'Канбан', icon: IconKanban },
   ]
 
   const emit = defineEmits<{

@@ -89,6 +89,7 @@
 
       <TaskDetailModal
         :task="detailTask"
+        :parent-task="parentTaskForSubtask"
         :workspace-id="workspaceId"
         :current-user-id="currentUserId"
         :assignee-options="assigneeOptions"
@@ -100,6 +101,7 @@
         @delete="confirmDelete"
         @add-subtask="openAddSubtask"
         @view-subtask="viewSubtask"
+        @view-parent="viewParent"
       />
 
       <TaskFormModal
@@ -174,6 +176,8 @@
     openEdit,
     openAddSubtask,
     viewSubtask,
+    viewParent,
+    parentTaskForSubtask,
     creatingSubtaskFor,
     subtasksRefreshKey,
     workspaceId,

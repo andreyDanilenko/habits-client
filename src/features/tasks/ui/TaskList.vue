@@ -1,40 +1,15 @@
 <template>
   <ul class="space-y-(--spacing-3)" v-auto-animate>
-    <li
+    <TaskCard
       v-for="task in tasks"
       :key="task.id"
-      class="p-(--spacing-4) rounded-(--radius-md) border border-border-light hover:bg-bg-secondary flex justify-between items-start gap-(--spacing-4)"
+      :task="task"
+      :format-date="formatDate"
+      :assignee-name="assigneeName(task)"
+      variant="full"
+      @click="$emit('view', task)"
     >
-      <div class="min-w-0 flex-1 cursor-pointer" @click="$emit('view', task)">
-        <div class="flex flex-wrap items-center gap-(--spacing-2)">
-          <span
-            class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs) font-medium"
-            :class="priorityClass(task.priority)"
-          >
-            {{ priorityLabel(task.priority) }}
-          </span>
-          <span
-            class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs) bg-bg-tertiary text-text-secondary"
-          >
-            {{ typeLabel(task.type) }}
-          </span>
-          <span
-            v-if="task.status === 'completed'"
-            class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs) bg-success-light text-success-default"
-          >
-            Выполнена
-          </span>
-        </div>
-        <h3 class="font-medium text-text-primary truncate mt-(--spacing-1)">{{ task.title }}</h3>
-        <p v-if="task.description" class="mt-(--spacing-1) text-(--text-sm) text-text-secondary line-clamp-2">
-          {{ task.description }}
-        </p>
-        <p class="mt-(--spacing-1) text-(--text-xs) text-text-muted">
-          {{ formatDate(task.dueDate) }}
-          <span v-if="assigneeName(task)" class="ml-(--spacing-2)">→ {{ assigneeName(task) }}</span>
-        </p>
-      </div>
-      <div v-if="canShowActions" class="flex-shrink-0" @click.stop>
+      <template v-if="canShowActions" #actions="{ task: t }">
         <Tooltip trigger="click" placement="bottom" variant="dropdown">
           <template #trigger>
             <Button variant="ghost" size="md" class="!p-2">
@@ -44,20 +19,20 @@
           <div class="w-48 bg-bg-primary rounded-lg shadow-card border border-border-default py-1">
             <PermissionGuard :permission="TASKS_PERMISSIONS.taskUpdate">
               <Button
-                v-if="task.status === 'pending'"
+                v-if="t.status === 'pending'"
                 variant="ghost"
                 size="md"
                 custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
-                @click="$emit('start', task)"
+                @click="$emit('start', t)"
               >
                 В работу
               </Button>
               <Button
-                v-else-if="task.status !== 'completed'"
+                v-else-if="t.status !== 'completed'"
                 variant="ghost"
                 size="md"
                 custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
-                @click="$emit('complete', task)"
+                @click="$emit('complete', t)"
               >
                 Выполнить
               </Button>
@@ -66,7 +41,7 @@
                 variant="ghost"
                 size="md"
                 custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
-                @click="$emit('reopen', task)"
+                @click="$emit('reopen', t)"
               >
                 Вернуть
               </Button>
@@ -74,7 +49,7 @@
                 variant="ghost"
                 size="md"
                 custom-class="w-full justify-start !px-4 !py-2 text-text-primary hover:bg-bg-tertiary"
-                @click="$emit('edit', task)"
+                @click="$emit('edit', t)"
               >
                 Изменить
               </Button>
@@ -84,15 +59,15 @@
                 variant="ghost"
                 size="md"
                 custom-class="w-full justify-start !px-4 !py-2 text-error-default hover:bg-error-light"
-                @click="$emit('delete', task)"
+                @click="$emit('delete', t)"
               >
                 Удалить
               </Button>
             </PermissionGuard>
           </div>
         </Tooltip>
-      </div>
-    </li>
+      </template>
+    </TaskCard>
   </ul>
 </template>
 
@@ -102,6 +77,7 @@
   import { CogIcon } from '@/shared/ui/icon'
   import { PermissionGuard, usePermissions } from '@/features/permissions'
   import { TASKS_PERMISSIONS } from '@/features/permissions/config'
+  import TaskCard from './TaskCard.vue'
   import type { Task } from '@/entities/task'
 
   const { can } = usePermissions()
@@ -123,40 +99,6 @@
     complete: [task: Task]
     reopen: [task: Task]
   }>()
-
-  function priorityClass(priority: string) {
-    const map: Record<string, string> = {
-      low: 'bg-bg-tertiary text-text-secondary',
-      medium: 'bg-info-light text-info-default',
-      high: 'bg-warning-light text-warning-default',
-      critical: 'bg-error-light text-error-default',
-    }
-    return map[priority] ?? map.medium
-  }
-
-  function priorityLabel(priority: string) {
-    const map: Record<string, string> = {
-      low: 'Низкий',
-      medium: 'Средний',
-      high: 'Высокий',
-      critical: 'Критический',
-    }
-    return map[priority] ?? priority
-  }
-
-  function typeLabel(type: string) {
-    const map: Record<string, string> = {
-      task: 'Задача',
-      bug: 'Ошибка',
-      feature: 'Функция',
-      meeting: 'Встреча',
-      call: 'Звонок',
-      email: 'Email',
-      lunch: 'Обед',
-      other: 'Другое',
-    }
-    return map[type] ?? type
-  }
 
   function assigneeName(task: Task) {
     const opts = props.assigneeOptions ?? []
