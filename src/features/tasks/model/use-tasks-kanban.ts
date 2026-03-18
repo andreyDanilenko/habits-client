@@ -66,7 +66,6 @@ export function useTasksKanban(
     if (!toStatus || !task?.id || task.status === toStatus) return
 
     savingTaskIds.value = new Set(savingTaskIds.value).add(task.id)
-    const prevStatus = task.status
 
     try {
       await updateTaskStatus(task.id, toStatus)

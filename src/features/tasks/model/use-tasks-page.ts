@@ -145,9 +145,25 @@ export function useTasksPage() {
     showModal.value = true
   }
 
+  const parentTaskForSubtask = ref<Task | null>(null)
+
   function viewSubtask(task: Task) {
+    parentTaskForSubtask.value =
+      task.parentId && detailTask.value?.id === task.parentId ? detailTask.value : null
     detailTask.value = task
     showDetailModal.value = true
+  }
+
+  async function viewParent(parentId: string) {
+    if (!workspaceId.value) return
+    try {
+      const parent = await taskService.getById(workspaceId.value, parentId)
+      detailTask.value = parent
+      parentTaskForSubtask.value = null
+      showDetailModal.value = true
+    } catch (e) {
+      console.error('Failed to fetch parent task:', e)
+    }
   }
 
   function refreshSubtasks() {
@@ -157,6 +173,7 @@ export function useTasksPage() {
   function closeDetailModal() {
     showDetailModal.value = false
     detailTask.value = null
+    parentTaskForSubtask.value = null
   }
 
   function closeModal() {
@@ -180,18 +197,25 @@ export function useTasksPage() {
     saving.value = true
     try {
       if (editingTask.value) {
-        await taskService.update(workspaceId.value, editingTask.value.id, form as UpdateTaskDto)
+        const updatePayload: UpdateTaskDto = {
+          ...form,
+          status: form.status as UpdateTaskDto['status'],
+          duration: form.duration,
+        }
+        await taskService.update(workspaceId.value, editingTask.value.id, updatePayload)
       } else {
         const dto: CreateTaskDto = {
           title: form.title!,
           description: form.description,
           type: (form.type as CreateTaskDto['type']) ?? 'task',
           priority: (form.priority as CreateTaskDto['priority']) ?? 'medium',
+          status: form.status as CreateTaskDto['status'],
           dueDate: form.dueDate!,
           dueTime: form.dueTime,
           assigneeId: form.assigneeId ?? currentUserId.value,
           parentId: form.parentId ?? creatingSubtaskFor.value?.id,
           entities: form.entities,
+          duration: form.duration,
         }
         await taskService.create(workspaceId.value, dto)
       }
@@ -285,7 +309,7 @@ export function useTasksPage() {
       t.id === taskId ? { ...t, status: status as TaskStatus } : t,
     )
     try {
-      await taskService.update(workspaceId.value, taskId, { status })
+      await taskService.update(workspaceId.value, taskId, { status: status as TaskStatus })
       await fetchTasks()
     } catch (e) {
       tasks.value = tasks.value.map((t) =>
@@ -326,6 +350,8 @@ export function useTasksPage() {
     openEdit,
     openAddSubtask,
     viewSubtask,
+    viewParent,
+    parentTaskForSubtask,
     creatingSubtaskFor,
     subtasksRefreshKey,
     closeModal,
@@ -337,7 +363,6 @@ export function useTasksPage() {
     completeTask,
     reopenTask,
     startTask,
-    searchQuery,
     formatDate,
     formatDateTime,
     viewMode,
