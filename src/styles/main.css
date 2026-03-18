@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 html {
   height: 100%;

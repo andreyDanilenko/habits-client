@@ -16,3 +16,4 @@ export {
   getTextPreview,
 } from './date'
 export { PASSWORD_REGEX, PASSWORD_ERROR, validatePassword, getPasswordError } from './validation'
+export { isRichContentEmpty } from './rich-content'
