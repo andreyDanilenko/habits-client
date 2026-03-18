@@ -65,7 +65,10 @@
   import { ref, onMounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { api, API_ENDPOINTS } from '@/shared/api'
+  import type { User } from '@/entities/user'
   import { useUserStore } from '@/entities/user'
+  import { useWorkspaceStore } from '@/entities/workspace'
+  import { useAuthStore } from '@/features/auth'
 
   const route = useRoute()
   const router = useRouter()
@@ -81,11 +84,31 @@
     }
 
     try {
-      await api.get(`${API_ENDPOINTS.AUTH.VERIFY_EMAIL}?token=${encodeURIComponent(token)}`)
+      const data = await api.get<{ user: User }>(
+        `${API_ENDPOINTS.AUTH.VERIFY_EMAIL}?token=${encodeURIComponent(token)}`,
+      )
       status.value = 'success'
       const userStore = useUserStore()
-      await userStore.fetchCurrentUser()
-      setTimeout(() => router.push('/'), 1500)
+      const authStore = useAuthStore()
+      const workspaceStore = useWorkspaceStore()
+      // Используем данные из ответа — cookies уже установлены бэкендом.
+      userStore.setUser(data.user)
+      authStore.setCookieBasedAuth()
+      workspaceStore.clearWorkspaces()
+      // Загружаем workspaces до редиректа — проверяем, что cookies применились.
+      // Иначе после редиректа authGuard вызовет fetchWorkspaces и может получить 401.
+      try {
+        await workspaceStore.fetchWorkspaces()
+      } catch (wsErr) {
+        console.error('Failed to fetch workspaces after verify:', wsErr)
+        await new Promise((r) => setTimeout(r, 500))
+        try {
+          await workspaceStore.fetchWorkspaces()
+        } catch {
+          // Cookies не применились — редирект всё равно, authGuard попробует снова
+        }
+      }
+      setTimeout(() => router.push('/'), 800)
     } catch (err: any) {
       status.value = 'error'
       errorMessage.value =

@@ -112,6 +112,12 @@ export const useAuthStore = defineStore('auth', () => {
     refreshToken.value = null
   }
 
+  /** Устанавливает флаг cookie-based auth (после verify-email, когда cookies уже установлены бэкендом) */
+  const setCookieBasedAuth = () => {
+    accessToken.value = 'cookie-based'
+    refreshToken.value = 'cookie-based'
+  }
+
   const loadEffectivePermissions = async () => {
     const workspaceStore = useWorkspaceStore()
     const currentWorkspace = workspaceStore.currentWorkspace
@@ -167,6 +173,7 @@ export const useAuthStore = defineStore('auth', () => {
     refresh,
     setTokens,
     clearTokens,
+    setCookieBasedAuth,
     initAuth,
     loadEffectivePermissions,
   }

@@ -3,6 +3,7 @@ import { useAuthStore } from '@/features/auth'
 import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
 
+/** Вызывается при 401 — редирект на /login */
 export const handleUnauthorized = async (router: Router) => {
   const authStore = useAuthStore()
   const userStore = useUserStore()
@@ -10,58 +11,59 @@ export const handleUnauthorized = async (router: Router) => {
   authStore.clearTokens()
   userStore.clearUser()
 
-  const currentRoute = router.currentRoute.value
-  const isPublicRoute =
-    currentRoute.meta.public === true || currentRoute.path.startsWith('/invite/')
-
-  if (!isPublicRoute) {
-    try {
-      await router.push({ name: 'Login' })
-    } catch (error) {
-      console.error('Failed to redirect via router:', error)
-      window.location.href = '/login'
-    }
+  const path = window.location.pathname
+  if (path === '/login' || path === '/register' || path.startsWith('/auth/verify-email') || path.startsWith('/invite/')) {
+    return
   }
+  window.location.href = '/login'
 }
 
+/**
+ * Авторизованный → только приватные страницы (дашборд и т.д.)
+ * Неавторизованный → только публичные (login, register, verify-email, invite)
+ */
 export const authGuard = async (
   to: RouteLocationNormalized,
   _from: RouteLocationNormalized,
   next: NavigationGuardNext,
 ) => {
-  const authStore = useAuthStore()
   const userStore = useUserStore()
 
-  if (to.meta.public) {
-    // /invite/:token — доступна и авторизованным, и нет (нужно принять приглашение)
+  const isPublicRoute = to.meta.public === true || to.path.startsWith('/invite/')
+  const hasUser = !!userStore.currentUser
+
+  // Публичные страницы: login, register, verify-email, invite
+  if (isPublicRoute) {
     if (to.path.startsWith('/invite/')) {
       return next()
     }
-    // Логин/регистрация — авторизованный пользователь идёт на дашборд
-    if (authStore.isAuthenticated) {
-      return next({ path: '/habits/dashboard' })
+    // Авторизованный на login/register/verify → редирект на дашборд
+    if (hasUser) {
+      return next({ path: '/habits/dashboard', replace: true })
     }
     return next()
   }
 
-  if (!authStore.isAuthenticated) {
-    console.log('authGuard: not authenticated, redirecting to login')
-    return next({ name: 'Login' })
+  // Приватные страницы — требуют авторизации
+  if (!hasUser) {
+    try {
+      await userStore.fetchCurrentUser()
+    } catch {
+      return next({ name: 'Login', replace: true })
+    }
   }
 
   if (!userStore.currentUser) {
-    try {
-      await userStore.fetchCurrentUser()
-    } catch (error) {
-      console.error('authGuard: failed to fetch currentUser', error)
-      await authStore.logout()
-      return next({ name: 'Login' })
-    }
+    return next({ name: 'Login', replace: true })
   }
 
   const workspaceStore = useWorkspaceStore()
   if (workspaceStore.workspaces?.length === 0) {
-    await workspaceStore.fetchWorkspaces()
+    try {
+      await workspaceStore.fetchWorkspaces()
+    } catch {
+      // Ошибка загрузки workspaces — всё равно пускаем (create-workspace и т.д.)
+    }
   }
 
   next()
