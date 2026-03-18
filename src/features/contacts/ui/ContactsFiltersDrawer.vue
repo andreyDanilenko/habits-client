@@ -65,14 +65,14 @@
         </div>
       </section>
 
-      <div v-if="availableTags.length" class="FiltersDivider" />
+      <div v-if="(availableTags ?? []).length" class="FiltersDivider" />
 
-      <section v-if="availableTags.length" class="FiltersSection">
+      <section v-if="(availableTags ?? []).length" class="FiltersSection">
         <h3 class="FiltersSection__Title">Теги</h3>
         <div class="FiltersSection__Content">
           <div class="flex flex-wrap gap-2">
             <button
-              v-for="tag in availableTags"
+              v-for="tag in (availableTags ?? [])"
               :key="tag"
               type="button"
               class="cursor-pointer transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-1 rounded-full"

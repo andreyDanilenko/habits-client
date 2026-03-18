@@ -4,7 +4,7 @@
       <SegmentedControl
         :model-value="viewMode"
         :options="viewModeOptions"
-        @update:model-value="$emit('update:viewMode', $event)"
+        @update:model-value="$emit('update:viewMode', $event as DealsViewMode)"
       />
       <Button
         variant="outline"
@@ -28,7 +28,7 @@
 <script setup lang="ts">
   import { Button, SegmentedControl } from '@/shared/ui'
   import { IconFunnel, ListIcon } from '@/shared/ui/icon'
-  import type { DealsViewMode, DealsStatusFilter } from '../model/use-deals-page'
+  import type { DealsViewMode } from '../model/use-deals-page'
 
   defineProps<{
     viewMode: DealsViewMode

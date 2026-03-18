@@ -70,16 +70,13 @@ export function useDealActions({
       }),
   })
 
-  const dealFormContentClass =
-    'fixed inset-0 flex flex-col h-[100dvh] max-w-none max-h-none m-0 rounded-none overflow-hidden lg:relative lg:flex-none lg:h-auto lg:max-w-[min(40rem,calc(100vw-2rem))] lg:max-h-[calc(100vh-2rem)] lg:mx-auto lg:rounded-xl lg:my-4 lg:overflow-x-auto lg:overflow-y-auto'
-
   const openAddDeal = () => {
     preselectedContactRef.value = null
     preselectedCompanyRef.value = null
     return openModal<{ id?: string; data: CreateDealDto }>({
       component: DealFormModal,
       fullscreenOnMobile: true,
-      contentClass: dealFormContentClass,
+      contentClass: 'lg:max-w-[min(52rem,calc(100vw-2rem))]',
       props: getDealFormProps(null),
       onConfirm: async (result) => {
         if (result?.data) {
@@ -100,7 +97,7 @@ export function useDealActions({
     return openModal<{ id?: string; data: CreateDealDto }>({
       component: DealFormModal,
       fullscreenOnMobile: true,
-      contentClass: dealFormContentClass,
+      contentClass: 'lg:max-w-[min(52rem,calc(100vw-2rem))]',
       props: getDealFormProps(deal),
       onConfirm: async (result) => {
         if (result?.id && result?.data) {

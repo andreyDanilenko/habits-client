@@ -33,7 +33,7 @@
             placeholder="Все"
             size="md"
             class="w-full"
-            @update:model-value="$emit('update:status', $event ? String($event) : 'all')"
+            @update:model-value="$emit('update:status', ($event ? String($event) : 'all') as DealsStatusFilter)"
           />
         </div>
       </section>

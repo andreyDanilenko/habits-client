@@ -26,6 +26,7 @@ export function useDealsPage() {
     isError: computed(() => !!list.error.value),
     viewMode: list.viewMode,
     selectedPipelineId: list.selectedPipelineId,
+    defaultPipeline: list.defaultPipeline,
     dateFrom: list.dateFrom,
     dateTo: list.dateTo,
     statusFilter: list.statusFilter,
