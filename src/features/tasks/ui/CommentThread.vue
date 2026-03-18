@@ -26,20 +26,14 @@
                 v-if="ctx.canEditTask"
                 type="button"
                 class="CommentCard__DropdownItem"
-                @click="
-                  ctx.startEditComment(comment)
-                  ctx.toggleCommentMenu(comment.id)
-                "
+                @click="ctx.startEditComment(comment); ctx.toggleCommentMenu(comment.id)"
               >
                 Редактировать
               </button>
               <button
                 type="button"
                 class="CommentCard__DropdownItem CommentCard__DropdownItem--danger"
-                @click="
-                  ctx.deleteComment(comment)
-                  ctx.toggleCommentMenu(comment.id)
-                "
+                @click="ctx.deleteComment(comment); ctx.toggleCommentMenu(comment.id)"
               >
                 Удалить
               </button>
