@@ -60,9 +60,11 @@
             </div>
           </div>
         </div>
-        <p v-if="activity.description" class="text-sm text-text-secondary mt-1 whitespace-pre-wrap">
-          {{ activity.description }}
-        </p>
+        <RichContentDisplay
+          v-if="activity.description"
+          :content="activity.description"
+          class="mt-1 text-text-secondary"
+        />
         <!-- Call metadata -->
         <div
           v-if="activity.type === 'call' && activity.metadata"
@@ -144,6 +146,7 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted, onUnmounted } from 'vue'
+  import { RichContentDisplay } from '@/shared/ui'
   import { formatTimeRu } from '@/shared/lib/date'
   import type { Activity as ActivityType } from '@/entities/activity'
 

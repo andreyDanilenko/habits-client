@@ -23,11 +23,10 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-text-muted mb-1">Описание (опционально)</label>
-        <textarea
+        <RichTextEditor
           v-model="description"
           placeholder="Дополнительные детали..."
-          rows="2"
-          class="w-full px-3 py-2 border border-border-default rounded-lg bg-bg-primary text-text-primary text-sm placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary-default"
+          compact
         />
       </div>
       <div>
@@ -71,7 +70,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { Button } from '@/shared/ui'
+  import { Button, RichTextEditor } from '@/shared/ui'
   import type { CreateNoteDto, ActivityEntityType } from '@/entities/activity'
 
   const props = defineProps<{
@@ -109,14 +108,21 @@
     return null
   })
 
+  function isContentEmpty(html: string) {
+    if (!html?.trim()) return true
+    const stripped = html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim()
+    return !stripped
+  }
+
   function buildDto(): CreateNoteDto | null {
     const t = title.value.trim()
     if (!t) return null
+    const desc = description.value
     return {
       entityType: props.entityType,
       entityId: props.entityId,
       title: t,
-      description: description.value.trim() || undefined,
+      description: isContentEmpty(desc) ? undefined : desc,
       isImportant: isImportant.value || undefined,
       files: selectedFiles.value.length ? selectedFiles.value : undefined,
     }
