@@ -48,11 +48,18 @@ export const API_ENDPOINTS = {
   /** Только для пользователей с глобальной ролью ADMIN. Иначе 403. */
   ADMIN: {
     WORKSPACES: apiV1 + '/admin/workspaces',
+    WORKSPACE: (id: string) => apiV1 + `/admin/workspaces/${id}`,
+    WORKSPACE_MODULES: (workspaceId: string) => apiV1 + `/admin/workspaces/${workspaceId}/modules`,
+    WORKSPACE_MODULE: (workspaceId: string, moduleCode: string) =>
+      apiV1 + `/admin/workspaces/${workspaceId}/modules/${moduleCode}`,
     USERS: apiV1 + '/admin/users',
+    MODULES: apiV1 + '/admin/modules',
     USER: (id: string) => apiV1 + `/admin/users/${id}`,
     USER_BAN: (id: string) => apiV1 + `/admin/users/${id}/ban`,
     USER_UNBAN: (id: string) => apiV1 + `/admin/users/${id}/unban`,
     USER_LICENSES: (userId: string) => apiV1 + `/admin/users/${userId}/licenses`,
+    USER_LICENSE: (userId: string, licenseId: string) =>
+      apiV1 + `/admin/users/${userId}/licenses/${licenseId}`,
   },
 
   CRM: {

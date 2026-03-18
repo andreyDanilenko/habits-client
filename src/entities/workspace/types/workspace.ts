@@ -23,7 +23,10 @@ export interface WorkspaceModule {
   moduleName: string
   /** Признак core-модуля (is_core в БД): можно включать без лицензии. */
   isCore?: boolean
+  /** active | trial | disabled */
   status?: string
+  /** Дата окончания триала (ISO string). Только для status=trial. */
+  expiresAt?: string
   enabled: boolean
   config?: Record<string, any>
   createdAt: string

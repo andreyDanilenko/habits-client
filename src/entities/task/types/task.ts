@@ -74,6 +74,7 @@ export interface UpdateTaskDto {
 export interface TaskComment {
   id: string
   taskId: string
+  parentId?: string
   body: string
   createdBy: string
   createdAt: string

@@ -76,19 +76,36 @@ export const taskService = {
     workspaceId: string,
     taskId: string,
   ): Promise<TaskComment[]> => {
-    const res = await api.get<{ comments: TaskComment[] }>(
+    const res = await api.get<{ comments?: TaskComment[] } | TaskComment[]>(
       API_ENDPOINTS.TASKS.COMMENTS(workspaceId, taskId),
     )
-    return res.comments ?? []
+    const raw = Array.isArray(res) ? res : (res?.comments ?? [])
+    return raw.map((c) => ({
+      ...c,
+      parentId: c.parentId ?? (c as { parent_id?: string }).parent_id ?? undefined,
+    }))
   },
 
   createComment: async (
     workspaceId: string,
     taskId: string,
     body: string,
+    parentId?: string,
   ): Promise<TaskComment> => {
     return api.post<TaskComment>(
       API_ENDPOINTS.TASKS.COMMENTS(workspaceId, taskId),
+      { body, parentId: parentId || undefined },
+    )
+  },
+
+  updateComment: async (
+    workspaceId: string,
+    taskId: string,
+    commentId: string,
+    body: string,
+  ): Promise<TaskComment> => {
+    return api.patch<TaskComment>(
+      API_ENDPOINTS.TASKS.COMMENT(workspaceId, taskId, commentId),
       { body },
     )
   },

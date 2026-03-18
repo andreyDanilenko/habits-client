@@ -140,7 +140,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   const loadLicenses = async () => {
     try {
       const response = await workspaceService.getMyLicenses()
-      licenses.value = response?.licenses || []
+      licenses.value = Array.isArray(response?.licenses) ? response.licenses : []
     } catch (error) {
       console.error('Failed to load licenses:', error)
       licenses.value = []

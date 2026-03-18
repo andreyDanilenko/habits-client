@@ -98,10 +98,10 @@ export const workspaceService = {
   },
 
   getMyLicenses: async (): Promise<{ licenses: UserModuleLicense[] }> => {
-    const response = await api.get<{ licenses: UserModuleLicense[] }>(
+    const response = await api.get<{ licenses?: UserModuleLicense[] | null }>(
       API_ENDPOINTS.WORKSPACE.MY_LICENSES,
     )
-    return response
+    return { licenses: response?.licenses ?? [] }
   },
 
   createInvitation: async (

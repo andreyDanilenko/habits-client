@@ -46,6 +46,18 @@ class ApiClient {
       async (error) => {
         const originalRequest = error.config
 
+        // 403 MODULE_TRIAL_EXPIRED — редирект на страницу модулей
+        if (error.response?.status === 403) {
+          const errorCode = error.response?.data?.error_code
+          if (errorCode === 'MODULE_TRIAL_EXPIRED') {
+            const path = window.location.pathname
+            if (!path.includes('/workspace-modules')) {
+              window.location.href = '/workspace-modules?trial_expired=1'
+              return Promise.reject(error)
+            }
+          }
+        }
+
         if (error.response?.status === 401 && !originalRequest._retry) {
           const isRefreshRequest = originalRequest.url?.includes('/auth/refresh')
 
