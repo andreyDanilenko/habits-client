@@ -22,6 +22,7 @@
       v-if="leftIcon"
       :is="leftIcon"
       :size="resolvedIconSize"
+      :stroke-width="iconStrokeWidth"
       :class="iconOnly ? '' : 'mr-2'"
     />
 
@@ -33,6 +34,7 @@
       v-if="rightIcon"
       :is="rightIcon"
       :size="resolvedIconSize"
+      :stroke-width="iconStrokeWidth"
       :class="iconOnly ? '' : 'ml-2'"
     />
   </button>
@@ -56,6 +58,7 @@
     iconOnly?: boolean
     iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
     iconColor?: 'default' | 'danger' | 'success' | 'warning' | 'info'
+    iconStrokeWidth?: string | number
     customClass?: string
   }
 

@@ -1,9 +1,10 @@
 <template>
   <BaseIcon v-bind="$attrs">
+    <!-- View columns / Kanban board -->
     <path
       stroke-linecap="round"
       stroke-linejoin="round"
-      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+      d="M9 4.5v15m6-15v15M3.75 4.5h4.5v15h-4.5V4.5zm11.25 0h4.5v15h-4.5V4.5z"
     />
   </BaseIcon>
 </template>

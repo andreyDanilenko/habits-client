@@ -17,6 +17,7 @@
       v-if="leftIcon"
       :is="leftIcon"
       :size="iconSize"
+      :stroke-width="iconStrokeWidth"
       :class="iconOnly ? '' : customClass && customClass.includes('justify-center') ? '' : 'mr-2'"
     />
 
@@ -26,7 +27,13 @@
     </template>
 
     <!-- Иконка справа -->
-    <component v-if="rightIcon" :is="rightIcon" :size="iconSize" :class="iconOnly ? '' : 'ml-2'" />
+    <component
+      v-if="rightIcon"
+      :is="rightIcon"
+      :size="iconSize"
+      :stroke-width="iconStrokeWidth"
+      :class="iconOnly ? '' : 'ml-2'"
+    />
   </router-link>
 </template>
 
@@ -43,6 +50,7 @@
     leftIcon?: Component
     rightIcon?: Component
     iconOnly?: boolean
+    iconStrokeWidth?: string | number
     customClass?: string
     exact?: boolean
     isActive?: boolean

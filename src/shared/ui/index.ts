@@ -46,4 +46,7 @@ export type {
 } from './KanbanBoard/KanbanBoard.types'
 export { default as SearchInput } from './SearchInput.vue'
 export { default as SearchSelect } from './SearchSelect.vue'
+export { default as MarkdownContent } from './MarkdownContent.vue'
+export { default as RichTextEditor } from './RichTextEditor.vue'
+export { default as RichContentDisplay } from './RichContentDisplay.vue'
 export type { SearchSelectOption } from './SearchSelect.vue'

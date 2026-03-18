@@ -46,8 +46,9 @@
       placement?: 'bottom' | 'top' | 'left' | 'right'
       width?: string
       variant?: 'tooltip' | 'dropdown'
+      closeOnContentClick?: boolean
     }>(),
-    { variant: 'tooltip' },
+    { variant: 'tooltip', closeOnContentClick: true },
   )
 
   const isOpen = ref(false)
@@ -172,7 +173,7 @@
 
   const onContentClick = (e: Event) => {
     e.stopPropagation()
-    if (props.trigger === 'click' && props.variant === 'dropdown') {
+    if (props.trigger === 'click' && props.variant === 'dropdown' && props.closeOnContentClick) {
       close()
     }
   }
