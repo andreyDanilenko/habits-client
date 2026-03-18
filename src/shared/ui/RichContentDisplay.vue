@@ -16,7 +16,20 @@
   const sanitizedHtml = computed(() => {
     if (!props.content?.trim()) return ''
     return DOMPurify.sanitize(props.content, {
-      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 's', 'ul', 'ol', 'li', 'a', 'blockquote', 'code'],
+      ALLOWED_TAGS: [
+        'p',
+        'br',
+        'strong',
+        'em',
+        'u',
+        's',
+        'ul',
+        'ol',
+        'li',
+        'a',
+        'blockquote',
+        'code',
+      ],
       ALLOWED_ATTR: ['href', 'target', 'rel'],
     })
   })

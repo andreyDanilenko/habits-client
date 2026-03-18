@@ -37,9 +37,7 @@ export function useTaskComments(
   const visibleRootComments = computed(() =>
     rootComments.value.slice(0, visibleCommentsCount.value),
   )
-  const hasMoreComments = computed(
-    () => rootComments.value.length > visibleCommentsCount.value,
-  )
+  const hasMoreComments = computed(() => rootComments.value.length > visibleCommentsCount.value)
 
   function getReplies(parentId: string) {
     return comments.value.filter((c) => c.parentId === parentId)
@@ -139,10 +137,7 @@ export function useTaskComments(
     if (!task.value) return
     commentsLoading.value = true
     try {
-      comments.value = await taskService.getComments(
-        workspaceId.value,
-        task.value.id,
-      )
+      comments.value = await taskService.getComments(workspaceId.value, task.value.id)
     } catch (e) {
       console.error('Failed to fetch comments:', e)
       comments.value = []
@@ -155,11 +150,7 @@ export function useTaskComments(
     if (!task.value || isRichContentEmpty(newCommentBody.value)) return
     commentSaving.value = true
     try {
-      await taskService.createComment(
-        workspaceId.value,
-        task.value.id,
-        newCommentBody.value,
-      )
+      await taskService.createComment(workspaceId.value, task.value.id, newCommentBody.value)
       newCommentBody.value = ''
       await fetchComments()
       onUpdated?.()
@@ -195,12 +186,7 @@ export function useTaskComments(
     if (!task.value || isRichContentEmpty(editCommentBody.value)) return
     commentSaving.value = true
     try {
-      await taskService.updateComment(
-        workspaceId.value,
-        task.value.id,
-        c.id,
-        editCommentBody.value,
-      )
+      await taskService.updateComment(workspaceId.value, task.value.id, c.id, editCommentBody.value)
       cancelEditComment()
       await fetchComments()
       onUpdated?.()
@@ -214,11 +200,7 @@ export function useTaskComments(
   async function deleteComment(c: TaskComment) {
     if (!task.value) return
     try {
-      await taskService.deleteComment(
-        workspaceId.value,
-        task.value.id,
-        c.id,
-      )
+      await taskService.deleteComment(workspaceId.value, task.value.id, c.id)
       await fetchComments()
       onUpdated?.()
     } catch (e) {

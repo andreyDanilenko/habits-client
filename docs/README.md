@@ -6,62 +6,62 @@
 
 ## 📋 Спецификации (spec/)
 
-| Файл | Описание |
-|------|----------|
-| [spec/api.md](spec/api.md) | Спецификация API: системный анализ, эндпоинты, модель данных, структура слоёв |
+| Файл                                   | Описание                                                                       |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| [spec/api.md](spec/api.md)             | Спецификация API: системный анализ, эндпоинты, модель данных, структура слоёв  |
 | [spec/structure.md](spec/structure.md) | Детальная структура каталогов: app, pages, widgets, features, entities, shared |
-| [spec/permissions/](spec/permissions/) | Спецификации системы прав и ролей |
+| [spec/permissions/](spec/permissions/) | Спецификации системы прав и ролей                                              |
 
 ---
 
 ## ✅ Задачи (tasks/)
 
-| Файл | Описание |
-|------|----------|
-| [tasks/index.md](tasks/index.md) | Основной план задач: production-ready, CRM, Timeline, UI-фундамент |
-| [tasks/tasks-roadmap.md](tasks/tasks-roadmap.md) | Roadmap таск-трекера (Trello/ClickUp-подобные фичи) |
+| Файл                                             | Описание                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| [tasks/index.md](tasks/index.md)                 | Основной план задач: production-ready, CRM, Timeline, UI-фундамент |
+| [tasks/tasks-roadmap.md](tasks/tasks-roadmap.md) | Roadmap таск-трекера (Trello/ClickUp-подобные фичи)                |
 
 ---
 
 ## 📐 Планы (plans/)
 
-| Файл | Описание |
-|------|----------|
-| [plans/roles.md](plans/roles.md) | План завершения управления ролями и правами |
-| [plans/roles-stages/](plans/roles-stages/) | Этапы 1–4: наследование, конфиги, UX, DevTools |
+| Файл                                                                           | Описание                                            |
+| ------------------------------------------------------------------------------ | --------------------------------------------------- |
+| [plans/roles.md](plans/roles.md)                                               | План завершения управления ролями и правами         |
+| [plans/roles-stages/](plans/roles-stages/)                                     | Этапы 1–4: наследование, конфиги, UX, DevTools      |
 | [plans/tasks-implementation-summary.md](plans/tasks-implementation-summary.md) | Резюме: модуль Tasks — что сделано и план внедрения |
 
 ---
 
 ## 🏗 Архитектура (architecture/)
 
-| Файл | Описание |
-|------|----------|
+| Файл                                       | Описание                                                |
+| ------------------------------------------ | ------------------------------------------------------- |
 | [architecture/fsd.md](architecture/fsd.md) | Feature-Sliced Design: слои, сегменты, правила импортов |
 
 ---
 
 ## 📖 Руководства (guides/)
 
-| Файл | Описание |
-|------|----------|
-| [guides/animation.md](guides/animation.md) | Паттерны анимаций: модалки, списки, сокет-обновления |
-| [guides/ssl.md](guides/ssl.md) | SSL: выпуск и автоматическое обновление сертификатов |
-| [guides/update-packages.md](guides/update-packages.md) | Обновление Node.js и npm-пакетов |
-| [guides/mock-auth.md](guides/mock-auth.md) | Мокирование API для разработки без бэкенда |
+| Файл                                                   | Описание                                             |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| [guides/animation.md](guides/animation.md)             | Паттерны анимаций: модалки, списки, сокет-обновления |
+| [guides/ssl.md](guides/ssl.md)                         | SSL: выпуск и автоматическое обновление сертификатов |
+| [guides/update-packages.md](guides/update-packages.md) | Обновление Node.js и npm-пакетов                     |
+| [guides/mock-auth.md](guides/mock-auth.md)             | Мокирование API для разработки без бэкенда           |
 
 ---
 
 ## 📊 Отчёты (reports/)
 
-| Файл | Описание |
-|------|----------|
+| Файл                                                             | Описание                                |
+| ---------------------------------------------------------------- | --------------------------------------- |
 | [reports/permissions-current.md](reports/permissions-current.md) | Текущая реализация системы прав и ролей |
 
 ---
 
 ## 🎯 Фичи (features/)
 
-| Файл | Описание |
-|------|----------|
+| Файл                                           | Описание                               |
+| ---------------------------------------------- | -------------------------------------- |
 | [features/workspace.md](features/workspace.md) | Workspace: роли, модули, задел под ERP |

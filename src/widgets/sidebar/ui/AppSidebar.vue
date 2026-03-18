@@ -189,14 +189,8 @@
   import type { SidebarNavItem } from '../types'
 
   const route = useRoute()
-  const {
-    sectionTitle,
-    actionLabel,
-    moduleLabel,
-    routeLabel,
-    footerLabel,
-    translateNavItem,
-  } = useSidebarI18n()
+  const { sectionTitle, actionLabel, moduleLabel, routeLabel, footerLabel, translateNavItem } =
+    useSidebarI18n()
   const router = useRouter()
   const authStore = useAuthStore()
   const { hasPermission, isOwner, isAdmin } = usePermissions()
@@ -264,14 +258,11 @@
   }
 
   const hasModuleRoutes = computed(
-    () =>
-      !!selectedModule.value && getModuleRoutes(selectedModule.value).length > 0,
+    () => !!selectedModule.value && getModuleRoutes(selectedModule.value).length > 0,
   )
 
   const selectedModuleLabel = computed(() =>
-    selectedModule.value
-      ? moduleLabel(selectedModule.value.id, selectedModule.value.label)
-      : '',
+    selectedModule.value ? moduleLabel(selectedModule.value.id, selectedModule.value.label) : '',
   )
 
   const selectModule = (moduleId: string) => {
@@ -424,7 +415,6 @@
       selectModule(module.id)
     }
   }
-
 
   const sidebarClasses = computed(() => {
     const isPublicPage =

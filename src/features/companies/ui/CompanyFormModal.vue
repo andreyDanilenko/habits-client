@@ -6,153 +6,149 @@
     @close="$emit('close')"
   >
     <form id="company-form" class="space-y-6 lg:space-y-6" @submit.prevent="handleSubmit">
-        <section class="space-y-4">
-          <h3 class="text-sm font-medium text-text-secondary">Реквизиты</h3>
+      <section class="space-y-4">
+        <h3 class="text-sm font-medium text-text-secondary">Реквизиты</h3>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Название <span class="text-error-default">*</span></span
+          >
+          <Input v-model="form.name" placeholder="Название компании" required />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-              >Название <span class="text-error-default">*</span></span
+              >ИНН</span
             >
-            <Input v-model="form.name" placeholder="Название компании" required />
+            <Input v-model="form.inn" placeholder="ИНН" />
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                >ИНН</span
-              >
-              <Input v-model="form.inn" placeholder="ИНН" />
-            </div>
-            <div>
-              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                >КПП</span
-              >
-              <Input v-model="form.kpp" placeholder="КПП" />
-            </div>
-            <div>
-              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                >ОГРН</span
-              >
-              <Input v-model="form.ogrn" placeholder="ОГРН" />
-            </div>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >КПП</span
+            >
+            <Input v-model="form.kpp" placeholder="КПП" />
           </div>
-        </section>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >ОГРН</span
+            >
+            <Input v-model="form.ogrn" placeholder="ОГРН" />
+          </div>
+        </div>
+      </section>
 
-        <section class="space-y-4">
-          <h3 class="text-sm font-medium text-text-secondary">Контакты</h3>
-          <div>
-            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-              >Телефон</span
-            >
-            <Input v-model="form.phone" type="tel" placeholder="+7 (495) 000-00-00" />
-          </div>
-          <div>
-            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-              >Email</span
-            >
-            <Input v-model="form.email" type="email" placeholder="email@company.ru" />
-          </div>
-          <div>
-            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-              >Сайт</span
-            >
-            <Input v-model="form.website" type="url" placeholder="https://" />
-          </div>
-        </section>
+      <section class="space-y-4">
+        <h3 class="text-sm font-medium text-text-secondary">Контакты</h3>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Телефон</span
+          >
+          <Input v-model="form.phone" type="tel" placeholder="+7 (495) 000-00-00" />
+        </div>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Email</span
+          >
+          <Input v-model="form.email" type="email" placeholder="email@company.ru" />
+        </div>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Сайт</span
+          >
+          <Input v-model="form.website" type="url" placeholder="https://" />
+        </div>
+      </section>
 
-        <section class="space-y-4">
-          <h3 class="text-sm font-medium text-text-secondary">Юридический адрес</h3>
+      <section class="space-y-4">
+        <h3 class="text-sm font-medium text-text-secondary">Юридический адрес</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >Страна</span
+            >
+            <Input v-model="form.legalCountry" placeholder="Россия" />
+          </div>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >Город</span
+            >
+            <Input v-model="form.legalCity" placeholder="Москва" />
+          </div>
+        </div>
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Улица</span
+          >
+          <Input v-model="form.legalStreet" placeholder="ул. Примерная" />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >Дом</span
+            >
+            <Input v-model="form.legalBuilding" placeholder="1" />
+          </div>
+          <div>
+            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+              >Офис / квартира</span
+            >
+            <Input v-model="form.legalApartment" placeholder="—" />
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-4">
+        <h3 class="text-sm font-medium text-text-secondary">Фактический адрес</h3>
+        <div class="flex items-center gap-2">
+          <Checkbox v-model="sameAsLegal" />
+          <span class="text-sm text-text-secondary">Совпадает с юридическим</span>
+        </div>
+        <template v-if="!sameAsLegal">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
                 >Страна</span
               >
-              <Input v-model="form.legalCountry" placeholder="Россия" />
+              <Input v-model="form.actualCountry" placeholder="Россия" />
             </div>
             <div>
               <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
                 >Город</span
               >
-              <Input v-model="form.legalCity" placeholder="Москва" />
+              <Input v-model="form.actualCity" placeholder="Москва" />
             </div>
           </div>
           <div>
             <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
               >Улица</span
             >
-            <Input v-model="form.legalStreet" placeholder="ул. Примерная" />
+            <Input v-model="form.actualStreet" placeholder="ул. Примерная" />
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
                 >Дом</span
               >
-              <Input v-model="form.legalBuilding" placeholder="1" />
+              <Input v-model="form.actualBuilding" placeholder="1" />
             </div>
             <div>
               <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
                 >Офис / квартира</span
               >
-              <Input v-model="form.legalApartment" placeholder="—" />
+              <Input v-model="form.actualApartment" placeholder="—" />
             </div>
           </div>
-        </section>
+        </template>
+      </section>
 
-        <section class="space-y-4">
-          <h3 class="text-sm font-medium text-text-secondary">Фактический адрес</h3>
-          <div class="flex items-center gap-2">
-            <Checkbox v-model="sameAsLegal" />
-            <span class="text-sm text-text-secondary">Совпадает с юридическим</span>
-          </div>
-          <template v-if="!sameAsLegal">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <span
-                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                  >Страна</span
-                >
-                <Input v-model="form.actualCountry" placeholder="Россия" />
-              </div>
-              <div>
-                <span
-                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                  >Город</span
-                >
-                <Input v-model="form.actualCity" placeholder="Москва" />
-              </div>
-            </div>
-            <div>
-              <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                >Улица</span
-              >
-              <Input v-model="form.actualStreet" placeholder="ул. Примерная" />
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <span
-                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                  >Дом</span
-                >
-                <Input v-model="form.actualBuilding" placeholder="1" />
-              </div>
-              <div>
-                <span
-                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-                  >Офис / квартира</span
-                >
-                <Input v-model="form.actualApartment" placeholder="—" />
-              </div>
-            </div>
-          </template>
-        </section>
-
-        <section class="space-y-4">
-          <div>
-            <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-              >Теги (через запятую)</span
-            >
-            <Input v-model="form.tagsStr" placeholder="важный, партнёр" />
-          </div>
-        </section>
-      </form>
+      <section class="space-y-4">
+        <div>
+          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+            >Теги (через запятую)</span
+          >
+          <Input v-model="form.tagsStr" placeholder="важный, партнёр" />
+        </div>
+      </section>
+    </form>
 
     <template #footer>
       <div class="flex justify-end gap-(--spacing-2)">

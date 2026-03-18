@@ -15,10 +15,7 @@
     </div>
 
     <div class="flex gap-2 flex-shrink-0 items-center">
-      <Button
-        variant="outline"
-        @click="$emit('openFilters')"
-      >
+      <Button variant="outline" @click="$emit('openFilters')">
         <IconFunnel class="w-4 h-4 mr-(--spacing-2) inline" />
         Фильтры
       </Button>

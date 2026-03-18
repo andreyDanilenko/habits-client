@@ -124,7 +124,10 @@ export const adminService = {
   patchWorkspaceModule: async (
     workspaceId: string,
     moduleCode: string,
-    data: { action: 'extend_trial' | 'add_trial' | 'set_full' | 'set_disabled'; trialDays?: number },
+    data: {
+      action: 'extend_trial' | 'add_trial' | 'set_full' | 'set_disabled'
+      trialDays?: number
+    },
   ): Promise<void> => {
     await api.patch(API_ENDPOINTS.ADMIN.WORKSPACE_MODULE(workspaceId, moduleCode), data)
   },

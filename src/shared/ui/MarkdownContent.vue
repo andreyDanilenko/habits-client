@@ -19,7 +19,22 @@
     try {
       const raw = marked.parse(props.content, { async: false }) as string
       return DOMPurify.sanitize(raw, {
-        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'code', 'pre', 'a', 'blockquote'],
+        ALLOWED_TAGS: [
+          'p',
+          'br',
+          'strong',
+          'em',
+          'ul',
+          'ol',
+          'li',
+          'h1',
+          'h2',
+          'h3',
+          'code',
+          'pre',
+          'a',
+          'blockquote',
+        ],
       })
     } catch {
       return DOMPurify.sanitize(props.content.replace(/\n/g, '<br>'))

@@ -17,17 +17,16 @@
       @close="$emit('close')"
     >
       <!-- Возврат к родительской задаче (для подзадач) -->
-      <div
-        v-if="task.parentId"
-        class="mb-(--spacing-3) flex items-center gap-(--spacing-2)"
-      >
+      <div v-if="task.parentId" class="mb-(--spacing-3) flex items-center gap-(--spacing-2)">
         <button
           type="button"
           class="inline-flex items-center gap-(--spacing-1) text-(--text-sm) text-text-muted hover:text-primary-default transition-colors"
           @click="$emit('viewParent', task.parentId)"
         >
           <ArrowLeftIcon size="sm" />
-          <span>{{ displayParentTask ? `К задаче «${displayParentTask.title}»` : 'К родительской задаче' }}</span>
+          <span>{{
+            displayParentTask ? `К задаче «${displayParentTask.title}»` : 'К родительской задаче'
+          }}</span>
         </button>
       </div>
 
@@ -60,14 +59,9 @@
         </div>
 
         <!-- Подзадачи -->
-        <div
-          v-if="!task.parentId"
-          class="TaskDetailSection"
-        >
+        <div v-if="!task.parentId" class="TaskDetailSection">
           <div class="flex items-center justify-between mb-(--spacing-2)">
-            <h4 class="TaskDetailSection__Title">
-              Подзадачи ({{ subtasks.length }})
-            </h4>
+            <h4 class="TaskDetailSection__Title">Подзадачи ({{ subtasks.length }})</h4>
             <PermissionGuard :permission="TASKS_PERMISSIONS.taskCreate">
               <Button size="sm" variant="outline" @click="$emit('addSubtask', task)">
                 + Добавить
@@ -93,7 +87,9 @@
                 </span>
                 <span class="text-(--text-sm) text-text-primary truncate">{{ st.title }}</span>
               </div>
-              <span class="text-(--text-xs) text-text-muted shrink-0">{{ formatDate(st.dueDate) }}</span>
+              <span class="text-(--text-xs) text-text-muted shrink-0">{{
+                formatDate(st.dueDate)
+              }}</span>
             </li>
           </ul>
           <p v-else class="text-(--text-sm) text-text-muted py-(--spacing-2)">
@@ -121,9 +117,7 @@
 
         <!-- Активность: комментарии -->
         <div class="TaskDetailSection">
-          <h4 class="TaskDetailSection__Title">
-            Активность ({{ comments.length }})
-          </h4>
+          <h4 class="TaskDetailSection__Title">Активность ({{ comments.length }})</h4>
           <div v-if="commentsLoading" class="text-(--text-sm) text-text-muted py-(--spacing-2)">
             Загрузка...
           </div>
@@ -135,15 +129,8 @@
               :is-root="true"
             />
             <!-- Показать ещё комментарии -->
-            <div
-              v-if="hasMoreComments"
-              class="flex justify-center pt-(--spacing-2)"
-            >
-              <Button
-                size="sm"
-                variant="ghost"
-                @click="showMoreComments"
-              >
+            <div v-if="hasMoreComments" class="flex justify-center pt-(--spacing-2)">
+              <Button size="sm" variant="ghost" @click="showMoreComments">
                 Показать ещё ({{ rootComments.length - visibleCommentsCount }})
               </Button>
             </div>
@@ -172,7 +159,9 @@
           <h4 class="TaskDetailSection__Title">Время</h4>
           <p class="text-(--text-sm) text-text-muted">
             {{ task.spentMinutes ? `Затрачено: ${task.spentMinutes} мин` : 'Скоро: тайм-трекинг' }}
-            <span v-if="task.duration" class="text-text-secondary"> · Оценка: {{ task.duration }} мин</span>
+            <span v-if="task.duration" class="text-text-secondary">
+              · Оценка: {{ task.duration }} мин</span
+            >
           </p>
         </div>
 
@@ -194,17 +183,10 @@
             >
               Выполнить
             </Button>
-            <Button
-              v-else
-              variant="outline"
-              size="md"
-              @click="$emit('reopen', task)"
-            >
+            <Button v-else variant="outline" size="md" @click="$emit('reopen', task)">
               Вернуть
             </Button>
-            <Button variant="outline" size="md" @click="$emit('edit', task)">
-              Изменить
-            </Button>
+            <Button variant="outline" size="md" @click="$emit('edit', task)"> Изменить </Button>
           </PermissionGuard>
           <PermissionGuard :permission="TASKS_PERMISSIONS.taskDelete">
             <Button
@@ -224,13 +206,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
-  import {
-    Modal,
-    ModalContent,
-    Button,
-    RichTextEditor,
-    MarkdownContent,
-  } from '@/shared/ui'
+  import { Modal, ModalContent, Button, RichTextEditor, MarkdownContent } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import CommentThread from './CommentThread.vue'
   import { PermissionGuard, usePermissions } from '@/features/permissions'

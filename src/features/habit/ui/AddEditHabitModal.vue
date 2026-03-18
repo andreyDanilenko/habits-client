@@ -257,10 +257,7 @@
     </form>
 
     <template #footer>
-      <div
-        class="grid gap-3"
-        :class="isMobile ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'"
-      >
+      <div class="grid gap-3" :class="isMobile ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'">
         <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
           Отмена
         </Button>

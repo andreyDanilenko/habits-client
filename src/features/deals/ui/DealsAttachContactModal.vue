@@ -5,57 +5,56 @@
     :fullscreen-on-mobile="isMobile"
     @close="$emit('close')"
   >
-      <div class="space-y-4">
-        <p class="text-sm text-text-secondary">
-          Выберите сделку, в которую добавить контакт
-          <span v-if="contactLabel" class="font-medium text-text-primary">
-            «{{ contactLabel }}»
-          </span>
-          .
-        </p>
+    <div class="space-y-4">
+      <p class="text-sm text-text-secondary">
+        Выберите сделку, в которую добавить контакт
+        <span v-if="contactLabel" class="font-medium text-text-primary">
+          «{{ contactLabel }}»
+        </span>
+        .
+      </p>
 
-        <div v-if="isLoading" class="py-4 text-sm text-text-muted">Загрузка списка сделок…</div>
-        <div v-else-if="isError" class="py-4 text-sm text-error-default">
-          Не удалось загрузить сделки. Попробуйте позже.
-        </div>
-        <div v-else-if="deals.length === 0" class="py-4 text-sm text-text-muted">
-          Пока нет сделок. Создайте сделку на странице CRM — Сделки.
-        </div>
-
-        <ul
-          v-else
-          class="max-h-80 overflow-auto divide-y divide-border-light rounded-lg border border-border-light"
-        >
-          <li v-for="deal in deals" :key="deal.id">
-            <button
-              type="button"
-              class="w-full px-3 py-2 text-left hover:bg-bg-tertiary flex items-center justify-between gap-3"
-              :disabled="attachLoadingId === deal.id"
-              @click="attachToDeal(deal)"
-            >
-              <div class="min-w-0">
-                <div class="text-sm text-text-primary truncate">
-                  {{ deal.name }}
-                </div>
-                <div class="text-xs text-text-muted mt-0.5 flex items-center gap-2">
-                  <span>
-                    {{ statusLabel(deal.status) }}
-                  </span>
-                  <span
-                    v-if="deal.pipelineId"
-                    class="inline-block w-1 h-1 rounded-full bg-border-default"
-                  />
-                  <span> Воронка: {{ deal.pipelineId.slice(0, 8) }}… </span>
-                </div>
-              </div>
-              <div class="text-xs text-text-secondary whitespace-nowrap">
-                {{ formatDealMoney(deal.budget, deal.currency) }}
-              </div>
-            </button>
-          </li>
-        </ul>
-
+      <div v-if="isLoading" class="py-4 text-sm text-text-muted">Загрузка списка сделок…</div>
+      <div v-else-if="isError" class="py-4 text-sm text-error-default">
+        Не удалось загрузить сделки. Попробуйте позже.
       </div>
+      <div v-else-if="deals.length === 0" class="py-4 text-sm text-text-muted">
+        Пока нет сделок. Создайте сделку на странице CRM — Сделки.
+      </div>
+
+      <ul
+        v-else
+        class="max-h-80 overflow-auto divide-y divide-border-light rounded-lg border border-border-light"
+      >
+        <li v-for="deal in deals" :key="deal.id">
+          <button
+            type="button"
+            class="w-full px-3 py-2 text-left hover:bg-bg-tertiary flex items-center justify-between gap-3"
+            :disabled="attachLoadingId === deal.id"
+            @click="attachToDeal(deal)"
+          >
+            <div class="min-w-0">
+              <div class="text-sm text-text-primary truncate">
+                {{ deal.name }}
+              </div>
+              <div class="text-xs text-text-muted mt-0.5 flex items-center gap-2">
+                <span>
+                  {{ statusLabel(deal.status) }}
+                </span>
+                <span
+                  v-if="deal.pipelineId"
+                  class="inline-block w-1 h-1 rounded-full bg-border-default"
+                />
+                <span> Воронка: {{ deal.pipelineId.slice(0, 8) }}… </span>
+              </div>
+            </div>
+            <div class="text-xs text-text-secondary whitespace-nowrap">
+              {{ formatDealMoney(deal.budget, deal.currency) }}
+            </div>
+          </button>
+        </li>
+      </ul>
+    </div>
 
     <template #footer>
       <div class="flex justify-end">

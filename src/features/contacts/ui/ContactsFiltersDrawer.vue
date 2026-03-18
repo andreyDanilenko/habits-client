@@ -1,11 +1,5 @@
 <template>
-  <Drawer
-    :is-open="isOpen"
-    title="Фильтры"
-    width="md"
-    show-close-button
-    @close="$emit('close')"
-  >
+  <Drawer :is-open="isOpen" title="Фильтры" width="md" show-close-button @close="$emit('close')">
     <div class="space-y-0">
       <section class="FiltersSection">
         <h3 class="FiltersSection__Title">Компания</h3>
@@ -33,7 +27,9 @@
               placeholder="ДД.ММ.ГГГГ"
               size="md"
               class="w-full"
-              @update:model-value="$emit('update:filters', { ...filters, dateFrom: $event || undefined })"
+              @update:model-value="
+                $emit('update:filters', { ...filters, dateFrom: $event || undefined })
+              "
             />
           </div>
           <div>
@@ -43,7 +39,9 @@
               placeholder="ДД.ММ.ГГГГ"
               size="md"
               class="w-full"
-              @update:model-value="$emit('update:filters', { ...filters, dateTo: $event || undefined })"
+              @update:model-value="
+                $emit('update:filters', { ...filters, dateTo: $event || undefined })
+              "
             />
           </div>
         </div>
@@ -72,7 +70,7 @@
         <div class="FiltersSection__Content">
           <div class="flex flex-wrap gap-2">
             <button
-              v-for="tag in (availableTags ?? [])"
+              v-for="tag in availableTags ?? []"
               :key="tag"
               type="button"
               class="cursor-pointer transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-1 rounded-full"
@@ -91,29 +89,18 @@
       <section class="FiltersSection">
         <h3 class="FiltersSection__Title">Действия</h3>
         <div class="FiltersSection__Content flex gap-2">
-          <Button variant="outline" size="md" @click="$emit('import')">
-            Импорт
-          </Button>
-          <Button variant="outline" size="md" @click="$emit('export')">
-            Экспорт
-          </Button>
+          <Button variant="outline" size="md" @click="$emit('import')"> Импорт </Button>
+          <Button variant="outline" size="md" @click="$emit('export')"> Экспорт </Button>
         </div>
       </section>
     </div>
 
     <template #footer>
       <div class="flex gap-(--spacing-3)">
-        <Button
-          v-if="hasActiveFilters"
-          variant="outline"
-          class="flex-1"
-          @click="$emit('reset')"
-        >
+        <Button v-if="hasActiveFilters" variant="outline" class="flex-1" @click="$emit('reset')">
           Сбросить
         </Button>
-        <Button variant="primary" class="flex-1" @click="$emit('close')">
-          Применить
-        </Button>
+        <Button variant="primary" class="flex-1" @click="$emit('close')"> Применить </Button>
       </div>
     </template>
   </Drawer>

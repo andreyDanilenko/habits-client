@@ -122,7 +122,8 @@
   }
   .drawer-enter-active .Drawer,
   .drawer-leave-active .Drawer {
-    transition: transform var(--duration-slow, 350ms) var(--ease-out-expo, cubic-bezier(0.32, 0.72, 0, 1));
+    transition: transform var(--duration-slow, 350ms)
+      var(--ease-out-expo, cubic-bezier(0.32, 0.72, 0, 1));
   }
   .drawer-enter-from,
   .drawer-leave-to {

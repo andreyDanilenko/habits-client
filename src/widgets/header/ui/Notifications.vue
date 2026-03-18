@@ -69,7 +69,9 @@
 <style scoped>
   .badge-number-enter-active,
   .badge-number-leave-active {
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
   .badge-number-enter-from {
     opacity: 0;

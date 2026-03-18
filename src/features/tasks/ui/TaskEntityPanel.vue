@@ -4,9 +4,9 @@
       <h3 class="text-(--text-sm) font-medium text-text-secondary">Задачи</h3>
       <PermissionGuard :permission="TASKS_PERMISSIONS.taskCreate">
         <Button size="md" variant="outline" @click="openCreate">
-        <PlusIcon class="size-4 mr-1 inline" />
-        Быстрая задача
-      </Button>
+          <PlusIcon class="size-4 mr-1 inline" />
+          Быстрая задача
+        </Button>
       </PermissionGuard>
     </div>
 
@@ -46,7 +46,9 @@
                   <CogIcon class="w-5 h-5 text-text-muted hover:text-text-secondary" />
                 </Button>
               </template>
-              <div class="w-48 bg-bg-primary rounded-lg shadow-card border border-border-default py-1">
+              <div
+                class="w-48 bg-bg-primary rounded-lg shadow-card border border-border-default py-1"
+              >
                 <PermissionGuard :permission="TASKS_PERMISSIONS.taskUpdate">
                   <Button
                     v-if="t.status !== 'completed'"

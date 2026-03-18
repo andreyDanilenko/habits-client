@@ -55,8 +55,7 @@ const ROUTE_LABEL_KEYS: Record<string, Record<string, string>> = {
 export function useSidebarI18n() {
   const { t, locale } = useI18n()
 
-  const sectionTitle = (key: 'workspaces' | 'modules' | 'footer') =>
-    t(`sidebar.sections.${key}`)
+  const sectionTitle = (key: 'workspaces' | 'modules' | 'footer') => t(`sidebar.sections.${key}`)
 
   const moduleLabel = (moduleId: string, fallback: string) =>
     t(MODULE_LABEL_KEYS[moduleId] ?? 'sidebar.modules.unknown', fallback)

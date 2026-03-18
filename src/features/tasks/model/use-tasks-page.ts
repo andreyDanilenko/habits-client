@@ -3,7 +3,14 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWorkspaceStore } from '@/entities/workspace'
 import { useUserStore } from '@/entities/user'
 import { taskService } from '@/entities/task'
-import type { Task, CreateTaskDto, UpdateTaskDto, TaskStatus, TaskPriority, TaskType } from '@/entities/task'
+import type {
+  Task,
+  CreateTaskDto,
+  UpdateTaskDto,
+  TaskStatus,
+  TaskPriority,
+  TaskType,
+} from '@/entities/task'
 import { workspaceService } from '@/entities/workspace'
 import { formatDateRu, useDebounceFn } from '@/shared/lib'
 import { useTasksKanban } from './use-tasks-kanban'
@@ -57,7 +64,15 @@ export function useTasksPage() {
   }
 
   watch(
-    [statusFilter, priorityFilter, typeFilter, assigneeFilter, searchQuery, myTasksOnly, overdueOnly],
+    [
+      statusFilter,
+      priorityFilter,
+      typeFilter,
+      assigneeFilter,
+      searchQuery,
+      myTasksOnly,
+      overdueOnly,
+    ],
     syncFiltersToUrl,
     { deep: true },
   )
@@ -268,13 +283,25 @@ export function useTasksPage() {
   onMounted(() => {
     fetchMembers()
   })
-  watch(workspaceId, () => {
-    fetchTasks()
-    fetchMembers()
-  }, { immediate: true })
+  watch(
+    workspaceId,
+    () => {
+      fetchTasks()
+      fetchMembers()
+    },
+    { immediate: true },
+  )
   const debouncedFetchForSearch = useDebounceFn(fetchTasks, 400)
   watch(
-    [statusFilter, priorityFilter, typeFilter, assigneeFilter, myTasksOnly, overdueOnly, currentUserId],
+    [
+      statusFilter,
+      priorityFilter,
+      typeFilter,
+      assigneeFilter,
+      myTasksOnly,
+      overdueOnly,
+      currentUserId,
+    ],
     fetchTasks,
   )
   watch(searchQuery, () => debouncedFetchForSearch())
@@ -312,9 +339,7 @@ export function useTasksPage() {
       await taskService.update(workspaceId.value, taskId, { status: status as TaskStatus })
       await fetchTasks()
     } catch (e) {
-      tasks.value = tasks.value.map((t) =>
-        t.id === taskId ? { ...t, status: prevStatus } : t,
-      )
+      tasks.value = tasks.value.map((t) => (t.id === taskId ? { ...t, status: prevStatus } : t))
       throw e
     }
   }

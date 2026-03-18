@@ -23,11 +23,7 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-text-muted mb-1">Описание (опционально)</label>
-        <RichTextEditor
-          v-model="description"
-          placeholder="Дополнительные детали..."
-          compact
-        />
+        <RichTextEditor v-model="description" placeholder="Дополнительные детали..." compact />
       </div>
       <div>
         <label class="block text-xs font-medium text-text-muted mb-1">Прикрепить файлы</label>
@@ -110,7 +106,10 @@
 
   function isContentEmpty(html: string) {
     if (!html?.trim()) return true
-    const stripped = html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim()
+    const stripped = html
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .trim()
     return !stripped
   }
 

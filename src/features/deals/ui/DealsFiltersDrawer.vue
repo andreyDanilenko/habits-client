@@ -1,11 +1,5 @@
 <template>
-  <Drawer
-    :is-open="isOpen"
-    title="Фильтры"
-    width="md"
-    show-close-button
-    @close="$emit('close')"
-  >
+  <Drawer :is-open="isOpen" title="Фильтры" width="md" show-close-button @close="$emit('close')">
     <div class="space-y-0">
       <template v-if="pipelines.length > 1">
         <section class="FiltersSection">
@@ -33,7 +27,9 @@
             placeholder="Все"
             size="md"
             class="w-full"
-            @update:model-value="$emit('update:status', ($event ? String($event) : 'all') as DealsStatusFilter)"
+            @update:model-value="
+              $emit('update:status', ($event ? String($event) : 'all') as DealsStatusFilter)
+            "
           />
         </div>
       </section>
@@ -69,17 +65,10 @@
 
     <template #footer>
       <div class="flex gap-(--spacing-3)">
-        <Button
-          v-if="hasActiveFilters"
-          variant="outline"
-          class="flex-1"
-          @click="$emit('reset')"
-        >
+        <Button v-if="hasActiveFilters" variant="outline" class="flex-1" @click="$emit('reset')">
           Сбросить
         </Button>
-        <Button variant="primary" class="flex-1" @click="$emit('close')">
-          Применить
-        </Button>
+        <Button variant="primary" class="flex-1" @click="$emit('close')"> Применить </Button>
       </div>
     </template>
   </Drawer>

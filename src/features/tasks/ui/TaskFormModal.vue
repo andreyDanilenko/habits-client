@@ -23,7 +23,9 @@
             <h3 class="TaskFormSection__Title">Основное</h3>
             <div class="space-y-(--spacing-4)">
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+                >
                   Название <span class="text-error-default">*</span>
                 </label>
                 <Input
@@ -36,7 +38,9 @@
                 />
               </div>
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)"
+                >
                   Тип
                 </label>
                 <div class="flex flex-wrap gap-(--spacing-2) min-h-[44px]">
@@ -51,7 +55,9 @@
                 </div>
               </div>
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+                >
                   Описание
                 </label>
                 <Textarea
@@ -62,13 +68,17 @@
                 />
               </div>
               <div v-if="editingTask">
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+                >
                   Статус
                 </label>
                 <Select v-model="form.status" :options="statusOptions" />
               </div>
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+                >
                   Исполнитель
                 </label>
                 <Select v-model="form.assigneeId" :options="assigneeOptions" />
@@ -81,13 +91,17 @@
             <h3 class="TaskFormSection__Title">Планирование</h3>
             <div class="space-y-(--spacing-4)">
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+                >
                   Срок <span class="text-error-default">*</span>
                 </label>
                 <DatePicker v-model="form.dueDate" />
               </div>
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-2)"
+                >
                   Приоритет
                 </label>
                 <div class="flex flex-wrap gap-(--spacing-2) min-h-[44px]">
@@ -102,15 +116,12 @@
                 </div>
               </div>
               <div>
-                <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
+                <label
+                  class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+                >
                   Оценка времени (мин)
                 </label>
-                <Input
-                  v-model="form.duration"
-                  type="number"
-                  min="0"
-                  placeholder="Например: 60"
-                />
+                <Input v-model="form.duration" type="number" min="0" placeholder="Например: 60" />
               </div>
             </div>
           </section>
@@ -128,14 +139,23 @@
                 :class="{ 'rotate-180': showOrganization }"
               />
             </button>
-            <div v-show="showOrganization" class="px-(--spacing-4) pb-(--spacing-4) pt-0 space-y-(--spacing-4) border-t border-border-light">
-              <div class="rounded-(--radius-sm) bg-bg-tertiary/50 p-(--spacing-3) text-(--text-sm) text-text-muted">
+            <div
+              v-show="showOrganization"
+              class="px-(--spacing-4) pb-(--spacing-4) pt-0 space-y-(--spacing-4) border-t border-border-light"
+            >
+              <div
+                class="rounded-(--radius-sm) bg-bg-tertiary/50 p-(--spacing-3) text-(--text-sm) text-text-muted"
+              >
                 <span class="font-medium text-text-secondary">Теги</span> — скоро
               </div>
-              <div class="rounded-(--radius-sm) bg-bg-tertiary/50 p-(--spacing-3) text-(--text-sm) text-text-muted">
+              <div
+                class="rounded-(--radius-sm) bg-bg-tertiary/50 p-(--spacing-3) text-(--text-sm) text-text-muted"
+              >
                 <span class="font-medium text-text-secondary">Чеклист</span> — скоро
               </div>
-              <div class="rounded-(--radius-sm) bg-bg-tertiary/50 p-(--spacing-3) text-(--text-sm) text-text-muted">
+              <div
+                class="rounded-(--radius-sm) bg-bg-tertiary/50 p-(--spacing-3) text-(--text-sm) text-text-muted"
+              >
                 <span class="font-medium text-text-secondary">Вложения</span> — скоро
               </div>
             </div>
@@ -154,7 +174,10 @@
                 :class="{ 'rotate-180': showCustomFields }"
               />
             </button>
-            <div v-show="showCustomFields" class="px-(--spacing-4) pb-(--spacing-4) pt-0 border-t border-border-light">
+            <div
+              v-show="showCustomFields"
+              class="px-(--spacing-4) pb-(--spacing-4) pt-0 border-t border-border-light"
+            >
               <p class="text-(--text-sm) text-text-muted py-(--spacing-2)">
                 Поля для типа «{{ typeLabel(form.type) }}» — скоро
               </p>

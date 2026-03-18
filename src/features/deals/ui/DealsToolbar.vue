@@ -24,7 +24,6 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
   import { Button, SegmentedControl } from '@/shared/ui'
   import { IconFunnel, ListIcon } from '@/shared/ui/icon'

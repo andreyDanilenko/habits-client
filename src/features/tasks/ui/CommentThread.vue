@@ -1,15 +1,9 @@
 <template>
-  <div
-    class="CommentCard"
-    :class="{ 'CommentCard--reply': !isRoot }"
-  >
+  <div class="CommentCard" :class="{ 'CommentCard--reply': !isRoot }">
     <div class="CommentCard__Inner">
       <div class="CommentCard__Header">
         <div class="CommentCard__Author">
-          <div
-            class="CommentCard__Avatar"
-            :class="{ 'CommentCard__Avatar--sm': !isRoot }"
-          >
+          <div class="CommentCard__Avatar" :class="{ 'CommentCard__Avatar--sm': !isRoot }">
             {{ ctx.getInitials(comment.createdBy) }}
           </div>
           <div class="CommentCard__Meta">
@@ -17,10 +11,7 @@
             <span class="CommentCard__Time">{{ ctx.formatRelativeTime(comment.createdAt) }}</span>
           </div>
         </div>
-        <div
-          v-if="ctx.canDeleteComment(comment)"
-          class="CommentCard__Menu"
-        >
+        <div v-if="ctx.canDeleteComment(comment)" class="CommentCard__Menu">
           <button
             type="button"
             class="CommentCard__MenuBtn"
@@ -29,23 +20,26 @@
           >
             <EllipsisVerticalIcon size="sm" />
           </button>
-          <div
-            v-if="commentMenuOpenVal === comment.id"
-            class="CommentCard__DropdownWrap"
-          >
+          <div v-if="commentMenuOpenVal === comment.id" class="CommentCard__DropdownWrap">
             <div class="CommentCard__Dropdown">
               <button
                 v-if="ctx.canEditTask"
                 type="button"
                 class="CommentCard__DropdownItem"
-                @click="ctx.startEditComment(comment); ctx.toggleCommentMenu(comment.id)"
+                @click="
+                  ctx.startEditComment(comment)
+                  ctx.toggleCommentMenu(comment.id)
+                "
               >
                 Редактировать
               </button>
               <button
                 type="button"
                 class="CommentCard__DropdownItem CommentCard__DropdownItem--danger"
-                @click="ctx.deleteComment(comment); ctx.toggleCommentMenu(comment.id)"
+                @click="
+                  ctx.deleteComment(comment)
+                  ctx.toggleCommentMenu(comment.id)
+                "
               >
                 Удалить
               </button>
@@ -53,16 +47,10 @@
           </div>
         </div>
       </div>
-      <div
-        v-if="editingCommentIdVal !== comment.id"
-        class="CommentCard__Content"
-      >
+      <div v-if="editingCommentIdVal !== comment.id" class="CommentCard__Content">
         <RichContentDisplay :content="comment.body" />
       </div>
-      <div
-        v-else
-        class="CommentCard__Edit"
-      >
+      <div v-else class="CommentCard__Edit">
         <RichTextEditor
           :model-value="editCommentBodyVal"
           placeholder="Редактировать..."
@@ -79,21 +67,11 @@
           >
             Сохранить
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            @click="ctx.cancelEditComment"
-          >
-            Отмена
-          </Button>
+          <Button size="sm" variant="ghost" @click="ctx.cancelEditComment"> Отмена </Button>
         </div>
       </div>
       <div class="CommentCard__Footer">
-        <Tooltip
-          text="Просмотрено"
-          trigger="hover"
-          placement="top"
-        >
+        <Tooltip text="Просмотрено" trigger="hover" placement="top">
           <span class="CommentCard__Seen">
             <ThumbsUpIcon size="xs" />
             <span class="CommentCard__SeenText">Просмотрено</span>
@@ -111,10 +89,7 @@
     </div>
 
     <!-- Вложенные ответы (рекурсия) -->
-    <div
-      v-if="replies.length"
-      class="CommentCard__RepliesBlock"
-    >
+    <div v-if="replies.length" class="CommentCard__RepliesBlock">
       <button
         v-if="!ctx.isRepliesExpanded(comment.id)"
         type="button"
@@ -132,12 +107,7 @@
           Скрыть ответы
         </button>
         <div class="CommentCard__Replies">
-          <CommentThread
-            v-for="r in visibleReplies"
-            :key="r.id"
-            :comment="r"
-            :is-root="false"
-          />
+          <CommentThread v-for="r in visibleReplies" :key="r.id" :comment="r" :is-root="false" />
         </div>
         <button
           v-if="ctx.hasMoreReplies(comment.id)"
@@ -145,16 +115,14 @@
           class="CommentCard__ShowReplies"
           @click="ctx.showMoreReplies(comment.id)"
         >
-          Показать ещё {{ replies.length - ctx.getVisibleRepliesCount(comment.id) }} {{ ctx.replyCountLabel(replies.length - ctx.getVisibleRepliesCount(comment.id)) }}
+          Показать ещё {{ replies.length - ctx.getVisibleRepliesCount(comment.id) }}
+          {{ ctx.replyCountLabel(replies.length - ctx.getVisibleRepliesCount(comment.id)) }}
         </button>
       </template>
     </div>
 
     <!-- Форма ответа -->
-    <div
-      v-if="replyToCommentIdVal === comment.id"
-      class="CommentCard__ReplyForm"
-    >
+    <div v-if="replyToCommentIdVal === comment.id" class="CommentCard__ReplyForm">
       <RichTextEditor
         :model-value="replyCommentBodyVal"
         placeholder="Написать ответ..."
@@ -171,13 +139,7 @@
         >
           {{ commentSavingVal ? 'Отправка...' : 'Отправить' }}
         </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          @click="ctx.toggleReplyForm(comment.id)"
-        >
-          Отмена
-        </Button>
+        <Button size="sm" variant="ghost" @click="ctx.toggleReplyForm(comment.id)"> Отмена </Button>
       </div>
     </div>
   </div>

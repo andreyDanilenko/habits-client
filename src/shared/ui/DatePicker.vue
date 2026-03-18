@@ -263,13 +263,21 @@
   const currentMonth = computed(() => currentDate.value.getMonth())
 
   const monthNames = [
-    'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
   ]
 
-  const monthOptions = computed(() =>
-    monthNames.map((label, value) => ({ value, label })),
-  )
+  const monthOptions = computed(() => monthNames.map((label, value) => ({ value, label })))
 
   const yearRange = computed(() => {
     const y = currentDate.value.getFullYear()

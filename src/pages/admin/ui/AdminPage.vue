@@ -207,7 +207,9 @@
       "
     >
       <ModalContent
-        :title="licenseTarget ? `Лицензии: ${licenseTarget.name || licenseTarget.email}` : 'Лицензии'"
+        :title="
+          licenseTarget ? `Лицензии: ${licenseTarget.name || licenseTarget.email}` : 'Лицензии'
+        "
         @close="closeLicenseModal"
       >
         <template #default>
@@ -290,17 +292,15 @@
                   </select>
                 </div>
                 <div v-if="grantForm.scope === 'single_workspace'">
-                  <label class="block text-xs font-medium text-text-secondary mb-1">Воркспейс</label>
+                  <label class="block text-xs font-medium text-text-secondary mb-1"
+                    >Воркспейс</label
+                  >
                   <select
                     v-model="grantForm.workspaceId"
                     class="w-full px-3 py-2 rounded-lg border border-border-default bg-bg-primary text-text-primary text-sm"
                   >
                     <option value="">Выберите воркспейс</option>
-                    <option
-                      v-for="ws in licenseTarget.workspaces"
-                      :key="ws.id"
-                      :value="ws.id"
-                    >
+                    <option v-for="ws in licenseTarget.workspaces" :key="ws.id" :value="ws.id">
                       {{ ws.name }}
                     </option>
                   </select>
@@ -356,7 +356,9 @@
               >
                 <div>
                   <span class="font-medium text-text-primary">{{ m.moduleName }}</span>
-                  <span v-if="m.isCore" class="ml-2 text-xs text-text-muted">(всегда бесплатен)</span>
+                  <span v-if="m.isCore" class="ml-2 text-xs text-text-muted"
+                    >(всегда бесплатен)</span
+                  >
                   <span v-else-if="m.status === 'trial'" class="ml-2 text-xs text-warning-default">
                     Триал до {{ m.expiresAt ? formatDate(m.expiresAt) : '—' }}
                   </span>

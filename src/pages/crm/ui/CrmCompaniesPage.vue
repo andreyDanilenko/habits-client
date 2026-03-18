@@ -20,32 +20,29 @@
         @open-filters="showFiltersDrawer = true"
       />
 
-      <CompaniesFiltersDrawer
-        :is-open="showFiltersDrawer"
-        @close="showFiltersDrawer = false"
-      />
+      <CompaniesFiltersDrawer :is-open="showFiltersDrawer" @close="showFiltersDrawer = false" />
 
       <div class="mt-(--spacing-4)">
-      <CompaniesTableWidget
-        :companies="actions.companies.value"
-        :total="actions.total.value"
-        :is-loading="actions.isLoading.value"
-        :is-error="actions.isError.value"
-        :page="actions.page.value"
-        :page-size="actions.pageSize.value"
-        :sort-by="actions.sortBy.value"
-        :sort-order="actions.sortOrder.value"
-        :selected-ids="actions.selectedIds.value"
-        :handle-sort="actions.handleSort"
-        :handle-row-select="actions.handleRowSelect"
-        :handle-select-all="actions.handleSelectAll"
-        :set-page="actions.setPage"
-        :fetch-companies="actions.fetchCompanies"
-        @edit="actions.openEditModal"
-        @delete="actions.confirmDelete"
-        @company-click="actions.goToCompany"
-        @contacts-click="actions.goToContactsByCompany"
-      />
+        <CompaniesTableWidget
+          :companies="actions.companies.value"
+          :total="actions.total.value"
+          :is-loading="actions.isLoading.value"
+          :is-error="actions.isError.value"
+          :page="actions.page.value"
+          :page-size="actions.pageSize.value"
+          :sort-by="actions.sortBy.value"
+          :sort-order="actions.sortOrder.value"
+          :selected-ids="actions.selectedIds.value"
+          :handle-sort="actions.handleSort"
+          :handle-row-select="actions.handleRowSelect"
+          :handle-select-all="actions.handleSelectAll"
+          :set-page="actions.setPage"
+          :fetch-companies="actions.fetchCompanies"
+          @edit="actions.openEditModal"
+          @delete="actions.confirmDelete"
+          @company-click="actions.goToCompany"
+          @contacts-click="actions.goToContactsByCompany"
+        />
       </div>
     </template>
   </BasePageLayout>

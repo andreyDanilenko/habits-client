@@ -36,42 +36,42 @@
       />
 
       <div class="mt-(--spacing-4)">
-      <div
-        v-if="actions.selectedIds.value?.size > 0"
-        class="flex items-center gap-(--spacing-4) py-(--spacing-2) px-(--spacing-4) rounded-(--radius-lg) bg-bg-tertiary border border-border-light"
-      >
-        <span class="text-(--text-sm) text-text-secondary">
-          Выбрано: {{ actions.selectedIds.value.size }}
-        </span>
-        <PermissionGuard :permission="CRM_PERMISSIONS.contactDelete">
-          <Button variant="outline" size="md" @click="actions.bulkDelete">Удалить</Button>
-        </PermissionGuard>
-        <Button variant="ghost" size="md" disabled>Изменить ответственного</Button>
-        <Button variant="ghost" size="md" disabled>Добавить тег</Button>
-      </div>
+        <div
+          v-if="actions.selectedIds.value?.size > 0"
+          class="flex items-center gap-(--spacing-4) py-(--spacing-2) px-(--spacing-4) rounded-(--radius-lg) bg-bg-tertiary border border-border-light"
+        >
+          <span class="text-(--text-sm) text-text-secondary">
+            Выбрано: {{ actions.selectedIds.value.size }}
+          </span>
+          <PermissionGuard :permission="CRM_PERMISSIONS.contactDelete">
+            <Button variant="outline" size="md" @click="actions.bulkDelete">Удалить</Button>
+          </PermissionGuard>
+          <Button variant="ghost" size="md" disabled>Изменить ответственного</Button>
+          <Button variant="ghost" size="md" disabled>Добавить тег</Button>
+        </div>
 
-      <ContactsTableWidget
-        :contacts="actions.contacts.value"
-        :total="actions.total.value"
-        :is-loading="actions.isLoading.value"
-        :is-error="actions.isError.value"
-        :page="actions.page.value"
-        :page-size="actions.pageSize.value"
-        :page-size-options="actions.PAGE_SIZE_OPTIONS"
-        :sort-by="actions.sortBy.value"
-        :sort-order="actions.sortOrder.value"
-        :selected-ids="actions.selectedIds.value"
-        :handle-sort="actions.handleSort"
-        :handle-row-select="actions.handleRowSelect"
-        :handle-select-all="actions.handleSelectAll"
-        :set-page="actions.setPage"
-        :set-page-size="actions.setPageSize"
-        :fetch-contacts="actions.fetchContacts"
-        @edit="actions.openEditModal"
-        @delete="actions.confirmDelete"
-        @add-to-deal="actions.openAttachToDeal"
-        @row-click="actions.openQuickView"
-      />
+        <ContactsTableWidget
+          :contacts="actions.contacts.value"
+          :total="actions.total.value"
+          :is-loading="actions.isLoading.value"
+          :is-error="actions.isError.value"
+          :page="actions.page.value"
+          :page-size="actions.pageSize.value"
+          :page-size-options="actions.PAGE_SIZE_OPTIONS"
+          :sort-by="actions.sortBy.value"
+          :sort-order="actions.sortOrder.value"
+          :selected-ids="actions.selectedIds.value"
+          :handle-sort="actions.handleSort"
+          :handle-row-select="actions.handleRowSelect"
+          :handle-select-all="actions.handleSelectAll"
+          :set-page="actions.setPage"
+          :set-page-size="actions.setPageSize"
+          :fetch-contacts="actions.fetchContacts"
+          @edit="actions.openEditModal"
+          @delete="actions.confirmDelete"
+          @add-to-deal="actions.openAttachToDeal"
+          @row-click="actions.openQuickView"
+        />
       </div>
     </template>
   </BasePageLayout>

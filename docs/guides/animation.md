@@ -30,6 +30,7 @@
 ```
 
 **Где использовать:**
+
 - `--duration-fast` — hover, мелкие переходы
 - `--duration-normal` — fade, backdrop
 - `--duration-slow` — открытие/закрытие модалок, slide
@@ -69,6 +70,7 @@ fetchData(undefined, { background: true })
 ```
 
 **Правила:**
+
 - `isLoading = true` только при явном действии пользователя (первая загрузка, смена фильтра)
 - Сокет-триггеры — всегда `background: true`
 - Не показывать «Загрузка...» при фоновом обновлении

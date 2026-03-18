@@ -25,7 +25,10 @@
       </span>
     </div>
     <div class="font-medium text-text-primary truncate mt-(--spacing-1)">{{ task.title }}</div>
-    <p v-if="task.description" class="mt-(--spacing-1) text-(--text-sm) text-text-secondary line-clamp-2">
+    <p
+      v-if="task.description"
+      class="mt-(--spacing-1) text-(--text-sm) text-text-secondary line-clamp-2"
+    >
       {{ task.description }}
     </p>
     <p class="mt-(--spacing-1) text-(--text-xs) text-text-muted">

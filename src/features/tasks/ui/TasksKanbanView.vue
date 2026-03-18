@@ -22,7 +22,7 @@
       </template>
       <template #card="{ item }">
         <TaskKanbanCard
-          :task="(item as Task)"
+          :task="item as Task"
           :assignee-options="assigneeOptions"
           :format-date="formatDate"
           :saving="savingTaskIds.has((item as Task).id)"

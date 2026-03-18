@@ -5,131 +5,135 @@
     :fullscreen-on-mobile="isMobile"
     @close="$emit('close')"
   >
-    <form id="contact-form" class="space-y-4 lg:space-y-5" @submit.prevent="() => handleSubmit(true)">
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Имя <span class="text-error-default">*</span></span
-          >
-          <Input
-            v-model="form.firstName"
-            placeholder="Имя"
-            :error="errors.firstName"
-            @blur="validateFirstName"
-          />
-          <p v-if="errors.firstName" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
-            {{ errors.firstName }}
-          </p>
-        </div>
+    <form
+      id="contact-form"
+      class="space-y-4 lg:space-y-5"
+      @submit.prevent="() => handleSubmit(true)"
+    >
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Имя <span class="text-error-default">*</span></span
+        >
+        <Input
+          v-model="form.firstName"
+          placeholder="Имя"
+          :error="errors.firstName"
+          @blur="validateFirstName"
+        />
+        <p v-if="errors.firstName" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
+          {{ errors.firstName }}
+        </p>
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Фамилия</span
-          >
-          <Input v-model="form.lastName" placeholder="Фамилия" />
-        </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Фамилия</span
+        >
+        <Input v-model="form.lastName" placeholder="Фамилия" />
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Телефон</span
-          >
-          <Input
-            v-model="phoneModel"
-            type="tel"
-            placeholder="+7 (999) 999-99-99"
-            :error="errors.phone"
-            inputClasses="w-full"
-          />
-          <p v-if="errors.phone" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
-            {{ errors.phone }}
-          </p>
-        </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Телефон</span
+        >
+        <Input
+          v-model="phoneModel"
+          type="tel"
+          placeholder="+7 (999) 999-99-99"
+          :error="errors.phone"
+          inputClasses="w-full"
+        />
+        <p v-if="errors.phone" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
+          {{ errors.phone }}
+        </p>
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Email</span
-          >
-          <Input
-            v-model="form.email"
-            type="email"
-            placeholder="email@example.com"
-            :error="errors.email"
-            @blur="validateEmail"
-          />
-          <p v-if="errors.email" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
-            {{ errors.email }}
-          </p>
-        </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Email</span
+        >
+        <Input
+          v-model="form.email"
+          type="email"
+          placeholder="email@example.com"
+          :error="errors.email"
+          @blur="validateEmail"
+        />
+        <p v-if="errors.email" class="mt-(--spacing-1) text-(--text-xs) text-error-default">
+          {{ errors.email }}
+        </p>
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Компания</span
-          >
-          <SearchSelect
-            v-model="form.companyId"
-            :options="companyOptions"
-            :get-option-label="getCompanyLabel"
-            :selected-label="form.companyNameDisplay"
-            :loading="companySearching"
-            placeholder="Поиск компании..."
-            create-label="+ Создать новую компанию"
-            @search="handleCompanySearch"
-            @select="applyCompany"
-            @create="handleCreateCompany"
-          />
-        </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Компания</span
+        >
+        <SearchSelect
+          v-model="form.companyId"
+          :options="companyOptions"
+          :get-option-label="getCompanyLabel"
+          :selected-label="form.companyNameDisplay"
+          :loading="companySearching"
+          placeholder="Поиск компании..."
+          create-label="+ Создать новую компанию"
+          @search="handleCompanySearch"
+          @select="applyCompany"
+          @create="handleCreateCompany"
+        />
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Должность</span
-          >
-          <Input v-model="form.position" placeholder="Должность" />
-        </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Должность</span
+        >
+        <Input v-model="form.position" placeholder="Должность" />
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >День рождения</span
-          >
-          <DatePicker v-model="form.birthday" />
-        </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >День рождения</span
+        >
+        <DatePicker v-model="form.birthday" />
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Теги</span
-          >
-          <div class="space-y-2">
-            <div class="flex flex-wrap gap-2">
-              <Tag
-                v-for="tag in form.tags"
-                :key="tag"
-                :label="tag"
-                removable
-                remove-aria-label="Удалить тег"
-                @remove="removeTag(tag)"
-              />
-            </div>
-            <div class="flex gap-2">
-              <Input
-                v-model="tagInput"
-                placeholder="Добавить тег..."
-                @keydown.enter.prevent="addTag"
-              />
-              <Button type="button" variant="outline" @click="addTag"> Добавить </Button>
-            </div>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Теги</span
+        >
+        <div class="space-y-2">
+          <div class="flex flex-wrap gap-2">
+            <Tag
+              v-for="tag in form.tags"
+              :key="tag"
+              :label="tag"
+              removable
+              remove-aria-label="Удалить тег"
+              @remove="removeTag(tag)"
+            />
+          </div>
+          <div class="flex gap-2">
+            <Input
+              v-model="tagInput"
+              placeholder="Добавить тег..."
+              @keydown.enter.prevent="addTag"
+            />
+            <Button type="button" variant="outline" @click="addTag"> Добавить </Button>
           </div>
         </div>
+      </div>
 
-        <div>
-          <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-            >Ответственный</span
-          >
-          <Select
-            v-model="form.ownerId"
-            :options="ownerSelectOptions"
-            placeholder="Выберите ответственного"
-            size="lg"
-          />
-        </div>
-      </form>
+      <div>
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
+          >Ответственный</span
+        >
+        <Select
+          v-model="form.ownerId"
+          :options="ownerSelectOptions"
+          placeholder="Выберите ответственного"
+          size="lg"
+        />
+      </div>
+    </form>
 
     <template #footer>
       <div class="flex justify-end gap-(--spacing-2)">
@@ -151,15 +155,7 @@
 
 <script setup lang="ts">
   import { ref, watch, computed, unref, onMounted, onUnmounted } from 'vue'
-  import {
-    ModalContent,
-    Button,
-    Input,
-    Select,
-    DatePicker,
-    SearchSelect,
-    Tag,
-  } from '@/shared/ui'
+  import { ModalContent, Button, Input, Select, DatePicker, SearchSelect, Tag } from '@/shared/ui'
   import { companyService } from '@/entities/company'
   import type { Contact, CreateContactDto } from '@/entities/contact'
   import type { Company } from '@/entities/company'

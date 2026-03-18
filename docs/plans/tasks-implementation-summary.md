@@ -6,31 +6,31 @@
 
 ### 1.1. Документация (реорганизация)
 
-| Действие | Результат |
-|----------|-----------|
-| Декомпозиция `docs/frontend` | Структура: `spec/`, `tasks/`, `plans/`, `architecture/`, `guides/`, `reports/`, `features/` |
-| Объединение файлов | `ANIMATE` + `ANIMATION_PATTERNS` → `guides/animation.md`; `SSL` + `SSL_UPDATE` → `guides/ssl.md`; `TRELO` + `TRECKER` → `tasks/tasks-roadmap.md` |
-| README-навигация | `docs/frontend/README.md` — индекс по всей документации |
-| Обновление `plans/roles.md` | Убрано «Наследование ролей» из критичных; добавлена модель: кастомная роль перезаписывает системную |
+| Действие                     | Результат                                                                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Декомпозиция `docs/frontend` | Структура: `spec/`, `tasks/`, `plans/`, `architecture/`, `guides/`, `reports/`, `features/`                                                      |
+| Объединение файлов           | `ANIMATE` + `ANIMATION_PATTERNS` → `guides/animation.md`; `SSL` + `SSL_UPDATE` → `guides/ssl.md`; `TRELO` + `TRECKER` → `tasks/tasks-roadmap.md` |
+| README-навигация             | `docs/frontend/README.md` — индекс по всей документации                                                                                          |
+| Обновление `plans/roles.md`  | Убрано «Наследование ролей» из критичных; добавлена модель: кастомная роль перезаписывает системную                                              |
 
 ### 1.2. Задел под Tasks (уже в коде)
 
-| Место | Статус |
-|-------|--------|
-| `CrmDealDetailPage.vue` | Вкладка «Задачи» — placeholder «Связанные задачи (в разработке)» |
-| `CrmContactDetailPage.vue` | Вкладка «Задачи» — `ContactTasksPlaceholder` |
-| `entityTypes.ts` (projects) | Закомментирован `task` для привязки к проектам |
-| `ActivityItem.vue` | Тип активности `task` |
-| `spec/api.md` | Описан паттерн: `API_ENDPOINTS` → `task-service` → `use-tasks-page` → страница |
+| Место                       | Статус                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| `CrmDealDetailPage.vue`     | Вкладка «Задачи» — placeholder «Связанные задачи (в разработке)»               |
+| `CrmContactDetailPage.vue`  | Вкладка «Задачи» — `ContactTasksPlaceholder`                                   |
+| `entityTypes.ts` (projects) | Закомментирован `task` для привязки к проектам                                 |
+| `ActivityItem.vue`          | Тип активности `task`                                                          |
+| `spec/api.md`               | Описан паттерн: `API_ENDPOINTS` → `task-service` → `use-tasks-page` → страница |
 
 ### 1.3. Спецификации (готовы)
 
-| Документ | Содержание |
-|----------|------------|
-| `backend/docs/CRM/SPEC_BACK_3.md` | БД (tasks, task_entity_links, task_tags, comments, watchers, attachments, history, time_entries), API, RLS |
-| `backend/docs/CRM/SPEC_FRON_3.md` | Типы Task, DTO, компоненты (MyTasksPage, TaskCard, TaskFormModal, TaskQuickAdd, виджет в сделке) |
-| `frontend/docs/tasks/tasks-roadmap.md` | Roadmap: Views, иерархия, интеграция с CRM, collaboration, дедлайны |
-| `frontend/docs/tasks/index.md` | E1 — модуль Tasks в общем плане (3–4д backend, frontend) |
+| Документ                               | Содержание                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `backend/docs/CRM/SPEC_BACK_3.md`      | БД (tasks, task_entity_links, task_tags, comments, watchers, attachments, history, time_entries), API, RLS |
+| `backend/docs/CRM/SPEC_FRON_3.md`      | Типы Task, DTO, компоненты (MyTasksPage, TaskCard, TaskFormModal, TaskQuickAdd, виджет в сделке)           |
+| `frontend/docs/tasks/tasks-roadmap.md` | Roadmap: Views, иерархия, интеграция с CRM, collaboration, дедлайны                                        |
+| `frontend/docs/tasks/index.md`         | E1 — модуль Tasks в общем плане (3–4д backend, frontend)                                                   |
 
 ---
 
@@ -46,6 +46,7 @@ widgets           → TaskQuickAdd (в header), TaskStatsWidget
 ```
 
 **Правила:**
+
 - Импорты только вниз: `pages` → `features` → `entities` → `shared`
 - API: `API_ENDPOINTS.TASKS(workspaceId)` в `shared/api/endpoints.ts`
 - Сервис: `entities/task/api/task-service.ts` — тонкий слой над `api`
@@ -91,12 +92,12 @@ widgets           → TaskQuickAdd (в header), TaskStatsWidget
 
 ### 2.3. Риски и как их избежать
 
-| Риск | Митигация |
-|------|-----------|
-| Нарушение FSD | Строго следовать слоям: не импортировать `features` из `entities`, не вызывать API из `pages` |
-| Дублирование логики | Переиспользовать `DataTable`, `Modal`, `Pagination` из `shared/ui` |
-| Раздувание task-service | Вынести comments, attachments в отдельные сервисы при появлении |
-| Конфликт с activities | `activity.type = 'task'` — это запись в ленте; `Task` — отдельная сущность. Связь: при создании задачи можно создавать activity |
+| Риск                    | Митигация                                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Нарушение FSD           | Строго следовать слоям: не импортировать `features` из `entities`, не вызывать API из `pages`                                   |
+| Дублирование логики     | Переиспользовать `DataTable`, `Modal`, `Pagination` из `shared/ui`                                                              |
+| Раздувание task-service | Вынести comments, attachments в отдельные сервисы при появлении                                                                 |
+| Конфликт с activities   | `activity.type = 'task'` — это запись в ленте; `Task` — отдельная сущность. Связь: при создании задачи можно создавать activity |
 
 ---
 

@@ -17,7 +17,9 @@ const STORAGE_KEY = 'app-locale'
 
 function getStoredLocale(): SupportedLocale {
   const stored = localStorage.getItem(STORAGE_KEY)
-  return (SUPPORTED_LOCALES.includes(stored as SupportedLocale) ? stored : DEFAULT_LOCALE) as SupportedLocale
+  return (
+    SUPPORTED_LOCALES.includes(stored as SupportedLocale) ? stored : DEFAULT_LOCALE
+  ) as SupportedLocale
 }
 
 export const i18n = createI18n({

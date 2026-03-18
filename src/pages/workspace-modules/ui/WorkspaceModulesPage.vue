@@ -9,7 +9,8 @@
         v-if="showTrialExpiredBanner"
         class="mt-4 p-4 rounded-lg bg-warning-default/10 border border-warning-default/30 text-warning-default"
       >
-        Триал одного из модулей истёк. Оформите лицензию или обратитесь к администратору для продления.
+        Триал одного из модулей истёк. Оформите лицензию или обратитесь к администратору для
+        продления.
       </div>
     </div>
 
@@ -193,7 +194,9 @@
   const disableConfirmMessage = computed(() => {
     if (!disableTarget.value) return ''
     const info = getModuleInfo(disableTarget.value.id)
-    const hasLicense = workspaceStore.licensedModuleCodesForCurrentWorkspace.has(disableTarget.value.id)
+    const hasLicense = workspaceStore.licensedModuleCodesForCurrentWorkspace.has(
+      disableTarget.value.id,
+    )
     const isTrial = info?.status === 'trial'
     if (isTrial && !hasLicense) {
       return `Модуль «${disableTarget.value.label}» будет отключён. У вас был триал — для повторного включения потребуется покупка лицензии или выдача админом. Продолжить?`
@@ -203,7 +206,8 @@
 
   function unavailableModuleReason(moduleId: string): string {
     const info = getModuleInfo(moduleId)
-    if (!info) return 'Модуль пока не активирован. Нажмите «Активировать», чтобы включить его в workspace.'
+    if (!info)
+      return 'Модуль пока не активирован. Нажмите «Активировать», чтобы включить его в workspace.'
     if (info.status === 'trial' && !info.enabled) {
       return 'Триал истёк. Купите лицензию или обратитесь к администратору для продления.'
     }

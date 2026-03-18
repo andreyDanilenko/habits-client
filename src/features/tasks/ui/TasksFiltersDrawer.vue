@@ -1,11 +1,5 @@
 <template>
-  <Drawer
-    :is-open="isOpen"
-    title="Фильтры"
-    width="md"
-    show-close-button
-    @close="$emit('close')"
-  >
+  <Drawer :is-open="isOpen" title="Фильтры" width="md" show-close-button @close="$emit('close')">
     <div class="space-y-0">
       <!-- Секция: Статус -->
       <section class="FiltersSection">
@@ -103,17 +97,10 @@
 
     <template #footer>
       <div class="flex gap-(--spacing-3)">
-        <Button
-          v-if="hasActiveFilters"
-          variant="outline"
-          class="flex-1"
-          @click="$emit('reset')"
-        >
+        <Button v-if="hasActiveFilters" variant="outline" class="flex-1" @click="$emit('reset')">
           Сбросить
         </Button>
-        <Button variant="primary" class="flex-1" @click="$emit('close')">
-          Применить
-        </Button>
+        <Button variant="primary" class="flex-1" @click="$emit('close')"> Применить </Button>
       </div>
     </template>
   </Drawer>
