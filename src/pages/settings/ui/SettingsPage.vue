@@ -34,6 +34,30 @@
     </Card>
 
     <Card class="p-6">
+      <h2 class="text-text-primary mb-4">Язык</h2>
+
+      <div class="space-y-4">
+        <p class="text-sm text-text-secondary">Выберите язык интерфейса</p>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="loc in supportedLocales"
+            :key="loc"
+            type="button"
+            class="px-4 py-2 text-sm rounded-(--radius-md) font-medium transition-colors"
+            :class="
+              currentLocale === loc
+                ? 'bg-primary-default text-white'
+                : 'bg-bg-tertiary text-text-primary hover:bg-border-light'
+            "
+            @click="setLocale(loc)"
+          >
+            {{ localeLabels[loc] }}
+          </button>
+        </div>
+      </div>
+    </Card>
+
+    <Card class="p-6">
       <h2 class="text-text-primary mb-4">Безопасность</h2>
 
       <div class="space-y-4">
@@ -144,12 +168,25 @@
 
 <script setup lang="ts">
   import { ref, reactive, computed, onMounted } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { Card, Button, Input } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
   import { authService } from '@/features/auth'
   import { getPasswordError } from '@/shared/lib/validation'
+  import {
+    SUPPORTED_LOCALES,
+    LOCALE_LABELS,
+    setLocale as setAppLocale,
+    type SupportedLocale,
+  } from '@/shared/lib/i18n'
 
   const userStore = useUserStore()
+  const { locale } = useI18n()
+
+  const supportedLocales = SUPPORTED_LOCALES
+  const localeLabels = LOCALE_LABELS
+  const currentLocale = computed(() => locale.value as SupportedLocale)
+  const setLocale = (loc: SupportedLocale) => setAppLocale(loc)
   const isAdmin = computed(() => {
     const role = userStore.currentUser?.role
     return role === 'ADMIN' || (typeof role === 'string' && role.toUpperCase() === 'ADMIN')
