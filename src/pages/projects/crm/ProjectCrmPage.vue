@@ -238,7 +238,7 @@
     <Modal
       :is-open="showDealFormModal"
       :fullscreen-on-mobile="isMobile"
-      content-class="lg:max-w-[min(40rem,calc(100vw-2rem))]"
+      content-class="lg:max-w-[min(52rem,calc(100vw-2rem))]"
       @close="closeDealFormModal"
     >
       <DealFormModal

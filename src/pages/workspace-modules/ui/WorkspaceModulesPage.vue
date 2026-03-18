@@ -5,6 +5,12 @@
       <p class="mt-2 text-text-secondary">
         Доступные и неактивные модули в этом workspace. Включите нужные модули для работы.
       </p>
+      <div
+        v-if="showTrialExpiredBanner"
+        class="mt-4 p-4 rounded-lg bg-warning-default/10 border border-warning-default/30 text-warning-default"
+      >
+        Триал одного из модулей истёк. Оформите лицензию или обратитесь к администратору для продления.
+      </div>
     </div>
 
     <!-- Доступные модули -->
@@ -20,7 +26,9 @@
           <component :is="module.icon" class="w-8 h-8 text-primary-default flex-shrink-0" />
           <div class="flex-1 min-w-0">
             <p class="font-medium text-text-primary">{{ module.label }}</p>
-            <p class="text-sm text-text-muted">Модуль активен</p>
+            <p class="text-sm text-text-muted">
+              {{ moduleStatusLabel(module.id) }}
+            </p>
           </div>
           <div class="flex items-center gap-3 flex-shrink-0">
             <span class="text-sm text-success-default font-medium">Доступен</span>
@@ -57,7 +65,7 @@
           <div class="flex-1 min-w-0">
             <p class="font-medium text-text-primary">{{ module.label }}</p>
             <p class="text-sm text-text-secondary mt-0.5">
-              Модуль пока не активирован. Нажмите «Активировать», чтобы включить его в workspace.
+              {{ unavailableModuleReason(module.id) }}
             </p>
           </div>
           <div class="flex flex-col gap-2 flex-shrink-0">
@@ -89,11 +97,7 @@
     <Modal :is-open="showDisableModal" @update:is-open="showDisableModal = $event">
       <ConfirmModal
         title="Отключить модуль?"
-        :message="
-          disableTarget
-            ? `Модуль «${disableTarget.label}» будет отключён только в этом workspace (для видимости). Лицензия сохраняется — включить снова можно без покупки. Продолжить?`
-            : ''
-        "
+        :message="disableConfirmMessage"
         confirm-text="Отключить"
         confirm-variant="danger"
         @close="closeDisableConfirm"
@@ -105,13 +109,16 @@
 
 <script setup lang="ts">
   import { computed, ref, onMounted } from 'vue'
+  import { useRoute } from 'vue-router'
   import { useUserStore } from '@/entities/user'
   import { usePermissions, useWorkspaceStore, workspaceService } from '@/entities/workspace'
   import { modules } from '@/app/modules/config'
   import { Card, Button, Modal, ConfirmModal } from '@/shared/ui'
   import type { Module } from '@/app/modules/config'
 
+  const route = useRoute()
   const workspaceStore = useWorkspaceStore()
+  const showTrialExpiredBanner = computed(() => route.query.trial_expired === '1')
   const { isOwner, isAdmin } = usePermissions()
   const userStore = useUserStore()
 
@@ -156,6 +163,59 @@
   const availableModules = computed(() => modules.filter((m) => enabledSet.value.has(m.id)))
 
   const unavailableModules = computed(() => modules.filter((m) => !enabledSet.value.has(m.id)))
+
+  function getModuleInfo(moduleId: string) {
+    return workspaceStore.modules.find((m) => m.moduleName === moduleId)
+  }
+
+  function trialDaysRemaining(expiresAt?: string): number | null {
+    if (!expiresAt) return null
+    const end = new Date(expiresAt)
+    const now = new Date()
+    const diff = end.getTime() - now.getTime()
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24))
+    return days > 0 ? days : 0
+  }
+
+  function moduleStatusLabel(moduleId: string): string {
+    const info = getModuleInfo(moduleId)
+    if (!info) return 'Модуль активен'
+    if (info.status === 'trial' && info.expiresAt) {
+      const days = trialDaysRemaining(info.expiresAt)
+      if (days !== null && days > 0) {
+        return `Триал: осталось ${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}`
+      }
+    }
+    if (info.status === 'active') return 'Полная лицензия'
+    return 'Модуль активен'
+  }
+
+  const disableConfirmMessage = computed(() => {
+    if (!disableTarget.value) return ''
+    const info = getModuleInfo(disableTarget.value.id)
+    const hasLicense = workspaceStore.licensedModuleCodesForCurrentWorkspace.has(disableTarget.value.id)
+    const isTrial = info?.status === 'trial'
+    if (isTrial && !hasLicense) {
+      return `Модуль «${disableTarget.value.label}» будет отключён. У вас был триал — для повторного включения потребуется покупка лицензии или выдача админом. Продолжить?`
+    }
+    return `Модуль «${disableTarget.value.label}» будет отключён только в этом workspace. Лицензия сохраняется — включить снова можно без покупки. Продолжить?`
+  })
+
+  function unavailableModuleReason(moduleId: string): string {
+    const info = getModuleInfo(moduleId)
+    if (!info) return 'Модуль пока не активирован. Нажмите «Активировать», чтобы включить его в workspace.'
+    if (info.status === 'trial' && !info.enabled) {
+      return 'Триал истёк. Купите лицензию или обратитесь к администратору для продления.'
+    }
+    if (info.status === 'disabled') {
+      const hasLicense = workspaceStore.licensedModuleCodesForCurrentWorkspace.has(moduleId)
+      if (!hasLicense) {
+        return 'Модуль отключён. Для повторного включения нужна лицензия — купите или обратитесь к администратору.'
+      }
+      return 'Модуль отключён. Нажмите «Активировать», чтобы включить его в workspace.'
+    }
+    return 'Модуль пока не активирован. Нажмите «Активировать», чтобы включить его в workspace.'
+  }
 
   async function activateModule(moduleCode: string) {
     const ws = workspaceStore.currentWorkspace

@@ -15,6 +15,9 @@ import {
   IconCompanies,
   IconFunnel,
   IconProjects,
+  IconInventory,
+  IconFinance,
+  IconHr,
 } from '@/shared/ui/icon'
 
 export interface ModuleRoute {
@@ -233,14 +236,14 @@ export const modules: Module[] = [
   {
     id: 'inventory',
     label: 'Склад',
-    icon: ListIcon,
+    icon: IconInventory,
     basePath: '/inventory',
     routes: [
       {
         path: '/inventory',
         name: 'InventoryStub',
         label: 'Склад',
-        icon: ListIcon,
+        icon: IconInventory,
         component: () => import('@/pages/module-stub'),
         meta: { stubLabel: 'Склад' },
       },
@@ -249,14 +252,14 @@ export const modules: Module[] = [
   {
     id: 'finance',
     label: 'Финансы',
-    icon: ListIcon,
+    icon: IconFinance,
     basePath: '/finance',
     routes: [
       {
         path: '/finance',
         name: 'FinanceStub',
         label: 'Финансы',
-        icon: ListIcon,
+        icon: IconFinance,
         component: () => import('@/pages/module-stub'),
         meta: { stubLabel: 'Финансы' },
       },
@@ -265,14 +268,14 @@ export const modules: Module[] = [
   {
     id: 'hr',
     label: 'HR',
-    icon: ListIcon,
+    icon: IconHr,
     basePath: '/hr',
     routes: [
       {
         path: '/hr',
         name: 'HrStub',
         label: 'HR',
-        icon: ListIcon,
+        icon: IconHr,
         component: () => import('@/pages/module-stub'),
         meta: { stubLabel: 'HR' },
       },
