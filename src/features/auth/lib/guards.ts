@@ -4,7 +4,7 @@ import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
 
 /** Вызывается при 401 — редирект на /login */
-export const handleUnauthorized = async (router: Router) => {
+export const handleUnauthorized = async (_router: Router) => {
   const authStore = useAuthStore()
   const userStore = useUserStore()
 
