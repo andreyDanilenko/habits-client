@@ -1,0 +1,55 @@
+{
+  "sidebar": {
+    "sections": {
+      "workspaces": "Workspaces",
+      "modules": "Модули",
+      "footer": "Служебные"
+    },
+    "actions": {
+      "expand": "Развернуть",
+      "collapse": "Свернуть",
+      "closeMenu": "Закрыть меню",
+      "language": "Язык"
+    },
+    "modules": {
+      "habits": "Привычки",
+      "crm": "CRM",
+      "projects": "Проекты",
+      "tasks": "Задачи",
+      "notes": "Заметки",
+      "inventory": "Склад",
+      "finance": "Финансы",
+      "hr": "HR",
+      "unknown": "Модуль"
+    },
+    "routes": {
+      "habits": {
+        "dashboard": "Дашборд",
+        "list": "Список",
+        "calendar": "Календарь",
+        "journal": "Дневник",
+        "activity": "Активность"
+      },
+      "crm": {
+        "contacts": "Контакты",
+        "companies": "Компании",
+        "deals": "Сделки",
+        "pipelines": "Воронки продаж"
+      },
+      "projects": {
+        "list": "Проекты"
+      },
+      "tasks": {
+        "list": "Мои задачи"
+      },
+      "notes": {
+        "list": "Список"
+      }
+    },
+    "footer": {
+      "admin": "Админ-панель",
+      "workspaceSettings": "Воркспейс",
+      "logout": "Выйти"
+    }
+  }
+}

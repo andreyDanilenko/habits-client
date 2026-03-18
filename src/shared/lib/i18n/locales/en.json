@@ -1,0 +1,55 @@
+{
+  "sidebar": {
+    "sections": {
+      "workspaces": "Workspaces",
+      "modules": "Modules",
+      "footer": "System"
+    },
+    "actions": {
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "closeMenu": "Close menu",
+      "language": "Language"
+    },
+    "modules": {
+      "habits": "Habits",
+      "crm": "CRM",
+      "projects": "Projects",
+      "tasks": "Tasks",
+      "notes": "Notes",
+      "inventory": "Inventory",
+      "finance": "Finance",
+      "hr": "HR",
+      "unknown": "Module"
+    },
+    "routes": {
+      "habits": {
+        "dashboard": "Dashboard",
+        "list": "List",
+        "calendar": "Calendar",
+        "journal": "Journal",
+        "activity": "Activity"
+      },
+      "crm": {
+        "contacts": "Contacts",
+        "companies": "Companies",
+        "deals": "Deals",
+        "pipelines": "Pipelines"
+      },
+      "projects": {
+        "list": "Projects"
+      },
+      "tasks": {
+        "list": "My tasks"
+      },
+      "notes": {
+        "list": "List"
+      }
+    },
+    "footer": {
+      "admin": "Admin panel",
+      "workspaceSettings": "Workspace",
+      "logout": "Log out"
+    }
+  }
+}

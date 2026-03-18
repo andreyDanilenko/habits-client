@@ -9,6 +9,7 @@
         size="sm"
         :left-icon="item.icon"
         :icon-only="collapsed"
+        :icon-stroke-width="collapsed ? 1 : undefined"
         :is-active="item.isActive"
         :custom-class="`w-full ${collapsed ? 'justify-center' : 'justify-start'}`"
         @click="handleItemClick(item)"
@@ -23,6 +24,7 @@
         :icon-size="collapsed ? 'lg' : 'sm'"
         :left-icon="item.icon"
         :icon-only="collapsed"
+        :icon-stroke-width="collapsed ? 1 : undefined"
         :custom-class="
           [
             'w-full',

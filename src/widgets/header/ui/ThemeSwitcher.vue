@@ -1,5 +1,5 @@
 <template>
-  <Tooltip variant="dropdown" trigger="click" placement="bottom">
+  <Tooltip variant="dropdown" trigger="click" placement="bottom" :close-on-content-click="false">
     <template #trigger>
       <Button
         variant="icon"

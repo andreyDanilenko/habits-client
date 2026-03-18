@@ -20,7 +20,7 @@
             variant="icon"
             icon-only
             :left-icon="XMarkIcon"
-            aria-label="Закрыть меню"
+            :aria-label="actionLabel('closeMenu')"
           />
           <Button
             v-else
@@ -28,7 +28,7 @@
             variant="icon"
             icon-only
             :left-icon="isCollapsed ? ArrowRightIcon : ArrowLeftIcon"
-            :title="isCollapsed ? 'Развернуть' : 'Свернуть'"
+            :title="isCollapsed ? actionLabel('expand') : actionLabel('collapse')"
           />
         </div>
 
@@ -36,7 +36,10 @@
         <template v-if="!isMobile">
           <div class="mb-(--spacing-4) pb-(--spacing-4) border-b border-border-light flex-shrink-0">
             <div v-if="!isCollapsedEffective" class="w-full">
-              <SidebarSectionHeader title="Workspaces" :collapsed="isCollapsedEffective" />
+              <SidebarSectionHeader
+                :title="sectionTitle('workspaces')"
+                :collapsed="isCollapsedEffective"
+              />
               <WorkspaceSwitcher />
             </div>
             <div v-else class="flex justify-center">
@@ -51,7 +54,10 @@
           </div>
 
           <div class="mb-(--spacing-4) flex-shrink-0">
-            <SidebarSectionHeader title="Модули" :collapsed="isCollapsedEffective" />
+            <SidebarSectionHeader
+              :title="sectionTitle('modules')"
+              :collapsed="isCollapsedEffective"
+            />
             <SidebarNavigation
               :items="modulesNavItems"
               :collapsed="isCollapsedEffective"
@@ -60,11 +66,32 @@
           </div>
 
           <div
-            v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
-            class="mb-(--spacing-4) flex-1 min-h-0 overflow-y-auto"
+            v-if="selectedModule"
+            class="module-routes-outer mb-(--spacing-4) flex-1 min-h-0"
+            :class="{ 'module-routes-outer--open': hasModuleRoutes }"
           >
-            <SidebarSectionHeader :title="selectedModule.label" :collapsed="isCollapsedEffective" />
-            <SidebarNavigation :items="moduleRoutesNavItems" :collapsed="isCollapsedEffective" />
+            <div class="module-routes-grid">
+              <div class="module-routes-inner">
+                <Transition name="module-routes" mode="out-in">
+                  <div
+                    v-if="hasModuleRoutes"
+                    :key="selectedModule.id"
+                    class="module-routes-content"
+                  >
+                    <div class="module-routes-content-inner">
+                      <SidebarSectionHeader
+                        :title="selectedModuleLabel"
+                        :collapsed="isCollapsedEffective"
+                      />
+                      <SidebarNavigation
+                        :items="moduleRoutesNavItems"
+                        :collapsed="isCollapsedEffective"
+                      />
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+            </div>
           </div>
 
           <div
@@ -79,7 +106,7 @@
           <div class="flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto">
             <SidebarAccordion
               id="workspaces"
-              title="Workspaces"
+              :title="sectionTitle('workspaces')"
               :is-open="openAccordion === 'workspaces'"
               @toggle="toggleAccordion('workspaces')"
             >
@@ -88,7 +115,7 @@
 
             <SidebarAccordion
               id="modules"
-              title="Модули"
+              :title="sectionTitle('modules')"
               :is-open="openAccordion === 'modules'"
               @toggle="toggleAccordion('modules')"
             >
@@ -102,7 +129,7 @@
             <SidebarAccordion
               v-if="selectedModule && getModuleRoutes(selectedModule).length > 0"
               :id="`routes-${selectedModule.id}`"
-              :title="selectedModule.label"
+              :title="selectedModuleLabel"
               :is-open="openAccordion === 'routes'"
               @toggle="toggleAccordion('routes')"
             >
@@ -116,7 +143,7 @@
             <SidebarAccordion
               v-if="footerAccordionItems.length > 0"
               id="footer"
-              title="Служебные"
+              :title="sectionTitle('footer')"
               :is-open="openAccordion === 'footer'"
               @toggle="toggleAccordion('footer')"
             >
@@ -158,9 +185,18 @@
   import SidebarSectionHeader from './SidebarSectionHeader.vue'
   import SidebarNavigation from './SidebarNavigation.vue'
   import SidebarAccordion from './SidebarAccordion.vue'
+  import { useSidebarI18n } from '../model'
   import type { SidebarNavItem } from '../types'
 
   const route = useRoute()
+  const {
+    sectionTitle,
+    actionLabel,
+    moduleLabel,
+    routeLabel,
+    footerLabel,
+    translateNavItem,
+  } = useSidebarI18n()
   const router = useRouter()
   const authStore = useAuthStore()
   const { hasPermission, isOwner, isAdmin } = usePermissions()
@@ -227,10 +263,32 @@
     return getAvailableModuleRoutes(module, hasPermission)
   }
 
+  const hasModuleRoutes = computed(
+    () =>
+      !!selectedModule.value && getModuleRoutes(selectedModule.value).length > 0,
+  )
+
+  const selectedModuleLabel = computed(() =>
+    selectedModule.value
+      ? moduleLabel(selectedModule.value.id, selectedModule.value.label)
+      : '',
+  )
+
   const selectModule = (moduleId: string) => {
+    const module = availableModules.value.find((m) => m.id === moduleId)
+    if (!module) return
+
     selectedModuleId.value = moduleId
     if (isMobile.value) {
       openAccordion.value = 'routes'
+    }
+
+    const routes = getModuleRoutes(module)
+    const firstRoute = routes[0]
+    if (firstRoute) {
+      router.push(firstRoute.path)
+    } else {
+      router.push(module.basePath)
     }
   }
 
@@ -239,20 +297,26 @@
   }
 
   const modulesNavItems = computed<SidebarNavItem[]>(() => {
-    return availableModules.value.map((module) => ({
-      id: module.id,
-      label: module.label,
-      icon: module.icon,
-      onClick: () => selectModule(module.id),
-      isActive: selectedModuleId.value === module.id,
-    }))
+    return availableModules.value.map((module) =>
+      translateNavItem(
+        {
+          id: module.id,
+          label: module.label,
+          icon: module.icon,
+          onClick: () => selectModule(module.id),
+          isActive: selectedModuleId.value === module.id,
+        },
+        (id, fallback) => moduleLabel(id, fallback),
+      ),
+    )
   })
 
   const moduleRoutesNavItems = computed<SidebarNavItem[]>(() => {
     if (!selectedModule.value) return []
+    const moduleId = selectedModule.value.id
     return getModuleRoutes(selectedModule.value).map((route) => ({
       id: route.path,
-      label: route.label,
+      label: routeLabel(moduleId, route.name, route.label),
       icon: route.icon,
       to: route.path,
     }))
@@ -266,28 +330,43 @@
       (typeof userStore.currentUser?.role === 'string' &&
         userStore.currentUser.role.toUpperCase() === 'ADMIN')
     if (isGlobalAdmin) {
-      items.push({
-        id: 'admin',
-        label: 'Админ-панель',
-        icon: IconAdmin,
-        to: '/admin',
-      })
+      items.push(
+        translateNavItem(
+          {
+            id: 'admin',
+            label: 'Админ-панель',
+            icon: IconAdmin,
+            to: '/admin',
+          },
+          footerLabel,
+        ),
+      )
     }
     if (isOwner.value || isAdmin.value || isGlobalAdmin) {
-      items.push({
-        id: 'workspace-settings',
-        label: 'Воркспейс',
-        icon: CogIcon,
-        to: '/workspace-settings',
-      })
+      items.push(
+        translateNavItem(
+          {
+            id: 'workspace-settings',
+            label: 'Воркспейс',
+            icon: CogIcon,
+            to: '/workspace-settings',
+          },
+          footerLabel,
+        ),
+      )
     }
-    items.push({
-      id: 'logout',
-      label: 'Выйти',
-      icon: LogoutIcon,
-      onClick: handleLogout,
-      variant: 'danger',
-    })
+    items.push(
+      translateNavItem(
+        {
+          id: 'logout',
+          label: 'Выйти',
+          icon: LogoutIcon,
+          onClick: handleLogout,
+          variant: 'danger',
+        },
+        footerLabel,
+      ),
+    )
     return items
   })
 
@@ -346,6 +425,7 @@
     }
   }
 
+
   const sidebarClasses = computed(() => {
     const isPublicPage =
       route.name === 'Login' || route.name === 'Register' || route.name === 'VerifyEmail'
@@ -396,6 +476,59 @@
   .fade-enter-from,
   .fade-leave-to {
     opacity: 0;
+  }
+
+  .module-routes-outer .module-routes-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition:
+      grid-template-rows 0.3s ease-out,
+      visibility 0s linear 0.3s;
+    overflow: hidden;
+    visibility: hidden;
+  }
+
+  .module-routes-outer--open .module-routes-grid {
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows 0.3s ease-out,
+      visibility 0s linear 0s;
+    visibility: visible;
+  }
+
+  .module-routes-inner {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .module-routes-content {
+    display: grid;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+  }
+
+  .module-routes-content.module-routes-leave-active,
+  .module-routes-content.module-routes-enter-active {
+    transition: grid-template-rows 0.3s ease-out;
+  }
+
+  .module-routes-content.module-routes-leave-to {
+    grid-template-rows: 0fr;
+  }
+
+  .module-routes-content.module-routes-enter-from {
+    grid-template-rows: 0fr;
+  }
+
+  .module-routes-content.module-routes-enter-to {
+    grid-template-rows: 1fr;
+  }
+
+  .module-routes-content-inner {
+    min-height: 0;
   }
 
   .sidebar-nav {
