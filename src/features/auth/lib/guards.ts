@@ -29,15 +29,20 @@ export const authGuard = async (
 ) => {
   const userStore = useUserStore()
 
+  // verify-email — ВСЕГДА разрешаем без проверок (токен в URL, пользователь ещё не создан)
+  if (to.path.startsWith('/auth/verify-email')) {
+    return next()
+  }
+
   const isPublicRoute = to.meta.public === true || to.path.startsWith('/invite/')
   const hasUser = !!userStore.currentUser
 
-  // Публичные страницы: login, register, verify-email, invite
+  // Публичные страницы: login, register, invite
   if (isPublicRoute) {
     if (to.path.startsWith('/invite/')) {
       return next()
     }
-    // Авторизованный на login/register/verify → редирект на дашборд
+    // Авторизованный на login/register → редирект на дашборд
     if (hasUser) {
       return next({ path: '/habits/dashboard', replace: true })
     }

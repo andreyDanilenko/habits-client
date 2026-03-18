@@ -28,12 +28,8 @@ const initApp = async () => {
 
   app.use(router)
 
-  // initAuth ДОЛЖЕН быть до router.isReady(), иначе authGuard не увидит пользователя
-  // и авторизованный пользователь застрянет на /login
-  const initialPath = window.location.pathname
-  if (initialPath !== '/auth/verify-email') {
-    await authStore.initAuth()
-  }
+  // initAuth до router.isReady() — authGuard увидит пользователя при заходе на /login
+  await authStore.initAuth()
 
   await router.isReady()
   app.mount('#app')

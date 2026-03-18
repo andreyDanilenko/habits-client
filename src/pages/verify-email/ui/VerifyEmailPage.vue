@@ -95,20 +95,7 @@
       userStore.setUser(data.user)
       authStore.setCookieBasedAuth()
       workspaceStore.clearWorkspaces()
-      // Загружаем workspaces до редиректа — проверяем, что cookies применились.
-      // Иначе после редиректа authGuard вызовет fetchWorkspaces и может получить 401.
-      try {
-        await workspaceStore.fetchWorkspaces()
-      } catch (wsErr) {
-        console.error('Failed to fetch workspaces after verify:', wsErr)
-        await new Promise((r) => setTimeout(r, 500))
-        try {
-          await workspaceStore.fetchWorkspaces()
-        } catch {
-          // Cookies не применились — редирект всё равно, authGuard попробует снова
-        }
-      }
-      setTimeout(() => router.push('/'), 800)
+      setTimeout(() => router.replace('/'), 800)
     } catch (err: any) {
       status.value = 'error'
       errorMessage.value =
