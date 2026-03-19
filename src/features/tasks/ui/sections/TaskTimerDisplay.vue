@@ -98,25 +98,8 @@
     }
   }
 
-  function loadActiveTimerForTask(): boolean {
-    if (!props.taskId || !props.workspaceId) return false
-    try {
-      const raw = localStorage.getItem(TASK_TIMER_STORAGE_KEY)
-      if (!raw) return false
-      const data = JSON.parse(raw) as { workspaceId: string; taskId: string; startTime: number; baseSeconds: number }
-      if (data.workspaceId !== props.workspaceId || data.taskId !== props.taskId) return false
-      timerBaseSeconds.value = data.baseSeconds
-      timerStart.value = data.startTime
-      timerElapsedSeconds.value = Math.floor((Date.now() - data.startTime) / 1000)
-      timerRunning.value = true
-      timerInterval = setInterval(() => {
-        timerElapsedSeconds.value = Math.floor((Date.now() - timerStart.value) / 1000)
-      }, 1000)
-      return true
-    } catch {
-      return false
-    }
-  }
+  // Временно отключено — может вызывать циклы
+  // function loadActiveTimerForTask(): boolean { ... }
 
   function stopInterval() {
     if (timerInterval) {
