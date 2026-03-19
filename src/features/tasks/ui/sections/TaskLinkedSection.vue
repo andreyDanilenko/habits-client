@@ -19,26 +19,20 @@
           :options="searchResults"
           :loading="searchLoading"
           placeholder="Поиск задачи..."
-          size="sm"
+          size="lg"
           :get-option-label="(item) => (item as unknown as Task).title"
           :get-item-id="(t) => t.id"
           class="flex-1 min-w-[12rem]"
           @update:query="searchQuery = $event"
+          @select="onSelectTask"
         />
         <Select
           v-model="newLinkType"
           :options="linkTypeOptions"
+          size="lg"
           class="w-[10rem]"
         />
-        <Button
-          variant="primary"
-          size="sm"
-          :disabled="!selectedTaskId || addSaving"
-          @click="doAdd"
-        >
-          {{ addSaving ? '...' : 'Добавить' }}
-        </Button>
-        <Button variant="ghost" size="sm" @click="cancelAdd">Отмена</Button>
+        <Button variant="ghost" size="lg" @click="cancelAdd">Отмена</Button>
       </div>
     </div>
     <div v-if="loading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">
@@ -110,7 +104,6 @@
   const searchLoading = ref(false)
   const selectedTaskId = ref('')
   const newLinkType = ref<'blocks' | 'blocked_by'>('blocks')
-  const addSaving = ref(false)
 
   const linkTypeOptions = [
     { value: 'blocks', label: 'Блокирует' },
@@ -140,15 +133,12 @@
 
   watch(searchQuery, debouncedSearch)
 
-  async function doAdd() {
-    if (!selectedTaskId.value) return
-    addSaving.value = true
-    try {
-      await emit('add', selectedTaskId.value, newLinkType.value)
-      cancelAdd()
-    } finally {
-      addSaving.value = false
-    }
+  function onSelectTask(task: Task) {
+    if (!task?.id) return
+    emit('add', task.id, newLinkType.value)
+    searchQuery.value = ''
+    selectedTaskId.value = ''
+    searchResults.value = []
   }
 
   function cancelAdd() {

@@ -42,4 +42,5 @@ export interface Member {
   name: string
   systemRole: MemberSystemRole
   joinedAt: string
+  avatarUrl?: string
 }

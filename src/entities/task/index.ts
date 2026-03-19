@@ -1,6 +1,7 @@
 export type {
   Task,
   TaskComment,
+  TaskCommentCreatedBy,
   TaskEntityLink,
   TaskChecklistItem,
   CreateTaskDto,

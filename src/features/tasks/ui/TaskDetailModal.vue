@@ -163,6 +163,7 @@
                 </div>
                 <div class="pt-(--spacing-2) border-t border-border-light">
                   <RichTextEditor
+                    :key="`new-comment-${commentFormKey}`"
                     v-model="newCommentBody"
                     placeholder="Добавить комментарий..."
                     compact
@@ -382,7 +383,11 @@
         spentSeconds: 0,
       })
       emit('taskUpdated', updated)
-      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
+      if (activityTab.value === 'changes') {
+        fetchTaskActivities(true).catch((e) => console.error('fetchTaskActivities:', e))
+      } else {
+        fetchTaskActivitiesCount().catch((e) => console.error('fetchTaskActivitiesCount:', e))
+      }
     } catch (e) {
       console.error('Failed to set spent time:', e)
     } finally {
@@ -459,9 +464,12 @@
 
         if (taskIdChanged) {
           linkedTasks.value = []
+          taskActivities.value = []
+          taskActivitiesTotal.value = 0
           fetchAttachments()
           fetchTaskLinks()
           fetchSubtasks()
+          fetchTaskActivitiesCount()
         }
       }
     },
@@ -527,11 +535,29 @@
         spentSeconds: secs,
       })
       emit('taskUpdated', updated)
-      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
+      if (activityTab.value === 'changes') {
+        fetchTaskActivities(true).catch((e) => console.error('fetchTaskActivities:', e))
+      } else {
+        fetchTaskActivitiesCount().catch((e) => console.error('fetchTaskActivitiesCount:', e))
+      }
     } catch (e) {
       console.error('Failed to add time:', e)
     } finally {
       timeSaving.value = false
+    }
+  }
+
+  /** Подгрузка только счётчика активностей (для таба «Изменения») без загрузки списка. */
+  async function fetchTaskActivitiesCount() {
+    if (!props.task?.id || !props.workspaceId) return
+    try {
+      taskActivitiesTotal.value = await taskService.getTaskActivitiesCount(
+        props.workspaceId,
+        props.task.id,
+      )
+    } catch (e) {
+      console.error('Failed to fetch task activities count:', e)
+      taskActivitiesTotal.value = 0
     }
   }
 
@@ -686,6 +712,7 @@
     comments,
     commentsLoading,
     newCommentBody,
+    commentFormKey,
     commentSaving,
     rootComments,
     visibleRootComments,

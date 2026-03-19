@@ -23,6 +23,7 @@ export function useTaskComments(
   const comments = ref<TaskComment[]>([])
   const commentsLoading = ref(false)
   const newCommentBody = ref('')
+  const commentFormKey = ref(0)
   const commentSaving = ref(false)
   const commentMenuOpen = ref<string | null>(null)
   const editingCommentId = ref<string | null>(null)
@@ -69,13 +70,23 @@ export function useTaskComments(
     }
   }
 
-  function getCreatorName(userId: string) {
+  const apiBase = import.meta.env.VITE_API_URL ?? ''
+
+  function getCreatorId(createdBy: string | import('@/entities/task').TaskCommentCreatedBy): string {
+    return typeof createdBy === 'string' ? createdBy : createdBy.id
+  }
+
+  function getCreatorName(createdBy: string | import('@/entities/task').TaskCommentCreatedBy) {
+    if (typeof createdBy !== 'string' && createdBy?.name) {
+      return createdBy.name
+    }
+    const userId = getCreatorId(createdBy)
     const opt = assigneeOptions.value.find((o) => o.value === userId)
     return opt?.label ?? 'Пользователь'
   }
 
-  function getInitials(userId: string) {
-    const name = getCreatorName(userId)
+  function getInitials(createdBy: string | import('@/entities/task').TaskCommentCreatedBy) {
+    const name = getCreatorName(createdBy)
     const parts = name.trim().split(/\s+/)
     if (parts.length >= 2) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
@@ -83,8 +94,15 @@ export function useTaskComments(
     return name.slice(0, 2).toUpperCase()
   }
 
+  function getAvatarUrl(createdBy: string | import('@/entities/task').TaskCommentCreatedBy): string | undefined {
+    if (typeof createdBy !== 'string' && createdBy?.avatarUrl) {
+      return `${apiBase}${createdBy.avatarUrl}`
+    }
+    return undefined
+  }
+
   function canDeleteComment(c: TaskComment) {
-    return c.createdBy === currentUserId.value
+    return getCreatorId(c.createdBy) === currentUserId.value
   }
 
   function isRepliesExpanded(commentId: string) {
@@ -156,6 +174,7 @@ export function useTaskComments(
         newCommentBody.value,
       )
       newCommentBody.value = ''
+      commentFormKey.value++
       const normalized = { ...created, parentId: created.parentId ?? (created as { parent_id?: string }).parent_id }
       comments.value = [...comments.value, normalized]
       onUpdated?.()
@@ -247,6 +266,7 @@ export function useTaskComments(
     showMoreReplies,
     getCreatorName,
     getInitials,
+    getAvatarUrl,
     formatRelativeTime,
     canDeleteComment,
     get canEditTask() {
@@ -291,6 +311,7 @@ export function useTaskComments(
     comments,
     commentsLoading,
     newCommentBody,
+    commentFormKey,
     commentSaving,
     rootComments,
     visibleRootComments,

@@ -4,7 +4,13 @@
       <div class="CommentCard__Header">
         <div class="CommentCard__Author">
           <div class="CommentCard__Avatar" :class="{ 'CommentCard__Avatar--sm': !isRoot }">
-            {{ ctx.getInitials(comment.createdBy) }}
+            <img
+              v-if="ctx.getAvatarUrl(comment.createdBy)"
+              :src="ctx.getAvatarUrl(comment.createdBy)"
+              :alt="ctx.getCreatorName(comment.createdBy)"
+              class="CommentCard__AvatarImg"
+            />
+            <span v-else>{{ ctx.getInitials(comment.createdBy) }}</span>
           </div>
           <div class="CommentCard__Meta">
             <span class="CommentCard__Name">{{ ctx.getCreatorName(comment.createdBy) }}</span>
@@ -215,6 +221,13 @@
     width: 24px;
     height: 24px;
     font-size: 10px;
+  }
+
+  .CommentCard__AvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   .CommentCard__Meta {

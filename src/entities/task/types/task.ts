@@ -85,13 +85,20 @@ export interface UpdateTaskDto {
   entities?: TaskEntityLink[]
 }
 
+/** Автор комментария */
+export interface TaskCommentCreatedBy {
+  id: string
+  name?: string
+  avatarUrl?: string
+}
+
 /** Комментарий к задаче */
 export interface TaskComment {
   id: string
   taskId: string
   parentId?: string
   body: string
-  createdBy: string
+  createdBy: string | TaskCommentCreatedBy
   createdAt: string
 }
 

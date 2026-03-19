@@ -58,7 +58,12 @@
     <div v-else class="space-y-4">
       <Card v-for="member in members" :key="member.id" class="p-4">
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <UserInfo :name="member.name" :email="member.email" size="md" />
+          <UserInfo
+            :name="member.name"
+            :email="member.email"
+            :avatar-url="member.avatarUrl ? (apiBase + member.avatarUrl) : undefined"
+            size="md"
+          />
           <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:flex-shrink-0">
             <div class="flex flex-col sm:items-end gap-1 min-w-0 sm:min-w-[140px]">
               <span v-if="isWorkspaceOwner(member)" class="text-sm text-text-secondary">
@@ -157,6 +162,8 @@
     const custom = customRoles.value.map((r) => ({ value: r.id, label: r.name }))
     return [...system, ...custom]
   })
+
+  const apiBase = import.meta.env.VITE_API_URL ?? ''
 
   const canManageMembers = computed(
     () =>

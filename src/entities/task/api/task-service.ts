@@ -227,6 +227,16 @@ export const taskService = {
       total: res?.total ?? 0,
     }
   },
+
+  getTaskActivitiesCount: async (
+    workspaceId: string,
+    taskId: string,
+  ): Promise<number> => {
+    const res = await api.get<{ total?: number }>(
+      API_ENDPOINTS.TASKS.ACTIVITIES_COUNT(workspaceId, taskId),
+    )
+    return res?.total ?? 0
+  },
 }
 
 export interface TaskActivity {

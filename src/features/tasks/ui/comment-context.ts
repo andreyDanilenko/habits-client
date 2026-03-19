@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { TaskComment } from '@/entities/task'
+import type { TaskComment, TaskCommentCreatedBy } from '@/entities/task'
 
 export interface CommentContext {
   getReplies: (parentId: string) => TaskComment[]
@@ -7,8 +7,9 @@ export interface CommentContext {
   getVisibleRepliesCount: (parentId: string) => number
   hasMoreReplies: (parentId: string) => boolean
   showMoreReplies: (parentId: string) => void
-  getCreatorName: (userId: string) => string
-  getInitials: (userId: string) => string
+  getCreatorName: (createdBy: string | TaskCommentCreatedBy) => string
+  getInitials: (createdBy: string | TaskCommentCreatedBy) => string
+  getAvatarUrl: (createdBy: string | TaskCommentCreatedBy) => string | undefined
   formatRelativeTime: (date: string) => string
   canDeleteComment: (c: TaskComment) => boolean
   canEditTask: boolean

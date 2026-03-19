@@ -48,7 +48,12 @@
 
   const toolbarConfig = computed(() =>
     props.compact
-      ? [['bold', 'italic'], ['link'], [{ list: 'ordered' }, { list: 'bullet' }]]
+      ? [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic'],
+          ['link'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+        ]
       : [
           ['bold', 'italic', 'underline', 'strike'],
           [{ header: [1, 2, 3, false] }],

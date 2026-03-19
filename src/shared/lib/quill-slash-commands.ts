@@ -20,7 +20,9 @@ const DEFAULT_COMMANDS: SlashCommandItem[] = [
     icon: 'H1',
     handler: (quill, range) => {
       quill.deleteText(range.index, range.length)
-      quill.formatLine(range.index, 0, 'header', 1, SOURCE_USER)
+      const lineStart = getLineStart(quill, range.index)
+      const lineLen = Math.max(1, getLineLength(quill, range.index))
+      quill.formatLine(lineStart, lineLen, 'header', 1, SOURCE_USER)
       quill.setSelection(range.index + 1)
     },
   },
@@ -30,7 +32,9 @@ const DEFAULT_COMMANDS: SlashCommandItem[] = [
     icon: 'H2',
     handler: (quill, range) => {
       quill.deleteText(range.index, range.length)
-      quill.formatLine(range.index, 0, 'header', 2, SOURCE_USER)
+      const lineStart = getLineStart(quill, range.index)
+      const lineLen = Math.max(1, getLineLength(quill, range.index))
+      quill.formatLine(lineStart, lineLen, 'header', 2, SOURCE_USER)
       quill.setSelection(range.index + 1)
     },
   },
@@ -40,7 +44,9 @@ const DEFAULT_COMMANDS: SlashCommandItem[] = [
     icon: 'H3',
     handler: (quill, range) => {
       quill.deleteText(range.index, range.length)
-      quill.formatLine(range.index, 0, 'header', 3, SOURCE_USER)
+      const lineStart = getLineStart(quill, range.index)
+      const lineLen = Math.max(1, getLineLength(quill, range.index))
+      quill.formatLine(lineStart, lineLen, 'header', 3, SOURCE_USER)
       quill.setSelection(range.index + 1)
     },
   },
@@ -90,6 +96,14 @@ function getLineStart(quill: Quill, index: number): number {
   const text = quill.getText(0, index)
   const lastNewline = text.lastIndexOf('\n')
   return lastNewline === -1 ? 0 : lastNewline + 1
+}
+
+function getLineLength(quill: Quill, index: number): number {
+  const text = quill.getText()
+  const start = getLineStart(quill, index)
+  const rest = text.substring(start)
+  const nl = rest.indexOf('\n')
+  return nl === -1 ? rest.length : nl + 1
 }
 
 function getLineContentBeforeCursor(quill: Quill, index: number): string {

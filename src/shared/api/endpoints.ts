@@ -130,6 +130,8 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}/preview-token`,
     ACTIVITIES: (workspaceId: string, taskId: string) =>
       apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/activities`,
+    ACTIVITIES_COUNT: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/activities/count`,
   },
 
   HABITS: {
