@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
     LOGOUT: apiV1 + '/auth/logout',
     REFRESH: apiV1 + '/auth/refresh',
     ME: apiV1 + '/auth/me',
+    ME_AVATAR: apiV1 + '/auth/me/avatar',
     CHANGE_PASSWORD: apiV1 + '/auth/change-password',
   },
 
@@ -115,6 +116,20 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/comments`,
     COMMENT: (workspaceId: string, taskId: string, commentId: string) =>
       apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/comments/${commentId}`,
+    LINKS: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/links`,
+    LINK: (workspaceId: string, taskId: string, linkId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/links/${linkId}`,
+    ATTACHMENTS: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments`,
+    ATTACHMENT: (workspaceId: string, taskId: string, attachmentId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}`,
+    ATTACHMENT_DOWNLOAD: (workspaceId: string, taskId: string, attachmentId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}/download`,
+    ATTACHMENT_PREVIEW_TOKEN: (workspaceId: string, taskId: string, attachmentId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}/preview-token`,
+    ACTIVITIES: (workspaceId: string, taskId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/activities`,
   },
 
   HABITS: {

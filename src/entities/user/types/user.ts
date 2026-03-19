@@ -23,6 +23,7 @@ export interface User {
   email: string
   name?: string
   role: UserRole
+  position?: string
   avatarUrl?: string
   status?: UserStatus
   createdAt: string

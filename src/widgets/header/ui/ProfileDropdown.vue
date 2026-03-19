@@ -4,9 +4,16 @@
       <template #trigger>
         <Button variant="ghost" size="md" class="!p-1 rounded-full">
           <div
-            class="w-8 h-8 bg-primary-default rounded-full flex items-center justify-center text-white text-sm font-medium"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium overflow-hidden"
+            :class="avatarUrl ? 'bg-transparent' : 'bg-primary-default'"
           >
-            {{ userInitials }}
+            <img
+              v-if="avatarUrl"
+              :src="avatarUrl"
+              :alt="userEmail"
+              class="w-full h-full object-cover"
+            />
+            <span v-else>{{ userInitials }}</span>
           </div>
         </Button>
       </template>
@@ -77,8 +84,14 @@
   const { systemRole } = usePermissions()
   const showDropdown = ref(false)
 
+  const baseUrl = import.meta.env.VITE_API_URL ?? ''
   const userInitials = computed(() => userStore.userInitials || 'U')
   const userEmail = computed(() => userStore.currentUser?.email || 'Пользователь')
+  const avatarUrl = computed(() => {
+    const url = userStore.currentUser?.avatarUrl
+    if (!url) return ''
+    return `${baseUrl}${url}`
+  })
   const workspaceRole = computed(() => systemRole.value || null)
 
   const closeDropdown = () => {

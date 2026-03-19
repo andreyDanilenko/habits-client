@@ -11,8 +11,16 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = computed(() => !!currentUser.value)
 
   const userInitials = computed(() => {
-    if (!currentUser.value?.email) return 'U'
-    return currentUser.value.email[0].toUpperCase()
+    const u = currentUser.value
+    if (!u?.email) return 'U'
+    if (u.name) {
+      const parts = u.name.trim().split(/\s+/)
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      }
+      return u.name.slice(0, 2).toUpperCase()
+    }
+    return u.email[0].toUpperCase()
   })
 
   // Actions

@@ -6,34 +6,6 @@
     </div>
 
     <Card class="p-6">
-      <h2 class="text-text-primary mb-4">Профиль</h2>
-
-      <div class="space-y-4">
-        <Input
-          v-model="profile.email"
-          label="Email"
-          type="email"
-          name="email"
-          disabled
-          placeholder="Ваш email"
-          hint="Email нельзя изменить"
-        />
-
-        <Input
-          v-model="profile.name"
-          label="Имя"
-          type="text"
-          name="name"
-          placeholder="Введите ваше имя"
-        />
-
-        <div class="pt-4">
-          <Button @click="saveProfile" :loading="isSaving"> Сохранить изменения </Button>
-        </div>
-      </div>
-    </Card>
-
-    <Card class="p-6">
       <h2 class="text-text-primary mb-4">Язык</h2>
 
       <div class="space-y-4">
@@ -167,7 +139,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, computed, onMounted } from 'vue'
+  import { ref, reactive, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { Card, Button, Input } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
@@ -192,15 +164,9 @@
     return role === 'ADMIN' || (typeof role === 'string' && role.toUpperCase() === 'ADMIN')
   })
 
-  const isSaving = ref(false)
   const isChangingPassword = ref(false)
   const passwordSuccess = ref(false)
   const showDeleteConfirm = ref(false)
-
-  const profile = reactive({
-    email: '',
-    name: '',
-  })
 
   const passwordForm = reactive({
     currentPassword: '',
@@ -270,22 +236,4 @@
     }
   }
 
-  onMounted(() => {
-    if (userStore.currentUser) {
-      profile.email = userStore.currentUser.email
-      profile.name = userStore.currentUser.name || ''
-    }
-  })
-
-  const saveProfile = async () => {
-    isSaving.value = true
-    try {
-      console.log('Save profile:', profile)
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    } catch (error) {
-      console.error('Failed to save profile:', error)
-    } finally {
-      isSaving.value = false
-    }
-  }
 </script>

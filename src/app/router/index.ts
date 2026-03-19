@@ -98,6 +98,12 @@ const routes: RouteRecordRaw[] = [
   },
   // Настройки (общие, не модульные)
   {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('@/pages/profile'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('@/pages/settings'),
