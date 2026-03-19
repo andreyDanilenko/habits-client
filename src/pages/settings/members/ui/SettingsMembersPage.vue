@@ -61,7 +61,7 @@
           <UserInfo
             :name="member.name"
             :email="member.email"
-            :avatar-url="member.avatarUrl ? (apiBase + member.avatarUrl) : undefined"
+            :avatar-url="member.avatarUrl ? apiBase + member.avatarUrl : undefined"
             size="md"
           />
           <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:flex-shrink-0">

@@ -53,7 +53,6 @@
   const draft = ref('')
   const inputRef = ref<InstanceType<typeof Input> | null>(null)
 
-
   function commit() {
     const v = draft.value.trim()
     if (!props.canCommit(v)) return

@@ -1,9 +1,9 @@
 <template>
-  <div
-    class="TaskDetailSection"
-    :class="{ 'TaskDetailSection--placeholder': placeholder }"
-  >
-    <div v-if="title || $slots.action" class="flex items-center justify-between gap-(--spacing-2) mb-(--spacing-2)">
+  <div class="TaskDetailSection" :class="{ 'TaskDetailSection--placeholder': placeholder }">
+    <div
+      v-if="title || $slots.action"
+      class="flex items-center justify-between gap-(--spacing-2) mb-(--spacing-2)"
+    >
       <h4 v-if="title" class="TaskDetailSection__Title">{{ title }}</h4>
       <slot name="action" />
     </div>

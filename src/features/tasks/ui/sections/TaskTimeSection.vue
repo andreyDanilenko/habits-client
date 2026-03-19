@@ -1,5 +1,8 @@
 <template>
-  <TaskDetailSection title="Время" :placeholder="totalSpentSeconds === 0 && (duration == null || duration === 0)">
+  <TaskDetailSection
+    title="Время"
+    :placeholder="totalSpentSeconds === 0 && (duration == null || duration === 0)"
+  >
     <template v-if="canEdit" #action>
       <div class="flex flex-wrap items-center gap-(--spacing-2)">
         <Button
@@ -24,7 +27,12 @@
             max="9999"
             @keydown.enter="addCustomTime"
           />
-          <Button variant="outline" size="sm" :disabled="saving || !customMinutes || Number(customMinutes) < 1" @click="addCustomTime">
+          <Button
+            variant="outline"
+            size="sm"
+            :disabled="saving || !customMinutes || Number(customMinutes) < 1"
+            @click="addCustomTime"
+          >
             Добавить
           </Button>
         </div>
@@ -34,13 +42,18 @@
       <div class="flex flex-wrap items-center gap-(--spacing-4)">
         <div v-if="totalSpentSeconds > 0" class="flex items-center gap-(--spacing-2)">
           <span class="text-(--text-xs) text-text-secondary">Затрачено:</span>
-          <span class="text-(--text-xs) font-medium text-text-primary tabular-nums">{{ formatTimeHMS(totalSpentSeconds) }}</span>
+          <span class="text-(--text-xs) font-medium text-text-primary tabular-nums">{{
+            formatTimeHMS(totalSpentSeconds)
+          }}</span>
         </div>
         <div v-if="duration != null && duration > 0" class="flex items-center gap-(--spacing-2)">
           <span class="text-(--text-xs) text-text-secondary">Оценка:</span>
           <span class="text-(--text-xs) text-text-primary">{{ formatDuration(duration) }}</span>
         </div>
-        <div v-if="totalSpentSeconds === 0 && (duration == null || duration === 0)" class="text-(--text-xs) text-text-muted">
+        <div
+          v-if="totalSpentSeconds === 0 && (duration == null || duration === 0)"
+          class="text-(--text-xs) text-text-muted"
+        >
           Время не учтено
         </div>
       </div>
@@ -56,7 +69,12 @@
             min="0"
             @keydown.enter="saveEdit"
           />
-          <Button variant="outline" size="sm" :disabled="saving || editMinutes === ''" @click="saveEdit">
+          <Button
+            variant="outline"
+            size="sm"
+            :disabled="saving || editMinutes === ''"
+            @click="saveEdit"
+          >
             Сохранить
           </Button>
         </div>

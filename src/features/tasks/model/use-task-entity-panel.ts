@@ -2,8 +2,11 @@ import { ref, computed, watch } from 'vue'
 import { useUserStore } from '@/entities/user'
 import { taskService } from '@/entities/task'
 import { workspaceService } from '@/entities/workspace'
-import type { Task, CreateTaskDto } from '@/entities/task'
+import type { Task, CreateTaskDto, UpdateTaskDto, TaskEntityLink } from '@/entities/task'
 import { formatDateRu } from '@/shared/lib'
+
+/** Значение `parentId` для списка задач сущности без родителя (корень). */
+const ENTITY_TASKS_ROOT_PARENT_ID = 'root'
 
 export interface UseTaskEntityPanelProps {
   workspaceId: string
@@ -32,13 +35,15 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
     return opts
   })
 
-  const defaultEntities = computed(() => [
-    {
-      entityType: props.entityType,
-      entityId: props.entityId,
-      entityName: props.entityName,
-    },
-  ])
+  function defaultEntityLinks(): TaskEntityLink[] {
+    return [
+      {
+        entityType: props.entityType,
+        entityId: props.entityId,
+        entityName: props.entityName,
+      },
+    ]
+  }
 
   async function fetchTasks() {
     if (!props.workspaceId || !props.entityType || !props.entityId) {
@@ -52,7 +57,7 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
         workspaceId: props.workspaceId,
         entityType: props.entityType,
         entityId: props.entityId,
-        parentId: 'root',
+        parentId: ENTITY_TASKS_ROOT_PARENT_ID,
       })
     } catch (e) {
       console.error('Failed to fetch tasks:', e)
@@ -70,6 +75,16 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
     } catch (e) {
       console.error('Failed to fetch members:', e)
       members.value = []
+    }
+  }
+
+  async function runMutationThenRefresh(action: () => Promise<unknown>, errorMessage: string) {
+    if (!props.workspaceId) return
+    try {
+      await action()
+      await fetchTasks()
+    } catch (e) {
+      console.error(errorMessage, e)
     }
   }
 
@@ -103,7 +118,7 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
     saving.value = true
     try {
       if (editingTask.value) {
-        await taskService.update(props.workspaceId, editingTask.value.id, form as any)
+        await taskService.update(props.workspaceId, editingTask.value.id, form as UpdateTaskDto)
       } else {
         const dto: CreateTaskDto = {
           title: form.title!,
@@ -113,7 +128,7 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
           dueDate: form.dueDate!,
           dueTime: form.dueTime,
           assigneeId: form.assigneeId ?? currentUserId.value,
-          entities: defaultEntities.value,
+          entities: defaultEntityLinks(),
         }
         await taskService.create(props.workspaceId, dto)
       }
@@ -139,24 +154,18 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
     }
   }
 
-  async function completeTask(task: Task) {
-    if (!props.workspaceId) return
-    try {
-      await taskService.complete(props.workspaceId, task.id)
-      await fetchTasks()
-    } catch (e) {
-      console.error('Failed to complete task:', e)
-    }
+  function completeTask(task: Task) {
+    return runMutationThenRefresh(
+      () => taskService.complete(props.workspaceId, task.id),
+      'Failed to complete task:',
+    )
   }
 
-  async function reopenTask(task: Task) {
-    if (!props.workspaceId) return
-    try {
-      await taskService.reopen(props.workspaceId, task.id)
-      await fetchTasks()
-    } catch (e) {
-      console.error('Failed to reopen task:', e)
-    }
+  function reopenTask(task: Task) {
+    return runMutationThenRefresh(
+      () => taskService.reopen(props.workspaceId, task.id),
+      'Failed to reopen task:',
+    )
   }
 
   function formatDate(s: string) {
@@ -164,11 +173,12 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
     return formatDateRu(s, 'd MMM yyyy')
   }
 
+  watch(() => props.workspaceId, fetchMembers, { immediate: true })
+
   watch(
-    () => [props.workspaceId, props.entityType, props.entityId],
+    () => [props.workspaceId, props.entityType, props.entityId] as const,
     () => {
       fetchTasks()
-      fetchMembers()
     },
     { immediate: true },
   )
@@ -183,7 +193,6 @@ export function useTaskEntityPanel(props: UseTaskEntityPanelProps) {
     editingTask,
     deleteTarget,
     currentUserId,
-    defaultEntities,
     fetchTasks,
     openCreate,
     openEdit,

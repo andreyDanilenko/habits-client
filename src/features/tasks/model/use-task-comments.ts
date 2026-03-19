@@ -1,325 +1,145 @@
-import { ref, computed, watch, provide } from 'vue'
-import { taskService } from '@/entities/task'
+import type { Ref } from 'vue'
+import { ref, watch } from 'vue'
 import { formatRelativeTime } from '@/shared/lib'
 import { isRichContentEmpty } from '@/shared/lib/rich-content'
 import type { Task, TaskComment } from '@/entities/task'
 import type { CommentContext } from '../ui/comment-context'
+import {
+  getCommentAvatarUrl,
+  getCommentCreatorId,
+  getCommentCreatorName,
+  getCommentInitials,
+} from './task-comment-display'
+import { useTaskCommentUi } from './use-task-comment-ui'
+import { useTaskCommentsList } from './use-task-comments-list'
+import { useTaskCommentsPagination } from './use-task-comments-pagination'
 
-/** Сколько корневых комментариев показывать изначально. Должно быть < ROOT_COMMENTS_PAGE_SIZE, иначе кнопка «Показать ещё» не появится. */
-const INITIAL_ROOT_COMMENTS = 2
-const ROOT_COMMENTS_PAGE_SIZE = 10
-/** Сколько ответов показывать изначально в каждой ветке. */
-const INITIAL_REPLIES = 2
-const REPLIES_PAGE_SIZE = 5
+function replyCountLabel(count: number) {
+  if (count === 1) return 'ответ'
+  if (count >= 2 && count <= 4) return 'ответа'
+  return 'ответов'
+}
 
 export function useTaskComments(
-  task: { value: Task | null },
-  workspaceId: { value: string },
-  currentUserId: { value: string },
-  assigneeOptions: { value: { value: string; label: string }[] },
-  canEditTask: { value: boolean },
+  task: Ref<Task | null>,
+  workspaceId: Ref<string>,
+  currentUserId: Ref<string>,
+  assigneeOptions: Ref<{ value: string; label: string }[]>,
+  canEditTask: Ref<boolean>,
   onUpdated?: () => void,
 ) {
-  const comments = ref<TaskComment[]>([])
-  const commentsLoading = ref(false)
   const newCommentBody = ref('')
   const commentFormKey = ref(0)
-  const commentSaving = ref(false)
-  const commentMenuOpen = ref<string | null>(null)
-  const editingCommentId = ref<string | null>(null)
-  const editCommentBody = ref('')
-  const replyToCommentId = ref<string | null>(null)
-  const replyCommentBody = ref('')
-  const visibleCommentsCount = ref(INITIAL_ROOT_COMMENTS)
-  const repliesExpanded = ref<Set<string>>(new Set())
-  const visibleRepliesCount = ref<Record<string, number>>({})
-
-  const rootComments = computed(() => comments.value.filter((c) => !c.parentId))
-  const visibleRootComments = computed(() =>
-    rootComments.value.slice(0, visibleCommentsCount.value),
-  )
-  const hasMoreComments = computed(() => rootComments.value.length > visibleCommentsCount.value)
-
-  function getReplies(parentId: string) {
-    return comments.value.filter((c) => c.parentId === parentId)
-  }
-
-  function getVisibleReplies(parentId: string) {
-    const all = getReplies(parentId)
-    const limit = visibleRepliesCount.value[parentId] ?? INITIAL_REPLIES
-    return all.slice(0, limit)
-  }
-
-  function getVisibleRepliesCount(parentId: string) {
-    return visibleRepliesCount.value[parentId] ?? INITIAL_REPLIES
-  }
-
-  function hasMoreReplies(parentId: string) {
-    const all = getReplies(parentId)
-    const limit = getVisibleRepliesCount(parentId)
-    return all.length > limit
-  }
-
-  function showMoreReplies(parentId: string) {
-    const all = getReplies(parentId)
-    const current = getVisibleRepliesCount(parentId)
-    const next = Math.min(current + REPLIES_PAGE_SIZE, all.length)
-    visibleRepliesCount.value = {
-      ...visibleRepliesCount.value,
-      [parentId]: next,
-    }
-  }
-
   const apiBase = import.meta.env.VITE_API_URL ?? ''
 
-  function getCreatorId(createdBy: string | import('@/entities/task').TaskCommentCreatedBy): string {
-    return typeof createdBy === 'string' ? createdBy : createdBy.id
-  }
-
-  function getCreatorName(createdBy: string | import('@/entities/task').TaskCommentCreatedBy) {
-    if (typeof createdBy !== 'string' && createdBy?.name) {
-      return createdBy.name
-    }
-    const userId = getCreatorId(createdBy)
-    const opt = assigneeOptions.value.find((o) => o.value === userId)
-    return opt?.label ?? 'Пользователь'
-  }
-
-  function getInitials(createdBy: string | import('@/entities/task').TaskCommentCreatedBy) {
-    const name = getCreatorName(createdBy)
-    const parts = name.trim().split(/\s+/)
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    }
-    return name.slice(0, 2).toUpperCase()
-  }
-
-  function getAvatarUrl(createdBy: string | import('@/entities/task').TaskCommentCreatedBy): string | undefined {
-    if (typeof createdBy !== 'string' && createdBy?.avatarUrl) {
-      return `${apiBase}${createdBy.avatarUrl}`
-    }
-    return undefined
-  }
-
-  function canDeleteComment(c: TaskComment) {
-    return getCreatorId(c.createdBy) === currentUserId.value
-  }
-
-  function isRepliesExpanded(commentId: string) {
-    return repliesExpanded.value.has(commentId)
-  }
-
-  function expandReplies(commentId: string) {
-    repliesExpanded.value = new Set([...repliesExpanded.value, commentId])
-  }
-
-  function collapseReplies(commentId: string) {
-    const next = new Set(repliesExpanded.value)
-    next.delete(commentId)
-    repliesExpanded.value = next
-    const { [commentId]: _, ...rest } = visibleRepliesCount.value
-    visibleRepliesCount.value = rest
-  }
-
-  function replyCountLabel(count: number) {
-    if (count === 1) return 'ответ'
-    if (count >= 2 && count <= 4) return 'ответа'
-    return 'ответов'
-  }
-
-  function toggleReplyForm(commentId: string) {
-    if (replyToCommentId.value === commentId) {
-      replyToCommentId.value = null
-      replyCommentBody.value = ''
-    } else {
-      replyToCommentId.value = commentId
-      expandReplies(commentId)
-    }
-  }
-
-  function toggleCommentMenu(commentId: string) {
-    commentMenuOpen.value = commentMenuOpen.value === commentId ? null : commentId
-  }
-
-  function startEditComment(c: TaskComment) {
-    editingCommentId.value = c.id
-    editCommentBody.value = c.body
-  }
-
-  function cancelEditComment() {
-    editingCommentId.value = null
-    editCommentBody.value = ''
-  }
-
-  async function fetchComments() {
-    if (!task.value) return
-    commentsLoading.value = true
-    try {
-      comments.value = await taskService.getComments(workspaceId.value, task.value.id)
-    } catch (e) {
-      console.error('Failed to fetch comments:', e)
-      comments.value = []
-    } finally {
-      commentsLoading.value = false
-    }
-  }
-
-  async function addComment() {
-    if (!task.value || isRichContentEmpty(newCommentBody.value)) return
-    commentSaving.value = true
-    try {
-      const created = await taskService.createComment(
-        workspaceId.value,
-        task.value.id,
-        newCommentBody.value,
-      )
-      newCommentBody.value = ''
-      commentFormKey.value++
-      const normalized = { ...created, parentId: created.parentId ?? (created as { parent_id?: string }).parent_id }
-      comments.value = [...comments.value, normalized]
-      onUpdated?.()
-    } catch (e) {
-      console.error('Failed to add comment:', e)
-    } finally {
-      commentSaving.value = false
-    }
-  }
-
-  async function addReply(parent: TaskComment) {
-    if (!task.value || isRichContentEmpty(replyCommentBody.value)) return
-    commentSaving.value = true
-    try {
-      const created = await taskService.createComment(
-        workspaceId.value,
-        task.value.id,
-        replyCommentBody.value,
-        parent.id,
-      )
-      replyCommentBody.value = ''
-      replyToCommentId.value = null
-      const normalized = {
-        ...created,
-        parentId: created.parentId ?? (created as { parent_id?: string }).parent_id ?? parent.id,
-      }
-      comments.value = [...comments.value, normalized]
-      onUpdated?.()
-    } catch (e) {
-      console.error('Failed to add comment:', e)
-    } finally {
-      commentSaving.value = false
-    }
-  }
-
-  async function saveEditComment(c: TaskComment) {
-    if (!task.value || isRichContentEmpty(editCommentBody.value)) return
-    commentSaving.value = true
-    try {
-      await taskService.updateComment(workspaceId.value, task.value.id, c.id, editCommentBody.value)
-      cancelEditComment()
-      await fetchComments()
-      onUpdated?.()
-    } catch (e) {
-      console.error('Failed to update comment:', e)
-    } finally {
-      commentSaving.value = false
-    }
-  }
-
-  async function deleteComment(c: TaskComment) {
-    if (!task.value) return
-    try {
-      await taskService.deleteComment(workspaceId.value, task.value.id, c.id)
-      await fetchComments()
-      onUpdated?.()
-    } catch (e) {
-      console.error('Failed to delete comment:', e)
-    }
-  }
-
-  function showMoreComments() {
-    visibleCommentsCount.value = Math.min(
-      visibleCommentsCount.value + ROOT_COMMENTS_PAGE_SIZE,
-      rootComments.value.length,
-    )
-  }
+  const list = useTaskCommentsList(task, workspaceId, onUpdated)
+  const pagination = useTaskCommentsPagination(list.comments)
+  const ui = useTaskCommentUi(pagination.expandReplies)
 
   watch(
     () => task.value?.id,
     (id) => {
       if (id) {
-        fetchComments()
-        visibleCommentsCount.value = INITIAL_ROOT_COMMENTS
-        repliesExpanded.value = new Set()
-        visibleRepliesCount.value = {}
+        pagination.resetPagination()
+        void list.fetchComments()
       } else {
-        comments.value = []
+        list.comments.value = []
       }
     },
     { immediate: true },
   )
 
+  async function addComment() {
+    const ok = await list.addComment(newCommentBody.value)
+    if (ok) {
+      newCommentBody.value = ''
+      commentFormKey.value++
+    }
+  }
+
+  async function addReply(parent: TaskComment) {
+    const ok = await list.addReply(parent.id, ui.replyCommentBody.value)
+    if (ok) {
+      ui.replyCommentBody.value = ''
+      ui.replyToCommentId.value = null
+    }
+  }
+
+  async function saveEditComment(c: TaskComment) {
+    if (isRichContentEmpty(ui.editCommentBody.value)) return
+    const ok = await list.saveCommentEdit(c.id, ui.editCommentBody.value)
+    if (ok) ui.cancelEditComment()
+  }
+
+  async function deleteComment(c: TaskComment) {
+    await list.deleteCommentById(c.id)
+  }
+
+  function canDeleteComment(c: TaskComment) {
+    return getCommentCreatorId(c.createdBy) === currentUserId.value
+  }
+
   const commentContext: CommentContext = {
-    getReplies,
-    getVisibleReplies,
-    getVisibleRepliesCount,
-    hasMoreReplies,
-    showMoreReplies,
-    getCreatorName,
-    getInitials,
-    getAvatarUrl,
+    getReplies: pagination.getReplies,
+    getVisibleReplies: pagination.getVisibleReplies,
+    getVisibleRepliesCount: pagination.getVisibleRepliesCount,
+    hasMoreReplies: pagination.hasMoreReplies,
+    showMoreReplies: pagination.showMoreReplies,
+    getCreatorName: (createdBy) => getCommentCreatorName(createdBy, assigneeOptions.value),
+    getInitials: (createdBy) => getCommentInitials(createdBy, assigneeOptions.value),
+    getAvatarUrl: (createdBy) => getCommentAvatarUrl(createdBy, apiBase),
     formatRelativeTime,
     canDeleteComment,
     get canEditTask() {
       return canEditTask.value
     },
-    commentMenuOpen,
-    toggleCommentMenu,
-    editingCommentId,
-    editCommentBody,
+    commentMenuOpen: ui.commentMenuOpen,
+    toggleCommentMenu: ui.toggleCommentMenu,
+    editingCommentId: ui.editingCommentId,
+    editCommentBody: ui.editCommentBody,
     setEditCommentBody: (v) => {
-      editCommentBody.value = v
+      ui.editCommentBody.value = v
     },
-    startEditComment,
+    startEditComment: ui.startEditComment,
     saveEditComment,
-    cancelEditComment,
-    isRepliesExpanded,
-    expandReplies,
-    collapseReplies,
+    cancelEditComment: ui.cancelEditComment,
+    isRepliesExpanded: pagination.isRepliesExpanded,
+    expandReplies: pagination.expandReplies,
+    collapseReplies: pagination.collapseReplies,
     replyCountLabel,
-    replyToCommentId,
-    replyCommentBody,
+    replyToCommentId: ui.replyToCommentId,
+    replyCommentBody: ui.replyCommentBody,
     setReplyCommentBody: (v) => {
-      replyCommentBody.value = v
+      ui.replyCommentBody.value = v
     },
-    toggleReplyForm,
+    toggleReplyForm: ui.toggleReplyForm,
     addReply,
     deleteComment,
-    commentSaving,
+    commentSaving: list.commentSaving,
     isCommentEmpty: isRichContentEmpty,
   }
-
-  provide('commentContext', commentContext)
 
   function handleCommentMenuClickOutside(e: MouseEvent) {
     const target = e.target as HTMLElement
     if (!target.closest('.CommentCard__Menu')) {
-      commentMenuOpen.value = null
+      ui.commentMenuOpen.value = null
     }
   }
 
   return {
-    comments,
-    commentsLoading,
+    commentContext,
+    comments: list.comments,
+    commentsLoading: list.commentsLoading,
     newCommentBody,
     commentFormKey,
-    commentSaving,
-    rootComments,
-    visibleRootComments,
-    visibleCommentsCount,
-    hasMoreComments,
-    showMoreComments,
+    commentSaving: list.commentSaving,
+    rootComments: pagination.rootComments,
+    visibleRootComments: pagination.visibleRootComments,
+    visibleCommentsCount: pagination.visibleCommentsCount,
+    hasMoreComments: pagination.hasMoreComments,
+    showMoreComments: pagination.showMoreComments,
     addComment,
-    fetchComments,
+    fetchComments: list.fetchComments,
     isRichContentEmpty,
     handleCommentMenuClickOutside,
   }

@@ -113,16 +113,10 @@
         </TaskDetailSection>
 
         <!-- Чеклист -->
-        <TaskChecklist
-          v-model="checklistItems"
-          :can-edit="canEditTask"
-        />
+        <TaskChecklist v-model="checklistItems" :can-edit="canEditTask" />
 
         <!-- Теги -->
-        <TaskTagsSection
-          v-model="tagsItems"
-          :can-edit="canEditTask"
-        />
+        <TaskTagsSection v-model="tagsItems" :can-edit="canEditTask" />
 
         <!-- Связанные задачи -->
         <TaskLinkedSection
@@ -193,7 +187,10 @@
             />
           </template>
           <template #changes>
-            <div v-if="taskActivitiesLoading && taskActivities.length === 0" class="text-(--text-xs) text-text-muted py-(--spacing-4)">
+            <div
+              v-if="taskActivitiesLoading && taskActivities.length === 0"
+              class="text-(--text-xs) text-text-muted py-(--spacing-4)"
+            >
               Загрузка...
             </div>
             <template v-else>
@@ -205,7 +202,9 @@
                 >
                   <span class="text-(--text-sm) shrink-0">{{ a.emoji || '•' }}</span>
                   <div class="min-w-0 flex-1">
-                    <p class="text-(--text-xs) text-text-primary">{{ formatActivityTitle(a.title) }}</p>
+                    <p class="text-(--text-xs) text-text-primary">
+                      {{ formatActivityTitle(a.title) }}
+                    </p>
                     <p class="text-[11px] text-text-muted">
                       {{ a.userName || 'Пользователь' }} · {{ formatRelativeTime(a.createdAt) }}
                     </p>
@@ -220,10 +219,17 @@
                   custom-class="TaskDetailModal__ShowMore text-[11px]"
                   @click="showMoreActivities"
                 >
-                  {{ taskActivitiesLoading ? 'Загрузка...' : `Показать ещё (${taskActivitiesTotal - taskActivities.length})` }}
+                  {{
+                    taskActivitiesLoading
+                      ? 'Загрузка...'
+                      : `Показать ещё (${taskActivitiesTotal - taskActivities.length})`
+                  }}
                 </Button>
               </div>
-              <p v-if="!taskActivities.length" class="text-(--text-xs) text-text-muted py-(--spacing-4)">
+              <p
+                v-if="!taskActivities.length"
+                class="text-(--text-xs) text-text-muted py-(--spacing-4)"
+              >
                 Нет изменений
               </p>
             </template>
@@ -276,8 +282,15 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
-  import { Modal, ModalContent, Button, RichTextEditor, MarkdownContent, DetailTabsPanel } from '@/shared/ui'
+  import { computed, ref, watch, onMounted, onUnmounted, nextTick, provide } from 'vue'
+  import {
+    Modal,
+    ModalContent,
+    Button,
+    RichTextEditor,
+    MarkdownContent,
+    DetailTabsPanel,
+  } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import CommentThread from './CommentThread.vue'
   import {
@@ -303,7 +316,14 @@
   import { taskService } from '@/entities/task'
   import { useTaskComments } from '../model/use-task-comments'
   import { useTaskLocalData } from '../model/use-task-local-data'
-  import type { Task, TaskChecklistItem, TaskActivity, TaskPriority, TaskStatus, TaskType } from '@/entities/task'
+  import type {
+    Task,
+    TaskChecklistItem,
+    TaskActivity,
+    TaskPriority,
+    TaskStatus,
+    TaskType,
+  } from '@/entities/task'
 
   const props = defineProps<{
     task: Task | null
@@ -340,7 +360,9 @@
   const checklistItems = ref<TaskChecklistItem[]>([])
   const tagsItems = ref<string[]>([])
   const linkedTasks = ref<LinkedTask[]>([])
-  const attachments = ref<{ id: string; name: string; url: string; size?: number; mimeType?: string }[]>([])
+  const attachments = ref<
+    { id: string; name: string; url: string; size?: number; mimeType?: string }[]
+  >([])
   const attachmentsLoading = ref(false)
   const attachmentsUploading = ref(false)
   const timeSaving = ref(false)
@@ -369,7 +391,11 @@
   function formatActivityTitle(title: string): string {
     const m = title.match(/^Добавил\s+(\d+)(?:\s+мин(?:\s+(\d+)\s+сек)?|\s+сек)$/)
     if (!m) return title
-    const totalSec = m[2] ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : m[0].includes('мин') ? parseInt(m[1], 10) * 60 : parseInt(m[1], 10)
+    const totalSec = m[2]
+      ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10)
+      : m[0].includes('мин')
+        ? parseInt(m[1], 10) * 60
+        : parseInt(m[1], 10)
     return `Добавил ${formatTimeHMS(totalSec)}`
   }
 
@@ -460,7 +486,9 @@
         isSyncingTagsFromTask.value = true
         lastTagsFromTask.value = [...tags]
         tagsItems.value = tags
-        nextTick(() => { isSyncingTagsFromTask.value = false })
+        nextTick(() => {
+          isSyncingTagsFromTask.value = false
+        })
 
         if (taskIdChanged) {
           linkedTasks.value = []
@@ -618,14 +646,18 @@
     }
   }
   const debouncedSaveTags = useDebounceFn(saveTagsToApi, 400)
-  watch(tagsItems, (v) => {
-    if (isSyncingTagsFromTask.value) return
-    const a = [...(v ?? [])].sort()
-    const b = [...lastTagsFromTask.value].sort()
-    if (a.length === b.length && a.every((x, i) => x === b[i])) return
-    lastTagsFromTask.value = [...(v ?? [])]
-    debouncedSaveTags(v)
-  }, { deep: true })
+  watch(
+    tagsItems,
+    (v) => {
+      if (isSyncingTagsFromTask.value) return
+      const a = [...(v ?? [])].sort()
+      const b = [...lastTagsFromTask.value].sort()
+      if (a.length === b.length && a.every((x, i) => x === b[i])) return
+      lastTagsFromTask.value = [...(v ?? [])]
+      debouncedSaveTags(v)
+    },
+    { deep: true },
+  )
 
   const linkedTasksLoading = ref(false)
   async function fetchTaskLinks() {
@@ -647,7 +679,6 @@
       linkedTasksLoading.value = false
     }
   }
-
 
   async function removeTaskLink(linkId: string) {
     if (!props.task?.id) return
@@ -676,8 +707,8 @@
 
   const subtasks = ref<Task[]>([])
   const subtasksLoading = ref(false)
-  const subtasksCompletedCount = computed(() =>
-    subtasks.value.filter((t) => t.status === 'completed').length,
+  const subtasksCompletedCount = computed(
+    () => subtasks.value.filter((t) => t.status === 'completed').length,
   )
 
   async function fetchSubtasks() {
@@ -709,6 +740,7 @@
   const assigneeOptionsRef = computed(() => props.assigneeOptions)
 
   const {
+    commentContext,
     comments,
     commentsLoading,
     newCommentBody,
@@ -730,6 +762,8 @@
     canEditTask,
     () => emit('commentsUpdated'),
   )
+
+  provide('commentContext', commentContext)
 
   const activityTabs = computed(() => [
     { id: 'comments', label: `Комментарии (${comments.value.length})` },

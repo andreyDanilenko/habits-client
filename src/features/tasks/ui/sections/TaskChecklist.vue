@@ -21,7 +21,11 @@
         @toggle="toggleItem(item.id)"
         @remove="removeItem(item.id)"
       />
-      <li v-if="canEdit && showNewInput" class="pt-(--spacing-2)" @keydown.escape="showNewInput = false">
+      <li
+        v-if="canEdit && showNewInput"
+        class="pt-(--spacing-2)"
+        @keydown.escape="showNewInput = false"
+      >
         <TaskAddFormInline
           ref="addFormRef"
           placeholder="Добавить пункт..."
@@ -31,11 +35,7 @@
       </li>
     </ul>
     <div v-else-if="canEdit">
-      <TaskAddFormInline
-        ref="addFormRef"
-        placeholder="Добавить пункт..."
-        @add="commitNewItem"
-      />
+      <TaskAddFormInline ref="addFormRef" placeholder="Добавить пункт..." @add="commitNewItem" />
     </div>
     <p v-else class="text-(--text-xs) text-text-muted">Нет пунктов</p>
   </TaskDetailSection>

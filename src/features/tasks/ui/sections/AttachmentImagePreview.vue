@@ -20,14 +20,14 @@
       >
         🖼
       </div>
-      <div
-        v-else
-        class="w-20 h-20 flex items-center justify-center bg-bg-tertiary text-text-muted"
-      >
+      <div v-else class="w-20 h-20 flex items-center justify-center bg-bg-tertiary text-text-muted">
         <span class="text-[10px]">...</span>
       </div>
     </a>
-    <div v-else class="shrink-0 w-20 h-20 flex items-center justify-center bg-bg-tertiary text-text-muted">
+    <div
+      v-else
+      class="shrink-0 w-20 h-20 flex items-center justify-center bg-bg-tertiary text-text-muted"
+    >
       <span class="text-[10px]">...</span>
     </div>
     <slot name="link" :preview-url="previewUrl" />
@@ -70,10 +70,7 @@
   }
 
   onMounted(fetchTokenAndLoad)
-  watch(
-    () => [props.workspaceId, props.taskId, props.attachmentId],
-    fetchTokenAndLoad,
-  )
+  watch(() => [props.workspaceId, props.taskId, props.attachmentId], fetchTokenAndLoad)
   onUnmounted(() => {
     if (objectUrl.value) URL.revokeObjectURL(objectUrl.value)
   })

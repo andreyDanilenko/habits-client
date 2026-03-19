@@ -7,6 +7,16 @@ import type {
   TaskFilters,
 } from '@/entities/task/types/task'
 
+type TaskCommentApi = TaskComment & { parent_id?: string }
+
+function normalizeTaskComment(c: TaskCommentApi): TaskComment {
+  const { parent_id: _snake, ...rest } = c
+  return {
+    ...rest,
+    parentId: rest.parentId ?? c.parent_id ?? undefined,
+  }
+}
+
 export interface TasksListParams extends TaskFilters {
   workspaceId: string
 }
@@ -66,10 +76,7 @@ export const taskService = {
       API_ENDPOINTS.TASKS.COMMENTS(workspaceId, taskId),
     )
     const raw = Array.isArray(res) ? res : (res?.comments ?? [])
-    return raw.map((c) => ({
-      ...c,
-      parentId: c.parentId ?? (c as { parent_id?: string }).parent_id ?? undefined,
-    }))
+    return raw.map((c) => normalizeTaskComment(c as TaskCommentApi))
   },
 
   createComment: async (
@@ -78,10 +85,14 @@ export const taskService = {
     body: string,
     parentId?: string,
   ): Promise<TaskComment> => {
-    return api.post<TaskComment>(API_ENDPOINTS.TASKS.COMMENTS(workspaceId, taskId), {
-      body,
-      parentId: parentId || undefined,
-    })
+    const created = await api.post<TaskCommentApi>(
+      API_ENDPOINTS.TASKS.COMMENTS(workspaceId, taskId),
+      {
+        body,
+        parentId: parentId || undefined,
+      },
+    )
+    return normalizeTaskComment(created)
   },
 
   updateComment: async (
@@ -90,9 +101,13 @@ export const taskService = {
     commentId: string,
     body: string,
   ): Promise<TaskComment> => {
-    return api.patch<TaskComment>(API_ENDPOINTS.TASKS.COMMENT(workspaceId, taskId, commentId), {
-      body,
-    })
+    const updated = await api.patch<TaskCommentApi>(
+      API_ENDPOINTS.TASKS.COMMENT(workspaceId, taskId, commentId),
+      {
+        body,
+      },
+    )
+    return normalizeTaskComment(updated)
   },
 
   deleteComment: async (workspaceId: string, taskId: string, commentId: string): Promise<void> => {
@@ -102,14 +117,24 @@ export const taskService = {
   getTaskLinks: async (
     workspaceId: string,
     taskId: string,
-  ): Promise<{ id: string; linkedTaskId: string; linkType: string; linkedTitle: string; linkedPriority: string }[]> => {
-    const res = await api.get<{ links?: Array<{
+  ): Promise<
+    {
       id: string
       linkedTaskId: string
       linkType: string
       linkedTitle: string
       linkedPriority: string
-    }> }>(API_ENDPOINTS.TASKS.LINKS(workspaceId, taskId))
+    }[]
+  > => {
+    const res = await api.get<{
+      links?: Array<{
+        id: string
+        linkedTaskId: string
+        linkType: string
+        linkedTitle: string
+        linkedPriority: string
+      }>
+    }>(API_ENDPOINTS.TASKS.LINKS(workspaceId, taskId))
     const raw = res?.links ?? []
     return raw
   },
@@ -133,25 +158,25 @@ export const taskService = {
     })
   },
 
-  deleteTaskLink: async (
-    workspaceId: string,
-    taskId: string,
-    linkId: string,
-  ): Promise<void> => {
+  deleteTaskLink: async (workspaceId: string, taskId: string, linkId: string): Promise<void> => {
     await api.delete(API_ENDPOINTS.TASKS.LINK(workspaceId, taskId, linkId))
   },
 
   getAttachments: async (
     workspaceId: string,
     taskId: string,
-  ): Promise<{ id: string; fileName: string; fileSize?: number; url: string; mimeType?: string }[]> => {
-    const res = await api.get<{ attachments?: Array<{
-      id: string
-      fileName: string
-      fileSize?: number
-      url: string
-      mimeType?: string
-    }> }>(API_ENDPOINTS.TASKS.ATTACHMENTS(workspaceId, taskId))
+  ): Promise<
+    { id: string; fileName: string; fileSize?: number; url: string; mimeType?: string }[]
+  > => {
+    const res = await api.get<{
+      attachments?: Array<{
+        id: string
+        fileName: string
+        fileSize?: number
+        url: string
+        mimeType?: string
+      }>
+    }>(API_ENDPOINTS.TASKS.ATTACHMENTS(workspaceId, taskId))
     const raw = res?.attachments ?? []
     const baseUrl = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
     return raw.map((a) => ({
@@ -167,7 +192,13 @@ export const taskService = {
     workspaceId: string,
     taskId: string,
     file: File,
-  ): Promise<{ id: string; fileName: string; fileSize?: number; url: string; mimeType?: string }> => {
+  ): Promise<{
+    id: string
+    fileName: string
+    fileSize?: number
+    url: string
+    mimeType?: string
+  }> => {
     const formData = new FormData()
     formData.append('file', file)
     const res = await api.post<{
@@ -228,10 +259,7 @@ export const taskService = {
     }
   },
 
-  getTaskActivitiesCount: async (
-    workspaceId: string,
-    taskId: string,
-  ): Promise<number> => {
+  getTaskActivitiesCount: async (workspaceId: string, taskId: string): Promise<number> => {
     const res = await api.get<{ total?: number }>(
       API_ENDPOINTS.TASKS.ACTIVITIES_COUNT(workspaceId, taskId),
     )

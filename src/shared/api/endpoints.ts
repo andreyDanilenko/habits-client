@@ -127,7 +127,8 @@ export const API_ENDPOINTS = {
     ATTACHMENT_DOWNLOAD: (workspaceId: string, taskId: string, attachmentId: string) =>
       apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}/download`,
     ATTACHMENT_PREVIEW_TOKEN: (workspaceId: string, taskId: string, attachmentId: string) =>
-      apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}/preview-token`,
+      apiV1 +
+      `/workspaces/${workspaceId}/tasks/${taskId}/attachments/${attachmentId}/preview-token`,
     ACTIVITIES: (workspaceId: string, taskId: string) =>
       apiV1 + `/workspaces/${workspaceId}/tasks/${taskId}/activities`,
     ACTIVITIES_COUNT: (workspaceId: string, taskId: string) =>

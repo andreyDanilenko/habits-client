@@ -63,9 +63,7 @@
         ],
   )
 
-  const slashCommandsModules = [
-    { name: 'slashCommands', module: SlashCommandsModule, options: {} },
-  ]
+  const slashCommandsModules = [{ name: 'slashCommands', module: SlashCommandsModule, options: {} }]
 
   function emitUpdate() {
     const val = typeof contentRef.value === 'string' ? contentRef.value : ''

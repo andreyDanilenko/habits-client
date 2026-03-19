@@ -1,13 +1,7 @@
 <template>
   <TaskDetailSection title="Вложения" :placeholder="attachments.length === 0">
     <template v-if="canEdit" #action>
-      <input
-        ref="fileInputRef"
-        type="file"
-        class="hidden"
-        multiple
-        @change="handleFileSelect"
-      />
+      <input ref="fileInputRef" type="file" class="hidden" multiple @change="handleFileSelect" />
       <Button
         variant="link"
         size="xs"
@@ -18,9 +12,7 @@
         {{ uploading ? 'Загрузка...' : '+ Добавить' }}
       </Button>
     </template>
-    <div v-if="loading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">
-      Загрузка...
-    </div>
+    <div v-if="loading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">Загрузка...</div>
     <ul v-else-if="attachments.length" class="space-y-(--spacing-3)">
       <li
         v-for="a in attachments"
@@ -54,7 +46,9 @@
               rel="noopener"
               class="shrink-0 block rounded overflow-hidden border border-border-light"
             >
-              <span class="w-20 h-20 flex items-center justify-center bg-bg-tertiary text-2xl">🖼</span>
+              <span class="w-20 h-20 flex items-center justify-center bg-bg-tertiary text-2xl"
+                >🖼</span
+              >
             </a>
             <a
               :href="imageViewUrl(a.url)"
@@ -88,7 +82,9 @@
           >
             {{ a.name }}
           </a>
-          <span v-if="a.size" class="text-[11px] text-text-muted shrink-0">{{ formatSize(a.size) }}</span>
+          <span v-if="a.size" class="text-[11px] text-text-muted shrink-0">{{
+            formatSize(a.size)
+          }}</span>
           <Button
             v-if="canEdit"
             variant="ghost"

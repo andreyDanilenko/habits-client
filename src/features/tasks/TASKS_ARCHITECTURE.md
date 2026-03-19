@@ -63,17 +63,17 @@ Backlog | Analysis | In Progress | Test | Done
 
 ### Секции (порядок)
 
-| Секция               | Сейчас                                 | Позже                                                            |
-| -------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| **Шапка**            | title, status, priority, assignee, due | + type icon, watchers                                            |
-| **Описание**         | description (text)                     | Rich text, markdown                                              |
-| **Подзадачи**        | ✅ TaskSubtaskRow + приоритет          | parent_id, вложенный список                                      |
-| **Чеклист**          | ✅ TaskChecklist (UI, без backend)     | Пункты с отметкой                                                |
-| **Теги**             | ✅ TaskTagsSection (UI, без backend)   | Добавление тегов                                                 |
-| **Связанные задачи** | ✅ TaskLinkedSection (placeholder)    | blocks/blocked by                                                |
-| **Активность**       | ✅ Комментарии                         | Комментарии + история изменений (единый поток, как ClickUp/Jira) |
-| **Время**            | ✅ TaskTimeSection (spentMinutes)      | spent_minutes, work logs                                         |
-| **Вложения**         | ✅ TaskAttachmentsSection (placeholder)| task_attachments                                                 |
+| Секция               | Сейчас                                  | Позже                                                            |
+| -------------------- | --------------------------------------- | ---------------------------------------------------------------- |
+| **Шапка**            | title, status, priority, assignee, due  | + type icon, watchers                                            |
+| **Описание**         | description (text)                      | Rich text, markdown                                              |
+| **Подзадачи**        | ✅ TaskSubtaskRow + приоритет           | parent_id, вложенный список                                      |
+| **Чеклист**          | ✅ TaskChecklist (UI, без backend)      | Пункты с отметкой                                                |
+| **Теги**             | ✅ TaskTagsSection (UI, без backend)    | Добавление тегов                                                 |
+| **Связанные задачи** | ✅ TaskLinkedSection (placeholder)      | blocks/blocked by                                                |
+| **Активность**       | ✅ Комментарии                          | Комментарии + история изменений (единый поток, как ClickUp/Jira) |
+| **Время**            | ✅ TaskTimeSection (spentMinutes)       | spent_minutes, work logs                                         |
+| **Вложения**         | ✅ TaskAttachmentsSection (placeholder) | task_attachments                                                 |
 
 ### Поведение
 
@@ -97,17 +97,17 @@ Backlog | Analysis | In Progress | Test | Done
 
 ## 6. Обновлённый roadmap (этапы)
 
-| Этап    | Фокус                                               | Статус     |
-| ------- | --------------------------------------------------- | ---------- |
-| **0**   | Backend CRUD, миграция, parent_id, spent_minutes    | ✅         |
-| **1**   | Frontend: List, TaskFormModal, страница /tasks      | ✅         |
-| **2**   | CRM: TaskEntityPanel в Deal/Contact                 | ✅         |
-| **3**   | Permissions, PermissionGuard                        | ✅         |
-| **4**   | Reopen, фильтры, URL sync                           | ✅         |
-| **4.5** | **TaskDetailModal** — фундамент детальной структуры | ✅         |
-| **5**   | Kanban, подзадачи (parent_id), комментарии          | Pending    |
-| **6**   | Git интеграция                                      | Pending    |
-| **7**   | Типы задач, тайм-трекинг, вложения, activity, bulk  | Pending    |
+| Этап    | Фокус                                               | Статус  |
+| ------- | --------------------------------------------------- | ------- |
+| **0**   | Backend CRUD, миграция, parent_id, spent_minutes    | ✅      |
+| **1**   | Frontend: List, TaskFormModal, страница /tasks      | ✅      |
+| **2**   | CRM: TaskEntityPanel в Deal/Contact                 | ✅      |
+| **3**   | Permissions, PermissionGuard                        | ✅      |
+| **4**   | Reopen, фильтры, URL sync                           | ✅      |
+| **4.5** | **TaskDetailModal** — фундамент детальной структуры | ✅      |
+| **5**   | Kanban, подзадачи (parent_id), комментарии          | Pending |
+| **6**   | Git интеграция                                      | Pending |
+| **7**   | Типы задач, тайм-трекинг, вложения, activity, bulk  | Pending |
 
 ---
 

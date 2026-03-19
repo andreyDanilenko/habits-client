@@ -26,18 +26,11 @@
           @update:query="searchQuery = $event"
           @select="onSelectTask"
         />
-        <Select
-          v-model="newLinkType"
-          :options="linkTypeOptions"
-          size="lg"
-          class="w-[10rem]"
-        />
+        <Select v-model="newLinkType" :options="linkTypeOptions" size="lg" class="w-[10rem]" />
         <Button variant="ghost" size="lg" @click="cancelAdd">Отмена</Button>
       </div>
     </div>
-    <div v-if="loading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">
-      Загрузка...
-    </div>
+    <div v-if="loading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">Загрузка...</div>
     <ul v-else-if="linkedTasks.length" class="space-y-0 overflow-hidden">
       <li
         v-for="lt in linkedTasks"
@@ -66,15 +59,13 @@
         />
       </li>
     </ul>
-    <p v-else-if="!loading" class="text-(--text-xs) text-text-muted">
-      Нет связанных задач
-    </p>
+    <p v-else-if="!loading" class="text-(--text-xs) text-text-muted">Нет связанных задач</p>
   </TaskDetailSection>
 </template>
 
 <script setup lang="ts">
   import { ref, watch } from 'vue'
-  import { Button, SearchSelect, Select } from '@/shared/ui'
+  import { Button, SearchSelect, Select, type SearchSelectOption } from '@/shared/ui'
   import { XMarkIcon } from '@/shared/ui/icon'
   import { taskService } from '@/entities/task'
   import { useDebounceFn } from '@/shared/lib'
@@ -133,9 +124,9 @@
 
   watch(searchQuery, debouncedSearch)
 
-  function onSelectTask(task: Task) {
-    if (!task?.id) return
-    emit('add', task.id, newLinkType.value)
+  function onSelectTask(item: SearchSelectOption) {
+    if (!item.id) return
+    emit('add', item.id, newLinkType.value)
     searchQuery.value = ''
     selectedTaskId.value = ''
     searchResults.value = []

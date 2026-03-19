@@ -57,7 +57,9 @@
 
   watch(
     () => props.modelValue,
-    (v) => { tags.value = [...(v ?? [])] },
+    (v) => {
+      tags.value = [...(v ?? [])]
+    },
     { immediate: true },
   )
 

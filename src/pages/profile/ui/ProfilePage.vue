@@ -42,12 +42,8 @@
               @change="onFileSelected"
             />
           </div>
-          <p v-if="isUploadingAvatar" class="mt-2 text-sm text-text-secondary">
-            Загрузка...
-          </p>
-          <p v-else class="mt-2 text-xs text-text-muted">
-            Наведите для смены
-          </p>
+          <p v-if="isUploadingAvatar" class="mt-2 text-sm text-text-secondary">Загрузка...</p>
+          <p v-else class="mt-2 text-xs text-text-muted">Наведите для смены</p>
         </div>
 
         <!-- Контактная информация -->
@@ -76,9 +72,7 @@
             placeholder="Например: Менеджер проектов"
           />
           <div class="pt-2">
-            <Button @click="saveProfile" :loading="isSaving">
-              Сохранить изменения
-            </Button>
+            <Button @click="saveProfile" :loading="isSaving"> Сохранить изменения </Button>
           </div>
         </div>
       </div>

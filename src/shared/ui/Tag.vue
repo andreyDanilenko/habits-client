@@ -38,9 +38,7 @@
   })
 
   const sizeClasses = computed(() =>
-    props.size === 'sm'
-      ? 'px-1.5 py-0.5 text-[11px] gap-0.5'
-      : 'px-2 py-1 text-(--text-xs)',
+    props.size === 'sm' ? 'px-1.5 py-0.5 text-[11px] gap-0.5' : 'px-2 py-1 text-(--text-xs)',
   )
 
   defineEmits<{

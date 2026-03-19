@@ -12,7 +12,12 @@ export const handleUnauthorized = async (_router: Router) => {
   userStore.clearUser()
 
   const path = window.location.pathname
-  if (path === '/login' || path === '/register' || path.startsWith('/auth/verify-email') || path.startsWith('/invite/')) {
+  if (
+    path === '/login' ||
+    path === '/register' ||
+    path.startsWith('/auth/verify-email') ||
+    path.startsWith('/invite/')
+  ) {
     return
   }
   window.location.href = '/login'

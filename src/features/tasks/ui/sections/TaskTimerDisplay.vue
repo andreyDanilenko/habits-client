@@ -4,19 +4,16 @@
     class="flex items-center gap-(--spacing-2) text-(--text-xs) text-text-secondary"
   >
     <ClockIcon class="size-4 shrink-0 text-text-muted" />
-    <span
-      :class="[
-        'tabular-nums',
-        timerRunning ? 'font-medium text-primary-default' : '',
-      ]"
-    >
+    <span :class="['tabular-nums', timerRunning ? 'font-medium text-primary-default' : '']">
       {{ formatTimeHMS(displaySeconds) }}
     </span>
     <button
       type="button"
       :class="[
         'inline-flex items-center justify-center w-7 h-7 rounded transition-colors shrink-0',
-        timerRunning ? 'text-primary-default hover:bg-primary-default/10' : 'text-primary-default hover:bg-primary-default/10',
+        timerRunning
+          ? 'text-primary-default hover:bg-primary-default/10'
+          : 'text-primary-default hover:bg-primary-default/10',
       ]"
       :disabled="timeSaving"
       :title="timerRunning ? 'Остановить' : 'Старт'"
@@ -26,10 +23,7 @@
       <PlayIcon v-else class="size-4" />
     </button>
   </div>
-  <span
-    v-else
-    class="flex items-center gap-1 text-(--text-xs) text-text-secondary tabular-nums"
-  >
+  <span v-else class="flex items-center gap-1 text-(--text-xs) text-text-secondary tabular-nums">
     <ClockIcon class="size-4 shrink-0 text-text-muted" />
     {{ formatTimeHMS(taskTotalSeconds) }}
   </span>
@@ -102,7 +96,12 @@
     try {
       const raw = localStorage.getItem(TASK_TIMER_STORAGE_KEY)
       if (!raw) return false
-      const data = JSON.parse(raw) as { workspaceId: string; taskId: string; startTime: number; baseSeconds: number }
+      const data = JSON.parse(raw) as {
+        workspaceId: string
+        taskId: string
+        startTime: number
+        baseSeconds: number
+      }
       if (data.workspaceId !== props.workspaceId || data.taskId !== props.taskId) return false
 
       timerBaseSeconds.value = data.baseSeconds ?? 0

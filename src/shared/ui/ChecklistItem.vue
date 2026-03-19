@@ -5,11 +5,7 @@
     @click="canEdit ? $emit('toggle') : undefined"
   >
     <div v-if="canEdit" class="pointer-events-none shrink-0">
-      <Checkbox
-        :model-value="done"
-        size="xs"
-        container-class="items-center"
-      />
+      <Checkbox :model-value="done" size="xs" container-class="items-center" />
     </div>
     <span
       v-else
