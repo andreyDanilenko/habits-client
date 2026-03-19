@@ -49,9 +49,8 @@
     taskId: string | null
   }>()
 
-  const emit = defineEmits<{
-    addTime: [seconds: number]
-  }>()
+  // Временно отключено: emit вызывает цепочку событий и циклы в production
+  // const emit = defineEmits<{ addTime: [seconds: number] }>()
 
   const timerRunning = ref(false)
   const timerBaseSeconds = ref(0)
@@ -141,7 +140,8 @@
         }
         stopInterval()
         timerRunning.value = false
-        loadActiveTimerForTask()
+        // Временно отключено: loadActiveTimerForTask() может вызывать циклы
+        // loadActiveTimerForTask()
       }
     },
     { immediate: true },
@@ -157,9 +157,9 @@
       stopInterval()
       timerRunning.value = false
       clearActiveTimerFromStorage()
-      const elapsedSec = Math.floor((Date.now() - timerStart.value) / 1000)
-      if (elapsedSec > 0) emit('addTime', elapsedSec)
       timerElapsedSeconds.value = 0
+      // Временно отключено: не вызываем emit('addTime') — вызывает циклы
+      // if (elapsedSec > 0) emit('addTime', elapsedSec)
     }
   }
 
