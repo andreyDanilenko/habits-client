@@ -36,30 +36,9 @@
         <!-- Шапка: метаданные + трекинг времени -->
         <div class="flex flex-wrap items-center justify-between gap-(--spacing-3)">
           <div class="flex flex-wrap items-center gap-(--spacing-2)">
-            <PriorityBadgeDropdown
-              v-if="canEditTask"
-              :key="`priority-${task.id}-${priorityBadgeKey}`"
-              :priority="task.priority"
-              :saving="prioritySaving"
-              @change="changePriority"
-            />
-            <PriorityBadge v-else :priority="task.priority" />
-            <StatusBadgeDropdown
-              v-if="canEditTask"
-              :key="`status-${task.id}-${statusBadgeKey}`"
-              :status="task.status"
-              :saving="statusSaving"
-              @change="changeStatus"
-            />
-            <StatusBadge v-else :status="task.status" />
-            <TypeBadgeDropdown
-              v-if="canEditTask"
-              :key="`type-${task.id}-${typeBadgeKey}`"
-              :type="task.type"
-              :saving="typeSaving"
-              @change="changeType"
-            />
-            <TypeBadge v-else :type="task.type" />
+            <PriorityBadge :priority="task.priority" />
+            <StatusBadge :status="task.status" />
+            <TypeBadge :type="task.type" />
             <span v-if="assigneeName" class="text-[11px] text-text-secondary">
               → {{ assigneeName }}
             </span>
@@ -293,11 +272,8 @@
     TaskTimerDisplay,
     TaskAttachmentsSection,
     PriorityBadge,
-    PriorityBadgeDropdown,
     StatusBadge,
-    StatusBadgeDropdown,
     TypeBadge,
-    TypeBadgeDropdown,
     type LinkedTask,
   } from './sections'
   import { PermissionGuard, usePermissions } from '@/features/permissions'
@@ -349,12 +325,6 @@
   const timeSaving = ref(false)
   const activityTab = ref('comments')
   const ACTIVITIES_PAGE_SIZE = 10
-  const statusSaving = ref(false)
-  const prioritySaving = ref(false)
-  const typeSaving = ref(false)
-  const statusBadgeKey = ref(0)
-  const priorityBadgeKey = ref(0)
-  const typeBadgeKey = ref(0)
   const taskActivities = ref<TaskActivity[]>([])
   const taskActivitiesTotal = ref(0)
   const taskActivitiesLoading = ref(false)
@@ -379,62 +349,6 @@
     return `Добавил ${formatTimeHMS(totalSec)}`
   }
 
-  async function changeStatus(status: import('@/entities/task').TaskStatus) {
-    if (!props.task?.id || !props.workspaceId) return
-    if (props.task.status === status) return
-    statusSaving.value = true
-    const original = { ...props.task }
-    emit('taskUpdated', { ...props.task, status })
-    try {
-      const updated = await taskService.update(props.workspaceId, props.task.id, { status })
-      if (updated) emit('taskUpdated', updated)
-      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
-    } catch (e) {
-      console.error('Failed to update status:', e)
-      emit('taskUpdated', original)
-    } finally {
-      statusSaving.value = false
-      statusBadgeKey.value++
-    }
-  }
-
-  async function changePriority(priority: import('@/entities/task').TaskPriority) {
-    if (!props.task?.id || !props.workspaceId) return
-    if (props.task.priority === priority) return
-    prioritySaving.value = true
-    const original = { ...props.task }
-    emit('taskUpdated', { ...props.task, priority })
-    try {
-      const updated = await taskService.update(props.workspaceId, props.task.id, { priority })
-      if (updated) emit('taskUpdated', updated)
-      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
-    } catch (e) {
-      console.error('Failed to update priority:', e)
-      emit('taskUpdated', original)
-    } finally {
-      prioritySaving.value = false
-    }
-  }
-
-  async function changeType(type: import('@/entities/task').TaskType) {
-    if (!props.task?.id || !props.workspaceId) return
-    if (props.task.type === type) return
-    typeSaving.value = true
-    const original = { ...props.task }
-    emit('taskUpdated', { ...props.task, type })
-    try {
-      const updated = await taskService.update(props.workspaceId, props.task.id, { type })
-      if (updated) emit('taskUpdated', updated)
-      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
-    } catch (e) {
-      console.error('Failed to update type:', e)
-      emit('taskUpdated', original)
-    } finally {
-      typeSaving.value = false
-      typeBadgeKey.value++
-    }
-  }
-
   async function setSpentMinutes(minutes: number) {
     if (!props.task?.id || !props.workspaceId) return
     timerRef.value?.stopAndSave()
@@ -454,7 +368,7 @@
   }
 
   const taskIdRef = computed(() => props.task?.id)
-  const { getTags, setTags, getChecklist, setChecklist } = useTaskLocalData(taskIdRef)
+  const { getTags, setTags, getChecklist } = useTaskLocalData(taskIdRef)
 
   const lastTagsFromTask = ref<string[]>([])
   const isSyncingTagsFromTask = ref(false)
@@ -465,6 +379,8 @@
         checklistItems.value = []
         tagsItems.value = []
         lastTagsFromTask.value = []
+        linkedTasks.value = []
+        attachments.value = []
       } else {
         checklistItems.value = t.checklist?.length ? t.checklist : getChecklist()
         const tags = t.tags?.length ? t.tags : getTags()
@@ -472,9 +388,11 @@
         lastTagsFromTask.value = [...tags]
         tagsItems.value = tags
         nextTick(() => { isSyncingTagsFromTask.value = false })
+        linkedTasks.value = []
+        fetchAttachments()
+        fetchTaskLinks()
+        fetchSubtasks()
       }
-      linkedTasks.value = []
-      attachments.value = []
     },
     { immediate: true },
   )
@@ -499,14 +417,6 @@
     }
   }
 
-  watch(
-    () => [props.task?.id, props.workspaceId],
-    () => {
-      if (props.task?.id && props.workspaceId) fetchAttachments()
-      else attachments.value = []
-    },
-    { immediate: true },
-  )
 
   async function uploadAttachment(file: File) {
     if (!props.task?.id || !props.workspaceId) return
@@ -593,7 +503,8 @@
     { immediate: true },
   )
 
-  watch(checklistItems, (v) => setChecklist(v), { deep: true })
+  // Убрано: watch checklistItems вызывал циклы при обновлении
+  // watch(checklistItems, (v) => setChecklist(v), { deep: true })
 
   const tagsSaving = ref(false)
   async function saveTagsToApi(tags: string[]) {
@@ -641,14 +552,6 @@
     }
   }
 
-  watch(
-    () => props.task?.id,
-    (id) => {
-      if (id) fetchTaskLinks()
-      else linkedTasks.value = []
-    },
-    { immediate: true },
-  )
 
   async function removeTaskLink(linkId: string) {
     if (!props.task?.id) return
@@ -698,12 +601,10 @@
   }
 
   watch(
-    () => [props.task?.id, props.subtasksRefreshKey],
+    () => props.subtasksRefreshKey,
     () => {
       if (props.task?.id) fetchSubtasks()
-      else subtasks.value = []
     },
-    { immediate: true },
   )
 
   const taskRef = computed(() => props.task)
