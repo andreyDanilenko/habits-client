@@ -49,8 +49,7 @@
     taskId: string | null
   }>()
 
-  // Временно отключено: emit вызывает цепочку событий и циклы в production
-  // const emit = defineEmits<{ addTime: [seconds: number] }>()
+  const emit = defineEmits<{ addTime: [seconds: number] }>()
 
   const timerRunning = ref(false)
   const timerBaseSeconds = ref(0)
@@ -137,12 +136,12 @@
 
   function stopAndSave() {
     if (timerRunning.value) {
+      const elapsedSec = timerBaseSeconds.value + Math.floor((Date.now() - timerStart.value) / 1000)
       stopInterval()
       timerRunning.value = false
       clearActiveTimerFromStorage()
       timerElapsedSeconds.value = 0
-      // Временно отключено: не вызываем emit('addTime') — вызывает циклы
-      // if (elapsedSec > 0) emit('addTime', elapsedSec)
+      if (elapsedSec > 0) emit('addTime', elapsedSec)
     }
   }
 

@@ -51,6 +51,7 @@
             :time-saving="timeSaving"
             :workspace-id="workspaceId"
             :task-id="task?.id ?? null"
+            @add-time="addTime"
           />
         </div>
 
