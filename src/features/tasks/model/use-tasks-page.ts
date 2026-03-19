@@ -197,7 +197,10 @@ export function useTasksPage() {
     if (detailTask.value?.id === updated.id) {
       detailTask.value = updated
     }
-    tasks.value = tasks.value.map((t) => (t.id === updated.id ? updated : t))
+    // Откладываем обновление списка задач, чтобы не блокировать main thread (особенно в production)
+    queueMicrotask(() => {
+      tasks.value = tasks.value.map((t) => (t.id === updated.id ? updated : t))
+    })
   }
 
   function refreshSubtasks() {

@@ -280,7 +280,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
+  import { computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
   import { Modal, ModalContent, Button, RichTextEditor, MarkdownContent, DetailTabsPanel } from '@/shared/ui'
   import { ArrowLeftIcon } from '@/shared/ui/icon'
   import CommentThread from './CommentThread.vue'
@@ -389,7 +389,7 @@
     try {
       const updated = await taskService.update(props.workspaceId, props.task.id, { status })
       if (updated) emit('taskUpdated', updated)
-      await fetchTaskActivities()
+      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
     } catch (e) {
       console.error('Failed to update status:', e)
       emit('taskUpdated', original)
@@ -408,7 +408,7 @@
     try {
       const updated = await taskService.update(props.workspaceId, props.task.id, { priority })
       if (updated) emit('taskUpdated', updated)
-      await fetchTaskActivities()
+      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
     } catch (e) {
       console.error('Failed to update priority:', e)
       emit('taskUpdated', original)
@@ -426,7 +426,7 @@
     try {
       const updated = await taskService.update(props.workspaceId, props.task.id, { type })
       if (updated) emit('taskUpdated', updated)
-      await fetchTaskActivities()
+      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
     } catch (e) {
       console.error('Failed to update type:', e)
       emit('taskUpdated', original)
@@ -446,7 +446,7 @@
         spentSeconds: 0,
       })
       emit('taskUpdated', updated)
-      await fetchTaskActivities()
+      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
     } catch (e) {
       console.error('Failed to set spent time:', e)
     } finally {
@@ -458,6 +458,7 @@
   const { getTags, setTags, getChecklist, setChecklist } = useTaskLocalData(taskIdRef)
 
   const lastTagsFromTask = ref<string[]>([])
+  const isSyncingTagsFromTask = ref(false)
   watch(
     () => props.task,
     (t) => {
@@ -468,8 +469,10 @@
       } else {
         checklistItems.value = t.checklist?.length ? t.checklist : getChecklist()
         const tags = t.tags?.length ? t.tags : getTags()
+        isSyncingTagsFromTask.value = true
         lastTagsFromTask.value = [...tags]
         tagsItems.value = tags
+        nextTick(() => { isSyncingTagsFromTask.value = false })
       }
       linkedTasks.value = []
       attachments.value = []
@@ -545,7 +548,7 @@
         spentSeconds: secs,
       })
       emit('taskUpdated', updated)
-      await fetchTaskActivities()
+      fetchTaskActivities().catch((e) => console.error('fetchTaskActivities:', e))
     } catch (e) {
       console.error('Failed to add time:', e)
     } finally {
@@ -610,6 +613,7 @@
   }
   const debouncedSaveTags = useDebounceFn(saveTagsToApi, 400)
   watch(tagsItems, (v) => {
+    if (isSyncingTagsFromTask.value) return
     const a = [...(v ?? [])].sort()
     const b = [...lastTagsFromTask.value].sort()
     if (a.length === b.length && a.every((x, i) => x === b[i])) return
