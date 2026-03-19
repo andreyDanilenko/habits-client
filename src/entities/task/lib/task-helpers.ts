@@ -43,7 +43,7 @@ export function statusLabel(status: string): string {
 }
 
 /** CSS-классы для типа задачи */
-export function typeClass(type: string): string {
+export function typeClass(_type: string): string {
   return 'bg-bg-tertiary text-text-secondary'
 }
 

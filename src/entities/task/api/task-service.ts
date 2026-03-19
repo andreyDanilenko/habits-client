@@ -177,7 +177,7 @@ export const taskService = {
       url: string
       mimeType?: string
     }>(API_ENDPOINTS.TASKS.ATTACHMENTS(workspaceId, taskId), formData, {
-      headers: { 'Content-Type': undefined } as Record<string, unknown>,
+      headers: { 'Content-Type': undefined } as Record<string, string | undefined>,
     })
     const baseUrl = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
     return {

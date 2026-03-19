@@ -20,7 +20,7 @@
           :loading="searchLoading"
           placeholder="Поиск задачи..."
           size="sm"
-          :get-option-label="(t) => t.title"
+          :get-option-label="(item) => (item as unknown as Task).title"
           :get-item-id="(t) => t.id"
           class="flex-1 min-w-[12rem]"
           @update:query="searchQuery = $event"
@@ -139,10 +139,6 @@
   }, 300)
 
   watch(searchQuery, debouncedSearch)
-
-  function onTaskSelected() {
-    // selectedTaskId updated by v-model
-  }
 
   async function doAdd() {
     if (!selectedTaskId.value) return

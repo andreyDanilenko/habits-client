@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, nextTick } from 'vue'
+  import { ref, nextTick } from 'vue'
   import { Button, Input } from '@/shared/ui'
 
   const props = withDefaults(
