@@ -150,9 +150,14 @@ export function useTaskComments(
     if (!task.value || isRichContentEmpty(newCommentBody.value)) return
     commentSaving.value = true
     try {
-      await taskService.createComment(workspaceId.value, task.value.id, newCommentBody.value)
+      const created = await taskService.createComment(
+        workspaceId.value,
+        task.value.id,
+        newCommentBody.value,
+      )
       newCommentBody.value = ''
-      await fetchComments()
+      const normalized = { ...created, parentId: created.parentId ?? (created as { parent_id?: string }).parent_id }
+      comments.value = [...comments.value, normalized]
       onUpdated?.()
     } catch (e) {
       console.error('Failed to add comment:', e)
@@ -165,7 +170,7 @@ export function useTaskComments(
     if (!task.value || isRichContentEmpty(replyCommentBody.value)) return
     commentSaving.value = true
     try {
-      await taskService.createComment(
+      const created = await taskService.createComment(
         workspaceId.value,
         task.value.id,
         replyCommentBody.value,
@@ -173,7 +178,11 @@ export function useTaskComments(
       )
       replyCommentBody.value = ''
       replyToCommentId.value = null
-      await fetchComments()
+      const normalized = {
+        ...created,
+        parentId: created.parentId ?? (created as { parent_id?: string }).parent_id ?? parent.id,
+      }
+      comments.value = [...comments.value, normalized]
       onUpdated?.()
     } catch (e) {
       console.error('Failed to add comment:', e)
