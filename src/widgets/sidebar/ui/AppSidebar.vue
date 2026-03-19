@@ -79,14 +79,18 @@
                     class="module-routes-content"
                   >
                     <div class="module-routes-content-inner">
-                      <SidebarSectionHeader
-                        :title="selectedModuleLabel"
-                        :collapsed="isCollapsedEffective"
-                      />
-                      <SidebarNavigation
-                        :items="moduleRoutesNavItems"
-                        :collapsed="isCollapsedEffective"
-                      />
+                      <div class="flex-shrink-0">
+                        <SidebarSectionHeader
+                          :title="selectedModuleLabel"
+                          :collapsed="isCollapsedEffective"
+                        />
+                      </div>
+                      <div class="module-routes-scroll">
+                        <SidebarNavigation
+                          :items="moduleRoutesNavItems"
+                          :collapsed="isCollapsedEffective"
+                        />
+                      </div>
                     </div>
                   </div>
                 </Transition>
@@ -479,7 +483,7 @@
   }
 
   .module-routes-outer--open .module-routes-grid {
-    grid-template-rows: 1fr;
+    grid-template-rows: minmax(0, 1fr);
     transition:
       grid-template-rows 0.3s ease-out,
       visibility 0s linear 0s;
@@ -488,15 +492,12 @@
 
   .module-routes-inner {
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior-y: contain;
-    scrollbar-gutter: stable;
+    overflow: hidden;
   }
 
   .module-routes-content {
     display: grid;
-    grid-template-rows: 1fr;
+    grid-template-rows: minmax(0, 1fr);
     overflow: hidden;
   }
 
@@ -514,11 +515,23 @@
   }
 
   .module-routes-content.module-routes-enter-to {
-    grid-template-rows: 1fr;
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .module-routes-content-inner {
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .module-routes-scroll {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
   }
 
   .sidebar-nav {
