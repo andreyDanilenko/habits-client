@@ -181,6 +181,25 @@ export function useTasksPage() {
     }
   }
 
+  async function viewLinkedTask(taskId: string) {
+    if (!workspaceId.value) return
+    try {
+      const t = await taskService.getById(workspaceId.value, taskId)
+      detailTask.value = t
+      parentTaskForSubtask.value = null
+      showDetailModal.value = true
+    } catch (e) {
+      console.error('Failed to fetch linked task:', e)
+    }
+  }
+
+  function onTaskUpdated(updated: Task) {
+    if (detailTask.value?.id === updated.id) {
+      detailTask.value = updated
+    }
+    tasks.value = tasks.value.map((t) => (t.id === updated.id ? updated : t))
+  }
+
   function refreshSubtasks() {
     subtasksRefreshKey.value++
   }
@@ -234,10 +253,11 @@ export function useTasksPage() {
         }
         await taskService.create(workspaceId.value, dto)
       }
+      const wasSubtask = !!creatingSubtaskFor.value
       closeModal()
       creatingSubtaskFor.value = null
       refreshSubtasks()
-      await fetchTasks()
+      if (!wasSubtask) await fetchTasks()
     } catch (e) {
       console.error('Failed to save task:', e)
       throw e
@@ -376,6 +396,8 @@ export function useTasksPage() {
     openAddSubtask,
     viewSubtask,
     viewParent,
+    viewLinkedTask,
+    onTaskUpdated,
     parentTaskForSubtask,
     creatingSubtaskFor,
     subtasksRefreshKey,

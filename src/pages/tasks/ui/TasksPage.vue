@@ -102,6 +102,8 @@
         @add-subtask="openAddSubtask"
         @view-subtask="viewSubtask"
         @view-parent="viewParent"
+        @view-linked-task="viewLinkedTask"
+        @task-updated="onTaskUpdated"
       />
 
       <TaskFormModal
@@ -177,6 +179,8 @@
     openAddSubtask,
     viewSubtask,
     viewParent,
+    viewLinkedTask,
+    onTaskUpdated,
     parentTaskForSubtask,
     creatingSubtaskFor,
     subtasksRefreshKey,
