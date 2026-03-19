@@ -1,6 +1,39 @@
 @import 'tailwindcss';
 @import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
+/* Кастомный скроллбар под тему приложения */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-default) var(--color-bg-tertiary);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-full);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-border-default);
+  border-radius: var(--radius-full);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: var(--color-primary-default);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--color-bg-tertiary);
+}
+
 html {
   height: 100%;
   overflow: hidden;
