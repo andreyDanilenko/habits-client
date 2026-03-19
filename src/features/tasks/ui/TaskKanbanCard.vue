@@ -12,12 +12,7 @@
       <span class="text-xs text-text-muted">Сохранение…</span>
     </div>
     <div class="flex flex-wrap items-center gap-(--spacing-1)">
-      <span
-        class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs) font-medium"
-        :class="priorityClass(task.priority)"
-      >
-        {{ priorityLabel(task.priority) }}
-      </span>
+      <PriorityBadge :priority="task.priority" />
       <span
         class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs) bg-bg-tertiary text-text-secondary"
       >
@@ -41,7 +36,8 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import type { Task } from '@/entities/task'
-  import { priorityClass, priorityLabel, typeLabel } from '../lib/task-labels'
+  import { typeLabel } from '../lib/task-labels'
+  import PriorityBadge from './sections/PriorityBadge.vue'
 
   const props = defineProps<{
     task: Task

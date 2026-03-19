@@ -31,6 +31,7 @@ export { default as EditableTitle } from './EditableTitle.vue'
 export { default as PageFilters } from './PageFilters/PageFilters.vue'
 export { PageFiltersEnum } from './PageFilters/PageFilters.types'
 export { default as Tag } from './Tag.vue'
+export { default as ChecklistItem } from './ChecklistItem.vue'
 export { default as UserInfo } from './UserInfo.vue'
 
 export { DataTable } from './DataTable'

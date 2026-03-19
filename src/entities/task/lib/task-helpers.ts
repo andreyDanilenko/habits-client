@@ -42,6 +42,11 @@ export function statusLabel(status: string): string {
   return map[status] ?? status
 }
 
+/** CSS-классы для типа задачи */
+export function typeClass(type: string): string {
+  return 'bg-bg-tertiary text-text-secondary'
+}
+
 /** Подпись типа задачи */
 export function typeLabel(type: string): string {
   const map: Record<string, string> = {
