@@ -230,7 +230,7 @@
         </DetailTabsPanel>
 
         <!-- Вложения -->
-        <!-- <TaskAttachmentsSection
+        <TaskAttachmentsSection
           :attachments="attachments"
           :loading="attachmentsLoading"
           :can-edit="canEditTask"
@@ -239,7 +239,7 @@
           :task-id="task.id"
           @upload="uploadAttachment"
           @delete="deleteAttachment"
-        /> -->
+        />
       </div>
 
       <template #footer>
@@ -287,6 +287,7 @@
     TaskLinkedSection,
     TaskTimeSection,
     TaskTimerDisplay,
+    TaskAttachmentsSection,
     PriorityBadge,
     PriorityBadgeDropdown,
     StatusBadge,
@@ -340,6 +341,7 @@
   const linkedTasks = ref<LinkedTask[]>([])
   const attachments = ref<{ id: string; name: string; url: string; size?: number; mimeType?: string }[]>([])
   const attachmentsLoading = ref(false)
+  const attachmentsUploading = ref(false)
   const timeSaving = ref(false)
   const prioritySaving = ref(false)
   const statusSaving = ref(false)
@@ -486,6 +488,32 @@
     }
   }
 
+  async function uploadAttachment(file: File) {
+    if (!props.task?.id || !props.workspaceId) return
+    attachmentsUploading.value = true
+    try {
+      const a = await taskService.uploadAttachment(props.workspaceId, props.task.id, file)
+      attachments.value = [
+        ...attachments.value,
+        { id: a.id, name: a.fileName, url: a.url, size: a.fileSize, mimeType: a.mimeType },
+      ]
+    } catch (e) {
+      console.error('Failed to upload attachment:', e)
+      throw e
+    } finally {
+      attachmentsUploading.value = false
+    }
+  }
+
+  async function deleteAttachment(attachmentId: string) {
+    if (!props.task?.id || !props.workspaceId) return
+    try {
+      await taskService.deleteAttachment(props.workspaceId, props.task.id, attachmentId)
+      attachments.value = attachments.value.filter((a) => a.id !== attachmentId)
+    } catch (e) {
+      console.error('Failed to delete attachment:', e)
+    }
+  }
 
   async function addTime(seconds: number) {
     if (!props.task?.id || !props.workspaceId || seconds <= 0) return
