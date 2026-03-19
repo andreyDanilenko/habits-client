@@ -141,6 +141,9 @@ function dtoToItem(d: {
 
 const notifications = ref<NotificationItem[]>([])
 const maxItems = 50
+let fetchInFlight = false
+let lastFetchTime = 0
+const FETCH_DEBOUNCE_MS = 1000
 
 export function useNotificationsStore() {
   const { on } = useRealtime()
@@ -152,6 +155,12 @@ export function useNotificationsStore() {
 
   async function fetchFromApi() {
     if (!authStore.isAuthenticated) return
+    if (fetchInFlight) return
+    const now = Date.now()
+    if (now - lastFetchTime < FETCH_DEBOUNCE_MS) return
+
+    fetchInFlight = true
+    lastFetchTime = now
     try {
       const { notifications: list } = await notificationService.list({
         limit: maxItems,
@@ -161,6 +170,8 @@ export function useNotificationsStore() {
       }
     } catch {
       // Оставляем текущий список при ошибке
+    } finally {
+      fetchInFlight = false
     }
   }
 

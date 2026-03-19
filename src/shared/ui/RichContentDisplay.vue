@@ -8,14 +8,16 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import DOMPurify from 'dompurify'
+  import { normalizeContentForDisplay } from '@/shared/lib/rich-content'
 
   const props = defineProps<{
     content: string
   }>()
 
   const sanitizedHtml = computed(() => {
-    if (!props.content?.trim()) return ''
-    return DOMPurify.sanitize(props.content, {
+    const normalized = normalizeContentForDisplay(props.content ?? '')
+    if (!normalized.trim()) return ''
+    return DOMPurify.sanitize(normalized, {
       ALLOWED_TAGS: [
         'p',
         'br',
@@ -29,6 +31,10 @@
         'a',
         'blockquote',
         'code',
+        'pre',
+        'h1',
+        'h2',
+        'h3',
       ],
       ALLOWED_ATTR: ['href', 'target', 'rel'],
     })
@@ -98,5 +104,41 @@
     padding: 0.125em 0.375em;
     border-radius: 0.25em;
     font-size: 0.9em;
+  }
+
+  .RichContentDisplay :deep(pre) {
+    background: var(--color-bg-tertiary);
+    padding: 0.75em 1em;
+    border-radius: 0.25em;
+    font-size: 0.9em;
+    overflow-x: auto;
+    margin: 0.5em 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .RichContentDisplay :deep(pre code) {
+    background: none;
+    padding: 0;
+  }
+
+  .RichContentDisplay :deep(h1),
+  .RichContentDisplay :deep(h2),
+  .RichContentDisplay :deep(h3) {
+    margin: 0.5em 0 0.25em;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .RichContentDisplay :deep(h1) {
+    font-size: 1.25em;
+  }
+
+  .RichContentDisplay :deep(h2) {
+    font-size: 1.1em;
+  }
+
+  .RichContentDisplay :deep(h3) {
+    font-size: 1em;
   }
 </style>

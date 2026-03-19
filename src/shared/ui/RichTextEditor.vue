@@ -6,7 +6,8 @@
       :theme="theme"
       :placeholder="placeholder"
       :read-only="readOnly"
-      :options="editorOptions"
+      :toolbar="toolbarConfig"
+      :modules="slashCommandsModules"
       class="RichTextEditor__quill"
       @update:content="emitUpdate"
       @text-change="emitUpdate"
@@ -17,6 +18,7 @@
 <script setup lang="ts">
   import { ref, watch, computed } from 'vue'
   import { QuillEditor } from '@vueup/vue-quill'
+  import { SlashCommandsModule } from '@/shared/lib/quill-slash-commands'
 
   const props = withDefaults(
     defineProps<{
@@ -44,19 +46,21 @@
     { immediate: true },
   )
 
-  const editorOptions = computed(() => ({
-    modules: {
-      toolbar: props.compact
-        ? [['bold', 'italic'], ['link'], [{ list: 'ordered' }, { list: 'bullet' }]]
-        : [
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ header: [1, 2, 3, false] }],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['link', 'blockquote', 'code-block'],
-            ['clean'],
-          ],
-    },
-  }))
+  const toolbarConfig = computed(() =>
+    props.compact
+      ? [['bold', 'italic'], ['link'], [{ list: 'ordered' }, { list: 'bullet' }]]
+      : [
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ header: [1, 2, 3, false] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'blockquote', 'code-block'],
+          ['clean'],
+        ],
+  )
+
+  const slashCommandsModules = [
+    { name: 'slashCommands', module: SlashCommandsModule, options: {} },
+  ]
 
   function emitUpdate() {
     const val = typeof contentRef.value === 'string' ? contentRef.value : ''
@@ -90,5 +94,45 @@
   .RichTextEditor :deep(.ql-editor.ql-blank::before) {
     color: var(--color-text-muted);
     font-style: normal;
+  }
+
+  /* Slash commands menu */
+  .RichTextEditor :deep(.ql-slash-menu) {
+    position: absolute;
+    z-index: 50;
+    min-width: 200px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: var(--spacing-1);
+  }
+
+  .RichTextEditor :deep(.ql-slash-menu--hidden) {
+    display: none;
+  }
+
+  .RichTextEditor :deep(.ql-slash-menu__item) {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+  }
+
+  .RichTextEditor :deep(.ql-slash-menu__item:hover),
+  .RichTextEditor :deep(.ql-slash-menu__item--selected) {
+    background: var(--color-bg-tertiary);
+  }
+
+  .RichTextEditor :deep(.ql-slash-menu__icon) {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    min-width: 1.5em;
   }
 </style>
