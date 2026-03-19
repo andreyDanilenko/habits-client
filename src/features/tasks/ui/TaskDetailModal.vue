@@ -162,7 +162,6 @@
             </div>
           </template>
           <template #time>
-            <div @click.stop class="">
             <TaskTimeSection
               :spent-minutes="task.spentMinutes ?? 0"
               :spent-seconds="task.spentSeconds ?? 0"
@@ -172,7 +171,6 @@
               @add-time="addTime"
               @set-spent="setSpentMinutes"
             />
-          </div>
           </template>
           <template #changes>
             <div v-if="taskActivitiesLoading && taskActivities.length === 0" class="text-(--text-xs) text-text-muted py-(--spacing-4)">
@@ -270,7 +268,6 @@
     TaskLinkedSection,
     TaskTimeSection,
     TaskTimerDisplay,
-    TaskAttachmentsSection,
     PriorityBadge,
     StatusBadge,
     TypeBadge,
@@ -321,7 +318,6 @@
   const linkedTasks = ref<LinkedTask[]>([])
   const attachments = ref<{ id: string; name: string; url: string; size?: number; mimeType?: string }[]>([])
   const attachmentsLoading = ref(false)
-  const attachmentsUploading = ref(false)
   const timeSaving = ref(false)
   const activityTab = ref('comments')
   const ACTIVITIES_PAGE_SIZE = 10
@@ -372,6 +368,8 @@
 
   const lastTagsFromTask = ref<string[]>([])
   const isSyncingTagsFromTask = ref(false)
+  const prevTaskIdRef = ref<string | null>(null)
+
   watch(
     () => props.task,
     (t) => {
@@ -381,17 +379,24 @@
         lastTagsFromTask.value = []
         linkedTasks.value = []
         attachments.value = []
+        prevTaskIdRef.value = null
       } else {
+        const taskIdChanged = prevTaskIdRef.value !== t.id
+        prevTaskIdRef.value = t.id
+
         checklistItems.value = t.checklist?.length ? t.checklist : getChecklist()
         const tags = t.tags?.length ? t.tags : getTags()
         isSyncingTagsFromTask.value = true
         lastTagsFromTask.value = [...tags]
         tagsItems.value = tags
         nextTick(() => { isSyncingTagsFromTask.value = false })
-        linkedTasks.value = []
-        fetchAttachments()
-        fetchTaskLinks()
-        fetchSubtasks()
+
+        if (taskIdChanged) {
+          linkedTasks.value = []
+          fetchAttachments()
+          fetchTaskLinks()
+          fetchSubtasks()
+        }
       }
     },
     { immediate: true },
@@ -417,33 +422,6 @@
     }
   }
 
-
-  async function uploadAttachment(file: File) {
-    if (!props.task?.id || !props.workspaceId) return
-    attachmentsUploading.value = true
-    try {
-      const a = await taskService.uploadAttachment(props.workspaceId, props.task.id, file)
-      attachments.value = [
-        ...attachments.value,
-        { id: a.id, name: a.fileName, url: a.url, size: a.fileSize, mimeType: a.mimeType },
-      ]
-    } catch (e) {
-      console.error('Failed to upload attachment:', e)
-      throw e
-    } finally {
-      attachmentsUploading.value = false
-    }
-  }
-
-  async function deleteAttachment(attachmentId: string) {
-    if (!props.task?.id || !props.workspaceId) return
-    try {
-      await taskService.deleteAttachment(props.workspaceId, props.task.id, attachmentId)
-      attachments.value = attachments.value.filter((a) => a.id !== attachmentId)
-    } catch (e) {
-      console.error('Failed to delete attachment:', e)
-    }
-  }
 
   async function addTime(seconds: number) {
     if (!props.task?.id || !props.workspaceId || seconds <= 0) return

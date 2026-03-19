@@ -53,7 +53,7 @@
   const showAdd = ref(false)
   const addFormRef = ref<InstanceType<typeof TaskAddFormInline> | null>(null)
 
-  const tags = ref<string[]>([...props.modelValue])
+  const tags = ref<string[]>([...(props.modelValue ?? [])])
 
   watch(
     () => props.modelValue,
@@ -61,17 +61,19 @@
     { immediate: true },
   )
 
-  watch(tags, (v) => emit('update:modelValue', v), { deep: true })
-
   function addTag(value: string) {
     const t = value.trim()
     if (!t || tags.value.includes(t)) return
-    tags.value = [...tags.value, t]
+    const next = [...tags.value, t]
+    tags.value = next
+    emit('update:modelValue', next)
     showAdd.value = false
   }
 
   function removeTag(tag: string) {
-    tags.value = tags.value.filter((t) => t !== tag)
+    const next = tags.value.filter((t) => t !== tag)
+    tags.value = next
+    emit('update:modelValue', next)
   }
 
   watch(showAdd, (v) => {
