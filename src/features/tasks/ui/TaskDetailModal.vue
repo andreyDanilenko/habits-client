@@ -65,41 +65,16 @@
             </span>
             <span class="text-[11px] text-text-muted">{{ formatDate(task.dueDate) }}</span>
           </div>
-          <!-- Трекинг времени в шапке: время + вкл/выкл -->
-          <div
-            v-if="canEditTask"
-            class="flex items-center gap-(--spacing-2) text-(--text-xs) text-text-secondary"
-          >
-            <ClockIcon class="size-4 shrink-0 text-text-muted" />
-            <span
-              :class="[
-                'tabular-nums',
-                timerRunning ? 'font-medium text-primary-default' : '',
-              ]"
-            >
-              {{ formatTimeHMS(displaySeconds) }}
-            </span>
-            <button
-              type="button"
-              :class="[
-                'inline-flex items-center justify-center w-7 h-7 rounded transition-colors shrink-0',
-                timerRunning ? 'text-primary-default hover:bg-primary-default/10' : 'text-primary-default hover:bg-primary-default/10',
-              ]"
-              :disabled="timeSaving"
-              :title="timerRunning ? 'Остановить' : 'Старт'"
-              @click="toggleTimer"
-            >
-              <StopIcon v-if="timerRunning" class="size-4" />
-              <PlayIcon v-else class="size-4" />
-            </button>
-          </div>
-          <span
-            v-else
-            class="flex items-center gap-1 text-(--text-xs) text-text-secondary tabular-nums"
-          >
-            <ClockIcon class="size-4 shrink-0 text-text-muted" />
-            {{ formatTimeHMS(taskTotalSeconds) }}
-          </span>
+          <!-- Трекинг времени в шапке (изолирован для избежания ре-рендера модалки каждую секунду) -->
+          <TaskTimerDisplay
+            ref="timerRef"
+            :task-total-seconds="taskTotalSeconds"
+            :can-edit="canEditTask"
+            :time-saving="timeSaving"
+            :workspace-id="workspaceId"
+            :task-id="task?.id ?? null"
+            @add-time="addTime"
+          />
         </div>
 
         <!-- Описание (Markdown) -->
@@ -307,7 +282,7 @@
 <script setup lang="ts">
   import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
   import { Modal, ModalContent, Button, RichTextEditor, MarkdownContent, DetailTabsPanel } from '@/shared/ui'
-  import { ArrowLeftIcon, ClockIcon, StopIcon, PlayIcon } from '@/shared/ui/icon'
+  import { ArrowLeftIcon } from '@/shared/ui/icon'
   import CommentThread from './CommentThread.vue'
   import {
     TaskDetailSection,
@@ -316,6 +291,7 @@
     TaskTagsSection,
     TaskLinkedSection,
     TaskTimeSection,
+    TaskTimerDisplay,
     TaskAttachmentsSection,
     PriorityBadge,
     PriorityBadgeDropdown,
@@ -384,71 +360,11 @@
   const taskActivitiesTotal = ref(0)
   const taskActivitiesLoading = ref(false)
   const hasMoreActivities = computed(() => taskActivities.value.length < taskActivitiesTotal.value)
-  const timerRunning = ref(false)
-  const timerBaseSeconds = ref(0)
-  const timerStart = ref<number>(0)
-  const timerElapsedSeconds = ref(0)
-  let timerInterval: ReturnType<typeof setInterval> | null = null
+  const timerRef = ref<InstanceType<typeof TaskTimerDisplay> | null>(null)
 
-  const TASK_TIMER_STORAGE_KEY = 'task_active_timer'
-
-  function getTaskTotalSeconds(): number {
-    return (props.task?.spentMinutes ?? 0) * 60 + (props.task?.spentSeconds ?? 0)
-  }
-
-  const taskTotalSeconds = computed(() => getTaskTotalSeconds())
-
-  const displaySeconds = computed(() => {
-    if (timerRunning.value) {
-      return timerBaseSeconds.value + timerElapsedSeconds.value
-    }
-    return getTaskTotalSeconds()
-  })
-
-  function saveActiveTimerToStorage() {
-    if (!props.task?.id || !props.workspaceId) return
-    try {
-      localStorage.setItem(
-        TASK_TIMER_STORAGE_KEY,
-        JSON.stringify({
-          workspaceId: props.workspaceId,
-          taskId: props.task.id,
-          startTime: timerStart.value,
-          baseSeconds: timerBaseSeconds.value,
-        }),
-      )
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function clearActiveTimerFromStorage() {
-    try {
-      localStorage.removeItem(TASK_TIMER_STORAGE_KEY)
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function loadActiveTimerForTask(): boolean {
-    if (!props.task?.id || !props.workspaceId) return false
-    try {
-      const raw = localStorage.getItem(TASK_TIMER_STORAGE_KEY)
-      if (!raw) return false
-      const data = JSON.parse(raw) as { workspaceId: string; taskId: string; startTime: number; baseSeconds: number }
-      if (data.workspaceId !== props.workspaceId || data.taskId !== props.task.id) return false
-      timerBaseSeconds.value = data.baseSeconds
-      timerStart.value = data.startTime
-      timerElapsedSeconds.value = Math.floor((Date.now() - data.startTime) / 1000)
-      timerRunning.value = true
-      timerInterval = setInterval(() => {
-        timerElapsedSeconds.value = Math.floor((Date.now() - timerStart.value) / 1000)
-      }, 1000)
-      return true
-    } catch {
-      return false
-    }
-  }
+  const taskTotalSeconds = computed(
+    () => (props.task?.spentMinutes ?? 0) * 60 + (props.task?.spentSeconds ?? 0),
+  )
 
   function formatTimeHMS(totalSeconds: number): string {
     const h = Math.floor(totalSeconds / 3600)
@@ -462,29 +378,6 @@
     if (!m) return title
     const totalSec = m[2] ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : m[0].includes('мин') ? parseInt(m[1], 10) * 60 : parseInt(m[1], 10)
     return `Добавил ${formatTimeHMS(totalSec)}`
-  }
-
-  function toggleTimer() {
-    if (timerRunning.value) {
-      if (timerInterval) {
-        clearInterval(timerInterval)
-        timerInterval = null
-      }
-      timerRunning.value = false
-      clearActiveTimerFromStorage()
-      const elapsedSec = Math.floor((Date.now() - timerStart.value) / 1000)
-      if (elapsedSec > 0) addTime(elapsedSec)
-      timerElapsedSeconds.value = 0
-    } else {
-      timerBaseSeconds.value = getTaskTotalSeconds()
-      timerStart.value = Date.now()
-      timerElapsedSeconds.value = 0
-      timerRunning.value = true
-      timerInterval = setInterval(() => {
-        timerElapsedSeconds.value = Math.floor((Date.now() - timerStart.value) / 1000)
-      }, 1000)
-      saveActiveTimerToStorage()
-    }
   }
 
   async function changeStatus(status: import('@/entities/task').TaskStatus) {
@@ -545,15 +438,7 @@
 
   async function setSpentMinutes(minutes: number) {
     if (!props.task?.id || !props.workspaceId) return
-    if (timerRunning.value) {
-      if (timerInterval) {
-        clearInterval(timerInterval)
-        timerInterval = null
-      }
-      timerRunning.value = false
-      clearActiveTimerFromStorage()
-      timerElapsedSeconds.value = 0
-    }
+    timerRef.value?.stopAndSave()
     timeSaving.value = true
     try {
       const updated = await taskService.update(props.workspaceId, props.task.id, {
@@ -568,65 +453,6 @@
       timeSaving.value = false
     }
   }
-
-  watch(
-    () => props.task,
-    (t, prev) => {
-      if (!t) {
-        if (timerRunning.value && prev) {
-          try {
-            localStorage.setItem(
-              TASK_TIMER_STORAGE_KEY,
-              JSON.stringify({
-                workspaceId: props.workspaceId,
-                taskId: prev.id,
-                startTime: timerStart.value,
-                baseSeconds: timerBaseSeconds.value,
-              }),
-            )
-          } catch {
-            /* ignore */
-          }
-        }
-        if (timerInterval) {
-          clearInterval(timerInterval)
-          timerInterval = null
-        }
-        timerRunning.value = false
-      } else if (t && prev?.id !== t.id) {
-        if (timerRunning.value && prev) {
-          try {
-            localStorage.setItem(
-              TASK_TIMER_STORAGE_KEY,
-              JSON.stringify({
-                workspaceId: props.workspaceId,
-                taskId: prev.id,
-                startTime: timerStart.value,
-                baseSeconds: timerBaseSeconds.value,
-              }),
-            )
-          } catch {
-            /* ignore */
-          }
-        }
-        if (timerInterval) {
-          clearInterval(timerInterval)
-          timerInterval = null
-        }
-        timerRunning.value = false
-        loadActiveTimerForTask()
-      } else if (t && !prev) {
-        loadActiveTimerForTask()
-      }
-    },
-  )
-
-  onUnmounted(() => {
-    if (timerRunning.value) {
-      saveActiveTimerToStorage()
-    }
-    if (timerInterval) clearInterval(timerInterval)
-  })
 
   const taskIdRef = computed(() => props.task?.id)
   const { getTags, setTags, getChecklist, setChecklist } = useTaskLocalData(taskIdRef)
@@ -711,7 +537,7 @@
     if (!props.task?.id || !props.workspaceId || seconds <= 0) return
     timeSaving.value = true
     try {
-      const total = getTaskTotalSeconds() + seconds
+      const total = taskTotalSeconds.value + seconds
       const mins = Math.floor(total / 60)
       const secs = total % 60
       const updated = await taskService.update(props.workspaceId, props.task.id, {
@@ -788,7 +614,6 @@
     const b = [...lastTagsFromTask.value].sort()
     if (a.length === b.length && a.every((x, i) => x === b[i])) return
     lastTagsFromTask.value = [...(v ?? [])]
-    emit('taskUpdated', { ...props.task!, tags: v ?? [] })
     debouncedSaveTags(v)
   }, { deep: true })
 
