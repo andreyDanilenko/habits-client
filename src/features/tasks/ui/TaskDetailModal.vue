@@ -31,7 +31,6 @@
         </Button>
       </div>
 
-      <Transition name="task-detail-fade" mode="out-in">
       <div :key="task?.id ?? 'empty'" class="space-y-(--spacing-6)">
         <!-- Шапка: метаданные + трекинг времени -->
         <div class="flex flex-wrap items-center justify-between gap-(--spacing-3)">
@@ -163,6 +162,7 @@
             </div>
           </template>
           <template #time>
+            <div @click.stop class="">
             <TaskTimeSection
               :spent-minutes="task.spentMinutes ?? 0"
               :spent-seconds="task.spentSeconds ?? 0"
@@ -172,6 +172,7 @@
               @add-time="addTime"
               @set-spent="setSpentMinutes"
             />
+          </div>
           </template>
           <template #changes>
             <div v-if="taskActivitiesLoading && taskActivities.length === 0" class="text-(--text-xs) text-text-muted py-(--spacing-4)">
@@ -212,7 +213,7 @@
         </DetailTabsPanel>
 
         <!-- Вложения -->
-        <TaskAttachmentsSection
+        <!-- <TaskAttachmentsSection
           :attachments="attachments"
           :loading="attachmentsLoading"
           :can-edit="canEditTask"
@@ -221,9 +222,8 @@
           :task-id="task.id"
           @upload="uploadAttachment"
           @delete="deleteAttachment"
-        />
+        /> -->
       </div>
-      </Transition>
 
       <template #footer>
         <div class="flex flex-wrap items-center justify-end gap-(--spacing-2)">
