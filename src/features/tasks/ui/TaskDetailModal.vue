@@ -35,9 +35,27 @@
         <!-- Шапка: метаданные + трекинг времени -->
         <div class="flex flex-wrap items-center justify-between gap-(--spacing-3)">
           <div class="flex flex-wrap items-center gap-(--spacing-2)">
-            <PriorityBadge :priority="task.priority" />
-            <StatusBadge :status="task.status" />
-            <TypeBadge :type="task.type" />
+            <PriorityBadgeDropdown
+              v-if="canEditTask"
+              :priority="task.priority"
+              :saving="prioritySaving"
+              @change="changePriority"
+            />
+            <PriorityBadge v-else :priority="task.priority" />
+            <StatusBadgeDropdown
+              v-if="canEditTask"
+              :status="task.status"
+              :saving="statusSaving"
+              @change="changeStatus"
+            />
+            <StatusBadge v-else :status="task.status" />
+            <TypeBadgeDropdown
+              v-if="canEditTask"
+              :type="task.type"
+              :saving="typeSaving"
+              @change="changeType"
+            />
+            <TypeBadge v-else :type="task.type" />
             <span v-if="assigneeName" class="text-[11px] text-text-secondary">
               → {{ assigneeName }}
             </span>
@@ -270,8 +288,11 @@
     TaskTimeSection,
     TaskTimerDisplay,
     PriorityBadge,
+    PriorityBadgeDropdown,
     StatusBadge,
+    StatusBadgeDropdown,
     TypeBadge,
+    TypeBadgeDropdown,
     type LinkedTask,
   } from './sections'
   import { PermissionGuard, usePermissions } from '@/features/permissions'
@@ -280,7 +301,7 @@
   import { taskService } from '@/entities/task'
   import { useTaskComments } from '../model/use-task-comments'
   import { useTaskLocalData } from '../model/use-task-local-data'
-  import type { Task, TaskChecklistItem, TaskActivity } from '@/entities/task'
+  import type { Task, TaskChecklistItem, TaskActivity, TaskPriority, TaskStatus, TaskType } from '@/entities/task'
 
   const props = defineProps<{
     task: Task | null
@@ -320,6 +341,9 @@
   const attachments = ref<{ id: string; name: string; url: string; size?: number; mimeType?: string }[]>([])
   const attachmentsLoading = ref(false)
   const timeSaving = ref(false)
+  const prioritySaving = ref(false)
+  const statusSaving = ref(false)
+  const typeSaving = ref(false)
   const activityTab = ref('comments')
   const ACTIVITIES_PAGE_SIZE = 10
   const taskActivities = ref<TaskActivity[]>([])
@@ -361,6 +385,45 @@
       console.error('Failed to set spent time:', e)
     } finally {
       timeSaving.value = false
+    }
+  }
+
+  async function changePriority(priority: TaskPriority) {
+    if (!props.task?.id || !props.workspaceId) return
+    prioritySaving.value = true
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { priority })
+      emit('taskUpdated', updated)
+    } catch (e) {
+      console.error('Failed to update priority:', e)
+    } finally {
+      prioritySaving.value = false
+    }
+  }
+
+  async function changeStatus(status: TaskStatus) {
+    if (!props.task?.id || !props.workspaceId) return
+    statusSaving.value = true
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { status })
+      emit('taskUpdated', updated)
+    } catch (e) {
+      console.error('Failed to update status:', e)
+    } finally {
+      statusSaving.value = false
+    }
+  }
+
+  async function changeType(type: TaskType) {
+    if (!props.task?.id || !props.workspaceId) return
+    typeSaving.value = true
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { type })
+      emit('taskUpdated', updated)
+    } catch (e) {
+      console.error('Failed to update type:', e)
+    } finally {
+      typeSaving.value = false
     }
   }
 

@@ -97,8 +97,26 @@
     }
   }
 
-  // Временно отключено — может вызывать циклы
-  // function loadActiveTimerForTask(): boolean { ... }
+  function loadActiveTimerForTask(): boolean {
+    if (!props.taskId || !props.workspaceId) return false
+    try {
+      const raw = localStorage.getItem(TASK_TIMER_STORAGE_KEY)
+      if (!raw) return false
+      const data = JSON.parse(raw) as { workspaceId: string; taskId: string; startTime: number; baseSeconds: number }
+      if (data.workspaceId !== props.workspaceId || data.taskId !== props.taskId) return false
+
+      timerBaseSeconds.value = data.baseSeconds ?? 0
+      timerStart.value = data.startTime
+      timerElapsedSeconds.value = Math.floor((Date.now() - data.startTime) / 1000)
+      timerRunning.value = true
+      timerInterval = setInterval(() => {
+        timerElapsedSeconds.value = Math.floor((Date.now() - timerStart.value) / 1000)
+      }, 1000)
+      return true
+    } catch {
+      return false
+    }
+  }
 
   function stopInterval() {
     if (timerInterval) {
@@ -122,8 +140,7 @@
         }
         stopInterval()
         timerRunning.value = false
-        // Временно отключено: loadActiveTimerForTask() может вызывать циклы
-        // loadActiveTimerForTask()
+        loadActiveTimerForTask()
       }
     },
     { immediate: true },
@@ -136,12 +153,12 @@
 
   function stopAndSave() {
     if (timerRunning.value) {
-      const elapsedSec = timerBaseSeconds.value + Math.floor((Date.now() - timerStart.value) / 1000)
+      const deltaSec = Math.floor((Date.now() - timerStart.value) / 1000)
       stopInterval()
       timerRunning.value = false
       clearActiveTimerFromStorage()
       timerElapsedSeconds.value = 0
-      if (elapsedSec > 0) emit('addTime', elapsedSec)
+      if (deltaSec > 0) emit('addTime', deltaSec)
     }
   }
 
