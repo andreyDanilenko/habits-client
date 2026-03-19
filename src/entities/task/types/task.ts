@@ -14,6 +14,13 @@ export interface TaskEntityLink {
   entityName?: string
 }
 
+/** Пункт чеклиста */
+export interface TaskChecklistItem {
+  id: string
+  text: string
+  done: boolean
+}
+
 /** Задача */
 export interface Task {
   id: string
@@ -36,7 +43,12 @@ export interface Task {
   createdAt: string
   updatedAt: string
   spentMinutes?: number
+  spentSeconds?: number
   entities?: TaskEntityLink[]
+  /** Теги (пока без backend) */
+  tags?: string[]
+  /** Чеклист (пока без backend) */
+  checklist?: TaskChecklistItem[]
 }
 
 /** DTO создания задачи */
@@ -66,7 +78,10 @@ export interface UpdateTaskDto {
   dueTime?: string
   reminderDate?: string
   duration?: number
+  spentMinutes?: number
+  spentSeconds?: number
   assigneeId?: string
+  tags?: string[]
   entities?: TaskEntityLink[]
 }
 
