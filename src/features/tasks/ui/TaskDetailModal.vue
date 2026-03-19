@@ -18,159 +18,259 @@
     >
       <!-- Возврат к родительской задаче (для подзадач) -->
       <div v-if="task.parentId" class="mb-(--spacing-3) flex items-center gap-(--spacing-2)">
-        <button
-          type="button"
-          class="inline-flex items-center gap-(--spacing-1) text-(--text-sm) text-text-muted hover:text-primary-default transition-colors"
+        <Button
+          variant="link"
+          size="sm"
+          :left-icon="ArrowLeftIcon"
+          custom-class="TaskDetailModal__ViewParent text-text-muted"
           @click="$emit('viewParent', task.parentId)"
         >
-          <ArrowLeftIcon size="sm" />
-          <span>{{
+          {{
             displayParentTask ? `К задаче «${displayParentTask.title}»` : 'К родительской задаче'
-          }}</span>
-        </button>
+          }}
+        </Button>
       </div>
 
-      <div class="space-y-(--spacing-6)">
-        <!-- Шапка: метаданные -->
-        <div class="flex flex-wrap items-center gap-(--spacing-2)">
-          <span
-            class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs) font-medium"
-            :class="priorityClass(task.priority)"
+      <Transition name="task-detail-fade" mode="out-in">
+      <div :key="task?.id ?? 'empty'" class="space-y-(--spacing-6)">
+        <!-- Шапка: метаданные + трекинг времени -->
+        <div class="flex flex-wrap items-center justify-between gap-(--spacing-3)">
+          <div class="flex flex-wrap items-center gap-(--spacing-2)">
+            <PriorityBadgeDropdown
+              v-if="canEditTask"
+              :key="`priority-${task.id}-${priorityBadgeKey}`"
+              :priority="task.priority"
+              :saving="prioritySaving"
+              @change="changePriority"
+            />
+            <PriorityBadge v-else :priority="task.priority" />
+            <StatusBadgeDropdown
+              v-if="canEditTask"
+              :key="`status-${task.id}-${statusBadgeKey}`"
+              :status="task.status"
+              :saving="statusSaving"
+              @change="changeStatus"
+            />
+            <StatusBadge v-else :status="task.status" />
+            <TypeBadgeDropdown
+              v-if="canEditTask"
+              :key="`type-${task.id}-${typeBadgeKey}`"
+              :type="task.type"
+              :saving="typeSaving"
+              @change="changeType"
+            />
+            <TypeBadge v-else :type="task.type" />
+            <span v-if="assigneeName" class="text-[11px] text-text-secondary">
+              → {{ assigneeName }}
+            </span>
+            <span class="text-[11px] text-text-muted">{{ formatDate(task.dueDate) }}</span>
+          </div>
+          <!-- Трекинг времени в шапке: время + вкл/выкл -->
+          <div
+            v-if="canEditTask"
+            class="flex items-center gap-(--spacing-2) text-(--text-xs) text-text-secondary"
           >
-            {{ priorityLabel(task.priority) }}
-          </span>
+            <ClockIcon class="size-4 shrink-0 text-text-muted" />
+            <span
+              :class="[
+                'tabular-nums',
+                timerRunning ? 'font-medium text-primary-default' : '',
+              ]"
+            >
+              {{ formatTimeHMS(displaySeconds) }}
+            </span>
+            <button
+              type="button"
+              :class="[
+                'inline-flex items-center justify-center w-7 h-7 rounded transition-colors shrink-0',
+                timerRunning ? 'text-primary-default hover:bg-primary-default/10' : 'text-primary-default hover:bg-primary-default/10',
+              ]"
+              :disabled="timeSaving"
+              :title="timerRunning ? 'Остановить' : 'Старт'"
+              @click="toggleTimer"
+            >
+              <StopIcon v-if="timerRunning" class="size-4" />
+              <PlayIcon v-else class="size-4" />
+            </button>
+          </div>
           <span
-            class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs)"
-            :class="statusClass(task.status)"
+            v-else
+            class="flex items-center gap-1 text-(--text-xs) text-text-secondary tabular-nums"
           >
-            {{ statusLabel(task.status) }}
+            <ClockIcon class="size-4 shrink-0 text-text-muted" />
+            {{ formatTimeHMS(taskTotalSeconds) }}
           </span>
-          <span class="text-(--text-xs) text-text-muted">{{ typeLabel(task.type) }}</span>
-          <span v-if="assigneeName" class="text-(--text-xs) text-text-secondary">
-            → {{ assigneeName }}
-          </span>
-          <span class="text-(--text-xs) text-text-muted">{{ formatDate(task.dueDate) }}</span>
         </div>
 
         <!-- Описание (Markdown) -->
-        <div v-if="task.description" class="TaskDetailSection">
-          <h4 class="TaskDetailSection__Title">Описание</h4>
+        <TaskDetailSection v-if="task.description" title="Описание">
           <MarkdownContent :content="task.description" />
-        </div>
+        </TaskDetailSection>
 
         <!-- Подзадачи -->
-        <div v-if="!task.parentId" class="TaskDetailSection">
-          <div class="flex items-center justify-between mb-(--spacing-2)">
-            <h4 class="TaskDetailSection__Title">Подзадачи ({{ subtasks.length }})</h4>
+        <TaskDetailSection
+          v-if="!task.parentId"
+          :title="`Подзадачи (${subtasksCompletedCount}/${subtasks.length})`"
+        >
+          <template #action>
             <PermissionGuard :permission="TASKS_PERMISSIONS.taskCreate">
-              <Button size="sm" variant="outline" @click="$emit('addSubtask', task)">
+              <Button
+                variant="link"
+                size="xs"
+                custom-class="TaskDetailModal__AddSubtask text-[11px]"
+                @click="$emit('addSubtask', task)"
+              >
                 + Добавить
               </Button>
             </PermissionGuard>
-          </div>
-          <div v-if="subtasksLoading" class="text-(--text-sm) text-text-muted py-(--spacing-2)">
+          </template>
+          <div v-if="subtasksLoading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">
             Загрузка...
           </div>
-          <ul v-else-if="subtasks.length">
-            <li
+          <ul v-else-if="subtasks.length" class="space-y-0 overflow-hidden">
+            <TaskSubtaskRow
               v-for="st in subtasks"
               :key="st.id"
-              class="flex items-center justify-between py-(--spacing-2) px-(--spacing-3) rounded-(--radius-sm) hover:bg-bg-tertiary -mx-(--spacing-3) cursor-pointer"
+              :task="st"
+              :format-date="formatDate"
               @click="$emit('viewSubtask', st)"
-            >
-              <div class="flex items-center gap-(--spacing-2) min-w-0 flex-1">
-                <span
-                  class="inline-flex items-center px-(--spacing-2) py-(--spacing-1) rounded-(--radius-sm) text-(--text-xs)"
-                  :class="statusClass(st.status)"
-                >
-                  {{ statusLabel(st.status) }}
-                </span>
-                <span class="text-(--text-sm) text-text-primary truncate">{{ st.title }}</span>
-              </div>
-              <span class="text-(--text-xs) text-text-muted shrink-0">{{
-                formatDate(st.dueDate)
-              }}</span>
-            </li>
+            />
           </ul>
-          <p v-else class="text-(--text-sm) text-text-muted py-(--spacing-2)">
+          <p v-else class="text-(--text-xs) text-text-muted py-(--spacing-2)">
             Нет подзадач. Добавьте для разбиения работы.
           </p>
-        </div>
+        </TaskDetailSection>
 
-        <!-- Чеклист (placeholder) -->
-        <div class="TaskDetailSection TaskDetailSection--placeholder">
-          <h4 class="TaskDetailSection__Title">Чеклист</h4>
-          <p class="text-(--text-sm) text-text-muted">Скоро: пункты с отметкой</p>
-        </div>
+        <!-- Чеклист -->
+        <TaskChecklist
+          v-model="checklistItems"
+          :can-edit="canEditTask"
+        />
 
-        <!-- Теги (placeholder) -->
-        <div class="TaskDetailSection TaskDetailSection--placeholder">
-          <h4 class="TaskDetailSection__Title">Теги</h4>
-          <p class="text-(--text-sm) text-text-muted">Скоро: добавление тегов</p>
-        </div>
+        <!-- Теги -->
+        <TaskTagsSection
+          v-model="tagsItems"
+          :can-edit="canEditTask"
+        />
 
-        <!-- Связанные задачи (placeholder) -->
-        <div class="TaskDetailSection TaskDetailSection--placeholder">
-          <h4 class="TaskDetailSection__Title">Связанные задачи</h4>
-          <p class="text-(--text-sm) text-text-muted">Скоро: блокирует / блокируется</p>
-        </div>
+        <!-- Связанные задачи -->
+        <TaskLinkedSection
+          :linked-tasks="linkedTasks"
+          :loading="linkedTasksLoading"
+          :can-edit="canEditTask"
+          :workspace-id="workspaceId"
+          :current-task-id="task.id"
+          :exclude-task-ids="[task.id, ...linkedTasks.map((l) => l.id)]"
+          @view="handleViewLinked"
+          @add="addTaskLink"
+          @remove="removeTaskLink"
+        />
 
-        <!-- Активность: комментарии -->
-        <div class="TaskDetailSection">
-          <h4 class="TaskDetailSection__Title">Активность ({{ comments.length }})</h4>
-          <div v-if="commentsLoading" class="text-(--text-sm) text-text-muted py-(--spacing-2)">
-            Загрузка...
-          </div>
-          <div v-else class="space-y-(--spacing-3)">
-            <CommentThread
-              v-for="c in visibleRootComments"
-              :key="c.id"
-              :comment="c"
-              :is-root="true"
+        <!-- Активность: табы как в Jira -->
+        <DetailTabsPanel v-model="activityTab" :tabs="activityTabs">
+          <template #comments>
+            <div class="space-y-(--spacing-3)">
+              <div v-if="commentsLoading" class="text-(--text-xs) text-text-muted py-(--spacing-2)">
+                Загрузка...
+              </div>
+              <template v-else>
+                <CommentThread
+                  v-for="c in visibleRootComments"
+                  :key="c.id"
+                  :comment="c"
+                  :is-root="true"
+                />
+                <div v-if="hasMoreComments" class="flex justify-center pt-(--spacing-2)">
+                  <Button
+                    variant="link"
+                    size="xs"
+                    custom-class="TaskDetailModal__ShowMore text-[11px]"
+                    @click="showMoreComments"
+                  >
+                    Показать ещё ({{ rootComments.length - visibleCommentsCount }})
+                  </Button>
+                </div>
+                <div class="pt-(--spacing-2) border-t border-border-light">
+                  <RichTextEditor
+                    v-model="newCommentBody"
+                    placeholder="Добавить комментарий..."
+                    compact
+                    class="mb-(--spacing-2)"
+                  />
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    :disabled="isRichContentEmpty(newCommentBody) || commentSaving"
+                    @click="addComment"
+                  >
+                    {{ commentSaving ? 'Отправка...' : 'Отправить' }}
+                  </Button>
+                </div>
+              </template>
+            </div>
+          </template>
+          <template #time>
+            <TaskTimeSection
+              :spent-minutes="task.spentMinutes ?? 0"
+              :spent-seconds="task.spentSeconds ?? 0"
+              :duration="task.duration"
+              :can-edit="canEditTask"
+              :saving="timeSaving"
+              @add-time="addTime"
+              @set-spent="setSpentMinutes"
             />
-            <!-- Показать ещё комментарии -->
-            <div v-if="hasMoreComments" class="flex justify-center pt-(--spacing-2)">
-              <Button size="sm" variant="ghost" @click="showMoreComments">
-                Показать ещё ({{ rootComments.length - visibleCommentsCount }})
-              </Button>
+          </template>
+          <template #changes>
+            <div v-if="taskActivitiesLoading && taskActivities.length === 0" class="text-(--text-xs) text-text-muted py-(--spacing-4)">
+              Загрузка...
             </div>
-            <!-- Форма нового комментария (всегда доступна) -->
-            <div class="pt-(--spacing-2) border-t border-border-light">
-              <RichTextEditor
-                v-model="newCommentBody"
-                placeholder="Добавить комментарий..."
-                compact
-                class="mb-(--spacing-2)"
-              />
-              <Button
-                size="sm"
-                variant="primary"
-                :disabled="isRichContentEmpty(newCommentBody) || commentSaving"
-                @click="addComment"
-              >
-                {{ commentSaving ? 'Отправка...' : 'Отправить' }}
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Время -->
-        <div class="TaskDetailSection TaskDetailSection--placeholder">
-          <h4 class="TaskDetailSection__Title">Время</h4>
-          <p class="text-(--text-sm) text-text-muted">
-            {{ task.spentMinutes ? `Затрачено: ${task.spentMinutes} мин` : 'Скоро: тайм-трекинг' }}
-            <span v-if="task.duration" class="text-text-secondary">
-              · Оценка: {{ task.duration }} мин</span
-            >
-          </p>
-        </div>
+            <template v-else>
+              <ul v-if="taskActivities.length" class="space-y-(--spacing-3)">
+                <li
+                  v-for="a in taskActivities"
+                  :key="a.id"
+                  class="flex items-start gap-(--spacing-2) py-(--spacing-2) border-b border-border-light last:border-0"
+                >
+                  <span class="text-(--text-sm) shrink-0">{{ a.emoji || '•' }}</span>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-(--text-xs) text-text-primary">{{ formatActivityTitle(a.title) }}</p>
+                    <p class="text-[11px] text-text-muted">
+                      {{ a.userName || 'Пользователь' }} · {{ formatRelativeTime(a.createdAt) }}
+                    </p>
+                  </div>
+                </li>
+              </ul>
+              <div v-if="hasMoreActivities" class="flex justify-center pt-(--spacing-2)">
+                <Button
+                  variant="link"
+                  size="xs"
+                  :disabled="taskActivitiesLoading"
+                  custom-class="TaskDetailModal__ShowMore text-[11px]"
+                  @click="showMoreActivities"
+                >
+                  {{ taskActivitiesLoading ? 'Загрузка...' : `Показать ещё (${taskActivitiesTotal - taskActivities.length})` }}
+                </Button>
+              </div>
+              <p v-if="!taskActivities.length" class="text-(--text-xs) text-text-muted py-(--spacing-4)">
+                Нет изменений
+              </p>
+            </template>
+          </template>
+        </DetailTabsPanel>
 
         <!-- Вложения -->
-        <div class="TaskDetailSection TaskDetailSection--placeholder">
-          <h4 class="TaskDetailSection__Title">Вложения</h4>
-          <p class="text-(--text-sm) text-text-muted">Скоро: прикрепление файлов</p>
-        </div>
+        <TaskAttachmentsSection
+          :attachments="attachments"
+          :loading="attachmentsLoading"
+          :can-edit="canEditTask"
+          :uploading="attachmentsUploading"
+          :workspace-id="workspaceId"
+          :task-id="task.id"
+          @upload="uploadAttachment"
+          @delete="deleteAttachment"
+        />
       </div>
+      </Transition>
 
       <template #footer>
         <div class="flex flex-wrap items-center justify-end gap-(--spacing-2)">
@@ -206,22 +306,32 @@
 
 <script setup lang="ts">
   import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
-  import { Modal, ModalContent, Button, RichTextEditor, MarkdownContent } from '@/shared/ui'
-  import { ArrowLeftIcon } from '@/shared/ui/icon'
+  import { Modal, ModalContent, Button, RichTextEditor, MarkdownContent, DetailTabsPanel } from '@/shared/ui'
+  import { ArrowLeftIcon, ClockIcon, StopIcon, PlayIcon } from '@/shared/ui/icon'
   import CommentThread from './CommentThread.vue'
+  import {
+    TaskDetailSection,
+    TaskSubtaskRow,
+    TaskChecklist,
+    TaskTagsSection,
+    TaskLinkedSection,
+    TaskTimeSection,
+    TaskAttachmentsSection,
+    PriorityBadge,
+    PriorityBadgeDropdown,
+    StatusBadge,
+    StatusBadgeDropdown,
+    TypeBadge,
+    TypeBadgeDropdown,
+    type LinkedTask,
+  } from './sections'
   import { PermissionGuard, usePermissions } from '@/features/permissions'
   import { TASKS_PERMISSIONS } from '@/features/permissions/config'
-  import { formatDateRu } from '@/shared/lib'
-  import {
-    taskService,
-    priorityClass,
-    priorityLabel,
-    statusClass,
-    statusLabel,
-    typeLabel,
-  } from '@/entities/task'
+  import { formatDateRu, formatRelativeTime, useDebounceFn } from '@/shared/lib'
+  import { taskService } from '@/entities/task'
   import { useTaskComments } from '../model/use-task-comments'
-  import type { Task } from '@/entities/task'
+  import { useTaskLocalData } from '../model/use-task-local-data'
+  import type { Task, TaskChecklistItem, TaskActivity } from '@/entities/task'
 
   const props = defineProps<{
     task: Task | null
@@ -241,7 +351,9 @@
     addSubtask: [task: Task]
     viewSubtask: [task: Task]
     viewParent: [parentId: string]
+    viewLinkedTask: [taskId: string]
     commentsUpdated: []
+    taskUpdated: [task: Task]
   }>()
 
   const { can } = usePermissions()
@@ -253,8 +365,493 @@
     return opt?.label ?? ''
   })
 
+  const checklistItems = ref<TaskChecklistItem[]>([])
+  const tagsItems = ref<string[]>([])
+  const linkedTasks = ref<LinkedTask[]>([])
+  const attachments = ref<{ id: string; name: string; url: string; size?: number; mimeType?: string }[]>([])
+  const attachmentsLoading = ref(false)
+  const attachmentsUploading = ref(false)
+  const timeSaving = ref(false)
+  const activityTab = ref('comments')
+  const ACTIVITIES_PAGE_SIZE = 10
+  const statusSaving = ref(false)
+  const prioritySaving = ref(false)
+  const typeSaving = ref(false)
+  const statusBadgeKey = ref(0)
+  const priorityBadgeKey = ref(0)
+  const typeBadgeKey = ref(0)
+  const taskActivities = ref<TaskActivity[]>([])
+  const taskActivitiesTotal = ref(0)
+  const taskActivitiesLoading = ref(false)
+  const hasMoreActivities = computed(() => taskActivities.value.length < taskActivitiesTotal.value)
+  const timerRunning = ref(false)
+  const timerBaseSeconds = ref(0)
+  const timerStart = ref<number>(0)
+  const timerElapsedSeconds = ref(0)
+  let timerInterval: ReturnType<typeof setInterval> | null = null
+
+  const TASK_TIMER_STORAGE_KEY = 'task_active_timer'
+
+  function getTaskTotalSeconds(): number {
+    return (props.task?.spentMinutes ?? 0) * 60 + (props.task?.spentSeconds ?? 0)
+  }
+
+  const taskTotalSeconds = computed(() => getTaskTotalSeconds())
+
+  const displaySeconds = computed(() => {
+    if (timerRunning.value) {
+      return timerBaseSeconds.value + timerElapsedSeconds.value
+    }
+    return getTaskTotalSeconds()
+  })
+
+  function saveActiveTimerToStorage() {
+    if (!props.task?.id || !props.workspaceId) return
+    try {
+      localStorage.setItem(
+        TASK_TIMER_STORAGE_KEY,
+        JSON.stringify({
+          workspaceId: props.workspaceId,
+          taskId: props.task.id,
+          startTime: timerStart.value,
+          baseSeconds: timerBaseSeconds.value,
+        }),
+      )
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function clearActiveTimerFromStorage() {
+    try {
+      localStorage.removeItem(TASK_TIMER_STORAGE_KEY)
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function loadActiveTimerForTask(): boolean {
+    if (!props.task?.id || !props.workspaceId) return false
+    try {
+      const raw = localStorage.getItem(TASK_TIMER_STORAGE_KEY)
+      if (!raw) return false
+      const data = JSON.parse(raw) as { workspaceId: string; taskId: string; startTime: number; baseSeconds: number }
+      if (data.workspaceId !== props.workspaceId || data.taskId !== props.task.id) return false
+      timerBaseSeconds.value = data.baseSeconds
+      timerStart.value = data.startTime
+      timerElapsedSeconds.value = Math.floor((Date.now() - data.startTime) / 1000)
+      timerRunning.value = true
+      timerInterval = setInterval(() => {
+        timerElapsedSeconds.value = Math.floor((Date.now() - timerStart.value) / 1000)
+      }, 1000)
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  function formatTimeHMS(totalSeconds: number): string {
+    const h = Math.floor(totalSeconds / 3600)
+    const m = Math.floor((totalSeconds % 3600) / 60)
+    const s = totalSeconds % 60
+    return [h, m, s].map((n) => n.toString().padStart(2, '0')).join(':')
+  }
+
+  function formatActivityTitle(title: string): string {
+    const m = title.match(/^Добавил\s+(\d+)(?:\s+мин(?:\s+(\d+)\s+сек)?|\s+сек)$/)
+    if (!m) return title
+    const totalSec = m[2] ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : m[0].includes('мин') ? parseInt(m[1], 10) * 60 : parseInt(m[1], 10)
+    return `Добавил ${formatTimeHMS(totalSec)}`
+  }
+
+  function toggleTimer() {
+    if (timerRunning.value) {
+      if (timerInterval) {
+        clearInterval(timerInterval)
+        timerInterval = null
+      }
+      timerRunning.value = false
+      clearActiveTimerFromStorage()
+      const elapsedSec = Math.floor((Date.now() - timerStart.value) / 1000)
+      if (elapsedSec > 0) addTime(elapsedSec)
+      timerElapsedSeconds.value = 0
+    } else {
+      timerBaseSeconds.value = getTaskTotalSeconds()
+      timerStart.value = Date.now()
+      timerElapsedSeconds.value = 0
+      timerRunning.value = true
+      timerInterval = setInterval(() => {
+        timerElapsedSeconds.value = Math.floor((Date.now() - timerStart.value) / 1000)
+      }, 1000)
+      saveActiveTimerToStorage()
+    }
+  }
+
+  async function changeStatus(status: import('@/entities/task').TaskStatus) {
+    if (!props.task?.id || !props.workspaceId) return
+    if (props.task.status === status) return
+    statusSaving.value = true
+    const original = { ...props.task }
+    emit('taskUpdated', { ...props.task, status })
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { status })
+      if (updated) emit('taskUpdated', updated)
+      await fetchTaskActivities()
+    } catch (e) {
+      console.error('Failed to update status:', e)
+      emit('taskUpdated', original)
+    } finally {
+      statusSaving.value = false
+      statusBadgeKey.value++
+    }
+  }
+
+  async function changePriority(priority: import('@/entities/task').TaskPriority) {
+    if (!props.task?.id || !props.workspaceId) return
+    if (props.task.priority === priority) return
+    prioritySaving.value = true
+    const original = { ...props.task }
+    emit('taskUpdated', { ...props.task, priority })
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { priority })
+      if (updated) emit('taskUpdated', updated)
+      await fetchTaskActivities()
+    } catch (e) {
+      console.error('Failed to update priority:', e)
+      emit('taskUpdated', original)
+    } finally {
+      prioritySaving.value = false
+    }
+  }
+
+  async function changeType(type: import('@/entities/task').TaskType) {
+    if (!props.task?.id || !props.workspaceId) return
+    if (props.task.type === type) return
+    typeSaving.value = true
+    const original = { ...props.task }
+    emit('taskUpdated', { ...props.task, type })
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { type })
+      if (updated) emit('taskUpdated', updated)
+      await fetchTaskActivities()
+    } catch (e) {
+      console.error('Failed to update type:', e)
+      emit('taskUpdated', original)
+    } finally {
+      typeSaving.value = false
+      typeBadgeKey.value++
+    }
+  }
+
+  async function setSpentMinutes(minutes: number) {
+    if (!props.task?.id || !props.workspaceId) return
+    if (timerRunning.value) {
+      if (timerInterval) {
+        clearInterval(timerInterval)
+        timerInterval = null
+      }
+      timerRunning.value = false
+      clearActiveTimerFromStorage()
+      timerElapsedSeconds.value = 0
+    }
+    timeSaving.value = true
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, {
+        spentMinutes: minutes,
+        spentSeconds: 0,
+      })
+      emit('taskUpdated', updated)
+      await fetchTaskActivities()
+    } catch (e) {
+      console.error('Failed to set spent time:', e)
+    } finally {
+      timeSaving.value = false
+    }
+  }
+
+  watch(
+    () => props.task,
+    (t, prev) => {
+      if (!t) {
+        if (timerRunning.value && prev) {
+          try {
+            localStorage.setItem(
+              TASK_TIMER_STORAGE_KEY,
+              JSON.stringify({
+                workspaceId: props.workspaceId,
+                taskId: prev.id,
+                startTime: timerStart.value,
+                baseSeconds: timerBaseSeconds.value,
+              }),
+            )
+          } catch {
+            /* ignore */
+          }
+        }
+        if (timerInterval) {
+          clearInterval(timerInterval)
+          timerInterval = null
+        }
+        timerRunning.value = false
+      } else if (t && prev?.id !== t.id) {
+        if (timerRunning.value && prev) {
+          try {
+            localStorage.setItem(
+              TASK_TIMER_STORAGE_KEY,
+              JSON.stringify({
+                workspaceId: props.workspaceId,
+                taskId: prev.id,
+                startTime: timerStart.value,
+                baseSeconds: timerBaseSeconds.value,
+              }),
+            )
+          } catch {
+            /* ignore */
+          }
+        }
+        if (timerInterval) {
+          clearInterval(timerInterval)
+          timerInterval = null
+        }
+        timerRunning.value = false
+        loadActiveTimerForTask()
+      } else if (t && !prev) {
+        loadActiveTimerForTask()
+      }
+    },
+  )
+
+  onUnmounted(() => {
+    if (timerRunning.value) {
+      saveActiveTimerToStorage()
+    }
+    if (timerInterval) clearInterval(timerInterval)
+  })
+
+  const taskIdRef = computed(() => props.task?.id)
+  const { getTags, setTags, getChecklist, setChecklist } = useTaskLocalData(taskIdRef)
+
+  const lastTagsFromTask = ref<string[]>([])
+  watch(
+    () => props.task,
+    (t) => {
+      if (!t) {
+        checklistItems.value = []
+        tagsItems.value = []
+        lastTagsFromTask.value = []
+      } else {
+        checklistItems.value = t.checklist?.length ? t.checklist : getChecklist()
+        const tags = t.tags?.length ? t.tags : getTags()
+        lastTagsFromTask.value = [...tags]
+        tagsItems.value = tags
+      }
+      linkedTasks.value = []
+      attachments.value = []
+    },
+    { immediate: true },
+  )
+
+  async function fetchAttachments() {
+    if (!props.task?.id || !props.workspaceId) return
+    attachmentsLoading.value = true
+    try {
+      const list = await taskService.getAttachments(props.workspaceId, props.task.id)
+      attachments.value = list.map((a) => ({
+        id: a.id,
+        name: a.fileName,
+        url: a.url,
+        size: a.fileSize,
+        mimeType: a.mimeType,
+      }))
+    } catch (e) {
+      console.error('Failed to fetch attachments:', e)
+      attachments.value = []
+    } finally {
+      attachmentsLoading.value = false
+    }
+  }
+
+  watch(
+    () => [props.task?.id, props.workspaceId],
+    () => {
+      if (props.task?.id && props.workspaceId) fetchAttachments()
+      else attachments.value = []
+    },
+    { immediate: true },
+  )
+
+  async function uploadAttachment(file: File) {
+    if (!props.task?.id || !props.workspaceId) return
+    attachmentsUploading.value = true
+    try {
+      const a = await taskService.uploadAttachment(props.workspaceId, props.task.id, file)
+      attachments.value = [
+        ...attachments.value,
+        { id: a.id, name: a.fileName, url: a.url, size: a.fileSize, mimeType: a.mimeType },
+      ]
+    } catch (e) {
+      console.error('Failed to upload attachment:', e)
+      throw e
+    } finally {
+      attachmentsUploading.value = false
+    }
+  }
+
+  async function deleteAttachment(attachmentId: string) {
+    if (!props.task?.id || !props.workspaceId) return
+    try {
+      await taskService.deleteAttachment(props.workspaceId, props.task.id, attachmentId)
+      attachments.value = attachments.value.filter((a) => a.id !== attachmentId)
+    } catch (e) {
+      console.error('Failed to delete attachment:', e)
+    }
+  }
+
+  async function addTime(seconds: number) {
+    if (!props.task?.id || !props.workspaceId || seconds <= 0) return
+    timeSaving.value = true
+    try {
+      const total = getTaskTotalSeconds() + seconds
+      const mins = Math.floor(total / 60)
+      const secs = total % 60
+      const updated = await taskService.update(props.workspaceId, props.task.id, {
+        spentMinutes: mins,
+        spentSeconds: secs,
+      })
+      emit('taskUpdated', updated)
+      await fetchTaskActivities()
+    } catch (e) {
+      console.error('Failed to add time:', e)
+    } finally {
+      timeSaving.value = false
+    }
+  }
+
+  async function fetchTaskActivities(reset = true) {
+    if (!props.task?.id || !props.workspaceId) return
+    taskActivitiesLoading.value = true
+    const offset = reset ? 0 : taskActivities.value.length
+    try {
+      const res = await taskService.getTaskActivities(
+        props.workspaceId,
+        props.task.id,
+        ACTIVITIES_PAGE_SIZE,
+        offset,
+      )
+      taskActivitiesTotal.value = res.total
+      taskActivities.value = reset ? res.activities : [...taskActivities.value, ...res.activities]
+    } catch (e) {
+      console.error('Failed to fetch task activities:', e)
+      if (reset) taskActivities.value = []
+    } finally {
+      taskActivitiesLoading.value = false
+    }
+  }
+
+  function showMoreActivities() {
+    fetchTaskActivities(false)
+  }
+
+  watch(
+    () => [props.task?.id, props.workspaceId, activityTab.value],
+    () => {
+      if (props.task?.id && props.workspaceId && activityTab.value === 'changes') {
+        fetchTaskActivities(true)
+      } else if (!props.task?.id) {
+        taskActivities.value = []
+        taskActivitiesTotal.value = 0
+      }
+    },
+    { immediate: true },
+  )
+
+  watch(checklistItems, (v) => setChecklist(v), { deep: true })
+
+  const tagsSaving = ref(false)
+  async function saveTagsToApi(tags: string[]) {
+    if (!props.task?.id || !props.workspaceId) return
+    tagsSaving.value = true
+    try {
+      const updated = await taskService.update(props.workspaceId, props.task.id, { tags })
+      lastTagsFromTask.value = [...(updated.tags ?? tags)]
+      emit('taskUpdated', updated)
+      setTags(updated.tags ?? tags)
+    } catch (e) {
+      console.error('Failed to save tags:', e)
+    } finally {
+      tagsSaving.value = false
+    }
+  }
+  const debouncedSaveTags = useDebounceFn(saveTagsToApi, 400)
+  watch(tagsItems, (v) => {
+    const a = [...(v ?? [])].sort()
+    const b = [...lastTagsFromTask.value].sort()
+    if (a.length === b.length && a.every((x, i) => x === b[i])) return
+    lastTagsFromTask.value = [...(v ?? [])]
+    emit('taskUpdated', { ...props.task!, tags: v ?? [] })
+    debouncedSaveTags(v)
+  }, { deep: true })
+
+  const linkedTasksLoading = ref(false)
+  async function fetchTaskLinks() {
+    if (!props.task?.id) return
+    linkedTasksLoading.value = true
+    try {
+      const links = await taskService.getTaskLinks(props.workspaceId, props.task.id)
+      linkedTasks.value = links.map((l) => ({
+        linkId: l.id,
+        id: l.linkedTaskId,
+        title: l.linkedTitle,
+        priority: l.linkedPriority,
+        linkType: l.linkType as 'blocks' | 'blocked_by',
+      }))
+    } catch (e) {
+      console.error('Failed to fetch task links:', e)
+      linkedTasks.value = []
+    } finally {
+      linkedTasksLoading.value = false
+    }
+  }
+
+  watch(
+    () => props.task?.id,
+    (id) => {
+      if (id) fetchTaskLinks()
+      else linkedTasks.value = []
+    },
+    { immediate: true },
+  )
+
+  async function removeTaskLink(linkId: string) {
+    if (!props.task?.id) return
+    try {
+      await taskService.deleteTaskLink(props.workspaceId, props.task.id, linkId)
+      linkedTasks.value = linkedTasks.value.filter((l) => l.linkId !== linkId)
+    } catch (e) {
+      console.error('Failed to remove link:', e)
+    }
+  }
+
+  async function addTaskLink(linkedTaskId: string, linkType: 'blocks' | 'blocked_by') {
+    if (!props.task?.id) return
+    try {
+      await taskService.addTaskLink(props.workspaceId, props.task.id, linkedTaskId, linkType)
+      await fetchTaskLinks()
+    } catch (e) {
+      console.error('Failed to add link:', e)
+      throw e
+    }
+  }
+
+  function handleViewLinked(lt: LinkedTask) {
+    emit('viewLinkedTask', lt.id)
+  }
+
   const subtasks = ref<Task[]>([])
   const subtasksLoading = ref(false)
+  const subtasksCompletedCount = computed(() =>
+    subtasks.value.filter((t) => t.status === 'completed').length,
+  )
 
   async function fetchSubtasks() {
     if (!props.task) return
@@ -308,6 +905,12 @@
     () => emit('commentsUpdated'),
   )
 
+  const activityTabs = computed(() => [
+    { id: 'comments', label: `Комментарии (${comments.value.length})` },
+    { id: 'time', label: 'Время' },
+    { id: 'changes', label: `Изменения (${taskActivitiesTotal.value})` },
+  ])
+
   const fetchedParentTask = ref<Task | null>(null)
   const displayParentTask = computed(() => props.parentTask ?? fetchedParentTask.value)
 
@@ -351,20 +954,27 @@
 </script>
 
 <style scoped>
-  .TaskDetailSection {
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-4);
+  .task-detail-fade-enter-active,
+  .task-detail-fade-leave-active {
+    transition: opacity 0.15s ease;
   }
-
-  .TaskDetailSection--placeholder {
-    background-color: var(--color-bg-tertiary);
+  .task-detail-fade-enter-from,
+  .task-detail-fade-leave-to {
+    opacity: 0;
   }
-
-  .TaskDetailSection__Title {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-2);
+  @media (hover: hover) {
+    .TaskDetailModal__ViewParent:hover {
+      color: var(--color-primary-default);
+    }
+    .TaskDetailModal__AddSubtask:hover,
+    .TaskDetailModal__ShowMore:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+  @media (hover: none) {
+    .TaskDetailModal__AddSubtask:hover,
+    .TaskDetailModal__ShowMore:hover {
+      color: var(--color-primary-default);
+    }
   }
 </style>

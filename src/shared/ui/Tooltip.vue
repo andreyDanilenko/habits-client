@@ -1,11 +1,11 @@
 <template>
-  <div class="relative inline-block">
+  <div class="relative inline-flex items-center">
     <div
       ref="triggerRef"
       @click="toggle"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
-      class="cursor-pointer"
+      class="cursor-pointer inline-flex items-center"
     >
       <slot name="trigger" />
     </div>
