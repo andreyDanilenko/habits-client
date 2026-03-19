@@ -35,7 +35,7 @@
         <!-- Desktop layout -->
         <template v-if="!isMobile">
           <div class="mb-(--spacing-4) pb-(--spacing-4) border-b border-border-light flex-shrink-0">
-            <div v-if="!isCollapsedEffective" class="w-full">
+            <div v-if="!isCollapsedEffective" class="w-full min-w-0 overflow-hidden">
               <SidebarSectionHeader
                 :title="sectionTitle('workspaces')"
                 :collapsed="isCollapsedEffective"

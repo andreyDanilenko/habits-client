@@ -5,7 +5,10 @@
       @click="toggle"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
-      class="cursor-pointer inline-flex items-center"
+      :class="[
+        'cursor-pointer inline-flex items-center',
+        variant === 'dropdown' ? 'w-full min-w-0' : '',
+      ]"
     >
       <slot name="trigger" />
     </div>
