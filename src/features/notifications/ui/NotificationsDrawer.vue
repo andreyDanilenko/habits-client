@@ -60,7 +60,7 @@
   watch(
     () => props.isOpen,
     (open) => {
-      if (open) void fetchFromApi()
+      if (open) void fetchFromApi({ force: true })
     },
   )
 

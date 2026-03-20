@@ -176,6 +176,24 @@ let fetchInFlight = false
 let lastFetchTime = 0
 const FETCH_DEBOUNCE_MS = 1000
 
+function mergeServerWithPending(
+  serverList: NotificationItem[],
+  previous: NotificationItem[],
+): NotificationItem[] {
+  const serverKeys = new Set(
+    serverList.map((n) => n.eventKey).filter((k): k is string => Boolean(k)),
+  )
+  const pending = previous.filter(
+    (n) =>
+      n.id.startsWith('temp-') &&
+      n.eventKey &&
+      !serverKeys.has(n.eventKey),
+  )
+  return [...serverList, ...pending]
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, maxItems)
+}
+
 export function useNotificationsStore() {
   const { on } = useRealtime()
   const authStore = useAuthStore()
@@ -184,11 +202,11 @@ export function useNotificationsStore() {
   const unreadCount = computed(() => notifications.value.filter((n) => !n.read).length)
   const items = computed(() => [...notifications.value])
 
-  async function fetchFromApi() {
+  async function fetchFromApi(options?: { force?: boolean }) {
     if (!authStore.isAuthenticated) return
     if (fetchInFlight) return
     const now = Date.now()
-    if (now - lastFetchTime < FETCH_DEBOUNCE_MS) return
+    if (!options?.force && now - lastFetchTime < FETCH_DEBOUNCE_MS) return
 
     fetchInFlight = true
     lastFetchTime = now
@@ -196,8 +214,9 @@ export function useNotificationsStore() {
       const { notifications: list } = await notificationService.list({
         limit: maxItems,
       })
-      if (list?.length !== undefined) {
-        notifications.value = list.map(dtoToItem)
+      if (Array.isArray(list)) {
+        const serverItems = list.map(dtoToItem)
+        notifications.value = mergeServerWithPending(serverItems, notifications.value)
       }
     } catch {
       // Оставляем текущий список при ошибке
@@ -292,12 +311,22 @@ export function useNotificationsStore() {
     () => authStore.isAuthenticated,
     (authenticated) => {
       if (authenticated) {
-        void fetchFromApi()
+        void fetchFromApi({ force: true })
       } else {
         notifications.value = []
       }
     },
     { immediate: true },
+  )
+
+  watch(
+    () => workspaceStore.currentWorkspace?.id,
+    (wsId, prev) => {
+      if (!authStore.isAuthenticated || !wsId) return
+      if (prev !== undefined && wsId !== prev) {
+        void fetchFromApi({ force: true })
+      }
+    },
   )
 
   return { notifications: items, unreadCount, markAsRead, markAllAsRead, fetchFromApi }
