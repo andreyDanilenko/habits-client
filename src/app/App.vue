@@ -84,6 +84,14 @@
   on('activity.created', () => {
     habitStore.activityRefreshTrigger++
   })
+  const bumpActivityFeed = () => {
+    habitStore.activityRefreshTrigger++
+  }
+  on('task.created', bumpActivityFeed)
+  on('task.updated', bumpActivityFeed)
+  on('task.deleted', bumpActivityFeed)
+  on('task.completed', bumpActivityFeed)
+  on('task.reopened', bumpActivityFeed)
   on('invitation.accepted', () => workspaceStore.fetchWorkspaces())
   const { openModal } = useModal()
 

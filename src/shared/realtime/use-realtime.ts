@@ -15,6 +15,11 @@ export type RealtimeEventType =
   | 'deal.created'
   | 'deal.updated'
   | 'deal.deleted'
+  | 'task.created'
+  | 'task.updated'
+  | 'task.deleted'
+  | 'task.completed'
+  | 'task.reopened'
   | 'invitation.accepted'
 
 export type RealtimeEventHandler = (payload: unknown) => void
@@ -70,6 +75,11 @@ export function useRealtime() {
       'deal.created',
       'deal.updated',
       'deal.deleted',
+      'task.created',
+      'task.updated',
+      'task.deleted',
+      'task.completed',
+      'task.reopened',
       'invitation.accepted',
     ]
     eventTypes.forEach((eventType) => {

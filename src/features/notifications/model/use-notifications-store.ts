@@ -56,6 +56,30 @@ function formatDealNotification(
   }
 }
 
+function formatTaskNotification(
+  eventType: string,
+  payload: unknown,
+): { title: string; subtitle?: string } {
+  const p = payload as { task?: { title?: string } }
+  const task = p?.task
+  const title = task?.title ?? 'Задача'
+
+  switch (eventType) {
+    case 'task.created':
+      return { title: `Задача «${title}» создана` }
+    case 'task.updated':
+      return { title: `Задача «${title}» обновлена` }
+    case 'task.deleted':
+      return { title: `Задача «${title}» удалена` }
+    case 'task.completed':
+      return { title: `Задача «${title}» выполнена` }
+    case 'task.reopened':
+      return { title: `Задача «${title}» снова в работе` }
+    default:
+      return { title: `Задача «${title}»` }
+  }
+}
+
 function formatHabitNotification(
   eventType: string,
   payload: unknown,
@@ -96,6 +120,7 @@ function formatNotification(
 ): { title: string; subtitle?: string } {
   if (eventType.startsWith('deal.')) return formatDealNotification(eventType, payload)
   if (eventType.startsWith('habit.')) return formatHabitNotification(eventType, payload)
+  if (eventType.startsWith('task.')) return formatTaskNotification(eventType, payload)
   if (eventType === 'invitation.accepted') return formatInvitationNotification(eventType, payload)
   return { title: 'Уведомление', subtitle: eventType }
 }
@@ -105,12 +130,18 @@ function buildEventKey(eventType: RealtimeEventType, payload: unknown): string {
   const deal = p?.deal as { id?: string } | undefined
   const habit = p?.habit as { id?: string } | undefined
   const habitId = p?.habitId as string | undefined
+  const task = p?.task as { id?: string } | undefined
+  const taskId = p?.taskId as string | undefined
   const workspaceId = p?.workspaceId as string | undefined
   const userId = p?.userId as string | undefined
 
   if (eventType.startsWith('deal.') && deal?.id) return `${eventType}:${deal.id}`
   if (eventType.startsWith('habit.')) {
     const id = habit?.id ?? habitId
+    if (id) return `${eventType}:${id}`
+  }
+  if (eventType.startsWith('task.')) {
+    const id = task?.id ?? taskId
     if (id) return `${eventType}:${id}`
   }
   if (eventType === 'invitation.accepted' && workspaceId && userId) {
@@ -247,6 +278,11 @@ export function useNotificationsStore() {
       'deal.created',
       'deal.updated',
       'deal.deleted',
+      'task.created',
+      'task.updated',
+      'task.deleted',
+      'task.completed',
+      'task.reopened',
       'invitation.accepted',
     ]
     eventTypes.forEach((et) => on(et, (payload) => addNotification(et, payload)))
