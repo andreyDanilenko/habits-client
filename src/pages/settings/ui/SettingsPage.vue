@@ -140,7 +140,7 @@
 
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { Card, Button, Input } from '@/shared/ui'
   import { useUserStore } from '@/entities/user'
   import { authService } from '@/features/auth'
@@ -148,17 +148,15 @@
   import {
     SUPPORTED_LOCALES,
     LOCALE_LABELS,
-    setLocale as setAppLocale,
     type SupportedLocale,
   } from '@/shared/lib/i18n'
 
   const userStore = useUserStore()
-  const { locale } = useI18n()
+  const { locale, setLocale } = useAppI18n()
 
   const supportedLocales = SUPPORTED_LOCALES
   const localeLabels = LOCALE_LABELS
   const currentLocale = computed(() => locale.value as SupportedLocale)
-  const setLocale = (loc: SupportedLocale) => setAppLocale(loc)
   const isAdmin = computed(() => {
     const role = userStore.currentUser?.role
     return role === 'ADMIN' || (typeof role === 'string' && role.toUpperCase() === 'ADMIN')

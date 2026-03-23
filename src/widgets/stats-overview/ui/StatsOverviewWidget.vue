@@ -1,11 +1,11 @@
 <template>
   <Card :border="true" :padding="true">
-    <h2 class="text-text-primary mb-4">Статистика</h2>
+    <h2 class="text-text-primary mb-4">{{ t('dashboard.stats.title') }}</h2>
 
     <div class="space-y-4" v-auto-animate>
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-text-secondary">Выполнено сегодня</p>
+          <p class="text-sm text-text-secondary">{{ t('habits.stats.completedToday') }}</p>
           <Transition name="number-fade" mode="out-in">
             <p
               :key="`${completedToday}-${totalToday}`"
@@ -26,7 +26,10 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { useHabitStore } from '@/entities/habit'
+
+  const { t } = useAppI18n()
   import { ProgressBar, Card } from '@/shared/ui'
   import { CheckCircleIcon } from '@/shared/ui/icon'
 

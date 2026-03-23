@@ -1,26 +1,26 @@
 <template>
   <ModalContent
-    :title="`Отметить выполнение`"
-    :description="`Привычка: ${habit.title}`"
+    :title="t('habits.completion.modalTitle')"
+    :description="`${t('habits.completion.habitLabel')}: ${habit.title}`"
     :fullscreen-on-mobile="isMobile"
     @close="$emit('close')"
   >
     <div class="space-y-4">
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-          >Во сколько выполнили?</span
-        >
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">{{
+          t('habits.completion.timeLabel')
+        }}</span>
         <Input v-model="form.time" type="time" />
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-          >Заметка (необязательно)</span
-        >
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">{{
+          t('habits.completion.noteLabel')
+        }}</span>
         <Textarea
           v-model="form.note"
           :rows="3"
-          placeholder="Как прошло выполнение? Какие были сложности или успехи?"
+          :placeholder="t('habits.completion.notePlaceholder')"
           resize="none"
         />
       </div>
@@ -29,10 +29,10 @@
     <template #footer>
       <div class="grid grid-cols-2 gap-3">
         <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
-          Отмена
+          {{ t('common.actions.cancel') }}
         </Button>
         <Button type="button" class="w-full" @click="handleSubmit" :loading="isSubmitting">
-          Отметить выполнение
+          {{ t('habits.completion.confirm') }}
         </Button>
       </div>
     </template>
@@ -41,7 +41,10 @@
 
 <script setup lang="ts">
   import { reactive, ref, onMounted, onUnmounted } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { ModalContent, Button, Input, Textarea } from '@/shared/ui'
+
+  const { t } = useAppI18n()
   import type { Habit } from '@/entities/habit'
 
   interface Props {

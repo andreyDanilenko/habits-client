@@ -12,6 +12,8 @@ export {
   formatTimeRu,
   formatDateDisplay,
   formatRelativeTime,
+  formatRelativeTimeI18n,
+  formatDateWithAppLocale,
   getGreeting,
   getTextPreview,
 } from './date'

@@ -1,17 +1,17 @@
 <template>
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-text-primary">Привычки на сегодня</h2>
+      <h2 class="text-text-primary">{{ t('habits.widget.title') }}</h2>
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
-      <p class="text-text-secondary">Загрузка...</p>
+      <p class="text-text-secondary">{{ t('common.loading') }}</p>
     </div>
 
     <div v-else-if="habits.length === 0" class="text-center py-8">
-      <p class="text-text-secondary mb-4">Нет привычек на сегодня</p>
+      <p class="text-text-secondary mb-4">{{ t('habits.widget.empty') }}</p>
       <Button variant="link" size="md" @click="$emit('add-habit')">
-        Создать первую привычку
+        {{ t('common.actions.create') }}
       </Button>
     </div>
 
@@ -44,7 +44,7 @@
               </div>
               <div v-if="(habit.dailyGoal || 1) > 1" class="mt-2 flex items-center space-x-2">
                 <span class="text-xs text-text-secondary">
-                  Прогресс: {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
+                  {{ t('habits.widget.progress') }} {{ getProgress(habit.id) }}/{{ habit.dailyGoal || 1 }}
                 </span>
                 <div class="flex-1 h-1.5 bg-bg-tertiary rounded-full overflow-hidden max-w-24">
                   <div
@@ -66,10 +66,10 @@
             size="md"
             @click="markCompletion(habit)"
           >
-            Отметить
+            {{ t('common.actions.mark') }}
           </Button>
 
-          <span v-else class="text-success-default font-medium text-sm"> ✓ Выполнено </span>
+          <span v-else class="text-success-default font-medium text-sm">{{ t('habits.widget.done') }}</span>
         </div>
       </div>
     </div>
@@ -78,7 +78,10 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { Badge } from '@/shared/ui'
+
+  const { t } = useAppI18n()
   import { useHabitStore } from '@/entities/habit'
   import { useHabitActions } from '@/features/habit/model/use-habit-actions'
   import { useHabitProgress } from '@/features/habit/model/use-habit-progress'

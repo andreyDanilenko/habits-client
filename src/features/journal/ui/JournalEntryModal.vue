@@ -1,17 +1,17 @@
 <template>
-  <ModalContent :title="entry ? 'Редактировать запись' : 'Запись за день'" @close="handleClose">
+  <ModalContent :title="modalTitle" @close="handleClose">
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-          >Дата</span
-        >
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">{{
+          t('journal.modal.date')
+        }}</span>
         <DatePicker v-model="form.date" required />
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-          >Настроение</span
-        >
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">{{
+          t('journal.modal.mood')
+        }}</span>
         <div class="flex flex-wrap gap-2">
           <SelectButton
             v-for="mood in moods"
@@ -24,27 +24,27 @@
             <span class="text-2xl">{{ mood.emoji }}</span>
           </SelectButton>
           <Button v-if="form.mood" variant="ghost" size="md" @click="form.mood = undefined">
-            Убрать
+            {{ t('journal.modal.clearMood') }}
           </Button>
         </div>
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-          >Описание за день</span
-        >
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">{{
+          t('journal.modal.descriptionLabel')
+        }}</span>
         <Textarea
           v-model="descriptionModel"
           :rows="8"
-          placeholder="Как прошел ваш день? Что вы чувствуете?"
+          :placeholder="t('journal.modal.descriptionPlaceholder')"
           resize="none"
         />
       </div>
 
       <div>
-        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
-          >Теги (необязательно)</span
-        >
+        <span class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">{{
+          t('journal.modal.tagsLabel')
+        }}</span>
         <div class="flex flex-wrap gap-2 items-center">
           <Badge
             v-for="tag in form.tags || []"
@@ -58,19 +58,25 @@
           <Input
             v-model="newTag"
             type="text"
-            placeholder="Добавить тег..."
+            :placeholder="t('journal.modal.tagPlaceholder')"
             class="inline-block w-auto min-w-[140px]"
             @keydown.enter.prevent="addTag"
           />
-          <Button type="button" variant="outline" size="md" @click="addTag"> Добавить </Button>
+          <Button type="button" variant="outline" size="md" @click="addTag">
+            {{ t('common.actions.add') }}
+          </Button>
         </div>
       </div>
     </form>
 
     <template #footer>
       <div class="flex justify-end space-x-3">
-        <Button type="button" variant="outline" @click="handleClose"> Отмена </Button>
-        <Button type="submit" @click="handleSubmit"> Сохранить </Button>
+        <Button type="button" variant="outline" @click="handleClose">
+          {{ t('common.actions.cancel') }}
+        </Button>
+        <Button type="submit" @click="handleSubmit">
+          {{ t('common.actions.save') }}
+        </Button>
       </div>
     </template>
   </ModalContent>
@@ -78,6 +84,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import {
     ModalContent,
     Input,
@@ -96,14 +103,24 @@
 
   const props = defineProps<Props>()
 
+  const { t } = useAppI18n()
   const entry = computed(() => props.entry ?? null)
+
+  const modalTitle = computed(() =>
+    entry.value ? t('journal.modal.titleEdit') : t('journal.modal.titleCreate'),
+  )
 
   const emit = defineEmits<{
     close: []
     confirm: [entry: CreateJournalEntryDto & { id?: string }]
   }>()
 
-  const moods = MOOD_DEFINITIONS
+  const moods = computed(() =>
+    MOOD_DEFINITIONS.map((m) => ({
+      ...m,
+      label: t(`dashboard.journalMood.m${m.value}`),
+    })),
+  )
 
   const form = ref<Partial<CreateJournalEntryDto> & { id?: string; date: string }>({
     description: '',

@@ -1,7 +1,7 @@
 <template>
   <Card :border="true" :padding="true">
     <div v-if="isLoading" class="text-center py-12">
-      <p class="text-text-muted">Загрузка календаря...</p>
+      <p class="text-text-muted">{{ t('habits.calendar.loading') }}</p>
     </div>
 
     <div v-else>
@@ -25,9 +25,12 @@
 </template>
 
 <script setup lang="ts">
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { Card } from '@/shared/ui'
   import CalendarDay from './CalendarDay.vue'
   import type { CalendarDay as CalendarDayType } from '../model'
+
+  const { t } = useAppI18n()
 
   defineProps<{
     calendarDays: CalendarDayType[]

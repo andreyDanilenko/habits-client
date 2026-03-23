@@ -1,5 +1,4 @@
-import { useI18n } from 'vue-i18n'
-import { setLocale } from '@/shared/lib/i18n'
+import { useAppI18n } from '@/shared/lib/i18n'
 import type { SidebarNavItem } from '../types'
 import type { Module, ModuleRoute } from '@/app/modules/config'
 
@@ -53,7 +52,7 @@ const ROUTE_LABEL_KEYS: Record<string, Record<string, string>> = {
  * Обеспечивает переводы секций, модулей, роутов и действий.
  */
 export function useSidebarI18n() {
-  const { t, locale } = useI18n()
+  const { t, locale, setLocale } = useAppI18n()
 
   const sectionTitle = (key: 'workspaces' | 'modules' | 'footer') => t(`sidebar.sections.${key}`)
 

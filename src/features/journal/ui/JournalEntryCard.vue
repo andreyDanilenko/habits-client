@@ -57,7 +57,7 @@
           variant="icon"
           icon-color="info"
           :left-icon="CogIcon"
-          title="Редактировать"
+          :title="t('journal.card.editTitle')"
         />
         <Button
           @click.stop="$emit('delete')"
@@ -65,7 +65,7 @@
           variant="icon"
           icon-color="danger"
           :left-icon="DeleteIcon"
-          title="Удалить"
+          :title="t('journal.card.deleteTitle')"
         />
       </div>
     </div>
@@ -73,9 +73,13 @@
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue'
+  import { format, parseISO } from 'date-fns'
+  import { enUS, ru } from 'date-fns/locale'
   import { Card, Badge, Button } from '@/shared/ui'
   import { CogIcon, DeleteIcon } from '@/shared/ui/icon'
-  import { formatDateRu, formatTimeRu, getTextPreview } from '@/shared/lib'
+  import { getTextPreview } from '@/shared/lib'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import type { JournalEntry } from '@/entities/journal'
   import { getMoodEmoji } from '@/features/journal/model/journal-constants'
 
@@ -90,7 +94,12 @@
     delete: []
   }>()
 
-  const formatDate = (dateStr: string) => formatDateRu(dateStr, 'd MMMM yyyy')
-  const formatTime = (dateStr: string) => formatTimeRu(dateStr)
+  const { t, locale } = useAppI18n()
+  const dfLocale = computed(() => (locale.value === 'en' ? enUS : ru))
+
+  const formatDate = (dateStr: string) =>
+    format(parseISO(dateStr), 'd MMMM yyyy', { locale: dfLocale.value })
+  const formatTime = (dateStr: string) =>
+    format(parseISO(dateStr), 'HH:mm', { locale: dfLocale.value })
   const getPreview = (description: string) => getTextPreview(description ?? '', 150)
 </script>

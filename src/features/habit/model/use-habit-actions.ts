@@ -3,8 +3,10 @@ import { useModal } from '@/shared/lib/modal'
 import { useHabitStore } from '@/entities/habit'
 import { AddEditHabitModal, HabitDetailsModal, MarkCompletionModal } from '@/features/habit/ui'
 import { ConfirmModal } from '@/shared/ui'
+import { useAppI18n } from '@/shared/lib/i18n'
 
 export const useHabitActions = () => {
+  const { t } = useAppI18n()
   const { openModal } = useModal()
   const habitStore = useHabitStore()
 
@@ -47,9 +49,9 @@ export const useHabitActions = () => {
       component: ConfirmModal,
       bottomSheetOnMobile: true,
       props: {
-        title: 'Удалить привычку',
-        message: `Вы уверены, что хотите удалить привычку "${habit.title}"? Все данные о выполнениях также будут удалены.`,
-        confirmText: 'Удалить',
+        title: t('habits.deleteConfirm.title'),
+        message: t('habits.deleteConfirm.message', { title: habit.title }),
+        confirmText: t('common.actions.delete'),
         confirmVariant: 'danger',
       },
       onConfirm: async () => {

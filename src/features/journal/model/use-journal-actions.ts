@@ -2,6 +2,7 @@ import { useModal } from '@/shared/lib/modal'
 import { ConfirmModal } from '@/shared/ui'
 import { JournalEntryModal } from '@/features/journal/ui'
 import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
+import { useAppI18n } from '@/shared/lib/i18n'
 
 interface UseJournalActionsParams {
   handleSaveEntry: (entry: CreateJournalEntryDto & { id?: string }) => void | Promise<void>
@@ -12,6 +13,7 @@ export const useJournalActions = ({
   handleSaveEntry,
   handleDeleteEntry,
 }: UseJournalActionsParams) => {
+  const { t } = useAppI18n()
   const { openModal } = useModal()
 
   const handleCreateEntry = () => {
@@ -42,10 +44,9 @@ export const useJournalActions = ({
     return openModal<boolean>({
       component: ConfirmModal,
       props: {
-        title: 'Удалить запись',
-        message:
-          'Вы уверены, что хотите удалить эту запись дневника? Это действие нельзя отменить.',
-        confirmText: 'Удалить',
+        title: t('journal.deleteConfirm.title'),
+        message: t('journal.deleteConfirm.message'),
+        confirmText: t('common.actions.delete'),
         confirmVariant: 'danger',
       },
       onConfirm: async () => {

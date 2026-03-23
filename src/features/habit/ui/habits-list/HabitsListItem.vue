@@ -47,18 +47,19 @@
       <ProgressBar
         :current="progress"
         :total="habit.dailyGoal || 1"
-        label="Прогресс сегодня"
+        :label="t('habits.list.progressToday')"
         :color="habit.color"
       />
     </div>
 
     <div class="flex items-center justify-between pt-4 border-t border-border-light">
       <div class="text-sm text-text-secondary">
-        <span class="font-medium">{{ progress }}</span>
-        {{ progress === 1 ? 'выполнение' : progress < 5 ? 'выполнения' : 'выполнений' }} сегодня
+        {{ t('habits.list.completionsToday', { count: progress }) }}
       </div>
       <div v-if="canEdit" class="flex items-center space-x-2">
-        <Button variant="link" size="md" @click.stop="$emit('edit', habit)"> Редактировать </Button>
+        <Button variant="link" size="md" @click.stop="$emit('edit', habit)">
+          {{ t('common.actions.edit') }}
+        </Button>
       </div>
     </div>
   </div>
@@ -66,7 +67,10 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { ProgressBar, Button, Badge } from '@/shared/ui'
+
+  const { t } = useAppI18n()
   import type { Habit } from '@/entities/habit'
   import { CheckIcon, DeleteIcon } from '@/shared/ui/icon'
   import { useUserStore } from '@/entities/user'

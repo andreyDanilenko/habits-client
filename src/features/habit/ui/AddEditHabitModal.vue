@@ -1,7 +1,7 @@
 <template>
   <ModalContent
-    :title="isEditing ? 'Редактировать привычку' : 'Создать привычку'"
-    :description="isEditing ? undefined : 'Сделайте первый шаг к новой привычке'"
+    :title="isEditing ? t('habits.form.titleEdit') : t('habits.form.titleCreate')"
+    :description="isEditing ? undefined : t('habits.form.subtitleCreate')"
     :fullscreen-on-mobile="isMobile"
     @close="$emit('close')"
   >
@@ -9,14 +9,14 @@
       <div class="space-y-4 lg:space-y-5">
         <div>
           <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-            Название <span class="text-error-default">*</span>
+            {{ t('habits.form.name') }} <span class="text-error-default">*</span>
           </label>
           <Input
             v-model="form.title"
             type="text"
             required
             maxlength="50"
-            placeholder="Например: Утренняя зарядка"
+            :placeholder="t('habits.form.placeholderTitle')"
             :error="errors.title"
             :class="isMobile ? 'text-base' : ''"
           />
@@ -27,7 +27,9 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">Цвет</label>
+            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">{{
+              t('habits.form.color')
+            }}</label>
             <div class="flex flex-wrap gap-2 min-h-[44px]">
               <SelectButton
                 v-for="color in colors"
@@ -41,9 +43,9 @@
             </div>
           </div>
           <div>
-            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2"
-              >Иконка</label
-            >
+            <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">{{
+              t('habits.form.icon')
+            }}</label>
             <div class="flex flex-wrap gap-2 min-h-[44px]">
               <SelectButton
                 v-for="icon in icons"
@@ -61,18 +63,18 @@
 
         <div>
           <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-            Тип расписания
+            {{ t('habits.form.scheduleType') }}
           </label>
           <div class="flex gap-2 flex-wrap">
             <SelectButton
               :is-selected="form.scheduleType === 'recurring'"
-              label="Регулярная"
+              :label="t('habits.form.scheduleRecurring')"
               custom-class="min-h-[44px] md:!min-h-0"
               @click="form.scheduleType = 'recurring'"
             />
             <SelectButton
               :is-selected="form.scheduleType === 'one_time'"
-              label="Разовая"
+              :label="t('habits.form.scheduleOneTime')"
               custom-class="min-h-[44px] md:!min-h-0"
               @click="form.scheduleType = 'one_time'"
             />
@@ -81,7 +83,7 @@
 
         <div v-if="form.scheduleType === 'recurring'">
           <label class="block text-(--text-sm) font-medium text-text-secondary mb-2">
-            Дни недели <span class="text-error-default">*</span>
+            {{ t('habits.form.weekDays') }} <span class="text-error-default">*</span>
           </label>
           <div class="flex flex-wrap gap-2">
             <SelectButton
@@ -100,7 +102,7 @@
 
         <div v-if="form.scheduleType === 'one_time'">
           <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-            Дата выполнения <span class="text-error-default">*</span>
+            {{ t('habits.form.oneTimeDate') }} <span class="text-error-default">*</span>
           </label>
           <DatePicker v-model="form.oneTimeDate" />
           <p v-if="errors.oneTimeDate" class="mt-1 text-(--text-xs) text-error-default">
@@ -118,7 +120,7 @@
             class="w-full flex items-center justify-between px-4 py-3 text-left text-(--text-sm) font-medium text-text-primary hover:bg-bg-tertiary transition-colors"
             @click="showAdvanced = !showAdvanced"
           >
-            <span>Дополнительные настройки</span>
+            <span>{{ t('habits.form.advanced') }}</span>
             <ChevronDownIcon
               class="w-5 h-5 text-text-muted transition-transform"
               :class="{ 'rotate-180': showAdvanced }"
@@ -129,13 +131,13 @@
               <label
                 class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
               >
-                Описание
+                {{ t('habits.form.description') }}
               </label>
               <Textarea
                 v-model="form.description"
                 :rows="2"
                 :maxlength="200"
-                placeholder="Краткое описание..."
+                :placeholder="t('habits.form.placeholderDescription')"
                 resize="none"
               />
               <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">
@@ -146,7 +148,7 @@
               <label
                 class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
               >
-                Цель на день
+                {{ t('habits.form.dailyGoal') }}
               </label>
               <div class="flex items-center gap-2">
                 <Input
@@ -159,14 +161,14 @@
                     (v) => (form.dailyGoal = Math.max(1, Math.min(10, Number(v) || 1)))
                   "
                 />
-                <span class="text-text-secondary">раз(а) в день</span>
+                <span class="text-text-secondary">{{ t('habits.form.timesPerDay') }}</span>
               </div>
             </div>
             <div>
               <label
                 class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
               >
-                Предпочтительное время
+                {{ t('habits.form.preferredTime') }}
               </label>
               <div class="flex flex-wrap gap-2">
                 <SelectButton
@@ -182,12 +184,12 @@
               <label
                 class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)"
               >
-                Категория
+                {{ t('habits.form.category') }}
               </label>
               <Select
                 v-model="form.category"
                 :options="categoryOptions"
-                placeholder="Без категории"
+                :placeholder="t('habits.form.noCategory')"
               />
             </div>
           </div>
@@ -197,13 +199,13 @@
         <template v-if="isEditing">
           <div>
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Описание
+              {{ t('habits.form.description') }}
             </label>
             <Textarea
               v-model="form.description"
               :rows="3"
               :maxlength="200"
-              placeholder="Краткое описание вашей привычки..."
+              :placeholder="t('habits.form.placeholderDescriptionEdit')"
               resize="none"
             />
             <span class="block mt-(--spacing-1) text-(--text-xs) text-text-secondary">
@@ -212,7 +214,7 @@
           </div>
           <div>
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Цель на день
+              {{ t('habits.form.dailyGoal') }}
             </label>
             <div class="flex items-center gap-2">
               <Input
@@ -225,12 +227,12 @@
                   (v) => (form.dailyGoal = Math.max(1, Math.min(10, Number(v) || 1)))
                 "
               />
-              <span class="text-text-secondary">раз(а) в день</span>
+              <span class="text-text-secondary">{{ t('habits.form.timesPerDay') }}</span>
             </div>
           </div>
           <div>
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Предпочтительное время
+              {{ t('habits.form.preferredTime') }}
             </label>
             <div class="flex flex-wrap gap-2">
               <SelectButton
@@ -244,12 +246,12 @@
           </div>
           <div>
             <label class="block text-(--text-sm) font-medium text-text-secondary mb-(--spacing-1)">
-              Категория
+              {{ t('habits.form.category') }}
             </label>
             <Select
               v-model="form.category"
               :options="categoryOptions"
-              placeholder="Без категории"
+              :placeholder="t('habits.form.noCategory')"
             />
           </div>
         </template>
@@ -259,10 +261,10 @@
     <template #footer>
       <div class="grid gap-3" :class="isMobile ? 'grid-cols-2' : 'grid-cols-[1fr_auto]'">
         <Button type="button" variant="outline" class="w-full" @click="$emit('close')">
-          Отмена
+          {{ t('common.actions.cancel') }}
         </Button>
         <Button form="habit-form" type="submit" :loading="isSubmitting" :disabled="!isStep1Valid">
-          {{ isEditing ? 'Сохранить' : 'Создать привычку' }}
+          {{ isEditing ? t('common.actions.save') : t('common.actions.create') }}
         </Button>
       </div>
     </template>
@@ -271,6 +273,7 @@
 
 <script setup lang="ts">
   import { reactive, computed, ref, onMounted, onUnmounted } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import {
     ModalContent,
     Button,
@@ -286,6 +289,8 @@
   interface Props {
     habit?: Habit
   }
+
+  const { t } = useAppI18n()
 
   const props = defineProps<Props>()
   const emit = defineEmits<{
@@ -333,31 +338,28 @@
 
   const icons = ['💪', '🧠', '🏃', '📚', '💧', '🍎', '🎯', '🌟', '🧘', '🚴']
 
-  const timesOfDay = [
-    { value: 'morning', label: 'Утро' },
-    { value: 'afternoon', label: 'День' },
-    { value: 'evening', label: 'Вечер' },
-    { value: 'any', label: 'Любое время' },
-  ]
+  const timesOfDay = computed(() => [
+    { value: 'morning', label: t('habits.timeOfDay.morning') },
+    { value: 'afternoon', label: t('habits.timeOfDay.afternoon') },
+    { value: 'evening', label: t('habits.timeOfDay.evening') },
+    { value: 'any', label: t('habits.timeOfDay.any') },
+  ])
 
-  const categoryOptions = [
-    { value: '', label: 'Без категории' },
-    { value: 'health', label: 'Здоровье' },
-    { value: 'sport', label: 'Спорт' },
-    { value: 'study', label: 'Учеба' },
-    { value: 'work', label: 'Работа' },
-    { value: 'personal', label: 'Личное' },
-  ]
+  const categoryOptions = computed(() => [
+    { value: '', label: t('habits.form.noCategory') },
+    { value: 'health', label: t('habits.category.health') },
+    { value: 'sport', label: t('habits.category.sport') },
+    { value: 'study', label: t('habits.category.study') },
+    { value: 'work', label: t('habits.category.work') },
+    { value: 'personal', label: t('habits.category.personal') },
+  ])
 
-  const weekDays = [
-    { value: 0, label: 'Вс' },
-    { value: 1, label: 'Пн' },
-    { value: 2, label: 'Вт' },
-    { value: 3, label: 'Ср' },
-    { value: 4, label: 'Чт' },
-    { value: 5, label: 'Пт' },
-    { value: 6, label: 'Сб' },
-  ]
+  const weekDays = computed(() =>
+    [0, 1, 2, 3, 4, 5, 6].map((value) => ({
+      value,
+      label: t('habits.weekdayShort.' + value),
+    })),
+  )
 
   const selectedDaysSet = computed(() => new Set(form.recurringDays))
   const isDaySelected = (dayValue: number) => selectedDaysSet.value.has(dayValue)
@@ -396,17 +398,17 @@
     errors.oneTimeDate = ''
 
     if (!form.title.trim()) {
-      errors.title = 'Введите название привычки'
+      errors.title = t('habits.form.errTitle')
       return false
     }
 
     if (form.scheduleType === 'recurring' && form.recurringDays.length === 0) {
-      errors.recurringDays = 'Выберите хотя бы один день недели'
+      errors.recurringDays = t('habits.form.errWeekDays')
       return false
     }
 
     if (form.scheduleType === 'one_time' && !form.oneTimeDate) {
-      errors.oneTimeDate = 'Выберите дату выполнения'
+      errors.oneTimeDate = t('habits.form.errOneTimeDate')
       return false
     }
 

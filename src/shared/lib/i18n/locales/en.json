@@ -1,4 +1,242 @@
 {
+  "common": {
+    "actions": {
+      "create": "Create",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "close": "Close",
+      "add": "Add",
+      "mark": "Mark"
+    },
+    "loading": "Loading...",
+    "relativeTime": {
+      "justNow": "just now",
+      "oneMinuteAgo": "1 minute ago",
+      "minutesAgo": "{n} min ago",
+      "oneHourAgo": "1 hour ago",
+      "hoursAgo": "{n} h ago",
+      "yesterday": "yesterday",
+      "daysAgo": "{n} days ago"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "night": "Good night"
+    },
+    "header": {
+      "dateLine": "Today is {date}",
+      "friendFallback": "Friend"
+    },
+    "stats": {
+      "title": "Statistics"
+    },
+    "journal": {
+      "title": "Quick note",
+      "placeholder": "How was your day?",
+      "errorNoWorkspace": "Select a workspace",
+      "errorSave": "Could not save the entry"
+    },
+    "journalMood": {
+      "m5": "Great",
+      "m4": "Good",
+      "m3": "Okay",
+      "m2": "Low",
+      "m1": "Very low"
+    },
+    "activity": {
+      "title": "Recent activity",
+      "seeAll": "All activity",
+      "empty": "No recent activity"
+    }
+  },
+  "habits": {
+    "page": {
+      "title": "My habits",
+      "description": "Manage your habits and track progress",
+      "loading": "Loading habits..."
+    },
+    "empty": {
+      "filteredTitle": "No habits found",
+      "filteredHint": "Try changing or clearing filters",
+      "noHabitsTitle": "No habits yet",
+      "noHabitsHint": "Create your first habit to start tracking progress"
+    },
+    "stats": {
+      "total": "Total habits",
+      "completedToday": "Completed today",
+      "completionRate": "Completion rate"
+    },
+    "list": {
+      "progressToday": "Today's progress",
+      "completionsToday": "{count} today"
+    },
+    "form": {
+      "titleCreate": "New habit",
+      "titleEdit": "Edit habit",
+      "subtitleCreate": "Take the first step toward a new habit",
+      "name": "Name",
+      "color": "Color",
+      "icon": "Icon",
+      "scheduleType": "Schedule type",
+      "scheduleRecurring": "Recurring",
+      "scheduleOneTime": "One-time",
+      "weekDays": "Weekdays",
+      "oneTimeDate": "Completion date",
+      "advanced": "Additional settings",
+      "description": "Description",
+      "dailyGoal": "Daily goal",
+      "timesPerDay": "time(s) per day",
+      "preferredTime": "Preferred time",
+      "category": "Category",
+      "noCategory": "No category",
+      "placeholderTitle": "e.g. Morning workout",
+      "placeholderDescription": "Short description...",
+      "placeholderDescriptionEdit": "Short description of your habit...",
+      "errTitle": "Enter a habit name",
+      "errWeekDays": "Select at least one weekday",
+      "errOneTimeDate": "Select a completion date"
+    },
+    "timeOfDay": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "any": "Any time"
+    },
+    "category": {
+      "health": "Health",
+      "sport": "Sport",
+      "study": "Study",
+      "work": "Work",
+      "personal": "Personal"
+    },
+    "weekdayShort": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat"
+    },
+    "completion": {
+      "modalTitle": "Log completion",
+      "habitLabel": "Habit",
+      "timeLabel": "What time did you complete it?",
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "How did it go? Any challenges or wins?",
+      "confirm": "Log completion"
+    },
+    "details": {
+      "goalPerDay": "Goal: {n}×/day",
+      "goalProgressLine": "Goal: complete {n} {times} per day",
+      "timesOne": "time",
+      "timesMany": "times",
+      "todayProgress": "{done} / {goal}",
+      "todayDone": "Completed today",
+      "goalReached": "✅ Goal reached!",
+      "remaining": "{n} to go",
+      "totalCompletions": "Total completions",
+      "completedDaysLine": "{n} days with completions",
+      "currentStreak": "Current streak",
+      "longestStreak": "Best streak",
+      "startToday": "Start today!",
+      "streakDayOne": "day in a row",
+      "streakDayFew": "days in a row",
+      "streakDayMany": "days in a row",
+      "noStreaksYet": "No streaks yet",
+      "progressToday": "Today's progress",
+      "recentTitle": "Recent completions",
+      "noCompletions": "No completions yet",
+      "noCompletionsHint": "Log completions to see history here",
+      "atTime": "at {time}",
+      "relativeToday": "Today",
+      "relativeYesterday": "Yesterday",
+      "relativeDaysAgo": "{n} days ago"
+    },
+    "deleteConfirm": {
+      "title": "Delete habit?",
+      "message": "Delete habit \"{title}\"? All completion data will be removed."
+    },
+    "widget": {
+      "title": "Today's habits",
+      "empty": "No habits for today",
+      "progress": "Progress:",
+      "done": "✓ Done"
+    },
+    "activity": {
+      "title": "Activity",
+      "description": "All workspace actions: habits, completions, journal entries",
+      "emptyTitle": "No activity",
+      "emptyDescription": "The feed will show habit events, completions, and journal entries"
+    },
+    "calendar": {
+      "pageTitle": "Habit calendar",
+      "pageDescription": "View all habits by day",
+      "loading": "Loading calendar…",
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "legend": {
+        "regular": "Recurring",
+        "oneTime": "One-time",
+        "completed": "Completed",
+        "notCompleted": "Not completed"
+      },
+      "completedTitle": "Completed",
+      "emptyDay": "No habits"
+    }
+  },
+  "journal": {
+    "page": {
+      "title": "Journal",
+      "description": "Track how you feel and what stood out each day",
+      "addEntry": "Add entry",
+      "searchPlaceholder": "Search entries, tags, content…",
+      "loadingEntries": "Loading entries…",
+      "emptyFilteredTitle": "Nothing found",
+      "emptyFilteredHint": "Try changing filters or your search",
+      "emptyTitle": "No entries yet",
+      "emptyHint": "Start journaling — capture thoughts, wins, and plans",
+      "createEntryAction": "Create entry"
+    },
+    "stats": {
+      "totalEntries": "Total entries",
+      "thisMonth": "This month",
+      "averageMood": "Average mood"
+    },
+    "period": {
+      "today": "Today",
+      "week": "This week",
+      "month": "This month"
+    },
+    "groupDate": {
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "modal": {
+      "titleEdit": "Edit entry",
+      "titleCreate": "Daily entry",
+      "date": "Date",
+      "mood": "Mood",
+      "clearMood": "Clear",
+      "descriptionLabel": "About your day",
+      "descriptionPlaceholder": "How was your day? What are you feeling?",
+      "tagsLabel": "Tags (optional)",
+      "tagPlaceholder": "Add a tag…"
+    },
+    "card": {
+      "editTitle": "Edit",
+      "deleteTitle": "Delete"
+    },
+    "deleteConfirm": {
+      "title": "Delete entry?",
+      "message": "Delete this journal entry? This cannot be undone."
+    }
+  },
   "sidebar": {
     "sections": {
       "workspaces": "Workspaces",

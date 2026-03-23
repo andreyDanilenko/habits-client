@@ -1,11 +1,11 @@
 <template>
   <Card :border="true" :padding="true">
-    <h2 class="text-text-primary mb-4">Быстрая запись</h2>
+    <h2 class="text-text-primary mb-4">{{ t('dashboard.journal.title') }}</h2>
 
     <div class="grid gap-2">
       <Textarea
         v-model="description"
-        placeholder="Как прошел день?"
+        :placeholder="t('dashboard.journal.placeholder')"
         :rows="4"
         resize="none"
         :disabled="saving"
@@ -26,7 +26,7 @@
         </div>
 
         <Button @click="saveEntry" :disabled="!description.trim() || saving" :loading="saving">
-          Сохранить
+          {{ t('common.actions.save') }}
         </Button>
       </div>
 
@@ -36,24 +36,31 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { Button, Card, SelectButton, Textarea } from '@/shared/ui'
   import { journalService } from '@/entities/journal'
   import { useWorkspaceStore } from '@/entities/workspace'
   import { MOOD_DEFINITIONS, getTodayDateString } from '@/features/journal/model/journal-constants'
 
+  const { t } = useAppI18n()
   const workspaceStore = useWorkspaceStore()
   const description = ref('')
   const selectedMood = ref<number | null>(null)
   const saving = ref(false)
   const error = ref('')
 
-  const moods = MOOD_DEFINITIONS
+  const moods = computed(() =>
+    MOOD_DEFINITIONS.map((m) => ({
+      ...m,
+      label: t(`dashboard.journalMood.m${m.value}`),
+    })),
+  )
 
   const saveEntry = async () => {
     const workspaceId = workspaceStore.currentWorkspace?.id
     if (!workspaceId) {
-      error.value = 'Выберите воркспейс'
+      error.value = t('dashboard.journal.errorNoWorkspace')
       return
     }
     const text = description.value.trim()
@@ -71,7 +78,7 @@
       selectedMood.value = null
     } catch (e) {
       console.error('QuickJournal save failed:', e)
-      error.value = 'Не удалось сохранить запись'
+      error.value = t('dashboard.journal.errorSave')
     } finally {
       saving.value = false
     }

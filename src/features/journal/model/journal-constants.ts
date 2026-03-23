@@ -1,15 +1,14 @@
 export interface MoodDefinition {
   value: number
   emoji: string
-  label: string
 }
 
 export const MOOD_DEFINITIONS: MoodDefinition[] = [
-  { value: 5, emoji: '😊', label: 'Отлично' },
-  { value: 4, emoji: '🙂', label: 'Хорошо' },
-  { value: 3, emoji: '😐', label: 'Нормально' },
-  { value: 2, emoji: '😔', label: 'Плохо' },
-  { value: 1, emoji: '😢', label: 'Очень плохо' },
+  { value: 5, emoji: '😊' },
+  { value: 4, emoji: '🙂' },
+  { value: 3, emoji: '😐' },
+  { value: 2, emoji: '😔' },
+  { value: 1, emoji: '😢' },
 ]
 
 export type MoodValue = MoodDefinition['value']

@@ -1,7 +1,9 @@
 <template>
-  <BasePageLayout title="Дневник" description="Указывайте свое состояние и впечатления за день">
+  <BasePageLayout :title="t('journal.page.title')" :description="t('journal.page.description')">
     <template #header-actions>
-      <Button class="w-full sm:w-auto" @click="openCreateModal">Добавить запись</Button>
+      <Button class="w-full sm:w-auto" @click="openCreateModal">
+        {{ t('journal.page.addEntry') }}
+      </Button>
     </template>
 
     <template #content>
@@ -21,7 +23,7 @@
         :selected-period="selectedDate"
         :mood-options="moodOptions"
         :period-options="dateOptions"
-        search-placeholder="Поиск по записям, тегам, содержимому..."
+        :search-placeholder="t('journal.page.searchPlaceholder')"
         @update:search-query="searchQuery = $event"
         @update:selected-mood="selectedMood = $event"
         @update:selected-period="selectedDate = $event"
@@ -30,18 +32,18 @@
 
       <div v-if="isLoading" class="text-center py-12">
         <Spinner />
-        <p class="text-gray-500 mt-4">Загрузка записей...</p>
+        <p class="text-gray-500 mt-4">{{ t('journal.page.loadingEntries') }}</p>
       </div>
 
       <EmptyState
         v-else-if="filteredEntries.length === 0"
-        :title="hasActiveFilters ? 'Ничего не найдено' : 'Пока нет записей'"
+        :title="hasActiveFilters ? t('journal.page.emptyFilteredTitle') : t('journal.page.emptyTitle')"
         :description="
           hasActiveFilters
-            ? 'Попробуйте изменить фильтры или поисковый запрос'
-            : 'Начните вести дневник и записывайте свои мысли, достижения и планы'
+            ? t('journal.page.emptyFilteredHint')
+            : t('journal.page.emptyHint')
         "
-        action-button-text="Создать запись"
+        :action-button-text="t('journal.page.createEntryAction')"
         :show-clear-filters="hasActiveFilters"
         @clear-filters="clearFilters"
         @action="openCreateModal"
@@ -62,6 +64,9 @@
   import { Spinner, EmptyState, PageFilters, PageFiltersEnum, Button } from '@/shared/ui'
   import { JournalPageStats, JournalPageEntriesList } from '@/features/journal/ui'
   import { useJournalPage, useJournalActions } from '@/features/journal/model'
+  import { useAppI18n } from '@/shared/lib/i18n'
+
+  const { t } = useAppI18n()
 
   const {
     searchQuery,

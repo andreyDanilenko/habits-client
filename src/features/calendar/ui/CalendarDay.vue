@@ -43,7 +43,7 @@
         <span
           v-if="habit.completed"
           class="flex-shrink-0 text-success-icon font-bold"
-          title="Выполнено"
+          :title="t('habits.calendar.completedTitle')"
         >
           ✓
         </span>
@@ -52,13 +52,16 @@
 
     <!-- Индикатор если нет привычек -->
     <div v-if="day.habits.length === 0" class="text-xs text-text-muted text-center py-2">
-      Нет привычек
+      {{ t('habits.calendar.emptyDay') }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+  import { useAppI18n } from '@/shared/lib/i18n'
   import type { CalendarDay } from '../model'
+
+  const { t } = useAppI18n()
 
   defineProps<{
     day: CalendarDay

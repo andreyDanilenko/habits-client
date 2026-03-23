@@ -1,18 +1,15 @@
 <template>
-  <BasePageLayout
-    title="Активность"
-    description="Все действия в workspace: привычки, выполнения, записи в дневнике"
-  >
+  <BasePageLayout :title="t('habits.activity.title')" :description="t('habits.activity.description')">
     <template #content>
       <div v-if="isLoading" class="text-center py-12">
         <Spinner />
-        <p class="text-text-secondary mt-4">Загрузка...</p>
+        <p class="text-text-secondary mt-4">{{ t('common.loading') }}</p>
       </div>
 
       <EmptyState
         v-else-if="activities.length === 0"
-        title="Нет активности"
-        description="Здесь будет отображаться лента действий: создание привычек, выполнения, записи в дневнике"
+        :title="t('habits.activity.emptyTitle')"
+        :description="t('habits.activity.emptyDescription')"
         :show-action-button="false"
         :show-icon="false"
       />
@@ -60,7 +57,10 @@
 
 <script setup lang="ts">
   import { ref, computed, watch, onMounted } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { BasePageLayout } from '@/shared/ui/common'
+
+  const { t } = useAppI18n()
   import { Spinner, EmptyState, Badge, Pagination } from '@/shared/ui'
   import { habitService, type HabitActivity } from '@/entities/habit'
   import { useWorkspaceStore } from '@/entities/workspace'

@@ -1,4 +1,5 @@
 import { ref, computed, watch, onMounted } from 'vue'
+import { useAppI18n } from '@/shared/lib/i18n'
 import { habitService } from '@/entities/habit'
 import { useWorkspaceStore } from '@/entities/workspace'
 import type { CalendarResponse, Habit, CalendarDay as ApiCalendarDay } from '@/entities/habit'
@@ -12,7 +13,7 @@ import {
   startOfWeek,
   endOfWeek,
 } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS, ru } from 'date-fns/locale'
 
 export interface CalendarDay {
   date: Date
@@ -30,13 +31,18 @@ export interface CalendarDay {
 }
 
 export const useCalendarPage = () => {
+  const { t, locale } = useAppI18n()
   const currentDate = ref(new Date())
   const calendarData = ref<CalendarResponse | null>(null)
   const allHabits = ref<Habit[]>([])
   const isLoading = ref(false)
   const workspaceStore = useWorkspaceStore()
 
-  const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+  const dateFnsLocale = computed(() => (locale.value === 'en' ? enUS : ru))
+
+  const weekDays = computed(() =>
+    [1, 2, 3, 4, 5, 6, 0].map((d) => t('habits.weekdayShort.' + d)),
+  )
 
   const loadCalendar = async () => {
     if (!workspaceStore.currentWorkspace) {
@@ -115,7 +121,7 @@ export const useCalendarPage = () => {
   })
 
   const formattedMonth = computed(() => {
-    return format(currentDate.value, 'LLLL yyyy', { locale: ru })
+    return format(currentDate.value, 'LLLL yyyy', { locale: dateFnsLocale.value })
   })
 
   const prevMonth = () => {

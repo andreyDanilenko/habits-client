@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS, ru } from 'date-fns/locale'
+import { i18n } from '@/shared/lib/i18n'
 
 /**
  * Получает локальную дату в формате YYYY-MM-DD без конвертации в UTC
@@ -154,4 +155,42 @@ export function getActivityDateGroupLabel(key: ActivityDateGroupKey): string {
 
 export function getActivityDateGroupOrder(): ActivityDateGroupKey[] {
   return [...ACTIVITY_GROUP_ORDER]
+}
+
+/** Дата в формате date-fns с локалью из текущего языка приложения */
+export function formatDateWithAppLocale(date: Date | string, pattern: string): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (!dateObj || isNaN(dateObj.getTime())) return ''
+  const loc = i18n.global.locale.value === 'en' ? enUS : ru
+  return format(dateObj, pattern, { locale: loc })
+}
+
+/** Относительное время с строками из vue-i18n */
+export function formatRelativeTimeI18n(date: Date | string): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (!dateObj || isNaN(dateObj.getTime())) return ''
+
+  const t = i18n.global.t
+  const now = new Date()
+  const diff = now.getTime() - dateObj.getTime()
+  const seconds = Math.floor(diff / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
+
+  if (minutes < 1) return t('common.relativeTime.justNow')
+  if (minutes < 60) {
+    if (minutes === 1) return t('common.relativeTime.oneMinuteAgo')
+    return t('common.relativeTime.minutesAgo', { n: minutes })
+  }
+  if (hours < 24) {
+    if (hours === 1) return t('common.relativeTime.oneHourAgo')
+    return t('common.relativeTime.hoursAgo', { n: hours })
+  }
+  if (days < 7) {
+    if (days === 1) return t('common.relativeTime.yesterday')
+    return t('common.relativeTime.daysAgo', { n: days })
+  }
+
+  return formatDateWithAppLocale(dateObj, 'd MMMM yyyy, HH:mm')
 }

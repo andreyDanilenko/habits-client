@@ -1,25 +1,15 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { format, isToday, isYesterday, isThisWeek, isThisMonth, parseISO } from 'date-fns'
-import { ru } from 'date-fns/locale'
+import { enUS, ru } from 'date-fns/locale'
 import type { JournalEntry, CreateJournalEntryDto } from '@/entities/journal'
 import { journalService } from '@/entities/journal'
 import { useWorkspaceStore } from '@/entities/workspace'
+import { useAppI18n } from '@/shared/lib/i18n'
 import {
   DEFAULT_JOURNAL_CONTENT_TYPE,
   MOOD_DEFINITIONS,
   getTodayDateString,
 } from '@/features/journal/model/journal-constants'
-
-export const moodOptions = MOOD_DEFINITIONS.map(({ value, emoji, label }) => ({
-  value,
-  label: `${emoji} ${label}`,
-}))
-
-export const dateOptions = [
-  { value: 'today', label: 'Сегодня' },
-  { value: 'week', label: 'Эта неделя' },
-  { value: 'month', label: 'Этот месяц' },
-]
 
 export interface GroupedEntry {
   date: string
@@ -28,6 +18,7 @@ export interface GroupedEntry {
 }
 
 export const useJournalPage = () => {
+  const { t, locale } = useAppI18n()
   const workspaceStore = useWorkspaceStore()
   const searchQuery = ref('')
   const selectedMood = ref<number | null>(null)
@@ -54,6 +45,21 @@ export const useJournalPage = () => {
 
   onMounted(fetchEntries)
   watch(() => workspaceStore.currentWorkspace?.id, fetchEntries)
+
+  const dateFnsLocale = computed(() => (locale.value === 'en' ? enUS : ru))
+
+  const moodOptions = computed(() =>
+    MOOD_DEFINITIONS.map(({ value, emoji }) => ({
+      value,
+      label: `${emoji} ${t('dashboard.journalMood.m' + value)}`,
+    })),
+  )
+
+  const dateOptions = computed(() => [
+    { value: 'today', label: t('journal.period.today') },
+    { value: 'week', label: t('journal.period.week') },
+    { value: 'month', label: t('journal.period.month') },
+  ])
 
   const filteredEntries = computed(() => {
     let result = entries.value
@@ -175,13 +181,14 @@ export const useJournalPage = () => {
     return Array.from(groups.entries())
       .map(([date, list]) => {
         const entryDate = parseISO(date)
+        const loc = dateFnsLocale.value
         let dateLabel = ''
-        if (isToday(entryDate)) dateLabel = 'Сегодня'
-        else if (isYesterday(entryDate)) dateLabel = 'Вчера'
+        if (isToday(entryDate)) dateLabel = t('journal.groupDate.today')
+        else if (isYesterday(entryDate)) dateLabel = t('journal.groupDate.yesterday')
         else if (isThisWeek(entryDate))
-          dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: ru })
-        else if (isThisMonth(entryDate)) dateLabel = format(entryDate, 'd MMMM', { locale: ru })
-        else dateLabel = format(entryDate, 'd MMMM yyyy', { locale: ru })
+          dateLabel = format(entryDate, 'EEEE, d MMMM', { locale: loc })
+        else if (isThisMonth(entryDate)) dateLabel = format(entryDate, 'd MMMM', { locale: loc })
+        else dateLabel = format(entryDate, 'd MMMM yyyy', { locale: loc })
         if (dateLabel) dateLabel = dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1)
         return {
           date,

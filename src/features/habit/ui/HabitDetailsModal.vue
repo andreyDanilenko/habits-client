@@ -31,7 +31,7 @@
               {{ getCategoryLabel(habit.category) }}
             </Badge>
             <Badge variant="blue" class="bg-badge-blue-bg text-badge-blue-text">
-              Цель: {{ habit.dailyGoal || 1 }} раз/день
+              {{ t('habits.details.goalPerDay', { n: habit.dailyGoal || 1 }) }}
             </Badge>
             <Badge variant="green" class="bg-badge-green-bg text-badge-green-text">
               {{ getTimeLabel(habit.preferredTime) }}
@@ -42,41 +42,29 @@
 
       <div class="grid grid-cols-2 gap-4">
         <StatCard
-          label="Сегодня выполнено"
-          :value="`${todayCompletions} из ${habit.dailyGoal || 1}`"
-          :description="
-            todayCompletions >= (habit.dailyGoal || 1)
-              ? '✅ Цель достигнута!'
-              : 'Осталось ' + ((habit.dailyGoal || 1) - todayCompletions) + ' раз(а)'
-          "
+          :label="t('habits.details.todayDone')"
+          :value="todayProgressValue"
+          :description="todayDoneDescription"
         />
         <StatCard
-          label="Всего выполнений"
+          :label="t('habits.details.totalCompletions')"
           :value="totalCompletions"
-          :description="`${completedDaysCount} ${completedDaysCount === 1 ? 'день' : completedDaysCount < 5 ? 'дня' : 'дней'} с выполнениями`"
+          :description="completedDaysDescription"
         />
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <StatCard
-          label="Текущая серия"
+          :label="t('habits.details.currentStreak')"
           :value="currentStreak"
-          :description="
-            currentStreak === 0
-              ? 'Начните сегодня!'
-              : currentStreak === 1
-                ? 'день подряд'
-                : currentStreak < 5
-                  ? 'дня подряд'
-                  : 'дней подряд'
-          "
+          :description="currentStreakDescription"
           variant="gradient"
           color="indigo"
         />
         <StatCard
-          label="Лучшая серия"
+          :label="t('habits.details.longestStreak')"
           :value="longestStreak"
-          :description="`${longestStreak === 0 ? 'Пока нет серий' : longestStreak === 1 ? 'день' : longestStreak < 5 ? 'дня' : 'дней'} подряд`"
+          :description="longestStreakDescription"
           variant="gradient"
           color="purple"
         />
@@ -84,19 +72,19 @@
 
       <ProgressBar
         variant="detailed"
-        label="Прогресс сегодня"
+        :label="t('habits.details.progressToday')"
         :current="todayCompletions"
         :total="habit.dailyGoal || 1"
         :color="habit.color || 'var(--color-primary-default)'"
-        :description="`Цель: выполнить ${habit.dailyGoal || 1} ${habit.dailyGoal === 1 ? 'раз' : 'раза'} в день`"
+        :description="progressBarDescription"
       />
 
       <div>
-        <h4 class="text-text-primary mb-3">Последние выполнения</h4>
+        <h4 class="text-text-primary mb-3">{{ t('habits.details.recentTitle') }}</h4>
         <div v-if="recentCompletions.length === 0" class="text-center py-4">
-          <p class="text-text-secondary">Пока нет выполнений</p>
+          <p class="text-text-secondary">{{ t('habits.details.noCompletions') }}</p>
           <p class="text-xs text-text-muted mt-2">
-            Отмечайте выполнение привычки, чтобы видеть историю
+            {{ t('habits.details.noCompletionsHint') }}
           </p>
         </div>
         <div v-else class="space-y-2">
@@ -111,9 +99,9 @@
                   <span class="text-sm font-medium text-text-primary">{{
                     formatDate(completion.date)
                   }}</span>
-                  <span v-if="completion.time" class="text-xs text-text-muted"
-                    >в {{ completion.time }}</span
-                  >
+                  <span v-if="completion.time" class="text-xs text-text-muted">{{
+                    t('habits.details.atTime', { time: completion.time })
+                  }}</span>
                 </div>
                 <p v-if="completion.notes" class="text-sm text-text-secondary mt-1 italic">
                   "{{ completion.notes }}"
@@ -137,7 +125,7 @@
             class="col-span-2 w-full"
             @click="$emit('confirm', 'delete')"
           >
-            Удалить
+            {{ t('common.actions.delete') }}
           </Button>
         </template>
         <Button
@@ -146,10 +134,10 @@
           :class="['w-full', { 'col-span-2': !canEdit }]"
           @click="$emit('close')"
         >
-          Закрыть
+          {{ t('common.actions.close') }}
         </Button>
         <Button v-if="canEdit" type="button" class="w-full" @click="$emit('confirm', 'edit')">
-          Редактировать
+          {{ t('common.actions.edit') }}
         </Button>
       </div>
     </template>
@@ -158,7 +146,10 @@
 
 <script setup lang="ts">
   import { computed, ref, onMounted, onUnmounted } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { ModalContent, Button, StatCard, Badge, ProgressBar } from '@/shared/ui'
+
+  const { t, locale } = useAppI18n()
   import { getLocalDateString } from '@/shared/lib'
   import type { Habit, HabitCompletion, HabitStats } from '@/entities/habit'
   import { habitService } from '@/entities/habit'
@@ -291,28 +282,60 @@
     return completedDates.value.length
   })
 
-  const categories = {
-    health: 'Здоровье',
-    sport: 'Спорт',
-    study: 'Учеба',
-    work: 'Работа',
-    personal: 'Личное',
-  }
+  const goalN = computed(() => props.habit.dailyGoal || 1)
 
-  const times = {
-    morning: 'Утро',
-    afternoon: 'День',
-    evening: 'Вечер',
-    any: 'Любое время',
-  }
+  const todayProgressValue = computed(() =>
+    t('habits.details.todayProgress', {
+      done: todayCompletions.value,
+      goal: goalN.value,
+    }),
+  )
+
+  const todayDoneDescription = computed(() => {
+    if (todayCompletions.value >= goalN.value) return t('habits.details.goalReached')
+    return t('habits.details.remaining', { n: goalN.value - todayCompletions.value })
+  })
+
+  const completedDaysDescription = computed(() =>
+    t('habits.details.completedDaysLine', { n: completedDaysCount.value }),
+  )
+
+  const currentStreakDescription = computed(() => {
+    const s = currentStreak.value
+    if (s === 0) return t('habits.details.startToday')
+    if (s === 1) return t('habits.details.streakDayOne')
+    if (s >= 2 && s <= 4) return t('habits.details.streakDayFew')
+    return t('habits.details.streakDayMany')
+  })
+
+  const longestStreakDescription = computed(() => {
+    const s = longestStreak.value
+    if (s === 0) return t('habits.details.noStreaksYet')
+    if (s === 1) return `1 ${t('habits.details.streakDayOne')}`
+    if (s >= 2 && s <= 4) return `${s} ${t('habits.details.streakDayFew')}`
+    return `${s} ${t('habits.details.streakDayMany')}`
+  })
+
+  const progressBarDescription = computed(() => {
+    const n = goalN.value
+    const timesWord = n === 1 ? t('habits.details.timesOne') : t('habits.details.timesMany')
+    return t('habits.details.goalProgressLine', { n, times: timesWord })
+  })
 
   const getCategoryLabel = (category: string) => {
-    return categories[category as keyof typeof categories] || category
+    const key = category as 'health' | 'sport' | 'study' | 'work' | 'personal'
+    if (['health', 'sport', 'study', 'work', 'personal'].includes(category)) {
+      return t(`habits.category.${key}`)
+    }
+    return category
   }
 
   const getTimeLabel = (time: string | undefined) => {
-    if (!time) return times.any
-    return times[time as keyof typeof times] || time
+    if (!time) return t('habits.timeOfDay.any')
+    if (['morning', 'afternoon', 'evening', 'any'].includes(time)) {
+      return t(`habits.timeOfDay.${time}` as 'habits.timeOfDay.morning')
+    }
+    return time
   }
 
   const formatDate = (dateString: string) => {
@@ -325,11 +348,12 @@
     const diffTime = today.getTime() - completionDate.getTime()
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
-    if (diffDays === 0) return 'Сегодня'
-    if (diffDays === 1) return 'Вчера'
-    if (diffDays < 7) return `${diffDays} дня назад`
+    if (diffDays === 0) return t('habits.details.relativeToday')
+    if (diffDays === 1) return t('habits.details.relativeYesterday')
+    if (diffDays < 7) return t('habits.details.relativeDaysAgo', { n: diffDays })
 
-    return date.toLocaleDateString('ru-RU', {
+    const loc = locale.value === 'en' ? 'en-US' : 'ru-RU'
+    return date.toLocaleDateString(loc, {
       day: 'numeric',
       month: 'long',
       year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,

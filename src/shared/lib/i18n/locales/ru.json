@@ -1,4 +1,242 @@
 {
+  "common": {
+    "actions": {
+      "create": "Создать",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "delete": "Удалить",
+      "edit": "Редактировать",
+      "close": "Закрыть",
+      "add": "Добавить",
+      "mark": "Отметить"
+    },
+    "loading": "Загрузка...",
+    "relativeTime": {
+      "justNow": "только что",
+      "oneMinuteAgo": "минуту назад",
+      "minutesAgo": "{n} мин назад",
+      "oneHourAgo": "час назад",
+      "hoursAgo": "{n} ч назад",
+      "yesterday": "вчера",
+      "daysAgo": "{n} дн назад"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Доброе утро",
+      "afternoon": "Добрый день",
+      "evening": "Добрый вечер",
+      "night": "Доброй ночи"
+    },
+    "header": {
+      "dateLine": "Сегодня {date}",
+      "friendFallback": "Друг"
+    },
+    "stats": {
+      "title": "Статистика"
+    },
+    "journal": {
+      "title": "Быстрая запись",
+      "placeholder": "Как прошёл день?",
+      "errorNoWorkspace": "Выберите воркспейс",
+      "errorSave": "Не удалось сохранить запись"
+    },
+    "journalMood": {
+      "m5": "Отлично",
+      "m4": "Хорошо",
+      "m3": "Нормально",
+      "m2": "Плохо",
+      "m1": "Очень плохо"
+    },
+    "activity": {
+      "title": "Недавняя активность",
+      "seeAll": "Вся активность",
+      "empty": "Нет недавней активности"
+    }
+  },
+  "habits": {
+    "page": {
+      "title": "Мои привычки",
+      "description": "Управляйте своими привычками и отслеживайте прогресс",
+      "loading": "Загрузка привычек..."
+    },
+    "empty": {
+      "filteredTitle": "Привычки не найдены",
+      "filteredHint": "Попробуйте изменить фильтры или сбросить их",
+      "noHabitsTitle": "Нет привычек",
+      "noHabitsHint": "Создайте свою первую привычку, чтобы начать отслеживать прогресс"
+    },
+    "stats": {
+      "total": "Всего привычек",
+      "completedToday": "Выполнено сегодня",
+      "completionRate": "Процент выполнения"
+    },
+    "list": {
+      "progressToday": "Прогресс сегодня",
+      "completionsToday": "{count} раз сегодня"
+    },
+    "form": {
+      "titleCreate": "Новая привычка",
+      "titleEdit": "Редактирование привычки",
+      "subtitleCreate": "Сделайте первый шаг к новой привычке",
+      "name": "Название",
+      "color": "Цвет",
+      "icon": "Иконка",
+      "scheduleType": "Тип расписания",
+      "scheduleRecurring": "Регулярная",
+      "scheduleOneTime": "Разовая",
+      "weekDays": "Дни недели",
+      "oneTimeDate": "Дата выполнения",
+      "advanced": "Дополнительные настройки",
+      "description": "Описание",
+      "dailyGoal": "Цель на день",
+      "timesPerDay": "раз(а) в день",
+      "preferredTime": "Предпочтительное время",
+      "category": "Категория",
+      "noCategory": "Без категории",
+      "placeholderTitle": "Например: Утренняя зарядка",
+      "placeholderDescription": "Краткое описание...",
+      "placeholderDescriptionEdit": "Краткое описание вашей привычки...",
+      "errTitle": "Введите название привычки",
+      "errWeekDays": "Выберите хотя бы один день недели",
+      "errOneTimeDate": "Выберите дату выполнения"
+    },
+    "timeOfDay": {
+      "morning": "Утро",
+      "afternoon": "День",
+      "evening": "Вечер",
+      "any": "Любое время"
+    },
+    "category": {
+      "health": "Здоровье",
+      "sport": "Спорт",
+      "study": "Учеба",
+      "work": "Работа",
+      "personal": "Личное"
+    },
+    "weekdayShort": {
+      "0": "Вс",
+      "1": "Пн",
+      "2": "Вт",
+      "3": "Ср",
+      "4": "Чт",
+      "5": "Пт",
+      "6": "Сб"
+    },
+    "completion": {
+      "modalTitle": "Отметить выполнение",
+      "habitLabel": "Привычка",
+      "timeLabel": "Во сколько выполнили?",
+      "noteLabel": "Заметка (необязательно)",
+      "notePlaceholder": "Как прошло выполнение? Какие были сложности или успехи?",
+      "confirm": "Отметить выполнение"
+    },
+    "details": {
+      "goalPerDay": "Цель: {n} раз/день",
+      "goalProgressLine": "Цель: выполнить {n} {times} в день",
+      "timesOne": "раз",
+      "timesMany": "раза",
+      "todayProgress": "{done} / {goal}",
+      "todayDone": "Сегодня выполнено",
+      "goalReached": "✅ Цель достигнута!",
+      "remaining": "Осталось {n} раз(а)",
+      "totalCompletions": "Всего выполнений",
+      "completedDaysLine": "{n} дн. с выполнениями",
+      "currentStreak": "Текущая серия",
+      "longestStreak": "Лучшая серия",
+      "startToday": "Начните сегодня!",
+      "streakDayOne": "день подряд",
+      "streakDayFew": "дня подряд",
+      "streakDayMany": "дней подряд",
+      "noStreaksYet": "Пока нет серий",
+      "progressToday": "Прогресс сегодня",
+      "recentTitle": "Последние выполнения",
+      "noCompletions": "Пока нет выполнений",
+      "noCompletionsHint": "Отмечайте выполнение привычки, чтобы видеть историю",
+      "atTime": "в {time}",
+      "relativeToday": "Сегодня",
+      "relativeYesterday": "Вчера",
+      "relativeDaysAgo": "{n} дня назад"
+    },
+    "deleteConfirm": {
+      "title": "Удалить привычку?",
+      "message": "Вы уверены, что хотите удалить привычку «{title}»? Все данные о выполнениях также будут удалены."
+    },
+    "widget": {
+      "title": "Привычки на сегодня",
+      "empty": "Нет привычек на сегодня",
+      "progress": "Прогресс:",
+      "done": "✓ Выполнено"
+    },
+    "activity": {
+      "title": "Активность",
+      "description": "Все действия в workspace: привычки, выполнения, записи в дневнике",
+      "emptyTitle": "Нет активности",
+      "emptyDescription": "Здесь будет отображаться лента действий: создание привычек, выполнения, записи в дневнике"
+    },
+    "calendar": {
+      "pageTitle": "Календарь привычек",
+      "pageDescription": "Просмотр всех привычек по дням",
+      "loading": "Загрузка календаря…",
+      "prevMonth": "Предыдущий месяц",
+      "nextMonth": "Следующий месяц",
+      "legend": {
+        "regular": "Регулярная",
+        "oneTime": "Разовая",
+        "completed": "Выполнено",
+        "notCompleted": "Не выполнено"
+      },
+      "completedTitle": "Выполнено",
+      "emptyDay": "Нет привычек"
+    }
+  },
+  "journal": {
+    "page": {
+      "title": "Дневник",
+      "description": "Указывайте своё состояние и впечатления за день",
+      "addEntry": "Добавить запись",
+      "searchPlaceholder": "Поиск по записям, тегам, содержимому…",
+      "loadingEntries": "Загрузка записей…",
+      "emptyFilteredTitle": "Ничего не найдено",
+      "emptyFilteredHint": "Попробуйте изменить фильтры или поисковый запрос",
+      "emptyTitle": "Пока нет записей",
+      "emptyHint": "Начните вести дневник — записывайте мысли, достижения и планы",
+      "createEntryAction": "Создать запись"
+    },
+    "stats": {
+      "totalEntries": "Всего записей",
+      "thisMonth": "За этот месяц",
+      "averageMood": "Среднее настроение"
+    },
+    "period": {
+      "today": "Сегодня",
+      "week": "Эта неделя",
+      "month": "Этот месяц"
+    },
+    "groupDate": {
+      "today": "Сегодня",
+      "yesterday": "Вчера"
+    },
+    "modal": {
+      "titleEdit": "Редактировать запись",
+      "titleCreate": "Запись за день",
+      "date": "Дата",
+      "mood": "Настроение",
+      "clearMood": "Убрать",
+      "descriptionLabel": "Описание за день",
+      "descriptionPlaceholder": "Как прошёл ваш день? Что вы чувствуете?",
+      "tagsLabel": "Теги (необязательно)",
+      "tagPlaceholder": "Добавить тег…"
+    },
+    "card": {
+      "editTitle": "Редактировать",
+      "deleteTitle": "Удалить"
+    },
+    "deleteConfirm": {
+      "title": "Удалить запись?",
+      "message": "Вы уверены, что хотите удалить эту запись дневника? Это действие нельзя отменить."
+    }
+  },
   "sidebar": {
     "sections": {
       "workspaces": "Workspaces",

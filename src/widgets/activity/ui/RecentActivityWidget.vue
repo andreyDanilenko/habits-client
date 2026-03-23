@@ -1,21 +1,21 @@
 <template>
   <Card :border="true" :padding="true">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-text-primary">Недавняя активность</h2>
+      <h2 class="text-text-primary">{{ t('dashboard.activity.title') }}</h2>
       <router-link
         to="/habits/activity"
         class="text-sm text-primary-default hover:text-primary-dark font-medium"
       >
-        Вся активность →
+        {{ t('dashboard.activity.seeAll') }} →
       </router-link>
     </div>
 
     <div v-if="isLoading" class="text-center py-8">
-      <p class="text-text-secondary">Загрузка...</p>
+      <p class="text-text-secondary">{{ t('common.loading') }}</p>
     </div>
 
     <div v-else-if="activities.length === 0" class="text-center py-8">
-      <p class="text-text-secondary">Нет недавней активности</p>
+      <p class="text-text-secondary">{{ t('dashboard.activity.empty') }}</p>
     </div>
 
     <div v-else class="space-y-3" v-auto-animate>
@@ -41,10 +41,13 @@
 
 <script setup lang="ts">
   import { ref, computed, watch, onMounted } from 'vue'
+  import { useAppI18n } from '@/shared/lib/i18n'
   import { Card, Badge } from '@/shared/ui'
   import { habitService, useHabitStore } from '@/entities/habit'
   import { useWorkspaceStore } from '@/entities/workspace'
-  import { formatRelativeTime } from '@/shared/lib/date'
+  import { formatRelativeTimeI18n } from '@/shared/lib/date'
+
+  const { t } = useAppI18n()
 
   interface Activity {
     id: string
@@ -77,7 +80,7 @@
         id: a.id,
         emoji: a.emoji || '•',
         title: a.title,
-        time: formatRelativeTime(a.createdAt),
+        time: formatRelativeTimeI18n(a.createdAt),
         userName: a.userName,
       }))
     } catch {
