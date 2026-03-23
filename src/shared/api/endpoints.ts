@@ -162,6 +162,8 @@ export const API_ENDPOINTS = {
       apiV1 + `/workspaces/${workspaceId}/roles/${roleId}`,
     PERMISSIONS: (workspaceId: string, roleId: string) =>
       apiV1 + `/workspaces/${workspaceId}/roles/${roleId}/permissions`,
+    OBJECT_SCOPES: (workspaceId: string, roleId: string) =>
+      apiV1 + `/workspaces/${workspaceId}/roles/${roleId}/object-scopes`,
     INHERIT: (workspaceId: string, roleId: string, parentRoleId: string) =>
       apiV1 + `/workspaces/${workspaceId}/roles/${roleId}/inherit/${parentRoleId}`,
   },

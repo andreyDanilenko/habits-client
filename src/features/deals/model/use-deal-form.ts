@@ -1,6 +1,8 @@
 import { ref, watch, computed, unref } from 'vue'
 import { contactService } from '@/entities/contact'
 import { companyService } from '@/entities/company'
+import { workspaceService } from '@/entities/workspace'
+import type { Member } from '@/entities/workspace'
 import type { Deal, CreateDealDto, Pipeline } from '@/entities/deal'
 import type { Contact } from '@/entities/contact'
 import type { SearchSelectOption } from '@/shared/ui'
@@ -77,9 +79,22 @@ export function useDealForm(props: UseDealFormProps, callbacks: UseDealFormCallb
 
   const stageOptions = computed(() => stages.value.map((s) => ({ value: s.id, label: s.name })))
 
-  const ownerOptions = computed(() => [
-    { value: props.defaultOwnerId || '1', label: 'Текущий пользователь' },
-  ])
+  const workspaceMembers = ref<Member[]>([])
+
+  const ownerOptions = computed(() => {
+    const rows = workspaceMembers.value.map((m) => ({
+      value: m.id,
+      label: (m.name && m.name.trim()) || m.email,
+    }))
+    const selfId = props.defaultOwnerId
+    if (selfId && !rows.some((r) => r.value === selfId)) {
+      rows.unshift({ value: selfId, label: 'Текущий пользователь' })
+    }
+    if (rows.length === 0 && selfId) {
+      return [{ value: selfId, label: 'Текущий пользователь' }]
+    }
+    return rows
+  })
 
   function contactDisplayName(c: Contact) {
     const n = [c.firstName, c.lastName].filter(Boolean).join(' ')
@@ -215,8 +230,18 @@ export function useDealForm(props: UseDealFormProps, callbacks: UseDealFormCallb
   // Инициализация формы только при открытии модалки
   watch(
     () => props.isOpen,
-    (open) => {
-      if (open) loadForm()
+    async (open) => {
+      if (!open) return
+      if (props.workspaceId) {
+        try {
+          workspaceMembers.value = await workspaceService.getWorkspaceMembers(props.workspaceId)
+        } catch {
+          workspaceMembers.value = []
+        }
+      } else {
+        workspaceMembers.value = []
+      }
+      await loadForm()
     },
     { immediate: true },
   )

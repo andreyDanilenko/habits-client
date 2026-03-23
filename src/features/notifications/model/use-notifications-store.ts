@@ -1,7 +1,9 @@
 import { ref, computed, watch } from 'vue'
 import { useRealtime, type RealtimeEventType } from '@/shared/realtime'
 import { useAuthStore } from '@/features/auth'
+import { useUserStore } from '@/entities/user'
 import { useWorkspaceStore } from '@/entities/workspace'
+import { UserRole } from '@/entities/user'
 import { notificationService } from '../api/notification-service'
 
 let realtimeSubscribed = false
@@ -125,6 +127,39 @@ function formatNotification(
   return { title: 'Уведомление', subtitle: eventType }
 }
 
+/** Не показывать realtime-уведомления по сделкам, если по data scope пользователь не видит эту сделку. */
+function dealRealtimeNotificationAllowed(eventType: RealtimeEventType, payload: unknown): boolean {
+  if (!String(eventType).startsWith('deal.')) return true
+  const userStore = useUserStore()
+  const authStore = useAuthStore()
+  const uid = userStore.currentUser?.id
+  if (!uid) return true
+  if (userStore.currentUser?.role === UserRole.ADMIN) return true
+
+  const ep = authStore.effectivePermissions
+  if (!ep) return false
+
+  const scope = ep.dataScopes?.['crm:deal'] ?? 'all'
+  if (scope === 'none') return false
+
+  const p = payload as Record<string, unknown>
+  const deal = p?.deal as { ownerId?: string } | undefined
+  const dealOwnerId =
+    (typeof p?.dealOwnerId === 'string' ? p.dealOwnerId : '') || deal?.ownerId || ''
+  if (!dealOwnerId) return true
+
+  if (scope === 'all') return true
+  if (scope === 'owner') return dealOwnerId === uid
+  if (scope === 'department') {
+    if (dealOwnerId === uid) return true
+    const myD = ep.departmentId
+    const od = typeof p?.dealOwnerDepartmentId === 'string' ? p.dealOwnerDepartmentId : ''
+    if (!myD || !od) return false
+    return od === myD
+  }
+  return true
+}
+
 function buildEventKey(eventType: RealtimeEventType, payload: unknown): string {
   const p = payload as Record<string, unknown>
   const deal = p?.deal as { id?: string } | undefined
@@ -226,6 +261,9 @@ export function useNotificationsStore() {
   }
 
   function addNotification(eventType: RealtimeEventType, payload: unknown) {
+    if (!dealRealtimeNotificationAllowed(eventType, payload)) {
+      return
+    }
     const { title, subtitle } = formatNotification(eventType, payload)
     const eventKey = buildEventKey(eventType, payload)
     const tempId = `temp-${eventKey}`

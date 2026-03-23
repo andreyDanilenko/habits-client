@@ -13,6 +13,9 @@ export interface UpdateRoleDto {
   permissions: PermissionString[]
 }
 
+/** Ключи как на бэкенде (Casbin obj): crm:deal, crm:contact, … */
+export type RoleObjectScopeKey = string
+
 export const roleService = {
   list: async (workspaceId: string): Promise<Role[]> => {
     const response = await api.get<{ roles: Role[] }>(API_ENDPOINTS.ROLES.LIST(workspaceId))
@@ -57,5 +60,23 @@ export const roleService = {
     parentRoleId: string,
   ): Promise<void> => {
     await api.delete(API_ENDPOINTS.ROLES.INHERIT(workspaceId, roleId, parentRoleId))
+  },
+
+  getObjectScopes: async (
+    workspaceId: string,
+    roleId: string,
+  ): Promise<Record<RoleObjectScopeKey, string>> => {
+    const response = await api.get<{ objectScopes: Record<string, string> }>(
+      API_ENDPOINTS.ROLES.OBJECT_SCOPES(workspaceId, roleId),
+    )
+    return { ...(response?.objectScopes ?? {}) }
+  },
+
+  setObjectScopes: async (
+    workspaceId: string,
+    roleId: string,
+    objectScopes: Record<RoleObjectScopeKey, string>,
+  ): Promise<void> => {
+    await api.put(API_ENDPOINTS.ROLES.OBJECT_SCOPES(workspaceId, roleId), { objectScopes })
   },
 }

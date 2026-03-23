@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-full min-h-0 flex flex-col">
     <Transition name="fade">
       <div
         v-if="isMobile && isOpen"
@@ -9,10 +9,10 @@
     </Transition>
 
     <aside
-      class="bg-bg-primary border-r border-border-default transition-all duration-300 flex-shrink-0 z-50 flex flex-col"
+      class="bg-bg-primary border-r border-border-default transition-all duration-300 flex-shrink-0 z-50 flex flex-col min-h-0"
       :class="sidebarClasses"
     >
-      <nav class="p-(--spacing-4) flex flex-col h-full sidebar-nav">
+      <nav class="p-(--spacing-4) flex flex-col h-full min-h-0 sidebar-nav">
         <div class="flex justify-end mb-(--spacing-4) flex-shrink-0">
           <Button
             v-if="isMobile"
@@ -53,53 +53,91 @@
             </div>
           </div>
 
-          <div class="mb-(--spacing-4) flex-shrink-0">
-            <SidebarSectionHeader
-              :title="sectionTitle('modules')"
-              :collapsed="isCollapsedEffective"
-            />
-            <SidebarNavigation
-              :items="modulesNavItems"
-              :collapsed="isCollapsedEffective"
-              @item-click="handleModuleClick"
-            />
-          </div>
-
+          <!-- Средняя зона забирает оставшуюся высоту; модули и маршруты не выталкивают футер -->
           <div
-            v-if="selectedModule"
-            class="module-routes-outer mb-(--spacing-4) flex-1 min-h-0"
-            :class="{ 'module-routes-outer--open': hasModuleRoutes }"
+            class="desktop-sidebar-body flex flex-1 flex-col gap-(--spacing-4) min-h-0 overflow-hidden mb-(--spacing-4)"
           >
-            <div class="module-routes-grid">
-              <div class="module-routes-inner">
-                <Transition name="module-routes" mode="out-in">
+            <div
+              class="desktop-modules-panel flex min-h-0 flex-col"
+              :class="
+                hasModuleRoutes ? 'max-h-[min(42vh,18rem)] flex-shrink-0' : 'min-h-0 flex-1'
+              "
+            >
+              <div class="flex-shrink-0">
+                <SidebarSectionHeader
+                  :title="modulesSectionTitle"
+                  :collapsed="isCollapsedEffective"
+                />
+              </div>
+
+              <!-- Лёгкие градиенты по краям: намёк что список длиннее, без кнопок -->
+              <div class="desktop-modules-scroll-wrap relative min-h-0 flex flex-1 flex-col">
+                <div
+                  ref="modulesScrollEl"
+                  class="desktop-modules-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain [scrollbar-gutter:stable]"
+                >
+                  <SidebarNavigation
+                    :items="modulesNavItems"
+                    :collapsed="isCollapsedEffective"
+                    @item-click="handleModuleClick"
+                  />
+                </div>
+                <Transition name="fade">
                   <div
-                    v-if="hasModuleRoutes"
-                    :key="selectedModule.id"
-                    class="module-routes-content"
-                  >
-                    <div class="module-routes-content-inner">
-                      <div class="flex-shrink-0">
-                        <SidebarSectionHeader
-                          :title="selectedModuleLabel"
-                          :collapsed="isCollapsedEffective"
-                        />
-                      </div>
-                      <div class="module-routes-scroll">
-                        <SidebarNavigation
-                          :items="moduleRoutesNavItems"
-                          :collapsed="isCollapsedEffective"
-                        />
+                    v-if="modulesShowScrollUp"
+                    class="modules-scroll-edge modules-scroll-edge--top pointer-events-none"
+                    aria-hidden="true"
+                  />
+                </Transition>
+                <Transition name="fade">
+                  <div
+                    v-if="modulesShowScrollDown"
+                    class="modules-scroll-edge modules-scroll-edge--bottom pointer-events-none"
+                    aria-hidden="true"
+                  />
+                </Transition>
+              </div>
+            </div>
+
+            <div
+              v-if="selectedModule"
+              class="module-routes-outer min-h-0 flex flex-col"
+              :class="[
+                hasModuleRoutes ? 'min-h-0 flex-1' : 'flex-none',
+                { 'module-routes-outer--open': hasModuleRoutes },
+              ]"
+            >
+              <div class="module-routes-grid">
+                <div class="module-routes-inner">
+                  <Transition name="module-routes" mode="out-in">
+                    <div
+                      v-if="hasModuleRoutes"
+                      :key="selectedModule.id"
+                      class="module-routes-content"
+                    >
+                      <div class="module-routes-content-inner">
+                        <div class="flex-shrink-0">
+                          <SidebarSectionHeader
+                            :title="selectedModuleLabel"
+                            :collapsed="isCollapsedEffective"
+                          />
+                        </div>
+                        <div class="module-routes-scroll">
+                          <SidebarNavigation
+                            :items="moduleRoutesNavItems"
+                            :collapsed="isCollapsedEffective"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Transition>
+                  </Transition>
+                </div>
               </div>
             </div>
           </div>
 
           <div
-            class="border-t border-border-light pt-(--spacing-4) mt-auto flex-shrink-0 sidebar-footer"
+            class="border-t border-border-light pt-(--spacing-4) flex-shrink-0 sidebar-footer"
           >
             <SidebarNavigation :items="footerNavItems" :collapsed="isCollapsedEffective" />
           </div>
@@ -119,7 +157,7 @@
 
             <SidebarAccordion
               id="modules"
-              :title="sectionTitle('modules')"
+              :title="modulesSectionTitle"
               :is-open="openAccordion === 'modules'"
               @toggle="toggleAccordion('modules')"
             >
@@ -169,7 +207,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
+  import { computed, ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import {
     ArrowLeftIcon,
@@ -206,11 +244,42 @@
   const selectedModuleId = ref<string | null>(null)
   const openAccordion = ref<'workspaces' | 'modules' | 'routes' | 'footer' | null>(null)
 
+  const modulesScrollEl = ref<HTMLElement | null>(null)
+  const modulesShowScrollDown = ref(false)
+  const modulesShowScrollUp = ref(false)
+
+  const MODULES_SCROLL_EPS = 8
+
+  const updateModulesScrollAffordances = () => {
+    const el = modulesScrollEl.value
+    if (!el) {
+      modulesShowScrollDown.value = false
+      modulesShowScrollUp.value = false
+      return
+    }
+    const { scrollTop, scrollHeight, clientHeight } = el
+    const maxScroll = scrollHeight - clientHeight
+    if (maxScroll <= MODULES_SCROLL_EPS) {
+      modulesShowScrollDown.value = false
+      modulesShowScrollUp.value = false
+      return
+    }
+    modulesShowScrollDown.value = scrollTop < maxScroll - MODULES_SCROLL_EPS
+    modulesShowScrollUp.value = scrollTop > MODULES_SCROLL_EPS
+  }
+
   const currentWorkspace = computed(() => workspaceStore.currentWorkspace)
   const enabledModuleCodes = computed(() => workspaceStore.enabledModules)
   const availableModules = computed(() =>
     getAvailableModules(enabledModuleCodes.value, hasPermission),
   )
+
+  const modulesSectionTitle = computed(() => {
+    const n = availableModules.value.length
+    const base = sectionTitle('modules')
+    if (n === 0) return base
+    return `${base} (${n})`
+  })
 
   // На мобильных всегда показываем развёрнутый сайдбар (текст не скрываем)
   const isCollapsedEffective = computed(() => !isMobile.value && isCollapsed.value)
@@ -370,6 +439,28 @@
   )
   const footerLogoutItems = computed<SidebarNavItem[]>(() =>
     footerNavItems.value.filter((item) => item.id === 'logout'),
+  )
+
+  watch(
+    modulesScrollEl,
+    (el, _prev, onCleanup) => {
+      if (!el) return
+      void nextTick(updateModulesScrollAffordances)
+      const ro = new ResizeObserver(() => updateModulesScrollAffordances())
+      ro.observe(el)
+      el.addEventListener('scroll', updateModulesScrollAffordances, { passive: true })
+      onCleanup(() => {
+        ro.disconnect()
+        el.removeEventListener('scroll', updateModulesScrollAffordances)
+      })
+    },
+    { flush: 'post' },
+  )
+
+  watch(
+    () =>
+      [availableModules.value.length, hasModuleRoutes.value, isCollapsed.value] as const,
+    () => void nextTick(updateModulesScrollAffordances),
   )
 
   const checkMobile = () => {
@@ -532,6 +623,35 @@
     overflow-x: hidden;
     overscroll-behavior-y: contain;
     scrollbar-gutter: stable;
+  }
+
+  .modules-scroll-edge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    height: 1.25rem;
+    pointer-events: none;
+  }
+
+  .modules-scroll-edge--top {
+    top: 0;
+    background: linear-gradient(
+      to bottom,
+      var(--color-bg-primary) 0%,
+      color-mix(in srgb, var(--color-bg-primary) 25%, transparent) 55%,
+      transparent 100%
+    );
+  }
+
+  .modules-scroll-edge--bottom {
+    bottom: 0;
+    background: linear-gradient(
+      to top,
+      var(--color-bg-primary) 0%,
+      color-mix(in srgb, var(--color-bg-primary) 25%, transparent) 55%,
+      transparent 100%
+    );
   }
 
   .sidebar-nav {
