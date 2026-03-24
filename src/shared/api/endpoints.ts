@@ -186,4 +186,8 @@ export const API_ENDPOINTS = {
     NOTIFICATION_READ: (id: string) => apiV1 + `/me/notifications/${id}/read`,
     NOTIFICATIONS_MARK_ALL_READ: apiV1 + '/me/notifications/mark-all-read',
   },
+
+  INTEGRATIONS: {
+    TELEGRAM_LINK: apiV1 + '/integrations/telegram/link',
+  },
 } as const

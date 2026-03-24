@@ -172,6 +172,20 @@
       </p>
     </Card>
 
+    <!-- Интеграции -->
+    <Card class="p-6">
+      <h2 class="text-text-primary mb-4">Интеграции</h2>
+      <p class="text-sm text-text-secondary mb-4">
+        Подключения к внешним сервисам: уведомления, календарь, GitHub и другие сценарии.
+      </p>
+      <router-link
+        to="/workspace-settings/integrations"
+        class="inline-flex items-center text-primary-default hover:text-primary-dark font-medium"
+        >
+        Каталог интеграций →
+      </router-link>
+    </Card>
+
     <!-- Права доступа -->
     <Card v-if="canEditWorkspace" class="p-6">
       <h2 class="text-text-primary mb-4">Права доступа</h2>

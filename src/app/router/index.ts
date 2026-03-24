@@ -146,6 +146,13 @@ const routes: RouteRecordRaw[] = [
     beforeEnter: requireOwnerOrAdmin(),
   },
   {
+    path: '/workspace-settings/integrations',
+    name: 'WorkspaceIntegrations',
+    component: () => import('@/pages/workspace-integrations'),
+    meta: { requiresAuth: true },
+    beforeEnter: requireOwnerOrAdmin(),
+  },
+  {
     path: '/workspace-modules',
     name: 'WorkspaceModules',
     component: () => import('@/pages/workspace-modules'),

@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import { useModal } from '@/shared/lib/modal'
 import { ConfirmModal } from '@/shared/ui'
 import { useWorkspaceStore, usePermissions, workspaceService } from '@/entities/workspace'
+import { useTelegramIntegrationLink } from '@/features/workspace/model/use-telegram-integration-link'
 
 export const useWorkspaceSettingsPage = () => {
   const router = useRouter()
@@ -10,6 +11,13 @@ export const useWorkspaceSettingsPage = () => {
   const { isOwner, isAdmin } = usePermissions()
   const canEditWorkspace = computed(() => isOwner.value || isAdmin.value)
   const { openModal } = useModal()
+
+  const {
+    isConnectingTelegram,
+    telegramConnectLink,
+    telegramConnectError,
+    connectTelegram,
+  } = useTelegramIntegrationLink()
 
   const isSaving = ref(false)
   const isDeleting = ref(false)
@@ -133,6 +141,9 @@ export const useWorkspaceSettingsPage = () => {
     isDeleting,
     isUploadingLogo,
     isClearingLogo,
+    isConnectingTelegram,
+    telegramConnectLink,
+    telegramConnectError,
     workspaceData,
     isOwner,
     canEditWorkspace,
@@ -141,6 +152,7 @@ export const useWorkspaceSettingsPage = () => {
     saveWorkspace,
     uploadLogo,
     clearLogoToSystem,
+    connectTelegram,
     handleDeleteWorkspace,
   }
 }
