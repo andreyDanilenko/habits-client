@@ -54,6 +54,20 @@ export const workspaceService = {
     return response.workspace
   },
 
+  uploadWorkspaceLogo: async (workspaceId: string, file: File): Promise<Workspace> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await api.post<WorkspaceDataResponse>(API_ENDPOINTS.WORKSPACE.LOGO(workspaceId), formData, {
+      headers: { 'Content-Type': undefined } as any,
+    })
+    return response.workspace
+  },
+
+  clearWorkspaceLogo: async (workspaceId: string): Promise<Workspace> => {
+    const response = await api.delete<WorkspaceDataResponse>(API_ENDPOINTS.WORKSPACE.LOGO(workspaceId))
+    return response.workspace
+  },
+
   deleteWorkspace: async (workspaceId: string): Promise<void> => {
     await api.delete(`${API_ENDPOINTS.WORKSPACE.BASE}/${workspaceId}`)
   },

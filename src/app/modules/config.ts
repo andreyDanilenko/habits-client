@@ -206,6 +206,7 @@ export const modules: Module[] = [
     label: 'Задачи',
     icon: CheckCircleIcon,
     basePath: '/tasks',
+    permissions: [WorkspacePermission.TASKS_VIEW],
     routes: [
       {
         path: '/tasks',
@@ -213,6 +214,7 @@ export const modules: Module[] = [
         label: 'Мои задачи',
         icon: ListIcon,
         component: () => import('@/pages/tasks'),
+        permissions: [WorkspacePermission.TASKS_VIEW],
       },
     ],
   },

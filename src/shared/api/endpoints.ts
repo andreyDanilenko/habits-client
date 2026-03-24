@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
     INVITATIONS: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/invitations`,
     INVITATION: (workspaceId: string, invitationId: string) =>
       apiV1 + `/workspaces/${workspaceId}/invitations/${invitationId}`,
+    LOGO: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/logo`,
     NOTES: (workspaceId: string) => apiV1 + `/workspaces/${workspaceId}/notes`,
     NOTE: (workspaceId: string, noteId: string) =>
       apiV1 + `/workspaces/${workspaceId}/notes/${noteId}`,

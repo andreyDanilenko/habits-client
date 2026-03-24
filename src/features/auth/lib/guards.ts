@@ -47,9 +47,24 @@ export const authGuard = async (
     if (to.path.startsWith('/invite/')) {
       return next()
     }
+
+    // Иногда при прямом заходе `currentUser` ещё не подгружен.
+    // Тогда редирект не срабатывает до следующей навигации.
+    // Попробуем один раз подтянуть текущего пользователя.
+    if (!hasUser) {
+      try {
+        await userStore.fetchCurrentUser()
+      } catch {
+        // не залогинен -> остаёмся на публичной странице
+      }
+    }
+
+    const nowHasUser = !!userStore.currentUser
     // Авторизованный на login/register → редирект на дашборд
-    if (hasUser) {
-      return next({ path: '/habits/dashboard', replace: true })
+    if (nowHasUser) {
+      // Чтобы не попасть в circular dependency (auth -> workspace permissions -> auth),
+      // не рассчитываем здесь "первый доступный модуль". Достаточно увести на общий приватный роут.
+      return next({ path: '/profile', replace: true })
     }
     return next()
   }
@@ -85,7 +100,7 @@ export const requireAdmin = () => {
     const role = userStore.currentUser?.role
     const isAdmin = role === 'ADMIN' || (typeof role === 'string' && role.toUpperCase() === 'ADMIN')
     if (!isAdmin) {
-      return { path: '/habits/dashboard' }
+      return { path: '/' }
     }
     return true
   }

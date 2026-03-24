@@ -11,6 +11,21 @@ import {
 } from '@/entities/workspace'
 import { modules, getAvailableModules, getAvailableModuleRoutes } from '@/app/modules/config'
 
+const getDefaultAuthedPath = (): string => {
+  const workspaceStore = useWorkspaceStore()
+  const { hasPermission } = usePermissions()
+  const enabled = workspaceStore.enabledModules
+
+  const available = getAvailableModules(enabled, hasPermission)
+  for (const module of available) {
+    const routes = getAvailableModuleRoutes(module, hasPermission)
+    if (routes.length > 0) return routes[0].path
+  }
+
+  // Fallback: без модуля, но всегда доступно авторизованному пользователю
+  return '/profile'
+}
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/login',
@@ -45,12 +60,12 @@ const routes: RouteRecordRaw[] = [
   // Редирект с корня на первый доступный модуль или dashboard
   {
     path: '/',
-    redirect: '/habits/dashboard',
+    redirect: getDefaultAuthedPath,
   },
   // Редирект с /habits на дашборд
   {
     path: '/habits',
-    redirect: '/habits/dashboard',
+    redirect: getDefaultAuthedPath,
   },
   // Редирект с /crm на первый доступный роут CRM по правам
   {
@@ -67,7 +82,7 @@ const routes: RouteRecordRaw[] = [
           return { path: routes[0].path }
         }
       }
-      return { path: '/habits/dashboard' }
+      return { path: getDefaultAuthedPath() }
     },
   },
   // Редирект с /notes на список
@@ -184,10 +199,10 @@ modules.forEach((module) => {
           const redirectPath =
             typeof moduleResult === 'object' && 'path' in moduleResult ? moduleResult.path : null
           if (redirectPath && redirectPath === to.path) {
-            next()
+            next({ path: getDefaultAuthedPath(), replace: true })
             return
           }
-          next(moduleResult)
+          next({ path: redirectPath ?? getDefaultAuthedPath(), replace: true })
           return
         }
         if (route.permissions && route.permissions.length > 0) {
@@ -196,10 +211,10 @@ modules.forEach((module) => {
             const permRedirectPath =
               typeof permResult === 'object' && 'path' in permResult ? permResult.path : null
             if (permRedirectPath && permRedirectPath === to.path) {
-              next()
+              next({ path: getDefaultAuthedPath(), replace: true })
               return
             }
-            next(permResult)
+            next({ path: permRedirectPath ?? getDefaultAuthedPath(), replace: true })
             return
           }
         }

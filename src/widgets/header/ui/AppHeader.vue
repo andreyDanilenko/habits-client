@@ -6,8 +6,20 @@
       <!-- Desktop версия -->
       <div class="hidden lg:flex items-center justify-between h-(--layout-header-height)">
         <router-link to="/" class="flex items-center gap-(--spacing-3) min-w-0">
-          <Logo :size="32" />
-          <span class="text-(--text-xl) font-bold text-text-primary truncate"> HabitFlow </span>
+          <img
+            v-if="brandLogoUrl"
+            :src="brandLogoUrl"
+            alt="Company logo"
+            class="block object-contain"
+            :style="{ height: `${desktopLogoSize}px`, width: 'auto', maxWidth: '100%' }"
+          />
+          <Logo v-else :size="desktopLogoSize" />
+          <span
+            class="font-bold text-text-primary truncate"
+            :style="{ fontSize: `calc(var(--text-xl) * ${brandScale})`, lineHeight: 'var(--text-xl--line-height)' }"
+          >
+            {{ brandName }}
+          </span>
         </router-link>
         <div class="flex items-center gap-(--spacing-4) min-w-0">
           <component v-if="headerWidget" :is="headerWidget" />
@@ -30,8 +42,20 @@
         <div v-else class="w-10"></div>
 
         <router-link to="/" class="flex items-center gap-(--spacing-2) min-w-0">
-          <Logo :size="28" />
-          <span class="text-(--text-lg) font-bold text-text-primary truncate"> HabitFlow </span>
+          <img
+            v-if="brandLogoUrl"
+            :src="brandLogoUrl"
+            alt="Company logo"
+            class="block object-contain"
+            :style="{ height: `${mobileLogoSize}px`, width: 'auto', maxWidth: '100%' }"
+          />
+          <Logo v-else :size="mobileLogoSize" />
+          <span
+            class="font-bold text-text-primary truncate"
+            :style="{ fontSize: `calc(var(--text-lg) * ${brandScale})`, lineHeight: 'var(--text-lg--line-height)' }"
+          >
+            {{ brandName }}
+          </span>
         </router-link>
 
         <div class="flex items-center gap-1">
@@ -49,6 +73,7 @@
   import { useRoute } from 'vue-router'
   import { Logo, MenuIcon } from '@/shared/ui/icon'
   import { Button } from '@/shared/ui'
+  import { useWorkspaceStore } from '@/entities/workspace'
   import ThemeSwitcher from './ThemeSwitcher.vue'
   import Notifications from './Notifications.vue'
   import ProfileDropdown from './ProfileDropdown.vue'
@@ -63,9 +88,18 @@
   const props = defineProps<Props>()
   const route = useRoute()
 
+  const workspaceStore = useWorkspaceStore()
+
   const headerWidget = shallowRef<Component | null>(null)
 
   const currentModule = computed(() => getModuleByPath(route.path))
+
+  const brandName = computed(() => workspaceStore.currentWorkspace?.name || 'HabitFlow')
+  const brandLogoUrl = computed(() => workspaceStore.currentWorkspace?.logoUrl ?? null)
+  const brandScale = computed(() => workspaceStore.currentWorkspace?.logoScale ?? 1)
+
+  const desktopLogoSize = computed(() => Math.max(20, Math.round(32 * brandScale.value)))
+  const mobileLogoSize = computed(() => Math.max(18, Math.round(28 * brandScale.value)))
 
   watch(
     () => currentModule.value?.headerComponent,

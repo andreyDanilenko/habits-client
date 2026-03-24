@@ -49,6 +49,8 @@ export enum WorkspacePermission {
   PROJECT_CREATE = 'projects:create',
   PROJECT_EDIT = 'projects:edit',
   PROJECT_DELETE = 'projects:delete',
+
+  TASKS_VIEW = 'tasks:view',
 }
 
 const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
@@ -88,6 +90,7 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.PROJECT_CREATE,
     WorkspacePermission.PROJECT_EDIT,
     WorkspacePermission.PROJECT_DELETE,
+    WorkspacePermission.TASKS_VIEW,
   ],
   [WorkspaceRole.ADMIN]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -122,6 +125,7 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.PROJECT_CREATE,
     WorkspacePermission.PROJECT_EDIT,
     WorkspacePermission.PROJECT_DELETE,
+    WorkspacePermission.TASKS_VIEW,
   ],
   [WorkspaceRole.MEMBER]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -143,6 +147,7 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.PROJECT_VIEW,
     WorkspacePermission.PROJECT_CREATE,
     WorkspacePermission.PROJECT_EDIT,
+    WorkspacePermission.TASKS_VIEW,
   ],
   [WorkspaceRole.GUEST]: [
     WorkspacePermission.WORKSPACE_VIEW,
@@ -154,6 +159,7 @@ const ROLE_PERMISSIONS: Record<WorkspaceRole, WorkspacePermission[]> = {
     WorkspacePermission.CRM_DEAL_VIEW,
     WorkspacePermission.NOTES_VIEW,
     WorkspacePermission.PROJECT_VIEW,
+    // Guest can see projects, but not tasks
   ],
 }
 
@@ -193,6 +199,9 @@ const WORKSPACE_TO_API_PREFIXES: Partial<Record<WorkspacePermission, string[]>> 
   [WorkspacePermission.PROJECT_CREATE]: ['projects:project:create'],
   [WorkspacePermission.PROJECT_EDIT]: ['projects:project:update'],
   [WorkspacePermission.PROJECT_DELETE]: ['projects:project:delete'],
+
+  // Any tasks:* permission implies tasks module visibility
+  [WorkspacePermission.TASKS_VIEW]: ['tasks:task:'],
 }
 
 function hasWorkspacePermissionFromApi(
@@ -287,7 +296,8 @@ export function requirePermission(permission: WorkspacePermission) {
   return () => {
     const { hasPermission } = usePermissions()
     if (!hasPermission(permission)) {
-      return { path: '/habits/dashboard' }
+      // Generic fallback; router root redirect chooses a valid module.
+      return { path: '/' }
     }
     return true
   }
@@ -297,7 +307,7 @@ export function requireOwner() {
   return () => {
     const { isOwner } = usePermissions()
     if (!isOwner.value) {
-      return { name: 'HabitsDashboard' }
+      return { path: '/' }
     }
     return true
   }
@@ -330,7 +340,7 @@ export function requireOwnerOrAdmin() {
     if (isOwner.value || isAdmin.value || isGlobalAdmin) {
       return true
     }
-    return { name: 'HabitsDashboard' }
+    return { path: '/' }
   }
 }
 
@@ -358,7 +368,7 @@ export function requireModuleEnabled(
       if (first?.routes?.length) {
         return { path: first.routes[0].path }
       }
-      return { path: '/habits/dashboard' }
+      return { path: '/' }
     }
     return true
   }

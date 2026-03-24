@@ -3,6 +3,8 @@ export interface Workspace {
   name: string
   description?: string
   color?: string
+  logoUrl?: string | null
+  logoScale?: number
   ownerId: string
   createdAt: string
   updatedAt: string
@@ -14,7 +16,9 @@ export interface CreateWorkspaceDto {
   color?: string
 }
 
-export interface UpdateWorkspaceDto extends Partial<CreateWorkspaceDto> {}
+export interface UpdateWorkspaceDto extends Partial<CreateWorkspaceDto> {
+  logoScale?: number
+}
 
 export interface WorkspaceModule {
   id: string

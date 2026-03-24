@@ -57,6 +57,74 @@
           </div>
         </div>
 
+        <!-- Брендинг -->
+        <div class="pt-4 space-y-4 border-t border-border-light">
+          <div>
+            <h2 class="text-text-primary mb-2">Брендинг</h2>
+            <p class="text-sm text-text-secondary">Лого и размер названия применяются в шапке приложения.</p>
+          </div>
+
+          <div class="flex items-center gap-(--spacing-4)">
+            <div
+              class="w-16 h-16 rounded-lg border border-border-default bg-bg-tertiary overflow-hidden flex items-center justify-center"
+            >
+              <img
+                v-if="workspaceData.logoUrl"
+                :src="workspaceData.logoUrl"
+                alt="Workspace logo"
+                class="object-contain w-full h-full"
+              />
+              <span v-else class="text-text-muted text-sm font-bold">Лого</span>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <input
+                ref="logoFileInputRef"
+                type="file"
+                accept="image/*"
+                class="hidden"
+                :disabled="!canEditWorkspace"
+                @change="onLogoSelected"
+              />
+              <Button
+                variant="outline"
+                :disabled="!canEditWorkspace || isUploadingLogo"
+                :loading="isUploadingLogo"
+                @click="logoFileInputRef?.click()"
+              >
+                Загрузить лого
+              </Button>
+              <div v-if="workspaceData.logoUrl" class="mt-2">
+                <Button
+                  variant="outline"
+                  :disabled="!canEditWorkspace || isUploadingLogo || isClearingLogo"
+                  :loading="isClearingLogo"
+                  @click="clearLogoToSystem"
+                >
+                  Системное лого
+                </Button>
+              </div>
+              <p class="text-xs text-text-muted mt-2">Форматы: JPEG/PNG/GIF/WebP. Ограничение: 10 МБ.</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-text-secondary mb-2">
+              Масштаб логотипа и названия: <span class="text-text-primary">{{ workspaceData.logoScale.toFixed(2) }}</span>
+            </label>
+            <input
+              type="range"
+              min="0.7"
+              max="1.6"
+              step="0.05"
+              v-model.number="workspaceData.logoScale"
+              class="w-full"
+              :disabled="!canEditWorkspace"
+            />
+            <p class="text-xs text-text-muted mt-1">Применится после нажатия “Сохранить изменения”.</p>
+          </div>
+        </div>
+
         <div v-if="canEditWorkspace" class="pt-4">
           <Button @click="saveWorkspace" :loading="isSaving"> Сохранить изменения </Button>
         </div>
@@ -136,6 +204,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue'
   import { useWorkspaceSettingsPage } from '@/features/workspace/model'
   import { Card, Button, Input, Textarea } from '@/shared/ui'
 
@@ -145,6 +214,20 @@
     isOwner,
     canEditWorkspace,
     saveWorkspace,
+    uploadLogo,
+    isUploadingLogo,
+    isClearingLogo,
+    clearLogoToSystem,
     handleDeleteWorkspace,
   } = useWorkspaceSettingsPage()
+
+  const logoFileInputRef = ref<HTMLInputElement | null>(null)
+
+  const onLogoSelected = async (e: Event) => {
+    const input = e.target as HTMLInputElement
+    const file = input.files?.[0]
+    if (!file) return
+    await uploadLogo(file)
+    input.value = ''
+  }
 </script>
