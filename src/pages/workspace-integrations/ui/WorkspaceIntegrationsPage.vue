@@ -30,13 +30,18 @@
 
         <div class="pt-2 mt-auto border-t border-border-light">
           <template v-if="item.id === 'telegram'">
+            <p class="text-xs text-text-secondary mb-2">
+              Нажмите кнопку — откроется чат с ботом уже с вашим одноразовым ключом. В Telegram нажмите
+              <strong class="text-text-primary">Start</strong>
+              (вставлять ссылку вручную не нужно).
+            </p>
             <Button size="sm" :loading="isConnectingTelegram" @click="connectTelegram">
-              Подключить Telegram
+              Открыть Telegram и подключить
             </Button>
-            <p v-if="telegramConnectLink" class="text-xs text-text-muted break-all mt-2">
-              Ссылка:
-              <a :href="telegramConnectLink" target="_blank" class="text-primary-default hover:underline">
-                {{ telegramConnectLink }}
+            <p v-if="telegramConnectLink" class="text-xs text-text-muted mt-2">
+              Не открылось?
+              <a :href="telegramConnectLink" target="_blank" rel="noopener noreferrer" class="text-primary-default hover:underline">
+                Открыть в новой вкладке
               </a>
             </p>
             <p v-if="telegramConnectError" class="text-xs text-red-600 dark:text-red-400 mt-2">
