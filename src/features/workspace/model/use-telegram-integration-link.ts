@@ -51,11 +51,25 @@ export const useTelegramIntegrationLink = () => {
     }
   }
 
+  const unlinkTelegram = async () => {
+    if (!isTelegramLinked.value) return
+    try {
+      await api.delete<{ success: boolean }>(API_ENDPOINTS.INTEGRATIONS.TELEGRAM_UNLINK)
+      isTelegramLinked.value = false
+      telegramChatId.value = null
+      telegramConnectLink.value = null
+    } catch (error) {
+      console.error('Failed to unlink telegram:', error)
+      telegramConnectError.value = 'Не удалось отвязать Telegram. Попробуйте ещё раз.'
+    }
+  }
+
   return {
     isConnectingTelegram,
     telegramConnectLink,
     telegramConnectError,
     connectTelegram,
+    unlinkTelegram,
     isTelegramLinked,
     telegramChatId,
     telegramBotUsername,

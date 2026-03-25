@@ -54,9 +54,19 @@
                   chat_id: <span class="font-mono">{{ telegramChatId }}</span>
                 </p>
               </div>
-              <Button size="sm" variant="outline" @click="openTelegramChat">
-                Открыть чат
-              </Button>
+              <div class="flex items-center gap-2">
+                <Button size="sm" variant="outline" @click="openTelegramChat">
+                  Открыть чат
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  class="text-red-600 dark:text-red-400"
+                  @click="unlinkTelegram"
+                >
+                  Отвязать
+                </Button>
+              </div>
             </div>
             <Button v-else size="sm" :loading="isConnectingTelegram" @click="connectTelegram">
               Открыть Telegram и подключить
@@ -93,6 +103,7 @@
     telegramConnectLink,
     telegramConnectError,
     connectTelegram,
+    unlinkTelegram,
     isTelegramLinked,
     telegramChatId,
     telegramBotUsername,
