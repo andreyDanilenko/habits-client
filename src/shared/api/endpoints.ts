@@ -189,5 +189,6 @@ export const API_ENDPOINTS = {
 
   INTEGRATIONS: {
     TELEGRAM_LINK: apiV1 + '/integrations/telegram/link',
+    TELEGRAM_STATUS: apiV1 + '/integrations/telegram/status',
   },
 } as const

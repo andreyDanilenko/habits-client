@@ -25,7 +25,16 @@
             <h2 class="text-text-primary font-semibold">{{ item.name }}</h2>
             <p class="text-sm text-text-secondary mt-1">{{ item.description }}</p>
           </div>
-          <Badge :variant="badgeVariant(item.status)">{{ statusLabel(item.status) }}</Badge>
+          <Badge
+            v-if="item.id === 'telegram' && isTelegramStatusLoading"
+            variant="blue"
+          >
+            Проверяем
+          </Badge>
+          <Badge v-else-if="item.id === 'telegram' && isTelegramLinked" variant="green">
+            Подключен
+          </Badge>
+          <Badge v-else :variant="badgeVariant(item.status)">{{ statusLabel(item.status) }}</Badge>
         </div>
 
         <div class="pt-2 mt-auto border-t border-border-light">
@@ -35,7 +44,21 @@
               <strong class="text-text-primary">Start</strong>
               (вставлять ссылку вручную не нужно).
             </p>
-            <Button size="sm" :loading="isConnectingTelegram" @click="connectTelegram">
+            <div v-if="isTelegramStatusLoading" class="text-xs text-text-muted">
+              Проверяем подключение Telegram...
+            </div>
+            <div v-else-if="isTelegramLinked" class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="text-sm text-text-primary font-medium">Telegram подключен</p>
+                <p v-if="telegramChatId" class="text-xs text-text-muted mt-1">
+                  chat_id: <span class="font-mono">{{ telegramChatId }}</span>
+                </p>
+              </div>
+              <Button size="sm" variant="outline" @click="openTelegramChat">
+                Открыть чат
+              </Button>
+            </div>
+            <Button v-else size="sm" :loading="isConnectingTelegram" @click="connectTelegram">
               Открыть Telegram и подключить
             </Button>
             <p v-if="telegramConnectLink" class="text-xs text-text-muted mt-2">
@@ -70,6 +93,10 @@
     telegramConnectLink,
     telegramConnectError,
     connectTelegram,
+    isTelegramLinked,
+    telegramChatId,
+    telegramBotUsername,
+    isTelegramStatusLoading,
   } = useTelegramIntegrationLink()
 
   const stubTitle = 'Подключение появится в следующих релизах'
@@ -86,5 +113,13 @@
     if (status === 'available') return 'green'
     if (status === 'coming_soon') return 'blue'
     return 'default'
+  }
+
+  function openTelegramChat() {
+    if (!telegramBotUsername) {
+      window.open('https://t.me/', '_blank', 'noopener,noreferrer')
+      return
+    }
+    window.open(`https://t.me/${telegramBotUsername}`, '_blank', 'noopener,noreferrer')
   }
 </script>
