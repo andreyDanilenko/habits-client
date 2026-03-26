@@ -38,6 +38,7 @@
         </div>
       </main>
     </div>
+    <ChatWidget v-if="showHeader" />
     <ModalProvider />
   </div>
 </template>
@@ -57,6 +58,7 @@
   import { useRealtime } from '@/shared/realtime'
   import { useHabitStore } from '@/entities/habit'
   import { useNotificationsStore } from '@/features/notifications'
+  import ChatWidget from '@/chat/ui/ChatWidget.vue'
 
   const route = useRoute()
   const workspaceStore = useWorkspaceStore()

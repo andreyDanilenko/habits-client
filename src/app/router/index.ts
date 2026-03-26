@@ -132,6 +132,13 @@ const routes: RouteRecordRaw[] = [
     beforeEnter: requireOwnerOrAdmin(),
   },
   {
+    path: '/chat',
+    name: 'Chat',
+    component: () => import('@/pages/chat'),
+    meta: { requiresAuth: true },
+    beforeEnter: requireWorkspace(),
+  },
+  {
     path: '/workspace-settings',
     name: 'WorkspaceSettings',
     component: () => import('@/pages/workspace-settings'),
