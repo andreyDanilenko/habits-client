@@ -179,57 +179,19 @@
 </script>
 
 <style scoped>
+  /* Только opacity + transform: без clip-path — меньше repaints и артефактов «лесенки» */
   .chat-shell-enter-active,
   .chat-shell-leave-active {
-    animation-duration: 280ms;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-    animation-fill-mode: both;
+    transition:
+      opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
     transform-origin: bottom right;
-    will-change: opacity, transform, clip-path;
   }
 
   .chat-shell-enter-from,
   .chat-shell-leave-to {
-    /* driven by keyframes */
-  }
-
-  .chat-shell-enter-active {
-    animation-name: chatCurtainIn;
-  }
-
-  .chat-shell-leave-active {
-    animation-name: chatCurtainOut;
-  }
-
-  @keyframes chatCurtainIn {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-      clip-path: inset(0 0 100% 0 round var(--radius-xl, 16px));
-    }
-    55% {
-      opacity: 1;
-      transform: translateY(0);
-      clip-path: inset(0 0 30% 0 round var(--radius-xl, 16px));
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-      clip-path: inset(0 0 0 0 round var(--radius-xl, 16px));
-    }
-  }
-
-  @keyframes chatCurtainOut {
-    0% {
-      opacity: 1;
-      transform: translateY(0);
-      clip-path: inset(0 0 0 0 round var(--radius-xl, 16px));
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(10px);
-      clip-path: inset(0 0 100% 0 round var(--radius-xl, 16px));
-    }
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(0.96);
   }
 
   .chat-panel {
@@ -239,7 +201,6 @@
     transition:
       width 420ms cubic-bezier(0.16, 1, 0.3, 1),
       height 420ms cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: width, height;
   }
 
   .chat-panel--expanded {
